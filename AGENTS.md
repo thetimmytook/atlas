@@ -46,7 +46,7 @@ code from the design drafts until implementation is requested.
 - Use `type # area # Description` for new commit messages, with `feat`, `fix`,
   `docs`, or `chore` as the type. Use an Atlas area such as `CORE`, `RENDERER`,
   `DOCS`, or `TOOLING`; combine areas with `|` only when necessary.
-- For this repository, use Git author and committer name `timmy` and email
+- For this repository, use Git author and committer name `thetimmytook` and email
   `300562543+thetimmytook@users.noreply.github.com`, configured locally. Use the
   GitHub account `thetimmytook`; do not use a personal or work identity. Verify
   both author and committer before publishing commits. Never
