@@ -19,16 +19,15 @@ code from the design drafts until implementation is requested.
 
 ## Tooling
 
-- Use npm and commit `package-lock.json` when dependencies change.
-- Use the shared Prettier configuration. `npm run format:check` checks formatting;
-  `npm run format` applies it. Preserve original and archived source documents.
-- Run `npm ci` after cloning to install the pinned tooling and enable Husky.
-  The pre-commit hook runs lint-staged on supported staged text files.
+- The development toolchain, package manager, runtime versions, and browser
+  support targets remain undecided. Do not select them by copying another
+  project's setup; discuss them with the user first.
+- Prettier configuration is retained as a formatting reference. Dependencies
+  and hooks are deferred. Preserve original and archived source documents.
 - Run checks appropriate to the change before committing. Do not add placeholder
   test or build scripts that report success without checking anything.
-- When implementation begins, adapt the reference project's typed ESLint checks
-  and strict TypeScript settings to Atlas's actual package boundaries and browser
-  support. Do not copy its React, API, or deployment configuration into the engine.
+- Evaluate linting and type-checking tools when choosing the implementation stack.
+  Do not copy another project's React, API, or deployment configuration into the engine.
 
 ## Git hygiene
 
