@@ -46,7 +46,10 @@ code from the design drafts until implementation is requested.
 - Use `type # area # Description` for new commit messages, with `feat`, `fix`,
   `docs`, or `chore` as the type. Use an Atlas area such as `CORE`, `RENDERER`,
   `DOCS`, or `TOOLING`; combine areas with `|` only when necessary.
-- Commit only with the repository user's locally configured Git identity. Never
+- For this repository, use Git author and committer name `timmy` and email
+  `300562543+thetimmytook@users.noreply.github.com`, configured locally. Use the
+  GitHub account `thetimmytook`; do not use a personal or work identity. Verify
+  both author and committer before publishing commits. Never
   add agent/tool names, generated-by text, or co-author trailers to commits, PRs,
   release notes, or repository metadata unless explicitly requested.
 - Merge PRs with a merge commit. Do not squash or rebase PRs; preserve history.
