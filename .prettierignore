@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+package-lock.json
+docs/ATLAS_DESIGN_ORIGINAL.md
+docs/archive
+docs/references
+*.drawio
+*.svg

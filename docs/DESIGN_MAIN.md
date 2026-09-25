@@ -32,22 +32,22 @@
 
 ## Тематические документы
 
-| Тема | Документ |
-| --- | --- |
-| Сценарии и границы ответственности | [Scope](design/SCOPE.md) |
-| Координаты, объекты, ID и маршруты | [Geometry and routes](design/GEOMETRY_AND_ROUTES.md) |
-| Слои, clipping, hit testing, экранные размеры | [Layers and interaction](design/LAYERS_AND_INTERACTION.md) |
-| Камера, ограничения, homeView | [Camera](design/CAMERA.md) |
-| Runtime, загрузка, обновления, batch, операции маршрута | [Runtime and loading](design/RUNTIME_AND_LOADING.md) |
-| Материалы и открытые alter/replace/reset | [Materials](design/MATERIALS.md) |
-| Регистрация, подписи, deprecation, валидатор | [Properties and labels](design/PROPERTIES_AND_LABELS.md) |
-| Renderer и жизненный цикл компонента | [Renderer and component](design/RENDERER_AND_COMPONENT.md) |
-| Console logging | [Diagnostics](design/DIAGNOSTICS.md) |
-| Ресурсы и сериализация | [Resources and serialization](design/RESOURCES_AND_SERIALIZATION.md) |
-| Согласованный объём первого прототипа | [Prototype](design/PROTOTYPE.md) |
-| Браузеры, доступность, клавиатура и референс нагрузки | [Platforms and performance](design/PLATFORMS_AND_PERFORMANCE.md) |
-| Далёкая перспектива системы оформления | [Exploration](MATERIAL_SYSTEM_EXPLORATION.md) |
-| Исследование всех карт tarkov.dev, не новые требования | [Map audit](TARKOV_MAP_AUDIT.md) |
+| Тема                                                    | Документ                                                             |
+| ------------------------------------------------------- | -------------------------------------------------------------------- |
+| Сценарии и границы ответственности                      | [Scope](design/SCOPE.md)                                             |
+| Координаты, объекты, ID и маршруты                      | [Geometry and routes](design/GEOMETRY_AND_ROUTES.md)                 |
+| Слои, clipping, hit testing, экранные размеры           | [Layers and interaction](design/LAYERS_AND_INTERACTION.md)           |
+| Камера, ограничения, homeView                           | [Camera](design/CAMERA.md)                                           |
+| Runtime, загрузка, обновления, batch, операции маршрута | [Runtime and loading](design/RUNTIME_AND_LOADING.md)                 |
+| Материалы и открытые alter/replace/reset                | [Materials](design/MATERIALS.md)                                     |
+| Регистрация, подписи, deprecation, валидатор            | [Properties and labels](design/PROPERTIES_AND_LABELS.md)             |
+| Renderer и жизненный цикл компонента                    | [Renderer and component](design/RENDERER_AND_COMPONENT.md)           |
+| Console logging                                         | [Diagnostics](design/DIAGNOSTICS.md)                                 |
+| Ресурсы и сериализация                                  | [Resources and serialization](design/RESOURCES_AND_SERIALIZATION.md) |
+| Согласованный объём первого прототипа                   | [Prototype](design/PROTOTYPE.md)                                     |
+| Браузеры, доступность, клавиатура и референс нагрузки   | [Platforms and performance](design/PLATFORMS_AND_PERFORMANCE.md)     |
+| Далёкая перспектива системы оформления                  | [Exploration](MATERIAL_SYSTEM_EXPLORATION.md)                        |
+| Исследование всех карт tarkov.dev, не новые требования  | [Map audit](TARKOV_MAP_AUDIT.md)                                     |
 
 Тематические файлы пока сохраняют историю уточнений: актуальная сводка выше и
 явные поздние исправления имеют приоритет над ранними формулировками.
