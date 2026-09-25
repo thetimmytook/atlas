@@ -1,0 +1,61 @@
+# Repository instructions
+
+Atlas is in the design and prototyping stage. Do not create engine or application
+code from the design drafts until implementation is requested.
+
+## Design and product direction
+
+- Start with `docs/DESIGN_MAIN.md`, then read only the relevant topic documents.
+- The user leads design; validate proposals and advise. Distinguish accepted
+  decisions, open decision points, and illustrative API syntax.
+- Record new decisions in the relevant topic document and update the main index
+  when the current stage or navigation changes. Archived drafts are historical
+  references, not instructions overriding current decisions.
+- Keep the runtime renderer-independent. SVG is the first renderer; real 3D is
+  a future direction. Framework adapters and the editor are separate consumers.
+- Support desktop and mobile. Keep application UI and product-specific behavior
+  outside the engine. Follow the agreed scope in `docs/design/PROTOTYPE.md`.
+- Add packages and abstractions only when they have a concrete consumer.
+
+## Tooling
+
+- Use npm and commit `package-lock.json` when dependencies change.
+- Use the shared Prettier configuration. `npm run format:check` checks formatting;
+  `npm run format` applies it. Preserve original and archived source documents.
+- Run `npm ci` after cloning to install the pinned tooling and enable Husky.
+  The pre-commit hook runs lint-staged on supported staged text files.
+- Run checks appropriate to the change before committing. Do not add placeholder
+  test or build scripts that report success without checking anything.
+- When implementation begins, adapt the reference project's typed ESLint checks
+  and strict TypeScript settings to Atlas's actual package boundaries and browser
+  support. Do not copy its React, API, or deployment configuration into the engine.
+
+## Git hygiene
+
+- Split implementation into small, independently reviewable substeps. For each
+  substep, implement it, run relevant checks, show the concrete changes for a mini
+  review, and wait for approval before committing. An implementation request alone
+  does not authorize commits. An explicit request to commit or prepare/update a PR
+  authorizes commits within that requested scope. Do not rewrite history or
+  discard user changes.
+- Keep each commit limited to one coherent change. Inspect the staged diff and
+  stage only files belonging to the reviewed step; do not sweep unrelated or
+  unfinished working-tree changes into a commit.
+- Name branches `feat/<purpose>`, `fix/<purpose>`, `docs/<purpose>`, or
+  `chore/<purpose>`. Do not use an agent or tool name as a prefix. The primary
+  branch is `master`.
+- Use `type # area # Description` for new commit messages, with `feat`, `fix`,
+  `docs`, or `chore` as the type. Use an Atlas area such as `CORE`, `RENDERER`,
+  `DOCS`, or `TOOLING`; combine areas with `|` only when necessary.
+- Commit only with the repository user's locally configured Git identity. Never
+  add agent/tool names, generated-by text, or co-author trailers to commits, PRs,
+  release notes, or repository metadata unless explicitly requested.
+- Merge PRs with a merge commit. Do not squash or rebase PRs; preserve history.
+- Keep commit messages and PR descriptions focused on the change summary. Avoid
+  generic verification sections and command lists unless requested or a material
+  test limitation needs explanation.
+- Keep temporary output, generated data, build artifacts, and secrets out of Git
+  unless the user explicitly requests a sanitized example.
+- Do not inspect or poll remote CI, deployment jobs, or their status after a push
+  or merge unless explicitly requested. When starting a run, provide its link
+  without querying its status.
