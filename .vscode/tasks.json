@@ -1,0 +1,81 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Atlas: build",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "icon": {
+        "id": "map",
+        "color": "terminal.ansiBlue"
+      }
+    },
+    {
+      "label": "Atlas: watch library",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch",
+      "presentation": {
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "runOptions": {
+        "instanceLimit": 1
+      },
+      "icon": {
+        "id": "map",
+        "color": "terminal.ansiBlue"
+      }
+    },
+    {
+      "label": "Atlas: examples",
+      "type": "npm",
+      "script": "examples",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "runOptions": {
+        "instanceLimit": 1
+      },
+      "icon": {
+        "id": "map",
+        "color": "terminal.ansiBlue"
+      }
+    },
+    {
+      "label": "Atlas: start services",
+      "dependsOrder": "parallel",
+      "dependsOn": ["Atlas: watch library", "Atlas: examples"],
+      "hide": true,
+      "icon": {
+        "id": "map",
+        "color": "terminal.ansiBlue"
+      }
+    },
+    {
+      "label": "Atlas: dev",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": ["Atlas: build", "Atlas: start services"],
+      "problemMatcher": [],
+      "icon": {
+        "id": "map",
+        "color": "terminal.ansiBlue"
+      }
+    }
+  ]
+}
