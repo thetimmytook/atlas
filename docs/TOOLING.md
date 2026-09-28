@@ -11,7 +11,8 @@ Reference inspected: Timmy Academy commit `065e835c112e1d29f13b298d96e5bcb84f3d2
 - TypeScript strictness from the reference, including unchecked indexed access,
   exact optional properties, unused code, implicit returns, and type-only imports.
 - Browser `DOM` types and `types: []` to avoid implicit Node globals. ES2022 is a
-  provisional checking baseline, not an agreed browser support matrix. No emit.
+  provisional baseline, not an agreed browser support matrix. Type checking does not emit files;
+  a separate build configuration emits local development output.
 - ESLint flat config in JavaScript so loading configuration needs no TypeScript
   runtime loader. Typed source rules, import checks, SonarJS, security checks,
   and the reference's spacing conventions. Browser source cannot import Node
@@ -26,6 +27,20 @@ All packages are devDependencies. Their installed size is not the browser bundle
 size. Future runtime dependencies need an explicit purpose and size evaluation.
 No `sideEffects: false` claim is made before actual code and registration behavior
 exist; tree shaking must be verified against real consumption later.
+
+## Local build and example workflow
+
+Following the Academy contracts pattern, `build` runs `tsc` and `dev` runs `tsc --watch`.
+`tsconfig.build.json` emits ES2022 modules, declarations, and source maps into ignored
+`dist/`, with `noEmitOnError`. Explicit relative `.js`/`.mjs` imports keep output usable
+directly in browsers. Old output remains on compilation failure; stale files after
+source removal require cleaning `dist/` and rebuilding.
+
+VS Code's default `Atlas: dev` task builds once, then starts the watcher and example
+server in parallel. `$tsc` and `$tsc-watch` report compiler diagnostics. The example
+imports compiled JavaScript. The dev-only http-server serves the repository on
+127.0.0.1:8080 without caching. Browser refresh is manual. No bundler or live reload
+is introduced.
 
 ## Deferred
 
