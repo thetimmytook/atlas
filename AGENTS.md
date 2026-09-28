@@ -33,6 +33,32 @@ code from the design drafts until implementation is requested.
   test or build scripts that report success without checking anything.
 - Do not copy another project's React, API, or deployment configuration into the engine.
 
+## Naming
+
+- Use `UPPER_SNAKE_CASE` for module-level/global string and numeric constants
+  such as `SVG_NAMESPACE`. Local variables, functions, and object instances
+  remain `camelCase`; declaring a binding with `const` alone does not require uppercase.
+
+## File organization
+
+- Keep one class per file, enforced by ESLint's `max-classes-per-file`.
+  Exceptions match `**/*.dto.ts`, `**/*.error.ts`, and `**/dto/**/*.ts`.
+  Tests (`*.test.*`, `*.spec.*`, and `test/`, `tests/`, or `__tests__/` directories)
+  and all files under `examples/` have no class-count limit.
+  Related interfaces and types may accompany a class.
+- Keep each concrete renderer in its own directory under `src/renderers/`.
+  Keep the shared `AtlasRenderer` base at the renderers root and renderer-specific
+  helpers in an adjacent utils file, without a separate utils directory.
+
+## Errors
+
+- Keep error names and messages constant; do not interpolate URLs, IDs, field
+  names, or other variable values into them.
+- Use a stable `code` for programmatic handling and put variable context in
+  structured `details`. Preserve the original failure in `cause` when wrapping it.
+- Use `AtlasError` for domain failures. Standard platform errors may remain where
+  their existing semantics apply (for example, `AbortError` for a superseded load).
+
 ## Git hygiene
 
 - Split implementation into small, independently reviewable substeps. For each

@@ -30,6 +30,7 @@ export default defineConfig([
     ],
     rules: {
       curly: ['error', 'all'],
+      'max-classes-per-file': ['error', 1],
       'import-x/no-duplicates': 'error',
       'import-x/order': [
         'warn',
@@ -91,6 +92,17 @@ export default defineConfig([
       parserOptions: { project: './tsconfig.tooling.json' },
     },
     settings: { 'import-x/resolver': { typescript: { project: './tsconfig.tooling.json' } } },
+  },
+  {
+    files: [
+      '**/*.dto.ts',
+      '**/*.error.ts',
+      '**/dto/**/*.ts',
+      '**/*.{test,spec}.{ts,mts,js,mjs}',
+      '**/{test,tests,__tests__}/**',
+      'examples/**',
+    ],
+    rules: { 'max-classes-per-file': 'off' },
   },
   prettier,
   {
