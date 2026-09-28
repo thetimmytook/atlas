@@ -55,6 +55,9 @@ Full contract consolidation is a separate future step, not performed automatical
 
 ## Where we stopped
 
+A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
+This is a separate preparation step; engine implementation has not started.
+
 The first architecture pass is sufficient to proceed to prototype validation.
 The user agreed to the prototype scope and goal: validate the idea, identify
 limitations, and clarify next steps. Not every question needs closing before implementation.
