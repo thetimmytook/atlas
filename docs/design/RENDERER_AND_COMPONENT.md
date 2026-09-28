@@ -51,7 +51,7 @@ Following the user's review, static markup and CSS now live in `atlas-map.html`
 beside `atlas-map.ts`. Vite imports the template as a string through `?raw`; component styles remain isolated inside Shadow DOM. This separation
 is prepared for review and does not define the map material system.
 
-## Map definition and background step — pending review
+## Map definition and background step — merged
 
 Following review, the component accepts `MapDefinition`: serializable map data
 with a `background` description (image URL and explicit map-space width/height).
@@ -82,3 +82,11 @@ renderer through the base class. Background preparation returns a `show()` handl
 so SVG elements stay inside the concrete renderer and a load is displayed only
 after preparation succeeds. This is a minimal prototype contract,
 not the complete renderer API.
+
+## Camera integration — pending review
+
+The component now owns an independent camera and subscribes to its changes while
+connected. `AtlasRenderer.render(viewport, bounds)` receives display dimensions
+and the calculated map-space rectangle; `SvgRenderer` only applies these values.
+The previous renderer-owned center/scale calculations moved to `Camera`.
+See [camera implementation](CAMERA.md) for the proposed API and scope.

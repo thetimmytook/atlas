@@ -1,5 +1,8 @@
+import { Camera } from '../../camera/camera.js';
 import { prepareMapDefinition } from '../../definitions/map-definition.js';
 import { AtlasError } from '../../errors/atlas-error.js';
+import { Rect } from '../../math/rect.js';
+import { Size } from '../../math/size.js';
 import { SvgRenderer } from '../../renderers/svg/svg-renderer.js';
 
 import html from './atlas-map.html?raw';
@@ -8,6 +11,8 @@ import type { MapDefinition } from '../../definitions/map-definition.js';
 import type { AtlasRenderer } from '../../renderers/atlas-renderer.js';
 
 export class AtlasMap extends HTMLElement {
+  readonly #camera = new Camera();
+  #renderFrame: number | undefined;
   readonly #renderer: AtlasRenderer;
   #definition: MapDefinition | undefined;
   #loading = false;
@@ -25,6 +30,19 @@ export class AtlasMap extends HTMLElement {
     }
 
     this.#renderer = new SvgRenderer(surface);
+  }
+
+  get camera(): Camera {
+    return this.#camera;
+  }
+
+  fit(): void {
+    if (!this.#definition) {
+      return;
+    }
+
+    const { width, height } = this.#definition.background;
+    this.#camera.fit(new Rect(0, 0, width, height));
   }
 
   get definition(): MapDefinition | undefined {
@@ -45,6 +63,7 @@ export class AtlasMap extends HTMLElement {
       const background = await this.#renderer.prepareBackground(preparedDefinition.background);
       background.show();
       this.#definition = preparedDefinition;
+      this.fit();
     } finally {
       this.#loading = false;
     }
@@ -55,13 +74,15 @@ export class AtlasMap extends HTMLElement {
       return;
     }
 
+    this.#camera.addEventListener('change', this.#requestRender);
+    this.#requestRender();
     this.#resizeObserver = new ResizeObserver(entries => {
       if (!this.isConnected) {
         return;
       }
 
       for (const entry of entries) {
-        this.#renderer.resize(entry.contentRect.width, entry.contentRect.height);
+        this.#camera.resize(new Size(entry.contentRect.width, entry.contentRect.height));
       }
     });
     this.#resizeObserver.observe(this);
@@ -70,5 +91,22 @@ export class AtlasMap extends HTMLElement {
   disconnectedCallback(): void {
     this.#resizeObserver?.disconnect();
     this.#resizeObserver = undefined;
+    this.#camera.removeEventListener('change', this.#requestRender);
+
+    if (this.#renderFrame !== undefined) {
+      cancelAnimationFrame(this.#renderFrame);
+      this.#renderFrame = undefined;
+    }
   }
+
+  readonly #requestRender = (): void => {
+    if (!this.isConnected || this.#renderFrame !== undefined) {
+      return;
+    }
+
+    this.#renderFrame = requestAnimationFrame(() => {
+      this.#renderFrame = undefined;
+      this.#renderer.render(this.#camera.viewport, this.#camera.bounds);
+    });
+  };
 }
