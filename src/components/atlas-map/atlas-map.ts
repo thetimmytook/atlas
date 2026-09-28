@@ -1,7 +1,16 @@
+import { prepareMapDefinition } from '../../definitions/map-definition.js';
+import { AtlasError } from '../../errors/atlas-error.js';
+import { SvgRenderer } from '../../renderers/svg/svg-renderer.js';
+
 import html from './atlas-map.html?raw';
 
+import type { MapDefinition } from '../../definitions/map-definition.js';
+import type { AtlasRenderer } from '../../renderers/atlas-renderer.js';
+
 export class AtlasMap extends HTMLElement {
-  readonly #surface: SVGSVGElement;
+  readonly #renderer: AtlasRenderer;
+  #definition: MapDefinition | undefined;
+  #loading = false;
   #resizeObserver: ResizeObserver | undefined;
 
   constructor() {
@@ -15,7 +24,30 @@ export class AtlasMap extends HTMLElement {
       throw new Error('AtlasMap template must contain an SVG surface.');
     }
 
-    this.#surface = surface;
+    this.#renderer = new SvgRenderer(surface);
+  }
+
+  get definition(): MapDefinition | undefined {
+    return this.#definition;
+  }
+
+  async load(definition: MapDefinition): Promise<void> {
+    if (this.#loading) {
+      throw new AtlasError('A map load is already in progress.', {
+        code: 'MAP_LOAD_IN_PROGRESS',
+      });
+    }
+
+    this.#loading = true;
+
+    try {
+      const preparedDefinition = prepareMapDefinition(definition);
+      const background = await this.#renderer.prepareBackground(preparedDefinition.background);
+      background.show();
+      this.#definition = preparedDefinition;
+    } finally {
+      this.#loading = false;
+    }
   }
 
   connectedCallback(): void {
@@ -29,8 +61,7 @@ export class AtlasMap extends HTMLElement {
       }
 
       for (const entry of entries) {
-        this.#surface.setAttribute('width', String(entry.contentRect.width));
-        this.#surface.setAttribute('height', String(entry.contentRect.height));
+        this.#renderer.resize(entry.contentRect.width, entry.contentRect.height);
       }
     });
     this.#resizeObserver.observe(this);

@@ -130,3 +130,20 @@ over earlier proposals; explicitly open questions are not decisions.
   A straight connector preserves continuity but does not guarantee terrain traversability.
   Transferring label/data/type, choosing a material, and identity of created/removed
   parts in these operations still need definition.
+
+## Loading requests — accepted direction, separate implementation task
+
+Keep this work outside the current background/component change. A load will have
+its own operation object with an ID, temporary prepared data, completion result,
+and cancellation. The current displayed map stays intact during preparation;
+only an accepted, fully prepared result is swapped into the component.
+
+The operation must be available immediately so cancellation does not require
+waiting for loading to finish. Exact API names, cancellation by ID versus by the
+operation handle, and whether a newer load automatically cancels its predecessor
+remain decision points. Cancellation and final application must be coordinated
+so a cancelled or stale operation cannot replace the displayed map; release any
+unused resources. Workers are not part of the current change.
+
+For now, the component supports one load at a time. Overlapping calls reject with
+`MAP_LOAD_IN_PROGRESS`; the loading flag is cleared on success or failure.

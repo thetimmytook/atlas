@@ -7,3 +7,6 @@ docs/archive
 docs/references
 *.drawio
 *.svg
+
+# Preserve imported map assets and their upstream documentation.
+examples/factory/

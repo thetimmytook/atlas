@@ -33,7 +33,7 @@ over earlier proposals; explicitly open questions are not decisions.
 - Resizing the component changes viewport dimensions. Camera center and zoom are
   preserved; the map is not automatically fitted again.
 
-## First implementation step — pending review
+## First implementation step — merged
 
 The user requested only the Web Component as the first reviewable step.
 `AtlasMap` extends `HTMLElement`, creates an open Shadow DOM with an empty SVG
@@ -50,3 +50,35 @@ does not establish the future asynchronous loading contract.
 Following the user's review, static markup and CSS now live in `atlas-map.html`
 beside `atlas-map.ts`. Vite imports the template as a string through `?raw`; component styles remain isolated inside Shadow DOM. This separation
 is prepared for review and does not define the map material system.
+
+## Map definition and background step — pending review
+
+Following review, the component accepts `MapDefinition`: serializable map data
+with a `background` description (image URL and explicit map-space width/height).
+The earlier `MapRuntime` wrapper was removed because it did not yet own runtime
+behavior. This minimal definition is not the final map JSON schema/resource registry.
+
+`await element.load(definition)` validates and takes an immutable copy before
+asynchronous preparation. `element.definition` exposes the successfully loaded copy.
+Browser-side image preparation rejects on failure and preserves the previous map.
+Concurrent loading is not supported in this step: an overlapping `load()` rejects
+with `MAP_LOAD_IN_PROGRESS`. Completion or failure allows the next load.
+
+`MapSettings` is the intended separate configuration for display settings. It will
+be introduced with its first concrete setting, rather than as an empty type.
+Background width/height describe geometry, not the component's size on the page.
+Existing material design decisions remain in effect.
+
+The SVG renderer embeds the image without inserting its document into the host DOM.
+
+The first nonzero viewport fits the background. Subsequent resizes preserve that
+scale and the background center; public camera controls are a later step.
+The Factory ground-floor example exercises this slice. Layers, mutable objects,
+resource registry/custom loaders, and interaction are still outside this step.
+
+The renderer now has an abstract `AtlasRenderer` base and an SVG-specific
+`SvgRenderer` implementation, as requested during review. The component types its
+renderer through the base class. Background preparation returns a `show()` handle,
+so SVG elements stay inside the concrete renderer and a load is displayed only
+after preparation succeeds. This is a minimal prototype contract,
+not the complete renderer API.
