@@ -4,7 +4,7 @@
 
 Start here, then open only topics relevant to the current task.
 The user leads design; the assistant validates and advises. Implementation has started
-with the component shell, under step-by-step review. Discuss broad blocks and preserve specific ideas as decisions or open
+with the component shell and map definition, under step-by-step review. Discuss broad blocks and preserve specific ideas as decisions or open
 decision points. Do not turn API examples into approved signatures.
 When an answer covers several topics, use continuous numbering so the user can
 refer to a number without copying text. Numbering starts at 1 after this clarification;
@@ -56,8 +56,9 @@ Full contract consolidation is a separate future step, not performed automatical
 ## Where we stopped
 
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
-The user requested the first implementation step: the Web Component shell.
-It is prepared for review; see [component status](design/RENDERER_AND_COMPONENT.md).
+The Web Component shell is merged. The user accepted a minimal `MapDefinition` input
+and the Factory SVG background as the next reviewable step; see
+[component status](design/RENDERER_AND_COMPONENT.md).
 
 The first architecture pass is sufficient to proceed to prototype validation.
 The user agreed to the prototype scope and goal: validate the idea, identify

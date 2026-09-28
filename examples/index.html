@@ -31,7 +31,8 @@
   </head>
   <body>
     <h1>Atlas map component</h1>
-    <p>Empty map surface. Drag the frame's bottom-right corner to resize it.</p>
+    <p>Factory ground floor. Drag the frame's bottom-right corner to resize it.</p>
+    <p id="status" role="status">Loading map…</p>
     <div class="map-frame">
       <atlas-map role="region" aria-label="Map preview"></atlas-map>
     </div>
@@ -39,6 +40,23 @@
       import { AtlasMap } from '../src/index.ts';
 
       customElements.define('atlas-map', AtlasMap);
+
+      const map = document.querySelector('atlas-map');
+      const status = document.querySelector('#status');
+      const definition = {
+        background: {
+          source: new URL('./factory/Factory-ground-floor.svg', import.meta.url).href,
+          width: 130.81831,
+          height: 141.23242,
+        },
+      };
+
+      try {
+        await map.load(definition);
+        status.textContent = 'Factory ground floor loaded.';
+      } catch (error) {
+        status.textContent = error.message;
+      }
     </script>
   </body>
 </html>
