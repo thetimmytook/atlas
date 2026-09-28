@@ -3,14 +3,12 @@ import { AtlasRenderer } from '../atlas-renderer.js';
 import { prepareImage } from './svg-renderer.utils.js';
 
 import type { BackgroundDescription } from '../../definitions/map-definition.js';
+import type { Rect } from '../../math/rect.js';
+import type { Size } from '../../math/size.js';
 import type { PreparedBackground } from '../atlas-renderer.js';
 
 export class SvgRenderer extends AtlasRenderer {
   readonly #surface: SVGSVGElement;
-  #background: BackgroundDescription | undefined;
-  #width = 0;
-  #height = 0;
-  #scale: number | undefined;
 
   constructor(surface: SVGSVGElement) {
     super();
@@ -20,36 +18,20 @@ export class SvgRenderer extends AtlasRenderer {
   override async prepareBackground(background: BackgroundDescription): Promise<PreparedBackground> {
     const image = await prepareImage(background);
 
-    return { show: () => this.#show(background, image) };
+    return { show: () => this.#surface.replaceChildren(image) };
   }
 
-  #show(background: BackgroundDescription, image: SVGImageElement): void {
-    this.#background = background;
-    this.#scale = undefined;
-    this.#surface.replaceChildren(image);
-    this.#updateView();
-  }
+  override render(viewport: Size, bounds: Rect): void {
+    this.#surface.setAttribute('width', String(viewport.width));
+    this.#surface.setAttribute('height', String(viewport.height));
 
-  override resize(width: number, height: number): void {
-    this.#width = width;
-    this.#height = height;
-    this.#surface.setAttribute('width', String(width));
-    this.#surface.setAttribute('height', String(height));
-    this.#updateView();
-  }
-
-  #updateView(): void {
-    const background = this.#background;
-
-    if (!background || this.#width <= 0 || this.#height <= 0) {
+    if (viewport.width <= 0 || viewport.height <= 0) {
       return;
     }
 
-    this.#scale ??= Math.min(this.#width / background.width, this.#height / background.height);
-    const width = this.#width / this.#scale;
-    const height = this.#height / this.#scale;
-    const x = (background.width - width) / 2;
-    const y = (background.height - height) / 2;
-    this.#surface.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+    this.#surface.setAttribute(
+      'viewBox',
+      `${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}`,
+    );
   }
 }
