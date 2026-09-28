@@ -56,8 +56,11 @@ export default defineConfig([
     files: typedFiles,
     extends: [tseslint.configs.recommendedTypeChecked],
     languageOptions: { parserOptions: { projectService: true } },
-    settings: { 'import-x/resolver': { typescript: { project: './tsconfig.json' } } },
+    settings: {
+      'import-x/resolver': { typescript: { project: './tsconfig.json' } },
+    },
     rules: {
+      'import-x/no-unresolved': ['error', { ignore: ['\\.html\\?raw$'] }],
       '@typescript-eslint/explicit-function-return-type': [
         'error',
         {

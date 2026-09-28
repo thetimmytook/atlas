@@ -4,8 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Atlas example</title>
+    <style>
+      body {
+        margin: 24px;
+        font-family: system-ui, sans-serif;
+        color: #233044;
+      }
+
+      .map-frame {
+        width: min(800px, 100%);
+        height: 480px;
+        min-width: 160px;
+        min-height: 120px;
+        max-width: 100%;
+        resize: both;
+        overflow: hidden;
+        border: 1px solid #9aadc4;
+      }
+
+      atlas-map {
+        width: 100%;
+        height: 100%;
+        background: #edf2f8;
+      }
+    </style>
   </head>
   <body>
-    <script type="module" src="../dist/index.js"></script>
+    <h1>Atlas map component</h1>
+    <p>Empty map surface. Drag the frame's bottom-right corner to resize it.</p>
+    <div class="map-frame">
+      <atlas-map role="region" aria-label="Map preview"></atlas-map>
+    </div>
+    <script type="module">
+      import { AtlasMap } from '../src/index.ts';
+
+      customElements.define('atlas-map', AtlasMap);
+    </script>
   </body>
 </html>

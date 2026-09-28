@@ -19,13 +19,13 @@ code from the design drafts until implementation is requested.
 
 ## Tooling
 
-- The basic library setup uses TypeScript and ESM, npm, ESLint, Prettier, and
+- The basic library setup uses TypeScript and ESM, Vite, npm, ESLint, Prettier, and
   Husky/lint-staged. Keep tooling in devDependencies and commit the npm lockfile.
 - Run `npm ci` to install tools and enable the pre-commit hook; run `npm run check`
   for type checking, lint, and formatting. Preserve original and archived documents.
 - Node is used for development tools only. No project Node version is pinned;
   installed tools still have their own Node compatibility requirements.
-- Browser support, bundling, test runner, distribution, and framework adapters
+- Browser support, test runner, distribution, and framework adapters
   remain separate decisions. Do not add publishing, minification, or CI now.
 - Keep browser source free of Node imports and development dependencies. Evaluate
   every runtime dependency against its concrete purpose and bundle cost.
