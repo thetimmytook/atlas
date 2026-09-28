@@ -27,6 +27,10 @@ checked on Node 20.19.6.
 The pre-commit hook lints and formats staged files. Run the complete check before
 requesting a commit. Original design sources and archives are excluded from formatting.
 
+ESLint loads `eslint.config.mts` through the development-only `jiti` loader.
+`npm run typecheck` checks both browser source and tooling configuration using
+separate TypeScript projects, keeping Node types out of the library.
+
 `src/index.ts` is an empty future entry point, not an implemented engine. TypeScript
 uses ESM and browser types without ambient Node types. ES2022 is the provisional
 type-checking baseline; it does not establish a browser compatibility guarantee or

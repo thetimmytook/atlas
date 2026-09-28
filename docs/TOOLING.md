@@ -13,8 +13,10 @@ Reference inspected: Timmy Academy commit `065e835c112e1d29f13b298d96e5bcb84f3d2
 - Browser `DOM` types and `types: []` to avoid implicit Node globals. ES2022 is a
   provisional baseline, not an agreed browser support matrix. Type checking does not emit files;
   a separate build configuration emits local development output.
-- ESLint flat config in JavaScript so loading configuration needs no TypeScript
-  runtime loader. Typed source rules, import checks, SonarJS, security checks,
+- ESLint flat config in TypeScript, loaded through the development-only `jiti` loader.
+  `tsconfig.tooling.json` checks configuration types separately with Node types;
+  browser source retains DOM types and no ambient Node globals. Typed source rules,
+  import checks, SonarJS, security checks,
   and the reference's spacing conventions. Browser source cannot import Node
   built-ins or devDependencies.
 - Existing Prettier settings, preserving original and archived design documents.

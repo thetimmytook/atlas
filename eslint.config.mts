@@ -8,8 +8,15 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+import type { Linter } from 'eslint';
+
 const codeFiles = ['**/*.{ts,mts,js,mjs}'];
 const typedFiles = ['src/**/*.{ts,mts}'];
+const sonarjsRecommended = sonarjs.configs?.recommended;
+
+if (!sonarjsRecommended) {
+  throw new Error('SonarJS recommended config is unavailable.');
+}
 
 export default defineConfig([
   { ignores: ['**/node_modules/**', '**/dist/**', '**/coverage/**', '.husky/**'] },
@@ -17,7 +24,7 @@ export default defineConfig([
     files: codeFiles,
     extends: [
       js.configs.recommended,
-      sonarjs.configs.recommended,
+      sonarjsRecommended as Linter.Config,
       security.configs.recommended,
       importConfigs.recommended,
     ],
@@ -73,7 +80,15 @@ export default defineConfig([
       'import-x/no-extraneous-dependencies': ['error', { devDependencies: false }],
     },
   },
-  { files: ['*.config.mjs'], languageOptions: { globals: globals.node } },
+  {
+    files: ['*.config.mts'],
+    extends: [tseslint.configs.recommendedTypeChecked],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: { project: './tsconfig.tooling.json' },
+    },
+    settings: { 'import-x/resolver': { typescript: { project: './tsconfig.tooling.json' } } },
+  },
   prettier,
   {
     files: codeFiles,
