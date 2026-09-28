@@ -11,14 +11,14 @@
         "panel": "shared"
       },
       "icon": {
-        "id": "map",
-        "color": "terminal.ansiBlue"
+        "id": "tools",
+        "color": "terminal.ansiWhite"
       }
     },
     {
-      "label": "Atlas: watch library",
+      "label": "Atlas: watch types",
       "type": "npm",
-      "script": "dev",
+      "script": "typecheck:watch",
       "isBackground": true,
       "problemMatcher": "$tsc-watch",
       "presentation": {
@@ -30,14 +30,14 @@
         "instanceLimit": 1
       },
       "icon": {
-        "id": "map",
-        "color": "terminal.ansiBlue"
+        "id": "eye",
+        "color": "terminal.ansiWhite"
       }
     },
     {
-      "label": "Atlas: examples",
+      "label": "Atlas: Vite",
       "type": "npm",
-      "script": "examples",
+      "script": "dev",
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {
@@ -49,18 +49,8 @@
         "instanceLimit": 1
       },
       "icon": {
-        "id": "map",
-        "color": "terminal.ansiBlue"
-      }
-    },
-    {
-      "label": "Atlas: start services",
-      "dependsOrder": "parallel",
-      "dependsOn": ["Atlas: watch library", "Atlas: examples"],
-      "hide": true,
-      "icon": {
-        "id": "map",
-        "color": "terminal.ansiBlue"
+        "id": "zap",
+        "color": "terminal.ansiWhite"
       }
     },
     {
@@ -69,8 +59,8 @@
         "kind": "build",
         "isDefault": true
       },
-      "dependsOrder": "sequence",
-      "dependsOn": ["Atlas: build", "Atlas: start services"],
+      "dependsOrder": "parallel",
+      "dependsOn": ["Atlas: watch types", "Atlas: Vite"],
       "problemMatcher": [],
       "icon": {
         "id": "map",

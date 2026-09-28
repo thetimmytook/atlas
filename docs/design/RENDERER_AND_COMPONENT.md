@@ -32,3 +32,21 @@ over earlier proposals; explicitly open questions are not decisions.
 - The component exposes runtime access and forwards public events.
 - Resizing the component changes viewport dimensions. Camera center and zoom are
   preserved; the map is not automatically fitted again.
+
+## First implementation step — pending review
+
+The user requested only the Web Component as the first reviewable step.
+`AtlasMap` extends `HTMLElement`, creates an open Shadow DOM with an empty SVG
+surface, and observes the host content size while connected. Detaching disconnects
+the observer; reconnecting reuses the surface and resumes observation.
+The host application provides the element's size and explicitly registers
+`atlas-map`; importing the library does not register a custom element automatically.
+
+This is a component shell, not the final renderer interface. Runtime access,
+asynchronous map loading, backgrounds, camera behavior, and public interaction
+events remain subsequent steps. The synchronous browser custom-element constructor
+does not establish the future asynchronous loading contract.
+
+Following the user's review, static markup and CSS now live in `atlas-map.html`
+beside `atlas-map.ts`. Vite imports the template as a string through `?raw`; component styles remain isolated inside Shadow DOM. This separation
+is prepared for review and does not define the map material system.
