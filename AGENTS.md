@@ -19,15 +19,19 @@ code from the design drafts until implementation is requested.
 
 ## Tooling
 
-- The development toolchain, package manager, runtime versions, and browser
-  support targets remain undecided. Do not select them by copying another
-  project's setup; discuss them with the user first.
-- Prettier configuration is retained as a formatting reference. Dependencies
-  and hooks are deferred. Preserve original and archived source documents.
+- The basic library setup uses TypeScript and ESM, npm, ESLint, Prettier, and
+  Husky/lint-staged. Keep tooling in devDependencies and commit the npm lockfile.
+- Run `npm ci` to install tools and enable the pre-commit hook; run `npm run check`
+  for type checking, lint, and formatting. Preserve original and archived documents.
+- Node is used for development tools only. No project Node version is pinned;
+  installed tools still have their own Node compatibility requirements.
+- Browser support, bundling, test runner, distribution, and framework adapters
+  remain separate decisions. Do not add publishing, minification, or CI now.
+- Keep browser source free of Node imports and development dependencies. Evaluate
+  every runtime dependency against its concrete purpose and bundle cost.
 - Run checks appropriate to the change before committing. Do not add placeholder
   test or build scripts that report success without checking anything.
-- Evaluate linting and type-checking tools when choosing the implementation stack.
-  Do not copy another project's React, API, or deployment configuration into the engine.
+- Do not copy another project's React, API, or deployment configuration into the engine.
 
 ## Git hygiene
 
