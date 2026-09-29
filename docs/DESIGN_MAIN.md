@@ -57,8 +57,9 @@ Full contract consolidation is a separate future step, not performed automatical
 
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
 The Web Component shell and Factory background with `MapDefinition` are merged.
-The user requested camera center/zoom, fit, and example buttons as the next
-reviewable step; see [camera status](design/CAMERA.md).
+Camera center/zoom, fit, and example buttons are merged. Mouse/touch controls and
+map/client coordinate conversion are the current reviewable step; see
+[camera status](design/CAMERA.md).
 
 The first architecture pass is sufficient to proceed to prototype validation.
 The user agreed to the prototype scope and goal: validate the idea, identify

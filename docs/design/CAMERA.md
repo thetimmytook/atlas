@@ -36,7 +36,7 @@ over earlier proposals; explicitly open questions are not decisions.
   The camera is a separate entity; its state is not embedded in layers. Multiple
   simultaneous viewports and a camera registry are not yet mandatory scope.
 
-## First camera implementation — pending review
+## First camera implementation — merged
 
 The user requested center/zoom, fitting the background, and example buttons as a
 separate step before pointer gestures. The following API is the implementation
@@ -107,3 +107,49 @@ listener and cancels a pending frame; reconnecting schedules the current view.
 Events remain synchronous; only rendering is deferred. Completion of `load()`
 means resource preparation/application is complete, not that a browser frame has
 already been painted.
+
+## Pointer controls and coordinate conversion — pending review
+
+The user requested mouse drag, cursor-anchored wheel zoom, one-finger touch pan,
+and two-finger pinch zoom as the next implementation step. Browser handlers live
+in `CameraControls`, separate from camera state and renderer. The component connects
+and disconnects them with its lifecycle, releasing captures and active gestures.
+
+- Primary-button drag and single-pointer touch/pen movement pan the map. Pointer
+  capture keeps dragging active outside the surface. Pointer cancellation and lost
+  capture remove the pointer; lifting one pinch pointer continues as a one-finger pan.
+- Up to two pointers participate. Pinch combines midpoint movement with the change
+  in distance, preserving the map point under the moving midpoint. Rotation is absent.
+- Wheel zoom preserves the map point under the cursor. Pixel, line, and page delta
+  modes are normalized. Line height and zoom sensitivity are prototype constants,
+  not a final settings contract. Wheel scroll is consumed over the map surface.
+- `touch-action: none` applies to the surface so touch gestures control the map;
+  gestures outside it remain browser/application behavior.
+- `map.coordinates.mapToClient(point)` and `map.coordinates.clientToMap(point)` convert between map space
+  and browser client coordinates (CSS pixels relative to the window viewport).
+  They use current camera state and the surface rectangle, accounting for document
+  scroll, host borders/padding, and positive axis-aligned CSS scaling. CSS rotation,
+  skew, reflection, and perspective transforms are not supported by this prototype.
+- Conversion requires a connected, nonzero surface and initialized camera viewport;
+  otherwise it throws `VIEWPORT_UNAVAILABLE`. Coordinates outside the surface can
+  still be converted, which supports captured dragging.
+
+The existing camera change events and on-demand rendering remain in use. Camera
+constraints, input configuration, marker hit testing, keyboard bindings, and input
+allocation optimization are separate follow-ups. Desktop and browser-emulated touch
+are checked in Chrome; physical iOS/Safari and Android testing remains outstanding.
+
+Browser references: [Pointer capture](https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture),
+[touch-action](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/touch-action),
+[wheel delta modes](https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent/deltaMode).
+
+## Public API grouping — accepted
+
+Expose coordinate conversion through the read-only `map.coordinates` getter,
+parallel to `map.camera`, rather than forwarding individual conversion methods
+from the component. The same converter reads current camera and surface state.
+`map.fit()` remains a convenience operation using the loaded map's bounds.
+
+Renderer and input handlers remain internal. Future object/layer collections may
+be exposed as `map.objects` and `map.layers` when implemented. Loading requests
+remain a separate planned task; no empty API groups are added now.
