@@ -5,6 +5,25 @@
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
+## Current clarification — objects and geometry
+
+Atlas owns generic objects, geometric primitives, materials, and shared runtime
+mechanisms. Markers, loot, quest zones, and other application concepts are defined
+outside Atlas. This replaces the earlier built-in `kind: marker` object model below.
+`geometry.kind` describes a supported geometric primitive, not application meaning.
+The first implementation supports point geometry; lines, polygons, and circles
+remain subsequent primitives. This does not add an arbitrary geometry plugin API.
+
+The current review uses `ObjectDefinition` with `id?` and
+`geometry: { kind: 'point', position: { x, y } }`, and an `AtlasObject` runtime
+instance. Assigning geometry validates, copies, and emits a change event. Geometry
+is immutable when read. Application metadata, material assignment, and composite
+behavior remain separate steps. Previously discussed route continuity remains a
+requirement; its placement in this generic model needs a later review.
+
+Earlier kind/type material selection must be revisited against this separation;
+this clarification does not silently finalize a new material assignment API.
+
 ## 2. Space and environment — agreed
 
 - The Atlas format is independent of third-party formats; importers transform source data.

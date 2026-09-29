@@ -12,3 +12,8 @@ export { Rect } from './math/rect.js';
 export { Size } from './math/size.js';
 
 export type { MapCoordinates } from './interaction/map-coordinates.js';
+
+export { AtlasId } from '#objects/atlas-id.js';
+export { AtlasObject } from '#objects/atlas-object.js';
+export type { MapObjects } from '#objects/map-objects.js';
+export type { ObjectDefinition, PointGeometry } from '#definitions/object-definition.js';

@@ -5,6 +5,15 @@
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
+## Object-model clarification
+
+The current generic-object model replaces built-in marker semantics with geometry
+primitives. The older kind/type assignment examples below need adaptation to that
+model; their replacement API is not yet settled. Named materials and explicit
+inheritance remain accepted. The proposed `MapSettings.point` API was removed after review. Temporary point
+size, stroke, and CSS colors will be replaced by resolved material properties;
+they are not a public appearance contract.
+
 ## Appearance — clarification replacing Meta
 
 ### Current decision: explicit material relationships

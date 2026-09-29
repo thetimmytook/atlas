@@ -14,6 +14,7 @@ continue between answers rather than relying on HTML anchors.
 
 - Desktop/mobile, map viewing; the editor is a separate library consumer.
 - Serializable JSON and runtime instances with behavior are separate.
+- Atlas objects contain geometry; marker/zone semantics belong to the application.
 - Coordinates: x right, y down, z up. SVG first; real 3D is a future direction.
 - Shared objects; layers select objects and clip them using clip. No separate level concept.
 - stackIndex defines composition; it is neither height z nor a substitute for depth in 3D.
@@ -58,8 +59,10 @@ Full contract consolidation is a separate future step, not performed automatical
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
 The Web Component shell and Factory background with `MapDefinition` are merged.
 Camera center/zoom, fit, and example buttons are merged. Mouse/touch controls and
-map/client coordinate conversion are the current reviewable step; see
+map/client coordinate conversion are merged; see
 [camera status](design/CAMERA.md).
+Point geometry display and mutable runtime objects are the current reviewable step; see
+[object implementation](design/RENDERER_AND_COMPONENT.md#object-display--pending-review).
 
 The first architecture pass is sufficient to proceed to prototype validation.
 The user agreed to the prototype scope and goal: validate the idea, identify

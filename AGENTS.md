@@ -16,6 +16,9 @@ code from the design drafts until implementation is requested.
 - Support desktop and mobile. Keep application UI and product-specific behavior
   outside the engine. Follow the agreed scope in `docs/design/PROTOTYPE.md`.
 - Add packages and abstractions only when they have a concrete consumer.
+- Mark temporary implementations explicitly at their implementation site and state
+  what will replace them. Document provisional public contracts and their intended
+  replacements; do not silently introduce them as settled design.
 
 ## Tooling
 
@@ -39,10 +42,17 @@ code from the design drafts until implementation is requested.
   such as `SVG_NAMESPACE`. Local variables, functions, and object instances
   remain `camelCase`; declaring a binding with `const` alone does not require uppercase.
 
+## Control flow
+
+- Prefer guard clauses with early `return` or `continue` where they reduce nesting
+  and improve readability. Keep the main path flat rather than wrapping it in
+  conditional blocks; preserve behavior when restructuring existing code.
+
 ## Imports
 
 - Use package.json `imports` aliases (`#camera/`, `#components/`, `#definitions/`,
-  `#errors/`, `#interaction/`, `#math/`, `#renderers/`, `#validators/`) instead of
+  `#errors/`, `#interaction/`, `#math/`, `#objects/`, `#renderers/`,
+  `#validators/`) instead of
   parent-relative imports through `../`. Keep `.js` extensions in TypeScript imports.
 - Keep neighboring `./` imports, including component HTML templates, relative.
 - Keep alias mappings in package.json rather than duplicating them in tsconfig/Vite.
