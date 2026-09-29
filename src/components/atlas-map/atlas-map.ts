@@ -1,10 +1,11 @@
 import { Camera } from '#camera/camera.js';
-import { prepareMapDefinition } from '#definitions/map-definition.js';
+import { normalizeMapDefinition } from '#definitions/map-definition.js';
 import { AtlasError } from '#errors/atlas-error.js';
 import { CameraControls } from '#interaction/camera-controls.js';
 import { MapCoordinates } from '#interaction/map-coordinates.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
+import { MapObjects } from '#objects/map-objects.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 
 import html from './atlas-map.html?raw';
@@ -19,6 +20,8 @@ export class AtlasMap extends HTMLElement {
   #renderFrame: number | undefined;
   readonly #renderer: AtlasRenderer;
   #definition: MapDefinition | undefined;
+  #objects = new MapObjects();
+  #objectConnection: AbortController | undefined;
   #loading = false;
   #resizeObserver: ResizeObserver | undefined;
 
@@ -55,6 +58,10 @@ export class AtlasMap extends HTMLElement {
     this.#camera.fit(new Rect(0, 0, width, height));
   }
 
+  get objects(): MapObjects {
+    return this.#objects;
+  }
+
   get definition(): MapDefinition | undefined {
     return this.#definition;
   }
@@ -69,10 +76,14 @@ export class AtlasMap extends HTMLElement {
     this.#loading = true;
 
     try {
-      const preparedDefinition = prepareMapDefinition(definition);
-      const background = await this.#renderer.prepareBackground(preparedDefinition.background);
-      background.show();
-      this.#definition = preparedDefinition;
+      const normalizedDefinition = normalizeMapDefinition(definition);
+      const objects = new MapObjects(normalizedDefinition.objects);
+      const scene = await this.#renderer.prepare(normalizedDefinition.background, objects);
+      this.#objectConnection?.abort();
+      scene.show();
+      this.#objects = objects;
+      this.#definition = normalizedDefinition;
+      this.#observeObjects();
       this.fit();
     } finally {
       this.#loading = false;
@@ -84,6 +95,7 @@ export class AtlasMap extends HTMLElement {
       return;
     }
 
+    this.#observeObjects();
     this.#controls.connect();
     this.#camera.addEventListener('change', this.#requestRender);
     this.#requestRender();
@@ -100,6 +112,8 @@ export class AtlasMap extends HTMLElement {
   }
 
   disconnectedCallback(): void {
+    this.#objectConnection?.abort();
+    this.#objectConnection = undefined;
     this.#controls.disconnect();
     this.#resizeObserver?.disconnect();
     this.#resizeObserver = undefined;
@@ -108,6 +122,22 @@ export class AtlasMap extends HTMLElement {
     if (this.#renderFrame !== undefined) {
       cancelAnimationFrame(this.#renderFrame);
       this.#renderFrame = undefined;
+    }
+  }
+
+  #observeObjects(): void {
+    this.#objectConnection?.abort();
+
+    if (!this.isConnected) {
+      return;
+    }
+
+    this.#objectConnection = new AbortController();
+
+    for (const object of this.#objects) {
+      object.addEventListener('change', this.#requestRender, {
+        signal: this.#objectConnection.signal,
+      });
     }
   }
 

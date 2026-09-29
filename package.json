@@ -51,6 +51,7 @@
     "#interaction/*.js": "./src/interaction/*.ts",
     "#math/*.js": "./src/math/*.ts",
     "#renderers/*.js": "./src/renderers/*.ts",
-    "#validators/*.js": "./src/validators/*.ts"
+    "#validators/*.js": "./src/validators/*.ts",
+    "#objects/*.js": "./src/objects/*.ts"
   }
 }
