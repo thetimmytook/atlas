@@ -10,3 +10,5 @@ export { Camera } from './camera/camera.js';
 export { Point } from './math/point.js';
 export { Rect } from './math/rect.js';
 export { Size } from './math/size.js';
+
+export type { MapCoordinates } from './interaction/map-coordinates.js';
