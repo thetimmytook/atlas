@@ -1,4 +1,4 @@
-import { AtlasError } from '../errors/atlas-error.js';
+import { AtlasError } from '#errors/atlas-error.js';
 
 export interface BackgroundDescription {
   readonly source: string;

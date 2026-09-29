@@ -39,6 +39,15 @@ code from the design drafts until implementation is requested.
   such as `SVG_NAMESPACE`. Local variables, functions, and object instances
   remain `camelCase`; declaring a binding with `const` alone does not require uppercase.
 
+## Imports
+
+- Use package.json `imports` aliases (`#camera/`, `#components/`, `#definitions/`,
+  `#errors/`, `#interaction/`, `#math/`, `#renderers/`, `#validators/`) instead of
+  parent-relative imports through `../`. Keep `.js` extensions in TypeScript imports.
+- Keep neighboring `./` imports, including component HTML templates, relative.
+- Keep alias mappings in package.json rather than duplicating them in tsconfig/Vite.
+  Vite and vite-plugin-dts bundle internal imports in JavaScript and declarations.
+
 ## File organization
 
 - Keep one class per file, enforced by ESLint's `max-classes-per-file`.

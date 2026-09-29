@@ -1,8 +1,8 @@
-import { AtlasError } from '../errors/atlas-error.js';
-import { Point } from '../math/point.js';
-import { validatePoint } from '../validators/point.validator.js';
+import { AtlasError } from '#errors/atlas-error.js';
+import { Point } from '#math/point.js';
+import { validatePoint } from '#validators/point.validator.js';
 
-import type { Camera } from '../camera/camera.js';
+import type { Camera } from '#camera/camera.js';
 
 /** Converts map coordinates to browser client coordinates for an axis-aligned viewport. */
 export class MapCoordinates {

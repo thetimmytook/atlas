@@ -1,16 +1,16 @@
-import { Camera } from '../../camera/camera.js';
-import { prepareMapDefinition } from '../../definitions/map-definition.js';
-import { AtlasError } from '../../errors/atlas-error.js';
-import { CameraControls } from '../../interaction/camera-controls.js';
-import { MapCoordinates } from '../../interaction/map-coordinates.js';
-import { Rect } from '../../math/rect.js';
-import { Size } from '../../math/size.js';
-import { SvgRenderer } from '../../renderers/svg/svg-renderer.js';
+import { Camera } from '#camera/camera.js';
+import { prepareMapDefinition } from '#definitions/map-definition.js';
+import { AtlasError } from '#errors/atlas-error.js';
+import { CameraControls } from '#interaction/camera-controls.js';
+import { MapCoordinates } from '#interaction/map-coordinates.js';
+import { Rect } from '#math/rect.js';
+import { Size } from '#math/size.js';
+import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 
 import html from './atlas-map.html?raw';
 
-import type { MapDefinition } from '../../definitions/map-definition.js';
-import type { AtlasRenderer } from '../../renderers/atlas-renderer.js';
+import type { MapDefinition } from '#definitions/map-definition.js';
+import type { AtlasRenderer } from '#renderers/atlas-renderer.js';
 
 export class AtlasMap extends HTMLElement {
   readonly #coordinates: MapCoordinates;

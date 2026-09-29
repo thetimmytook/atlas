@@ -1,11 +1,11 @@
-import { AtlasRenderer } from '../atlas-renderer.js';
+import { AtlasRenderer } from '#renderers/atlas-renderer.js';
 
 import { prepareImage } from './svg-renderer.utils.js';
 
-import type { BackgroundDescription } from '../../definitions/map-definition.js';
-import type { Rect } from '../../math/rect.js';
-import type { Size } from '../../math/size.js';
-import type { PreparedBackground } from '../atlas-renderer.js';
+import type { BackgroundDescription } from '#definitions/map-definition.js';
+import type { Rect } from '#math/rect.js';
+import type { Size } from '#math/size.js';
+import type { PreparedBackground } from '#renderers/atlas-renderer.js';
 
 export class SvgRenderer extends AtlasRenderer {
   readonly #surface: SVGSVGElement;

@@ -30,9 +30,9 @@ Vite does not check types. `npm run typecheck:watch` provides continuous source
 checks. VS Code's default `Atlas: dev` task starts both processes, with `$tsc-watch`
 diagnostics and blue map icons. `npm run typecheck` also checks tooling configuration.
 
-`npm run build` checks types, runs Vite library mode, then runs TypeScript in
-`emitDeclarationOnly` mode. Output is unminified ESM with a source map and separate
-`.d.ts` files in ignored `dist/`. ES2022 is provisional, not an approved browser matrix.
+`npm run build` checks types, then runs Vite library mode with vite-plugin-dts
+and API Extractor to bundle declarations. Output is unminified ESM with a source
+map and a single `index.d.ts` in ignored `dist/`. ES2022 is provisional, not an approved browser matrix.
 The build contains no Vite development client. No runtime dependencies are present.
 
 ## Templates
@@ -49,3 +49,25 @@ Framework adapters, workspace splits, a test runner, package distribution/export
 minification, publication, and CI remain outside the current scope. There is no
 `sideEffects: false` claim before actual registration behavior and consumption are
 validated. Runtime dependencies must be evaluated for concrete purpose and bundle cost.
+
+## Internal named imports
+
+package.json `imports` maps `#camera/*.js`, `#components/*.js`, `#definitions/*.js`,
+`#errors/*.js`, `#interaction/*.js`, `#math/*.js`, `#renderers/*.js`, and
+`#validators/*.js` to the corresponding TypeScript files under `src/`.
+TypeScript (Bundler resolution), Vite, and ESLint's TypeScript resolver use these
+mappings. Neighboring `./` imports remain relative; parent-relative `../` source
+imports use named paths instead. No duplicate tsconfig paths or Vite aliases are needed.
+
+Vite resolves aliases into the browser bundle. vite-plugin-dts uses
+`tsconfig.build.json` and `bundleTypes: true` with API Extractor to produce a
+self-contained `dist/index.d.ts`. Consumers need neither the source files nor
+internal alias configuration. The declaration plugin receives alias mappings derived
+from package.json in vite.config.mts; there is no second hand-maintained mapping.
+Both packages are development-only dependencies;
+there is no custom declaration-rewriting script.
+
+API Extractor 7.59.3 currently bundles TypeScript 5.9.3 and warns when processing
+this project's TypeScript 6.0.3 output. The declaration bundle has been checked with
+TypeScript 6 in isolated NodeNext and Bundler consumers; revisit compatibility when
+upgrading tooling or introducing new TypeScript syntax.

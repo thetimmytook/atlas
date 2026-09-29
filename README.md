@@ -72,7 +72,7 @@ trusted repository code inserted into Shadow DOM, not arbitrary application HTML
 ## Build and tooling
 
 Vite library mode emits one unminified ESM entry, `dist/index.js`, and a source map.
-TypeScript emits `.d.ts` files separately, starting at `dist/index.d.ts`. A build
+vite-plugin-dts and API Extractor bundle public types into `dist/index.d.ts`. A build
 cleans previous output after type checks pass. ES2022 is the provisional output target,
 not a final browser compatibility guarantee; no automatic polyfills are added.
 
