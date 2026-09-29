@@ -1,9 +1,9 @@
-import { Point } from '../math/point.js';
-import { Rect } from '../math/rect.js';
-import { Size } from '../math/size.js';
-import { validateNumber } from '../validators/number.validator.js';
-import { validatePoint } from '../validators/point.validator.js';
-import { validateSize } from '../validators/size.validator.js';
+import { Point } from '#math/point.js';
+import { Rect } from '#math/rect.js';
+import { Size } from '#math/size.js';
+import { validateNumber } from '#validators/number.validator.js';
+import { validatePoint } from '#validators/point.validator.js';
+import { validateSize } from '#validators/size.validator.js';
 
 /** A 2D camera; zoom is CSS pixels per map unit. */
 export class Camera extends EventTarget {

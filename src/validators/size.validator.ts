@@ -1,9 +1,9 @@
-import { AtlasError } from '../errors/atlas-error.js';
+import { AtlasError } from '#errors/atlas-error.js';
 
 import { validateNumber } from './number.validator.js';
 
+import type { Size } from '#math/size.js';
 import type { NumberValidationOptions } from './number.validator.js';
-import type { Size } from '../math/size.js';
 
 export function validateSize(
   field: string,

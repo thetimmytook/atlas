@@ -1,6 +1,6 @@
-import { AtlasError } from '../../errors/atlas-error.js';
+import { AtlasError } from '#errors/atlas-error.js';
 
-import type { BackgroundDescription } from '../../definitions/map-definition.js';
+import type { BackgroundDescription } from '#definitions/map-definition.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 

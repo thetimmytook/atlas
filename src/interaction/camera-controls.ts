@@ -1,7 +1,7 @@
-import { Point } from '../math/point.js';
+import { Point } from '#math/point.js';
 
+import type { Camera } from '#camera/camera.js';
 import type { MapCoordinates } from './map-coordinates.js';
-import type { Camera } from '../camera/camera.js';
 
 const WHEEL_LINE_PIXELS = 16;
 const WHEEL_ZOOM_SPEED = 0.002;
