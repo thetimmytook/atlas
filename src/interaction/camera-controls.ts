@@ -3,18 +3,31 @@ import { Point } from '#math/point.js';
 import type { Camera } from '#camera/camera.js';
 import type { MapCoordinates } from './map-coordinates.js';
 
+export interface SurfaceInputDetail {
+  readonly clientPoint: Point;
+
+  /** Present on release: whether this release can trigger an object click/tap. */
+  readonly isClick?: boolean;
+}
+
 const WHEEL_LINE_PIXELS = 16;
 const WHEEL_ZOOM_SPEED = 0.002;
 
+// Temporary gesture threshold in client CSS pixels; replace with input configuration.
+const DRAG_THRESHOLD = 5;
+
 /** Browser input only; camera state and projection stay separate. */
-export class CameraControls {
+export class CameraControls extends EventTarget {
   readonly #surface: Element;
   readonly #camera: Camera;
   readonly #coordinates: MapCoordinates;
   readonly #pointers = new Map<number, Point>();
   #connection: AbortController | undefined;
+  #press: { pointerId: number; origin: Point } | undefined;
+  #gestureHandled = false;
 
   constructor(surface: Element, camera: Camera, coordinates: MapCoordinates) {
+    super();
     this.#surface = surface;
     this.#camera = camera;
     this.#coordinates = coordinates;
@@ -46,6 +59,17 @@ export class CameraControls {
     }
 
     this.#pointers.clear();
+    this.#press = undefined;
+    this.#gestureHandled = false;
+  }
+
+  cancelClick(): void {
+    this.#press = undefined;
+  }
+
+  consumeGesture(): void {
+    this.#gestureHandled = true;
+    this.#press = undefined;
   }
 
   readonly #pointerDown = (event: Event): void => {
@@ -59,7 +83,19 @@ export class CameraControls {
     }
 
     this.#surface.setPointerCapture(event.pointerId);
-    this.#pointers.set(event.pointerId, new Point(event.clientX, event.clientY));
+    const point = new Point(event.clientX, event.clientY);
+    this.#pointers.set(event.pointerId, point);
+    this.#press =
+      !this.#gestureHandled && this.#pointers.size === 1
+        ? { pointerId: event.pointerId, origin: point }
+        : undefined;
+
+    this.dispatchEvent(
+      new CustomEvent<SurfaceInputDetail>('press', {
+        detail: { clientPoint: point },
+      }),
+    );
+
     event.preventDefault();
   };
 
@@ -72,6 +108,25 @@ export class CameraControls {
       this.#pointerEnd(event);
 
       return;
+    }
+
+    if (this.#gestureHandled) {
+      event.preventDefault();
+
+      return;
+    }
+
+    if (this.#press) {
+      const distance = Math.hypot(
+        event.clientX - this.#press.origin.x,
+        event.clientY - this.#press.origin.y,
+      );
+
+      if (distance <= DRAG_THRESHOLD) {
+        return;
+      }
+
+      this.#press = undefined;
     }
 
     const before = this.#gesture();
@@ -88,15 +143,37 @@ export class CameraControls {
   };
 
   readonly #pointerEnd = (event: Event): void => {
-    if (!(event instanceof PointerEvent)) {
+    if (!(event instanceof PointerEvent) || !this.#pointers.has(event.pointerId)) {
       return;
     }
 
+    const press = this.#press;
+    this.#press = undefined;
     this.#pointers.delete(event.pointerId);
+
+    if (this.#pointers.size === 0) {
+      this.#gestureHandled = false;
+    }
 
     if (this.#surface.hasPointerCapture(event.pointerId)) {
       this.#surface.releasePointerCapture(event.pointerId);
     }
+
+    if (event.type !== 'pointerup' || event.button !== 0 || !this.#coordinates.available) {
+      return;
+    }
+
+    const isClick =
+      press?.pointerId === event.pointerId &&
+      Math.hypot(event.clientX - press.origin.x, event.clientY - press.origin.y) <= DRAG_THRESHOLD;
+    this.dispatchEvent(
+      new CustomEvent<SurfaceInputDetail>('release', {
+        detail: {
+          clientPoint: new Point(event.clientX, event.clientY),
+          isClick,
+        },
+      }),
+    );
   };
 
   readonly #wheel = (event: Event): void => {
@@ -104,6 +181,13 @@ export class CameraControls {
       return;
     }
 
+    if (this.#gestureHandled) {
+      event.preventDefault();
+
+      return;
+    }
+
+    this.#press = undefined;
     let unit = 1;
 
     if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) {

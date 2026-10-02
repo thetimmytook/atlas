@@ -5,21 +5,71 @@
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
-## Runtime / renderer boundary — agreed
+## Runtime / geometry / renderer boundary — current clarification
 
-- Runtime owns objects and their behavior, validation, material and inheritance
-  resolution, layers/visibility/clip bounds, camera state, normalized events,
-  change tracking, and batch.
-- The renderer draws using a specific technology, translates material parameters,
-  applies clipping and camera projection, identifies the object under the pointer,
-  and updates affected display content.
-- The renderer receives a prepared display description and returns interaction-target
-  results; it does not define object business behavior, route changes, or the
-  application's response to clicks.
-- Start with an SVG renderer and validate the contract against it. Future backends
-  connect through this boundary; exact interfaces are not defined yet.
-- Continue discussion in broad blocks; preserve the user's specific ideas as decisions
-  or decision points so they are not lost before signature design.
+This replaces the earlier assignment of hit testing to the renderer.
+
+Accepted direction:
+
+- Runtime objects are the internal scene representation. They may evolve into a
+  scene graph, but parent/child hierarchy and a scene-graph API are not yet defined.
+- A separate geometry-processing stage/subsystem operates on that representation.
+  Geometric operations, hit testing, intersections, and future collision queries
+  belong here and must work without SVG DOM inspection or a particular renderer.
+- The camera supplies the view/projection needed to form a spatial query from an
+  input position. In the current flat view this can be understood as a ray
+  perpendicular to the map plane, selecting the first eligible hit. Real 3D
+  projection/ray implementation remains future work.
+- The renderer efficiently transfers scene/display data into backend output
+  (SVG elements in the first implementation) and updates affected output with
+  minimal redundant work. Its contract must not own hit testing or collision queries.
+- Runtime retains behavior, validation, material resolution, layer configuration,
+  normalized events, change tracking, and batch. Geometric preparation and querying
+  share this state with rendering rather than reconstructing it from rendered DOM.
+- Application UI and the response to events remain outside these subsystems.
+
+Proposals and open points:
+
+- `Spatial` is a proposed subsystem name; `GeometryProcessing` is a proposed name
+  for its preparation stage. Neither is an approved class or interface signature.
+- Separate reusable geometry preparation from on-demand queries within that subsystem.
+  A hit test should not require rerendering; rendering should not run unused collision
+  queries. Cache/invalidation details require a concrete prototype, not a new global
+  pipeline framework at this stage.
+- Both picking and rendering need a consistent description of symbol geometry and
+  screen-size policy. A mathematical point alone has no area; its displayed symbol
+  or explicitly defined hit area must be represented outside the renderer. Avoid
+  independently duplicating the temporary 24-pixel circle in the query subsystem.
+- In the current 2D view, first-hit priority follows the existing layer/object
+  composition order and interaction eligibility. Real 3D distance and occlusion
+  remain subject to the future 3D contract.
+
+## Spatial implementation — pending review
+
+`prepareSceneGeometry(objects)` prepares a shared `SceneGeometry` description before
+renderer preparation. Each entry retains its runtime object and references a symbol
+with radius and stroke width in viewport CSS pixels. The current circle symbol is
+explicitly temporary until material resolution supplies it. Rendering and queries
+use the same description and observe current runtime positions; no per-frame object
+copying is introduced by this preparation step.
+
+`Spatial.hitTest(mapPoint, camera)` performs numeric point-symbol picking without
+DOM, SVG types, or a renderer dependency. It checks the camera viewport, accounts
+for zoom to preserve screen-sized hit areas, and returns the first hit in reverse
+composition order. This flat-view calculation represents a perpendicular ray; no
+unused 3D ray abstraction or collision engine is introduced. The two spatial files
+are internal modules, not new package-root exports.
+
+`AtlasRenderer` no longer has a hit-testing method. The SVG backend consumes shared
+geometry descriptions and only translates them into SVG output. Client-to-map
+conversion remains at the component/browser boundary. Queries use current scene
+state and do not read the last painted SVG state or request a render.
+
+A successful load replaces runtime objects, shared geometry, and the spatial query
+instance together after renderer preparation succeeds. Failure retains the previous
+scene for both display and interaction. Future materials, non-point geometry,
+layers/clipping, indexing, and cache invalidation will extend this boundary under
+separate review.
 
 ## Component lifecycle
 
@@ -91,7 +141,7 @@ and the calculated map-space rectangle; `SvgRenderer` only applies these values.
 The previous renderer-owned center/scale calculations moved to `Camera`.
 See [camera implementation](CAMERA.md) for the proposed API and scope.
 
-## Object display — pending review
+## Object display — merged
 
 The first object slice adds optional `objects` to `MapDefinition`, currently using
 `{ id?, geometry: { kind: 'point', position: { x, y } } }`. Atlas renders geometry;
@@ -122,4 +172,6 @@ subsequent work.
 
 The Factory example uses these objects as markers at illustrative positions. Its
 attributed tarkov.dev icon is retained as an unused asset for the material step.
-Hit testing, click/tap events, and popups are not implemented in this slice.
+Click/tap interaction is now a separate reviewable step; see
+[object events](LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--pending-review).
+Popups remain application UI.

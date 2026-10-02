@@ -47,12 +47,20 @@ code from the design drafts until implementation is requested.
 - Prefer guard clauses with early `return` or `continue` where they reduce nesting
   and improve readability. Keep the main path flat rather than wrapping it in
   conditional blocks; preserve behavior when restructuring existing code.
+- Prefer collection methods when expressing a transformation, search, or accumulation
+  instead of a mutable outer variable and a loop. This is a readability preference,
+  not a ban on loops; use judgment.
+- Where behavior and readability are preserved, prefer a single `reduce` for combined
+  filtering/mapping/accumulation to avoid intermediate collections and repeated passes.
+  Do not assume every chain can be fused: sorting generally remains a separate step,
+  and changing its order relative to other operations must preserve semantics.
+  Treat performance gains as a hypothesis until measured in relevant code.
 
 ## Imports
 
 - Use package.json `imports` aliases (`#camera/`, `#components/`, `#definitions/`,
   `#errors/`, `#interaction/`, `#math/`, `#objects/`, `#renderers/`,
-  `#validators/`) instead of
+  `#spatial/`, `#validators/`) instead of
   parent-relative imports through `../`. Keep `.js` extensions in TypeScript imports.
 - Keep neighboring `./` imports, including component HTML templates, relative.
 - Keep alias mappings in package.json rather than duplicating them in tsconfig/Vite.

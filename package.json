@@ -52,6 +52,7 @@
     "#math/*.js": "./src/math/*.ts",
     "#renderers/*.js": "./src/renderers/*.ts",
     "#validators/*.js": "./src/validators/*.ts",
-    "#objects/*.js": "./src/objects/*.ts"
+    "#objects/*.js": "./src/objects/*.ts",
+    "#spatial/*.js": "./src/spatial/*.ts"
   }
 }

@@ -3,14 +3,20 @@ import { normalizeMapDefinition } from '#definitions/map-definition.js';
 import { AtlasError } from '#errors/atlas-error.js';
 import { CameraControls } from '#interaction/camera-controls.js';
 import { MapCoordinates } from '#interaction/map-coordinates.js';
+import { MapSurfaceEvent } from '#interaction/map-surface-event.js';
+import { ObjectClickEvent } from '#interaction/object-click-event.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { MapObjects } from '#objects/map-objects.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
+import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
+import { Spatial } from '#spatial/spatial.js';
 
 import html from './atlas-map.html?raw';
 
 import type { MapDefinition } from '#definitions/map-definition.js';
+import type { SurfaceInputDetail } from '#interaction/camera-controls.js';
+import type { ClickTrigger } from '#interaction/map-surface-event.js';
 import type { AtlasRenderer } from '#renderers/atlas-renderer.js';
 
 export class AtlasMap extends HTMLElement {
@@ -21,6 +27,8 @@ export class AtlasMap extends HTMLElement {
   readonly #renderer: AtlasRenderer;
   #definition: MapDefinition | undefined;
   #objects = new MapObjects();
+  #spatial: Spatial | undefined;
+  #clickTrigger: ClickTrigger = 'release';
   #objectConnection: AbortController | undefined;
   #loading = false;
   #resizeObserver: ResizeObserver | undefined;
@@ -47,6 +55,26 @@ export class AtlasMap extends HTMLElement {
 
   get coordinates(): MapCoordinates {
     return this.#coordinates;
+  }
+
+  get clickTrigger(): ClickTrigger {
+    return this.#clickTrigger;
+  }
+
+  set clickTrigger(value: ClickTrigger) {
+    if (value !== 'press' && value !== 'release') {
+      throw new AtlasError('Click trigger must be press or release.', {
+        code: 'INVALID_CLICK_TRIGGER',
+        details: { value },
+      });
+    }
+
+    if (value === this.#clickTrigger) {
+      return;
+    }
+
+    this.#clickTrigger = value;
+    this.#controls.cancelClick();
   }
 
   fit(): void {
@@ -78,10 +106,14 @@ export class AtlasMap extends HTMLElement {
     try {
       const normalizedDefinition = normalizeMapDefinition(definition);
       const objects = new MapObjects(normalizedDefinition.objects);
-      const scene = await this.#renderer.prepare(normalizedDefinition.background, objects);
+      const geometry = prepareSceneGeometry(objects);
+      const spatial = new Spatial(geometry);
+      const scene = await this.#renderer.prepare(normalizedDefinition.background, geometry);
       this.#objectConnection?.abort();
       scene.show();
       this.#objects = objects;
+      this.#spatial = spatial;
+      this.#controls.cancelClick();
       this.#definition = normalizedDefinition;
       this.#observeObjects();
       this.fit();
@@ -96,6 +128,8 @@ export class AtlasMap extends HTMLElement {
     }
 
     this.#observeObjects();
+    this.#controls.addEventListener('press', this.#surfacePress);
+    this.#controls.addEventListener('release', this.#surfaceRelease);
     this.#controls.connect();
     this.#camera.addEventListener('change', this.#requestRender);
     this.#requestRender();
@@ -115,6 +149,8 @@ export class AtlasMap extends HTMLElement {
     this.#objectConnection?.abort();
     this.#objectConnection = undefined;
     this.#controls.disconnect();
+    this.#controls.removeEventListener('press', this.#surfacePress);
+    this.#controls.removeEventListener('release', this.#surfaceRelease);
     this.#resizeObserver?.disconnect();
     this.#resizeObserver = undefined;
     this.#camera.removeEventListener('change', this.#requestRender);
@@ -123,6 +159,38 @@ export class AtlasMap extends HTMLElement {
       cancelAnimationFrame(this.#renderFrame);
       this.#renderFrame = undefined;
     }
+  }
+
+  readonly #surfacePress = (event: Event): void => {
+    this.#surfaceEvent('press', event);
+  };
+
+  readonly #surfaceRelease = (event: Event): void => {
+    this.#surfaceEvent('release', event);
+  };
+
+  #surfaceEvent(type: ClickTrigger, event: Event): void {
+    if (!this.#coordinates.available) {
+      return;
+    }
+
+    const input = (event as CustomEvent<SurfaceInputDetail>).detail;
+    const mapPoint = this.#coordinates.clientToMap(input.clientPoint);
+    const shouldClick = this.#clickTrigger === type && (type === 'press' || input.isClick === true);
+    const object = shouldClick ? this.#spatial?.hitTest(mapPoint, this.#camera) : undefined;
+
+    this.dispatchEvent(new MapSurfaceEvent(type, mapPoint, input));
+
+    // A surface listener may disconnect the component or replace its map.
+    if (!object || !this.isConnected || this.#objects.get(object.id) !== object) {
+      return;
+    }
+
+    if (type === 'press') {
+      this.#controls.consumeGesture();
+    }
+
+    this.dispatchEvent(new ObjectClickEvent(object, mapPoint, input.clientPoint));
   }
 
   #observeObjects(): void {
