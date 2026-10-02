@@ -11,8 +11,9 @@ Atlas owns generic objects, geometric primitives, materials, and shared runtime
 mechanisms. Markers, loot, quest zones, and other application concepts are defined
 outside Atlas. This replaces the earlier built-in `kind: marker` object model below.
 `geometry.kind` describes a supported geometric primitive, not application meaning.
-The first implementation supports point geometry; lines, polygons, and circles
-remain subsequent primitives. This does not add an arbitrary geometry plugin API.
+The merged implementation supports point geometry; straight lines are the current
+reviewable step. Polygons and circles remain subsequent primitives. This does not
+add an arbitrary geometry plugin API.
 
 The current review uses `ObjectDefinition` with `id?` and
 `geometry: { kind: 'point', position: { x, y } }`, and an `AtlasObject` runtime
@@ -23,6 +24,46 @@ requirement; its placement in this generic model needs a later review.
 
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
+
+## Line geometry — pending review
+
+The user approved a small line-geometry step before route composition. The
+reviewable data shape is `{ kind: 'line', start: { x, y }, end: { x, y } }` inside
+an ordinary `AtlasObject`. `ObjectGeometry` is the union of point and line geometry;
+`LineGeometry` describes one straight segment, not a route or an infinite line.
+These names are prototype contracts, subject to refinement when route behavior,
+z coordinates, and material resolution are implemented.
+
+Both endpoints require finite coordinates. Normalization and runtime assignment
+copy and freeze geometry and endpoints; rejected assignments preserve the previous
+geometry and emit no change. Coincident endpoints are allowed: the temporary round
+stroke displays and picks them as a dot. No minimum segment length is introduced.
+
+Following review, an object's geometry kind is fixed at construction; no current
+use case requires converting a point into a line or vice versa. Assigning
+`object.geometry` can move its position/endpoints while retaining identity and
+registration order. An assignment with a different supported kind rejects with
+`GEOMETRY_KIND_CHANGE`, preserving the previous geometry and emitting no change.
+Edits reuse the same SVG nodes; primitive replacement is unnecessary.
+Events retain the same object/map-point/client-point payload. Independent
+lines do not synchronize endpoints with other objects, even at coincident positions.
+Route-owned continuity remains a separate behavior step.
+
+Points and lines share one composition sequence. Picking visits it in reverse and
+uses current runtime geometry without rendering or inspecting SVG. Line picking
+uses distance to the closest point on the segment, including its round caps; it
+does not use the line's bounding rectangle as the hit area.
+
+Line appearance is explicitly temporary: orange, 4 viewport CSS pixels wide, with
+round caps. Shared symbol dimensions drive both SVG output and numeric picking.
+Resolved materials will replace the defaults. Width stays constant during camera
+zoom; endpoints stay in map space. Optional hit-area expansion, configurable width,
+arrows, dashes, and map-scaled stroke widths remain separate steps; this change does
+not settle their public configuration API or add automatic mobile enlargement.
+
+The Factory example includes two independent lines and a button that changes one
+endpoint through the runtime instance. Their placement is illustrative, not a
+verified traversable route.
 
 ## 2. Space and environment — agreed
 

@@ -16,7 +16,12 @@ export type { MapCoordinates } from './interaction/map-coordinates.js';
 export { AtlasId } from '#objects/atlas-id.js';
 export { AtlasObject } from '#objects/atlas-object.js';
 export type { MapObjects } from '#objects/map-objects.js';
-export type { ObjectDefinition, PointGeometry } from '#definitions/object-definition.js';
+export type {
+  ObjectDefinition,
+  ObjectGeometry,
+  PointGeometry,
+  LineGeometry,
+} from '#definitions/object-definition.js';
 
 export { ObjectClickEvent } from '#interaction/object-click-event.js';
 export type { ObjectClickDetail } from '#interaction/object-click-event.js';

@@ -133,7 +133,7 @@ over earlier proposals; explicitly open questions are not decisions.
   contour, zone radius) stays in map coordinates and scales when zooming in.
   The exact configuration API remains open.
 
-## First surface events and object click/tap — pending review
+## First surface events and object click/tap — merged
 
 `press` and `release` are surface events emitted by the map component, including
 when the pointer is over empty/background space. `MapSurfaceEvent.detail` contains
@@ -164,7 +164,7 @@ provides a press/release selector.
 
 The spatial subsystem identifies the topmost eligible point using the shared
 symbol description, runtime position, and camera projection. It does not inspect
-SVG elements; see [spatial implementation](RENDERER_AND_COMPONENT.md#spatial-implementation--pending-review). Pointer capture does not determine the hit target. Object hit
+SVG elements; see [spatial implementation](RENDERER_AND_COMPONENT.md#spatial-implementation--merged). Pointer capture does not determine the hit target. Object hit
 tests exclude positions outside the viewport. Empty/background clicks produce surface
 events but no object event. Point symbols still use temporary built-in appearance.
 
@@ -177,3 +177,9 @@ The threshold is explicitly temporary and will be replaced by input configuratio
 Picking scans shared scene points in reverse composition order. Spatial indexing
 remains dependent on measurements. Interaction participation settings, layer IDs,
 hover, keyboard activation, and configurable hit-area expansion remain later steps.
+
+The subsequent [line step](GEOMETRY_AND_ROUTES.md#line-geometry--pending-review)
+extends the same event contract to straight segments. Points and lines use one
+composition order for both rendering and picking. The temporary round line stroke
+also defines its hit area, including collapsed segments with coincident endpoints.
+Hit-area expansion is still a separate configuration decision.

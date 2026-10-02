@@ -1,3 +1,5 @@
+import { squaredDistanceToSegment } from '#math/distance.js';
+
 import type { Camera } from '#camera/camera.js';
 import type { Point } from '#math/point.js';
 import type { AtlasObject } from '#objects/atlas-object.js';
@@ -29,20 +31,32 @@ export class Spatial {
     }
 
     // Reverse composition order avoids scanning objects behind the first hit.
-    for (let index = this.#geometry.points.length - 1; index >= 0; index--) {
-      const entry = this.#geometry.points.at(index);
+    for (let index = this.#geometry.objects.length - 1; index >= 0; index--) {
+      const object = this.#geometry.objects.at(index);
 
-      if (!entry) {
+      if (!object) {
         continue;
       }
 
-      const { object, symbol } = entry;
-      const { position } = object.geometry;
+      const { geometry } = object;
+
+      if (geometry.kind === 'line') {
+        const radius = this.#geometry.symbols.line.strokeWidth / (2 * zoom);
+
+        if (squaredDistanceToSegment(point, geometry.start, geometry.end) <= radius * radius) {
+          return object;
+        }
+
+        continue;
+      }
+
+      const { position } = geometry;
+      const { radius, strokeWidth } = this.#geometry.symbols.point;
       const dx = (point.x - position.x) * zoom;
       const dy = (point.y - position.y) * zoom;
-      const radius = symbol.radius + symbol.strokeWidth / 2;
+      const outerRadius = radius + strokeWidth / 2;
 
-      if (dx * dx + dy * dy <= radius * radius) {
+      if (dx * dx + dy * dy <= outerRadius * outerRadius) {
         return object;
       }
     }

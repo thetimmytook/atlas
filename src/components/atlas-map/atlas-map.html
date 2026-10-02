@@ -14,7 +14,8 @@
     height: 100%;
     overflow: hidden;
   }
-  .atlas-point {
+  .atlas-point,
+  .atlas-line {
     pointer-events: none;
   }
 
@@ -22,6 +23,11 @@
   .atlas-point circle {
     fill: #2775d9;
     stroke: white;
+  }
+
+  /* Temporary appearance; replace with values from the resolved line material. */
+  .atlas-line line {
+    stroke: #d95012;
   }
 </style>
 
