@@ -1,13 +1,9 @@
 import { AtlasError } from '#errors/atlas-error.js';
 
 import type { BackgroundDescription } from '#definitions/map-definition.js';
-import type { AtlasObject } from '#objects/atlas-object.js';
+import type { ScenePoint } from '#spatial/scene-geometry.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
-
-// Temporary appearance defaults; replace with values from the resolved point material.
-const DEFAULT_POINT_SIZE = 24;
-const DEFAULT_POINT_STROKE_WIDTH = 2;
 
 /** Browser resource preparation stays outside the renderer-independent runtime. */
 export async function prepareImage(background: BackgroundDescription): Promise<SVGImageElement> {
@@ -32,8 +28,8 @@ export async function prepareImage(background: BackgroundDescription): Promise<S
   return element;
 }
 
-/** Temporary point symbol; replace with geometry material resolution and rendering. */
-export function createPoint(object: AtlasObject): SVGGElement {
+/** Translate the shared point symbol into SVG elements. */
+export function createPoint({ object, symbol }: ScenePoint): SVGGElement {
   const group = document.createElementNS(SVG_NAMESPACE, 'g');
   group.setAttribute('class', 'atlas-point');
   group.setAttribute('data-object-id', object.id);
@@ -41,8 +37,8 @@ export function createPoint(object: AtlasObject): SVGGElement {
   group.setAttribute('aria-hidden', 'true');
 
   const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
-  circle.setAttribute('r', String((DEFAULT_POINT_SIZE - DEFAULT_POINT_STROKE_WIDTH) / 2));
-  circle.setAttribute('stroke-width', String(DEFAULT_POINT_STROKE_WIDTH));
+  circle.setAttribute('r', String(symbol.radius));
+  circle.setAttribute('stroke-width', String(symbol.strokeWidth));
   group.append(circle);
 
   return group;

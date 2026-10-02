@@ -5,13 +5,12 @@ import { createPoint, prepareImage } from './svg-renderer.utils.js';
 import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
-import type { AtlasObject } from '#objects/atlas-object.js';
-import type { MapObjects } from '#objects/map-objects.js';
 import type { PreparedScene } from '#renderers/atlas-renderer.js';
+import type { SceneGeometry, ScenePoint } from '#spatial/scene-geometry.js';
 
 export class SvgRenderer extends AtlasRenderer {
   readonly #surface: SVGSVGElement;
-  #points: readonly { object: AtlasObject; element: SVGGElement }[] = [];
+  #points: readonly { point: ScenePoint; element: SVGGElement }[] = [];
 
   constructor(surface: SVGSVGElement) {
     super();
@@ -20,12 +19,12 @@ export class SvgRenderer extends AtlasRenderer {
 
   override async prepare(
     background: BackgroundDescription,
-    objects: MapObjects,
+    geometry: SceneGeometry,
   ): Promise<PreparedScene> {
     const image = await prepareImage(background);
-    const points = Array.from(objects, object => ({
-      object,
-      element: createPoint(object),
+    const points = geometry.points.map(point => ({
+      point,
+      element: createPoint(point),
     }));
 
     return {
@@ -50,10 +49,10 @@ export class SvgRenderer extends AtlasRenderer {
     );
     const scale = bounds.width / viewport.width;
 
-    for (const { object, element } of this.#points) {
+    for (const { point, element } of this.#points) {
       element.setAttribute(
         'transform',
-        `translate(${object.geometry.position.x} ${object.geometry.position.y}) scale(${scale})`,
+        `translate(${point.object.geometry.position.x} ${point.object.geometry.position.y}) scale(${scale})`,
       );
       element.removeAttribute('visibility');
     }

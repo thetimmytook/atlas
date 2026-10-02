@@ -132,3 +132,48 @@ over earlier proposals; explicitly open questions are not decisions.
   they may optionally scale with the map. Geometry itself (route path, polygon
   contour, zone radius) stays in map coordinates and scales when zooming in.
   The exact configuration API remains open.
+
+## First surface events and object click/tap — pending review
+
+`press` and `release` are surface events emitted by the map component, including
+when the pointer is over empty/background space. `MapSurfaceEvent.detail` contains
+`mapPoint` and `clientPoint` in browser viewport CSS pixels. A release also supplies
+`isClick`, indicating whether this release is eligible to trigger an object click/tap. A drag
+or pinch still produces release on pointer-up, but with `isClick: false`. Pointer
+cancellation and lost capture are not normal releases. These events describe input,
+not selected objects. Names are the current reviewable API.
+
+`map.clickTrigger` configures when the component identifies an object and emits
+`objectclick`: `release` by default, or `press` for immediate response. Default
+release handling requires `isClick: true` and performs one hit test at the release
+position. It does not retain or compare the object at pointer-down. Press mode
+responds immediately. When it hits an object, the gesture is consumed: subsequent
+pointer movement and pinch do not move or zoom the camera, and release does not
+produce a second object click. The gesture stays consumed until all tracked pointers
+are released or cancelled; wheel zoom is suppressed while it is consumed. Pressing
+empty space does not consume the gesture, so background panning remains available.
+Changing the trigger or successfully replacing the map
+cancels pending release-click eligibility. Disconnect discards the pending gesture.
+
+`ObjectClickEvent.detail` contains the runtime `object`, `mapPoint`, and
+`clientPoint`. Both surface and object events bubble and cross enclosing Shadow DOM
+boundaries; they are notifications without a default action to cancel. Atlas does
+not create selection state, a description panel, or a popup. The Factory example
+renders object details in ordinary application HTML, displays surface events, and
+provides a press/release selector.
+
+The spatial subsystem identifies the topmost eligible point using the shared
+symbol description, runtime position, and camera projection. It does not inspect
+SVG elements; see [spatial implementation](RENDERER_AND_COMPONENT.md#spatial-implementation--pending-review). Pointer capture does not determine the hit target. Object hit
+tests exclude positions outside the viewport. Empty/background clicks produce surface
+events but no object event. Point symbols still use temporary built-in appearance.
+
+The input recognizer waits for movement beyond 5 client CSS pixels before panning,
+so small tap movement does not move the camera. Once dragging starts, returning to
+the starting point does not restore release-click eligibility. Multi-pointer input,
+pointer cancellation/lost capture, and wheel zoom also cancel that eligibility.
+The threshold is explicitly temporary and will be replaced by input configuration.
+
+Picking scans shared scene points in reverse composition order. Spatial indexing
+remains dependent on measurements. Interaction participation settings, layer IDs,
+hover, keyboard activation, and configurable hit-area expansion remain later steps.

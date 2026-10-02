@@ -1,7 +1,7 @@
 import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
-import type { MapObjects } from '#objects/map-objects.js';
+import type { SceneGeometry } from '#spatial/scene-geometry.js';
 
 /** Prepared display content that can be applied after the load is accepted. */
 export interface PreparedScene {
@@ -9,6 +9,9 @@ export interface PreparedScene {
 }
 
 export abstract class AtlasRenderer {
-  abstract prepare(background: BackgroundDescription, objects: MapObjects): Promise<PreparedScene>;
+  abstract prepare(
+    background: BackgroundDescription,
+    geometry: SceneGeometry,
+  ): Promise<PreparedScene>;
   abstract render(viewport: Size, bounds: Rect): void;
 }

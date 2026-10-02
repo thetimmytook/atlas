@@ -26,7 +26,8 @@ continue between answers rather than relying on HTML anchors.
 - label is an explicit data object; the runtime label belongs to its owner and has behavior.
 - Synchronous nested batch defers only rendering, without rolling back changes.
 - Data/resource loading is strict; a new map replaces the current map only after preparation succeeds.
-- Runtime owns logic; the renderer draws, clips, and identifies interaction targets.
+- Runtime objects form the internal scene representation. A separate geometry subsystem
+  prepares geometry and performs spatial queries; the renderer updates backend output.
 - Framework adapters are separate. The application stores user state.
 - Resources are described once in the map registry and referenced by ID;
   a pluggable application loader is provided for.
@@ -61,8 +62,12 @@ The Web Component shell and Factory background with `MapDefinition` are merged.
 Camera center/zoom, fit, and example buttons are merged. Mouse/touch controls and
 map/client coordinate conversion are merged; see
 [camera status](design/CAMERA.md).
-Point geometry display and mutable runtime objects are the current reviewable step; see
-[object implementation](design/RENDERER_AND_COMPONENT.md#object-display--pending-review).
+Point geometry display and mutable runtime objects are merged. Object click/tap
+events and the external example panel are the current reviewable step; see
+[object interaction](design/LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--pending-review).
+Hit testing has moved out of the renderer into the internal spatial subsystem;
+both consume shared scene geometry. This refactor is pending review; see
+[spatial implementation](design/RENDERER_AND_COMPONENT.md#spatial-implementation--pending-review).
 
 The first architecture pass is sufficient to proceed to prototype validation.
 The user agreed to the prototype scope and goal: validate the idea, identify

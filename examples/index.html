@@ -20,10 +20,33 @@
         border: 0;
       }
 
-      button {
+      button,
+      select {
         min-width: 44px;
         min-height: 44px;
         cursor: pointer;
+      }
+
+      .workspace {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        align-items: flex-start;
+      }
+
+      .object-panel {
+        flex: 1 1 240px;
+        min-width: 0;
+        max-width: 420px;
+      }
+
+      .object-panel h2 {
+        margin-top: 0;
+      }
+
+      .object-panel pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
       }
 
       .map-frame {
@@ -50,7 +73,9 @@
       Factory ground floor. Drag to pan; use the wheel or pinch to zoom. Drag the frame's
       bottom-right corner to resize it.
     </p>
-    <p>Markers are demo positions, not verified loot locations.</p>
+    <p>
+      Click or tap a point to inspect it. Markers are demo positions, not verified loot locations.
+    </p>
     <p id="status" role="status">Loading map…</p>
     <fieldset class="controls" aria-label="Map camera" disabled>
       <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
@@ -61,8 +86,22 @@
       <button type="button" id="down" aria-label="Move camera down">↓</button>
       <button type="button" id="right" aria-label="Move camera right">→</button>
     </fieldset>
-    <div class="map-frame">
-      <atlas-map role="region" aria-label="Map preview"></atlas-map>
+    <p>
+      <label for="click-trigger">Object click on</label>
+      <select id="click-trigger">
+        <option value="release">Release</option>
+        <option value="press">Press</option>
+      </select>
+      <span id="surface-status" role="status">No surface event yet.</span>
+    </p>
+    <div class="workspace">
+      <div class="map-frame">
+        <atlas-map role="region" aria-label="Map preview"></atlas-map>
+      </div>
+      <aside class="object-panel" aria-labelledby="object-heading">
+        <h2 id="object-heading">Object details</h2>
+        <pre id="object-details" role="status">Click or tap a point on the map.</pre>
+      </aside>
     </div>
     <script type="module">
       import { AtlasMap, Point } from '../src/index.ts';
@@ -71,6 +110,29 @@
 
       const map = document.querySelector('atlas-map');
       const status = document.querySelector('#status');
+      document.querySelector('#click-trigger').addEventListener('change', event => {
+        map.clickTrigger = event.target.value;
+      });
+      const showSurfaceEvent = event => {
+        const { clientPoint, isClick } = event.detail;
+        const gesture =
+          isClick === undefined ? '' : isClick ? ' · click/tap' : ' · no release click';
+        document.querySelector('#surface-status').textContent =
+          `${event.type} at ${clientPoint.x.toFixed(0)}, ${clientPoint.y.toFixed(0)}${gesture}`;
+      };
+      map.addEventListener('press', showSurfaceEvent);
+      map.addEventListener('release', showSurfaceEvent);
+
+      // Application UI: Atlas only supplies the object and interaction coordinates.
+      map.addEventListener('objectclick', event => {
+        const { object, mapPoint, clientPoint } = event.detail;
+        document.querySelector('#object-details').textContent = JSON.stringify(
+          { id: object.id, geometry: object.geometry, mapPoint, clientPoint },
+          null,
+          2,
+        );
+      });
+
       const definition = {
         background: {
           source: new URL('./factory/Factory-ground-floor.svg', import.meta.url).href,
