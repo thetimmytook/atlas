@@ -1,5 +1,5 @@
 import { AtlasError } from '#errors/atlas-error.js';
-import { AtlasId } from '#objects/atlas-id.js';
+import { createId } from '#objects/create-id.js';
 import { prepareGeometry } from '#validators/geometry.validator.js';
 
 import type { ObjectDefinition } from './object-definition.js';
@@ -57,7 +57,7 @@ export function normalizeMapDefinition(definition: MapDefinition): NormalizedMap
 
     if (id === undefined) {
       do {
-        id = AtlasId();
+        id = createId();
       } while (ids.has(id));
 
       ids.add(id);

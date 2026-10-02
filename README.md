@@ -37,15 +37,15 @@ of a registered element class. Reloading resets example state.
 
 ## First component
 
-`src/index.ts` exports `AtlasMap`, an initial custom-element shell. It creates an
+`src/index.ts` exports `MapElement`, an initial custom-element shell. It creates an
 empty SVG surface in an open Shadow DOM, follows the host's content size, releases
 its resize observer when detached, and resumes observation on the same surface when
 reconnected. The application provides dimensions and registers the element explicitly:
 
 ```js
-import { AtlasMap } from './dist/index.js';
+import { MapElement } from './dist/index.js';
 
-customElements.define('atlas-map', AtlasMap);
+customElements.define('atlas-map', MapElement);
 ```
 
 The example provides a resizable frame. Map data, camera behavior, and interaction
@@ -54,15 +54,15 @@ events remain subsequent implementation steps.
 ## Component templates
 
 ```text
-src/components/atlas-map/
-  atlas-map.ts
-  atlas-map.html
+src/components/map-element/
+  map-element.ts
+  map-element.html
 ```
 
 Behavior lives in TypeScript; static markup and CSS live in the adjacent HTML file:
 
 ```ts
-import html from './atlas-map.html?raw';
+import html from './map-element.html?raw';
 ```
 
 Vite handles the raw import in development and embeds the string in the library

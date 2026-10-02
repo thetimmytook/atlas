@@ -1,4 +1,4 @@
 /** IDs are opaque and remain stable for the lifetime of the object. */
-export function AtlasId(): string {
+export function createId(): string {
   return crypto.randomUUID();
 }

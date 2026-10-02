@@ -2,7 +2,7 @@ import { squaredDistanceToSegment } from '#math/distance.js';
 
 import type { Camera } from '#camera/camera.js';
 import type { Point } from '#math/point.js';
-import type { AtlasObject } from '#objects/atlas-object.js';
+import type { MapObject } from '#objects/map-object.js';
 import type { SceneGeometry } from './scene-geometry.js';
 
 /** Spatial queries over scene geometry, independent of rendering and browser DOM. */
@@ -14,7 +14,7 @@ export class Spatial {
   }
 
   /** Flat-view picking, equivalent to a perpendicular ray with 2D composition order. */
-  hitTest(point: Point, camera: Camera): AtlasObject | undefined {
+  hitTest(point: Point, camera: Camera): MapObject | undefined {
     const { center, zoom, viewport } = camera;
     const x = (point.x - center.x) * zoom;
     const y = (point.y - center.y) * zoom;

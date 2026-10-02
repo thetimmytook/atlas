@@ -4,7 +4,7 @@ import { prepareGeometry } from '#validators/geometry.validator.js';
 import type { ObjectGeometry } from '#definitions/object-definition.js';
 
 /** Runtime map object; changes notify its consumer without depending on a renderer. */
-export class AtlasObject extends EventTarget {
+export class MapObject extends EventTarget {
   readonly #id: string;
   #geometry: ObjectGeometry;
 

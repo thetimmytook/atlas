@@ -42,6 +42,9 @@ code from the design drafts until implementation is requested.
 
 ## Naming
 
+- Do not prefix ordinary API names with Atlas. Use descriptive names such as
+  MapElement, MapObject, Renderer, Route, and createId. Keep the prefix for
+  AtlasError and its related types so errors identify their library of origin.
 - Use `UPPER_SNAKE_CASE` for module-level/global string and numeric constants
   such as `SVG_NAMESPACE`. Local variables, functions, and object instances
   remain `camelCase`; declaring a binding with `const` alone does not require uppercase.
@@ -78,7 +81,7 @@ code from the design drafts until implementation is requested.
   and all files under `examples/` have no class-count limit.
   Related interfaces and types may accompany a class.
 - Keep each concrete renderer in its own directory under `src/renderers/`.
-  Keep the shared `AtlasRenderer` base at the renderers root and renderer-specific
+  Keep the shared `Renderer` base at the renderers root and renderer-specific
   helpers in an adjacent utils file, without a separate utils directory.
 
 ## Errors

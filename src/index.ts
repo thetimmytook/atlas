@@ -1,4 +1,4 @@
-export { AtlasMap } from './components/atlas-map/atlas-map.js';
+export { MapElement } from './components/map-element/map-element.js';
 
 export type { MapDefinition, BackgroundDescription } from './definitions/map-definition.js';
 
@@ -13,8 +13,8 @@ export { Size } from './math/size.js';
 
 export type { MapCoordinates } from './interaction/map-coordinates.js';
 
-export { AtlasId } from '#objects/atlas-id.js';
-export { AtlasObject } from '#objects/atlas-object.js';
+export { createId } from '#objects/create-id.js';
+export { MapObject } from '#objects/map-object.js';
 export type { MapObjects } from '#objects/map-objects.js';
 export type {
   ObjectDefinition,

@@ -12,19 +12,19 @@ import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
-import html from './atlas-map.html?raw';
+import html from './map-element.html?raw';
 
 import type { MapDefinition } from '#definitions/map-definition.js';
 import type { SurfaceInputDetail } from '#interaction/camera-controls.js';
 import type { ClickTrigger } from '#interaction/map-surface-event.js';
-import type { AtlasRenderer } from '#renderers/atlas-renderer.js';
+import type { Renderer } from '#renderers/renderer.js';
 
-export class AtlasMap extends HTMLElement {
+export class MapElement extends HTMLElement {
   readonly #coordinates: MapCoordinates;
   readonly #controls: CameraControls;
   readonly #camera = new Camera();
   #renderFrame: number | undefined;
-  readonly #renderer: AtlasRenderer;
+  readonly #renderer: Renderer;
   #definition: MapDefinition | undefined;
   #objects = new MapObjects();
   #spatial: Spatial | undefined;
@@ -41,7 +41,7 @@ export class AtlasMap extends HTMLElement {
     const surface = shadow.querySelector('svg');
 
     if (!surface) {
-      throw new Error('AtlasMap template must contain an SVG surface.');
+      throw new Error('MapElement template must contain an SVG surface.');
     }
 
     this.#renderer = new SvgRenderer(surface);

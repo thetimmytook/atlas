@@ -1,4 +1,4 @@
-import type { AtlasObject } from '#objects/atlas-object.js';
+import type { MapObject } from '#objects/map-object.js';
 
 /** Circle dimensions in viewport CSS pixels, shared by rendering and spatial queries. */
 export interface PointSymbol {
@@ -18,7 +18,7 @@ export interface SceneSymbols {
 }
 
 export interface SceneGeometry {
-  readonly objects: readonly AtlasObject[];
+  readonly objects: readonly MapObject[];
   readonly symbols: SceneSymbols;
 }
 
@@ -29,7 +29,7 @@ const defaultSymbols: SceneSymbols = Object.freeze({
 });
 
 /** Prepare shared geometry descriptions once; positions remain owned by runtime objects. */
-export function prepareSceneGeometry(objects: Iterable<AtlasObject>): SceneGeometry {
+export function prepareSceneGeometry(objects: Iterable<MapObject>): SceneGeometry {
   return Object.freeze({
     objects: Object.freeze(Array.from(objects)),
     symbols: defaultSymbols,

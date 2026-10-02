@@ -106,9 +106,9 @@
       </aside>
     </div>
     <script type="module">
-      import { AtlasMap, Point } from '../src/index.ts';
+      import { MapElement, Point } from '../src/index.ts';
 
-      customElements.define('atlas-map', AtlasMap);
+      customElements.define('atlas-map', MapElement);
 
       const map = document.querySelector('atlas-map');
       const status = document.querySelector('#status');

@@ -2,13 +2,13 @@ import { AtlasError } from '#errors/atlas-error.js';
 
 import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { ObjectGeometry } from '#definitions/object-definition.js';
-import type { AtlasObject } from '#objects/atlas-object.js';
+import type { MapObject } from '#objects/map-object.js';
 import type { SceneSymbols } from '#spatial/scene-geometry.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
 export interface SvgObject {
-  readonly object: AtlasObject;
+  readonly object: MapObject;
   readonly element: SVGGElement;
   readonly shape: SVGCircleElement | SVGLineElement;
 }
@@ -37,7 +37,7 @@ export async function prepareImage(background: BackgroundDescription): Promise<S
 }
 
 /** Translate a shared symbol into SVG without changing scene composition order. */
-export function createObject(object: AtlasObject, symbols: SceneSymbols): SvgObject {
+export function createObject(object: MapObject, symbols: SceneSymbols): SvgObject {
   const { kind } = object.geometry;
   const group = document.createElementNS(SVG_NAMESPACE, 'g');
   group.setAttribute('class', `atlas-${kind}`);
