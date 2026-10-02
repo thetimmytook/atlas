@@ -62,12 +62,17 @@ The Web Component shell and Factory background with `MapDefinition` are merged.
 Camera center/zoom, fit, and example buttons are merged. Mouse/touch controls and
 map/client coordinate conversion are merged; see
 [camera status](design/CAMERA.md).
-Point geometry display and mutable runtime objects are merged. Object click/tap
-events and the external example panel are the current reviewable step; see
-[object interaction](design/LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--pending-review).
+Point geometry display, mutable runtime objects, object click/tap events, and the
+external example panel are merged; see
+[object interaction](design/LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--merged).
 Hit testing has moved out of the renderer into the internal spatial subsystem;
-both consume shared scene geometry. This refactor is pending review; see
-[spatial implementation](design/RENDERER_AND_COMPONENT.md#spatial-implementation--pending-review).
+both consume shared scene geometry. This refactor is merged; see
+[spatial implementation](design/RENDERER_AND_COMPONENT.md#spatial-implementation--merged).
+Straight line geometry, SVG display, spatial picking, and runtime endpoint updates
+are the current reviewable step; see
+[line geometry](design/GEOMETRY_AND_ROUTES.md#line-geometry--pending-review).
+Route composition and continuity are the proposed next step, subject to review
+against the generic object model.
 
 The first architecture pass is sufficient to proceed to prototype validation.
 The user agreed to the prototype scope and goal: validate the idea, identify

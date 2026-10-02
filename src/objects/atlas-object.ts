@@ -1,14 +1,14 @@
 import { AtlasError } from '#errors/atlas-error.js';
 import { prepareGeometry } from '#validators/geometry.validator.js';
 
-import type { PointGeometry } from '#definitions/object-definition.js';
+import type { ObjectGeometry } from '#definitions/object-definition.js';
 
 /** Runtime map object; changes notify its consumer without depending on a renderer. */
 export class AtlasObject extends EventTarget {
   readonly #id: string;
-  #geometry: PointGeometry;
+  #geometry: ObjectGeometry;
 
-  constructor(id: string, geometry: PointGeometry) {
+  constructor(id: string, geometry: ObjectGeometry) {
     super();
 
     if (typeof id !== 'string' || !id.trim()) {
@@ -26,12 +26,22 @@ export class AtlasObject extends EventTarget {
     return this.#id;
   }
 
-  get geometry(): PointGeometry {
+  get geometry(): ObjectGeometry {
     return this.#geometry;
   }
 
-  set geometry(value: PointGeometry) {
-    this.#geometry = prepareGeometry('geometry', value);
+  /** Replace coordinates within the primitive kind chosen at construction. */
+  set geometry(value: ObjectGeometry) {
+    const geometry = prepareGeometry('geometry', value);
+
+    if (geometry.kind !== this.#geometry.kind) {
+      throw new AtlasError('Object geometry kind cannot change.', {
+        code: 'GEOMETRY_KIND_CHANGE',
+        details: { id: this.#id, expected: this.#geometry.kind, received: geometry.kind },
+      });
+    }
+
+    this.#geometry = geometry;
     this.dispatchEvent(new Event('change'));
   }
 }

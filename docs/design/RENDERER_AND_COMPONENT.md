@@ -44,7 +44,7 @@ Proposals and open points:
   composition order and interaction eligibility. Real 3D distance and occlusion
   remain subject to the future 3D contract.
 
-## Spatial implementation — pending review
+## Spatial implementation — merged
 
 `prepareSceneGeometry(objects)` prepares a shared `SceneGeometry` description before
 renderer preparation. Each entry retains its runtime object and references a symbol
@@ -70,6 +70,24 @@ instance together after renderer preparation succeeds. Failure retains the previ
 scene for both display and interaction. Future materials, non-point geometry,
 layers/clipping, indexing, and cache invalidation will extend this boundary under
 separate review.
+
+The line-geometry step under review generalizes `SceneGeometry` to an ordered
+`objects` array and shared `symbols` defaults for point and line primitives.
+The defaults are temporary until per-object material resolution supplies them.
+Both consumers read live object geometry, so endpoint changes do not leave
+stale prepared geometry. SVG uses a non-scaling round stroke for lines; `Spatial`
+uses the shared width and a numeric point-to-segment distance. The runtime fixes
+geometry kind at object construction, so the renderer creates each primitive once
+and reuses it for coordinate changes.
+No per-frame scene copies, DOM-based hit tests, or spatial indexing are introduced.
+
+Following review, SVG output separates preparation, map-space geometry, and
+screen-size compensation. Preparation creates the SVG nodes; rendering calls
+`applyGeometry` and `applyScreenScale` on them. Geometry writes placement/endpoints
+without camera scale; the point's group holds its translation. Screen-size
+compensation scales only the point symbol inside that group. Lines retain their
+non-scaling stroke. No primitive-type synchronization runs during rendering.
+These are internal SVG operations, not a new public pipeline API.
 
 ## Component lifecycle
 
@@ -172,6 +190,6 @@ subsequent work.
 
 The Factory example uses these objects as markers at illustrative positions. Its
 attributed tarkov.dev icon is retained as an unused asset for the material step.
-Click/tap interaction is now a separate reviewable step; see
-[object events](LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--pending-review).
+Click/tap interaction is merged; see
+[object events](LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--merged).
 Popups remain application UI.

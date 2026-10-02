@@ -6,23 +6,32 @@ export interface PointSymbol {
   readonly strokeWidth: number;
 }
 
-export interface ScenePoint {
-  readonly object: AtlasObject;
-  readonly symbol: PointSymbol;
+/** Screen-sized stroke; round caps also define the segment's picking boundary. */
+export interface LineSymbol {
+  readonly strokeWidth: number;
+  readonly lineCap: 'round';
+}
+
+export interface SceneSymbols {
+  readonly point: PointSymbol;
+  readonly line: LineSymbol;
 }
 
 export interface SceneGeometry {
-  readonly points: readonly ScenePoint[];
+  readonly objects: readonly AtlasObject[];
+  readonly symbols: SceneSymbols;
 }
 
-// Temporary circle symbol; replace with geometry derived from the resolved point material.
-const defaultPointSymbol: PointSymbol = Object.freeze({ radius: 11, strokeWidth: 2 });
+// Temporary shared defaults; replace with per-object symbols derived from resolved materials.
+const defaultSymbols: SceneSymbols = Object.freeze({
+  point: Object.freeze({ radius: 11, strokeWidth: 2 }),
+  line: Object.freeze({ strokeWidth: 4, lineCap: 'round' }),
+});
 
 /** Prepare shared geometry descriptions once; positions remain owned by runtime objects. */
 export function prepareSceneGeometry(objects: Iterable<AtlasObject>): SceneGeometry {
   return Object.freeze({
-    points: Object.freeze(
-      Array.from(objects, object => Object.freeze({ object, symbol: defaultPointSymbol })),
-    ),
+    objects: Object.freeze(Array.from(objects)),
+    symbols: defaultSymbols,
   });
 }

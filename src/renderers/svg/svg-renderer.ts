@@ -1,16 +1,22 @@
 import { AtlasRenderer } from '#renderers/atlas-renderer.js';
 
-import { createPoint, prepareImage } from './svg-renderer.utils.js';
+import {
+  applyGeometry,
+  applyScreenScale,
+  createObject,
+  prepareImage,
+} from './svg-renderer.utils.js';
 
 import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
 import type { PreparedScene } from '#renderers/atlas-renderer.js';
-import type { SceneGeometry, ScenePoint } from '#spatial/scene-geometry.js';
+import type { SceneGeometry } from '#spatial/scene-geometry.js';
+import type { SvgObject } from './svg-renderer.utils.js';
 
 export class SvgRenderer extends AtlasRenderer {
   readonly #surface: SVGSVGElement;
-  #points: readonly { point: ScenePoint; element: SVGGElement }[] = [];
+  #objects: readonly SvgObject[] = [];
 
   constructor(surface: SVGSVGElement) {
     super();
@@ -22,15 +28,12 @@ export class SvgRenderer extends AtlasRenderer {
     geometry: SceneGeometry,
   ): Promise<PreparedScene> {
     const image = await prepareImage(background);
-    const points = geometry.points.map(point => ({
-      point,
-      element: createPoint(point),
-    }));
+    const objects = geometry.objects.map(object => createObject(object, geometry.symbols));
 
     return {
       show: (): void => {
-        this.#points = points;
-        this.#surface.replaceChildren(image, ...points.map(point => point.element));
+        this.#objects = objects;
+        this.#surface.replaceChildren(image, ...objects.map(object => object.element));
       },
     };
   }
@@ -49,12 +52,11 @@ export class SvgRenderer extends AtlasRenderer {
     );
     const scale = bounds.width / viewport.width;
 
-    for (const { point, element } of this.#points) {
-      element.setAttribute(
-        'transform',
-        `translate(${point.object.geometry.position.x} ${point.object.geometry.position.y}) scale(${scale})`,
-      );
-      element.removeAttribute('visibility');
+    for (const entry of this.#objects) {
+      const { geometry } = entry.object;
+      applyGeometry(entry.element, entry.shape, geometry);
+      applyScreenScale(entry.shape, geometry.kind, scale);
+      entry.element.removeAttribute('visibility');
     }
   }
 }

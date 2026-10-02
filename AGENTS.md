@@ -15,6 +15,10 @@ code from the design drafts until implementation is requested.
   a future direction. Framework adapters and the editor are separate consumers.
 - Support desktop and mobile. Keep application UI and product-specific behavior
   outside the engine. Follow the agreed scope in `docs/design/PROTOTYPE.md`.
+- Follow KISS: implement the simplest solution that meets the current agreed scope.
+  Add complexity only for a concrete current use case. Future possibilities belong
+  in design notes, not speculative behavior or extension mechanisms in code;
+  adding complexity later is easier than removing it after it becomes a dependency.
 - Add packages and abstractions only when they have a concrete consumer.
 - Mark temporary implementations explicitly at their implementation site and state
   what will replace them. Document provisional public contracts and their intended

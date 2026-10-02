@@ -74,10 +74,11 @@
       bottom-right corner to resize it.
     </p>
     <p>
-      Click or tap a point to inspect it. Markers are demo positions, not verified loot locations.
+      Click or tap a point or line to inspect it. Objects are illustrative positions, not verified
+      loot locations or paths. Use “Move line end” to update a runtime object's geometry.
     </p>
     <p id="status" role="status">Loading map…</p>
-    <fieldset class="controls" aria-label="Map camera" disabled>
+    <fieldset class="controls" aria-label="Map controls" disabled>
       <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
       <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
       <button type="button" id="fit">Fit map</button>
@@ -85,6 +86,7 @@
       <button type="button" id="up" aria-label="Move camera up">↑</button>
       <button type="button" id="down" aria-label="Move camera down">↓</button>
       <button type="button" id="right" aria-label="Move camera right">→</button>
+      <button type="button" id="move-line-end">Move line end</button>
     </fieldset>
     <p>
       <label for="click-trigger">Object click on</label>
@@ -100,7 +102,7 @@
       </div>
       <aside class="object-panel" aria-labelledby="object-heading">
         <h2 id="object-heading">Object details</h2>
-        <pre id="object-details" role="status">Click or tap a point on the map.</pre>
+        <pre id="object-details" role="status">Click or tap a point or line on the map.</pre>
       </aside>
     </div>
     <script type="module">
@@ -140,7 +142,15 @@
           height: 141.23242,
         },
         objects: [
+          {
+            id: 'demo-line-1',
+            geometry: { kind: 'line', start: { x: 40, y: 45 }, end: { x: 85, y: 70 } },
+          },
           { id: 'demo-marker-1', geometry: { kind: 'point', position: { x: 40, y: 45 } } },
+          {
+            id: 'demo-line-2',
+            geometry: { kind: 'line', start: { x: 85, y: 70 }, end: { x: 30, y: 110 } },
+          },
           { id: 'demo-marker-2', geometry: { kind: 'point', position: { x: 85, y: 70 } } },
           { geometry: { kind: 'point', position: { x: 30, y: 110 } } },
         ],
@@ -159,6 +169,15 @@
       document.querySelector('#fit').onclick = () => map.fit();
       document.querySelector('#left').onclick = () => move(-50, 0);
       document.querySelector('#right').onclick = () => move(50, 0);
+      document.querySelector('#move-line-end').onclick = () => {
+        const line = map.objects.get('demo-line-1');
+        const { start, end } = line.geometry;
+        line.geometry = {
+          kind: 'line',
+          start,
+          end: new Point(end.x, end.y === 70 ? 90 : 70),
+        };
+      };
       document.querySelector('#up').onclick = () => move(0, -50);
       document.querySelector('#down').onclick = () => move(0, 50);
 
