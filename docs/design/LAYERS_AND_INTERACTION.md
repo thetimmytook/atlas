@@ -20,6 +20,27 @@
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
+## Route point and path interaction — current clarification
+
+The [polyline decision](GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05)
+replaces nested route-line identities with a route path and identifiable points.
+A click on the connecting stroke returns the `MapRoute` in `detail.object`, without
+an extra owning-route field. A point click returns its `MapPoint` in `detail.object`
+and its owner in `detail.route`. Both retain map/client interaction coordinates.
+Point symbols compose above their own path; root map-object order remains unchanged.
+
+`ObjectClickDetail.object` and the constructor argument of `ObjectClickEvent` use
+`MapEntry` (`MapPoint | MapLine | MapRoute`). Spatial scene entries preserve this
+union, allowing consumers to narrow the object by `kind` and access `position` or
+`points` without a cast. The shared `MapObject` base still owns identity and events.
+
+Point IDs do not control visibility. Layer visibility and clipping determine which
+spatial portion can participate; point materials and interaction properties will
+control vertex presentation. The current prototype draws all route vertices with
+the temporary point symbol to exercise clicks, independent of supplied/generated
+IDs. It adds no visibility flag to route-point data. Surface press/release behavior
+is unchanged. Older line-identity wording below is historical.
+
 ## 5. Layers and floors — discussion ongoing
 
 - Floors must be supported in the first version.
@@ -85,7 +106,8 @@ over earlier proposals; explicitly open questions are not decisions.
 - Layer references do not introduce overrides for position, label (title), or other
   object properties. An object displayed in multiple layers remains the same object.
 - Repeated markers at different locations are separate objects with their own IDs,
-  positions, and labels. Shared appearance is defined by Meta through type.
+  positions, and labels. Shared appearance is defined through materials. Application
+  classification is stored in data.type; its use in material assignment remains open.
 - Templates and instances for reusing complex objects may be added separately
   when a use case emerges; this mechanism is not introduced now.
 - Separation principle: the object describes itself; the layer determines selection
@@ -178,8 +200,15 @@ Picking scans shared scene points in reverse composition order. Spatial indexing
 remains dependent on measurements. Interaction participation settings, layer IDs,
 hover, keyboard activation, and configurable hit-area expansion remain later steps.
 
-The subsequent [line step](GEOMETRY_AND_ROUTES.md#line-geometry--pending-review)
+The subsequent [line step](GEOMETRY_AND_ROUTES.md#line-geometry--merged)
 extends the same event contract to straight segments. Points and lines use one
 composition order for both rendering and picking. The temporary round line stroke
 also defines its hit area, including collapsed segments with coincident endpoints.
 Hit-area expansion is still a separate configuration decision.
+
+The [first route slice](GEOMETRY_AND_ROUTES.md#first-route-slice--pending-review)
+keeps the same events and adds optional `detail.route` for an owned line.
+`detail.object` is the clicked runtime line; `detail.route` is the same route
+instance stored in `map.objects`. Independent objects omit this field. Route lines
+use their owner's position in composition order, with later lines on top within
+the route. The surface press/release contract and gesture handling do not change.

@@ -5,7 +5,39 @@
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
+## Route model clarification — 2026-10-05
+
+The [polyline decision](GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05)
+supersedes the route-line collection and endpoint synchronization examples below.
+Route definitions and runtime routes store ordered, identifiable `points` directly.
+Line definitions use the same model with exactly
+two points. Every point groups coordinates under `position`. Adjacent pairs
+implicitly define segments, so disconnected-line insertion and endpoint snapping
+no longer apply. Point/path editing will be reviewed against this model; earlier
+`addLine`, line removal/replacement, and line-based notification signatures are
+historical, not implemented contracts.
+
+The current `route.points` array is read-only, but each owned `MapPoint` accepts
+position updates through `point.position = new Point(x, y)`. `MapRoute` forwards
+the point's `change` event without rebuilding geometry. ID lookup in `map.objects`
+still returns the route instance; owned points are available through that route.
+Independent points and line endpoints use the same `MapPoint` class, and `MapLine`
+forwards endpoint changes in the same way. Runtime objects expose no `geometry`
+property. The spatial subsystem creates stable views that read their current
+positions. See the [position and geometry boundary](GEOMETRY_AND_ROUTES.md#object-positions-and-internal-geometry-views--accepted-2026-10-05).
+
+`map.definition` returns `ResolvedMapDefinition | undefined`, preserving required
+IDs on objects and owned points after a successful load. It remains the immutable
+resolved load input; runtime position edits do not change this snapshot.
+`load` continues to accept `MapDefinition` with optional IDs.
+
 ## Updates and runtime objects — discussion ongoing
+
+The runtime collection is named `MapObjectCollection` and lives alongside map
+objects in `src/objects/map-object-collection.ts`. The public property remains
+`map.objects`, with `size`, `get(id)`, and iteration. A separate `collections/`
+directory is unnecessary for this domain-specific collection; introduce shared
+collection infrastructure only when concrete consumers need it.
 
 - Storing and restoring user state is the application's responsibility (Redux,
   MobX, etc.). Atlas introduces no session-snapshot system. It provides current
@@ -128,7 +160,7 @@ over earlier proposals; explicitly open questions are not decisions.
   Removing the entire path leaves an empty route.
 - This replaces the preliminary proposal to prohibit removal from the middle.
   A straight connector preserves continuity but does not guarantee terrain traversability.
-  Transferring label/data/type, choosing a material, and identity of created/removed
+  Transferring label and data (including data.type), choosing a material, and identity of created/removed
   parts in these operations still need definition.
 
 ## Loading requests — accepted direction, separate implementation task

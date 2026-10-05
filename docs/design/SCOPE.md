@@ -20,7 +20,8 @@ over earlier proposals; explicitly open questions are not decisions.
 - Atlas identifies the object under the pointer and emits events; the application
   decides how to handle them. A click does not imply selection.
 - Hover is an additional event; click/tap are also supported.
-- Event data includes the object's identity/kind/semantic type, its data,
+- Event data provides access to the object's identity/kind and its application data
+  (including optional data.type for semantic classification),
   access to the associated Meta, and interaction positions in map and client coordinates.
   The exact payload shape is not yet defined.
 - Client coordinates are browser viewport coordinates, equivalent to clientX/clientY.
