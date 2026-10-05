@@ -1,16 +1,17 @@
 import { AtlasError } from '#errors/atlas-error.js';
 
 import type { BackgroundDescription } from '#definitions/map-definition.js';
-import type { ObjectGeometry } from '#definitions/object-definition.js';
-import type { MapObject } from '#objects/map-object.js';
-import type { SceneSymbols } from '#spatial/scene-geometry.js';
+import type { Geometry } from '#spatial/geometry.js';
+import type { SceneObject, SceneSymbols } from '#spatial/scene-geometry.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
+type SvgShape = SVGCircleElement | SVGLineElement | SVGPolylineElement;
+
 export interface SvgObject {
-  readonly object: MapObject;
+  readonly source: SceneObject;
   readonly element: SVGGElement;
-  readonly shape: SVGCircleElement | SVGLineElement;
+  readonly shape: SvgShape;
 }
 
 /** Browser resource preparation stays outside the renderer-independent runtime. */
@@ -30,35 +31,42 @@ export async function prepareImage(background: BackgroundDescription): Promise<S
 
   const element = document.createElementNS(SVG_NAMESPACE, 'image');
   element.setAttribute('href', image.src);
-  element.setAttribute('width', String(background.width));
-  element.setAttribute('height', String(background.height));
+  element.setAttribute('width', String(background.size.width));
+  element.setAttribute('height', String(background.size.height));
 
   return element;
 }
 
 /** Translate a shared symbol into SVG without changing scene composition order. */
-export function createObject(object: MapObject, symbols: SceneSymbols): SvgObject {
-  const { kind } = object.geometry;
+export function createObject(source: SceneObject, symbols: SceneSymbols): SvgObject {
+  const { kind } = source.geometry;
   const group = document.createElementNS(SVG_NAMESPACE, 'g');
   group.setAttribute('class', `atlas-${kind}`);
-  group.setAttribute('data-object-id', object.id);
+  group.setAttribute('data-object-id', source.object.id);
   group.setAttribute('visibility', 'hidden');
   group.setAttribute('aria-hidden', 'true');
 
   const shape = createShape(kind, symbols);
   group.append(shape);
 
-  return { object, element: group, shape };
+  return { source, element: group, shape };
 }
 
 /** Write map-space coordinates; camera scale does not affect this step. */
-export function applyGeometry(
-  element: SVGGElement,
-  shape: SVGCircleElement | SVGLineElement,
-  geometry: ObjectGeometry,
-): void {
+export function applyGeometry(element: SVGGElement, shape: SvgShape, geometry: Geometry): void {
   if (geometry.kind === 'point') {
     element.setAttribute('transform', `translate(${geometry.position.x} ${geometry.position.y})`);
+
+    return;
+  }
+
+  if (geometry.kind === 'polyline') {
+    // A single vertex has no stroke; its optional point symbol is prepared separately.
+    const points =
+      geometry.points.length < 2
+        ? ''
+        : geometry.points.map(point => `${point.x},${point.y}`).join(' ');
+    shape.setAttribute('points', points);
 
     return;
   }
@@ -70,11 +78,7 @@ export function applyGeometry(
 }
 
 /** Compensate camera zoom on the point symbol, leaving map-space placement unchanged. */
-export function applyScreenScale(
-  shape: SVGCircleElement | SVGLineElement,
-  kind: ObjectGeometry['kind'],
-  scale: number,
-): void {
+export function applyScreenScale(shape: SvgShape, kind: Geometry['kind'], scale: number): void {
   if (kind !== 'point') {
     return;
   }
@@ -82,14 +86,13 @@ export function applyScreenScale(
   shape.setAttribute('transform', `scale(${scale})`);
 }
 
-function createShape(
-  kind: ObjectGeometry['kind'],
-  symbols: SceneSymbols,
-): SVGCircleElement | SVGLineElement {
-  if (kind === 'line') {
-    const line = document.createElementNS(SVG_NAMESPACE, 'line');
+function createShape(kind: Geometry['kind'], symbols: SceneSymbols): SvgShape {
+  if (kind !== 'point') {
+    const line = document.createElementNS(SVG_NAMESPACE, kind);
     line.setAttribute('stroke-width', String(symbols.line.strokeWidth));
     line.setAttribute('stroke-linecap', symbols.line.lineCap);
+    line.setAttribute('stroke-linejoin', 'round');
+    line.setAttribute('fill', 'none');
     line.setAttribute('vector-effect', 'non-scaling-stroke');
 
     return line;

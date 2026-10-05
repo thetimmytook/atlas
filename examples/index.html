@@ -75,7 +75,7 @@
     </p>
     <p>
       Click or tap a point or line to inspect it. Objects are illustrative positions, not verified
-      loot locations or paths. Use “Move line end” to update a runtime object's geometry.
+      loot locations or paths. Use “Move line end” to update the independent line endpoint.
     </p>
     <p id="status" role="status">Loading map…</p>
     <fieldset class="controls" aria-label="Map controls" disabled>
@@ -127,9 +127,23 @@
 
       // Application UI: Atlas only supplies the object and interaction coordinates.
       map.addEventListener('objectclick', event => {
-        const { object, mapPoint, clientPoint } = event.detail;
+        const { object, route, mapPoint, clientPoint } = event.detail;
         document.querySelector('#object-details').textContent = JSON.stringify(
-          { id: object.id, geometry: object.geometry, mapPoint, clientPoint },
+          {
+            id: object.id,
+            kind: object.kind,
+            routeId: route?.id,
+            ...(object.kind === 'point'
+              ? { position: object.position }
+              : {
+                  points: object.points.map(point => ({
+                    id: point.id,
+                    position: point.position,
+                  })),
+                }),
+            mapPoint,
+            clientPoint,
+          },
           null,
           2,
         );
@@ -138,21 +152,28 @@
       const definition = {
         background: {
           source: new URL('./factory/Factory-ground-floor.svg', import.meta.url).href,
-          width: 130.81831,
-          height: 141.23242,
+          size: { width: 130.81831, height: 141.23242 },
         },
         objects: [
           {
             id: 'demo-line-1',
-            geometry: { kind: 'line', start: { x: 40, y: 45 }, end: { x: 85, y: 70 } },
+            kind: 'line',
+            points: [
+              { kind: 'point', position: { x: 40, y: 45 } },
+              { kind: 'point', position: { x: 85, y: 70 } },
+            ],
           },
-          { id: 'demo-marker-1', geometry: { kind: 'point', position: { x: 40, y: 45 } } },
+          { id: 'demo-marker-1', kind: 'point', position: { x: 40, y: 45 } },
           {
             id: 'demo-line-2',
-            geometry: { kind: 'line', start: { x: 85, y: 70 }, end: { x: 30, y: 110 } },
+            kind: 'line',
+            points: [
+              { kind: 'point', position: { x: 85, y: 70 } },
+              { kind: 'point', position: { x: 30, y: 110 } },
+            ],
           },
-          { id: 'demo-marker-2', geometry: { kind: 'point', position: { x: 85, y: 70 } } },
-          { geometry: { kind: 'point', position: { x: 30, y: 110 } } },
+          { id: 'demo-marker-2', kind: 'point', position: { x: 85, y: 70 } },
+          { kind: 'point', position: { x: 30, y: 110 } },
         ],
       };
 
@@ -171,12 +192,9 @@
       document.querySelector('#right').onclick = () => move(50, 0);
       document.querySelector('#move-line-end').onclick = () => {
         const line = map.objects.get('demo-line-1');
-        const { start, end } = line.geometry;
-        line.geometry = {
-          kind: 'line',
-          start,
-          end: new Point(end.x, end.y === 70 ? 90 : 70),
-        };
+        const end = line.points[1];
+        const { x, y } = end.position;
+        end.position = new Point(x, y === 70 ? 90 : 70);
       };
       document.querySelector('#up').onclick = () => move(0, -50);
       document.querySelector('#down').onclick = () => move(0, 50);

@@ -1,5 +1,5 @@
 import { Camera } from '#camera/camera.js';
-import { normalizeMapDefinition } from '#definitions/map-definition.js';
+import { resolveMapDefinition } from '#definitions/map-definition.js';
 import { AtlasError } from '#errors/atlas-error.js';
 import { CameraControls } from '#interaction/camera-controls.js';
 import { MapCoordinates } from '#interaction/map-coordinates.js';
@@ -7,14 +7,14 @@ import { MapSurfaceEvent } from '#interaction/map-surface-event.js';
 import { ObjectClickEvent } from '#interaction/object-click-event.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
-import { MapObjects } from '#objects/map-objects.js';
+import { MapObjectCollection } from '#objects/map-object-collection.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
 import html from './map-element.html?raw';
 
-import type { MapDefinition } from '#definitions/map-definition.js';
+import type { MapDefinition, ResolvedMapDefinition } from '#definitions/map-definition.js';
 import type { SurfaceInputDetail } from '#interaction/camera-controls.js';
 import type { ClickTrigger } from '#interaction/map-surface-event.js';
 import type { Renderer } from '#renderers/renderer.js';
@@ -25,8 +25,8 @@ export class MapElement extends HTMLElement {
   readonly #camera = new Camera();
   #renderFrame: number | undefined;
   readonly #renderer: Renderer;
-  #definition: MapDefinition | undefined;
-  #objects = new MapObjects();
+  #definition: ResolvedMapDefinition | undefined;
+  #objects = new MapObjectCollection();
   #spatial: Spatial | undefined;
   #clickTrigger: ClickTrigger = 'release';
   #objectConnection: AbortController | undefined;
@@ -82,15 +82,15 @@ export class MapElement extends HTMLElement {
       return;
     }
 
-    const { width, height } = this.#definition.background;
+    const { width, height } = this.#definition.background.size;
     this.#camera.fit(new Rect(0, 0, width, height));
   }
 
-  get objects(): MapObjects {
+  get objects(): MapObjectCollection {
     return this.#objects;
   }
 
-  get definition(): MapDefinition | undefined {
+  get definition(): ResolvedMapDefinition | undefined {
     return this.#definition;
   }
 
@@ -104,17 +104,17 @@ export class MapElement extends HTMLElement {
     this.#loading = true;
 
     try {
-      const normalizedDefinition = normalizeMapDefinition(definition);
-      const objects = new MapObjects(normalizedDefinition.objects);
+      const resolvedDefinition = resolveMapDefinition(definition);
+      const objects = new MapObjectCollection(resolvedDefinition.objects);
       const geometry = prepareSceneGeometry(objects);
       const spatial = new Spatial(geometry);
-      const scene = await this.#renderer.prepare(normalizedDefinition.background, geometry);
+      const scene = await this.#renderer.prepare(resolvedDefinition.background, geometry);
       this.#objectConnection?.abort();
       scene.show();
       this.#objects = objects;
       this.#spatial = spatial;
       this.#controls.cancelClick();
-      this.#definition = normalizedDefinition;
+      this.#definition = resolvedDefinition;
       this.#observeObjects();
       this.fit();
     } finally {
@@ -177,12 +177,19 @@ export class MapElement extends HTMLElement {
     const input = (event as CustomEvent<SurfaceInputDetail>).detail;
     const mapPoint = this.#coordinates.clientToMap(input.clientPoint);
     const shouldClick = this.#clickTrigger === type && (type === 'press' || input.isClick === true);
-    const object = shouldClick ? this.#spatial?.hitTest(mapPoint, this.#camera) : undefined;
+    const hit = shouldClick ? this.#spatial?.hitTest(mapPoint, this.#camera) : undefined;
 
     this.dispatchEvent(new MapSurfaceEvent(type, mapPoint, input));
 
     // A surface listener may disconnect the component or replace its map.
-    if (!object || !this.isConnected || this.#objects.get(object.id) !== object) {
+    if (!hit || !this.isConnected) {
+      return;
+    }
+
+    const owner = hit.route ?? hit.object;
+    const current = this.#objects.get(owner.id);
+
+    if (current !== owner) {
       return;
     }
 
@@ -190,7 +197,7 @@ export class MapElement extends HTMLElement {
       this.#controls.consumeGesture();
     }
 
-    this.dispatchEvent(new ObjectClickEvent(object, mapPoint, input.clientPoint));
+    this.dispatchEvent(new ObjectClickEvent(hit.object, mapPoint, input.clientPoint, hit.route));
   }
 
   #observeObjects(): void {

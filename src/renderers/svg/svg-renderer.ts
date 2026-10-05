@@ -28,7 +28,7 @@ export class SvgRenderer extends Renderer {
     geometry: SceneGeometry,
   ): Promise<PreparedScene> {
     const image = await prepareImage(background);
-    const objects = geometry.objects.map(object => createObject(object, geometry.symbols));
+    const objects = geometry.objects.map(entry => createObject(entry, geometry.symbols));
 
     return {
       show: (): void => {
@@ -53,7 +53,7 @@ export class SvgRenderer extends Renderer {
     const scale = bounds.width / viewport.width;
 
     for (const entry of this.#objects) {
-      const { geometry } = entry.object;
+      const { geometry } = entry.source;
       applyGeometry(entry.element, entry.shape, geometry);
       applyScreenScale(entry.shape, geometry.kind, scale);
       entry.element.removeAttribute('visibility');
