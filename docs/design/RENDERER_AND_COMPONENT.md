@@ -57,10 +57,10 @@ copying is introduced by this preparation step.
 DOM, SVG types, or a renderer dependency. It checks the camera viewport, accounts
 for zoom to preserve screen-sized hit areas, and returns the first hit in reverse
 composition order. This flat-view calculation represents a perpendicular ray; no
-unused 3D ray abstraction or collision engine is introduced. The two spatial files
+unused 3D ray abstraction or collision engine is introduced. Spatial implementation files
 are internal modules, not new package-root exports.
 
-`AtlasRenderer` no longer has a hit-testing method. The SVG backend consumes shared
+`Renderer` no longer has a hit-testing method. The SVG backend consumes shared
 geometry descriptions and only translates them into SVG output. Client-to-map
 conversion remains at the component/browser boundary. Queries use current scene
 state and do not read the last painted SVG state or request a render.
@@ -74,7 +74,7 @@ separate review.
 The line-geometry step under review generalizes `SceneGeometry` to an ordered
 `objects` array and shared `symbols` defaults for point and line primitives.
 The defaults are temporary until per-object material resolution supplies them.
-Both consumers read live object geometry, so endpoint changes do not leave
+Both consumers read internal live geometry views, so endpoint changes do not leave
 stale prepared geometry. SVG uses a non-scaling round stroke for lines; `Spatial`
 uses the shared width and a numeric point-to-segment distance. The runtime fixes
 geometry kind at object construction, so the renderer creates each primitive once
@@ -88,6 +88,19 @@ without camera scale; the point's group holds its translation. Screen-size
 compensation scales only the point symbol inside that group. Lines retain their
 non-scaling stroke. No primitive-type synchronization runs during rendering.
 These are internal SVG operations, not a new public pipeline API.
+
+The route step prepares a polyline entry for the `MapRoute`, followed by point entries
+with `MapPoint` identity and owning-route context. Scene identities use `MapEntry`
+(`MapPoint | MapLine | MapRoute`), preserving the concrete object type through
+picking and events. Both entries use internal live geometry views. The renderer draws SVG `polyline` geometry
+with a round, non-scaling stroke and round joins; spatial queries test adjacent
+coordinate pairs with the same width. No runtime line objects are created.
+Point symbols are shared with existing point rendering/picking, with temporary
+presentation independent of point IDs. Zero/one-point polylines have no stroke;
+a lone route point can still render and receive clicks. Route coordinate getters
+read each owned point's current position. Views and their readonly coordinate
+array are created once during scene preparation; updates do not rebuild them.
+Existing SVG nodes and scene entries are reused.
 
 ## Component lifecycle
 
@@ -104,7 +117,7 @@ These are internal SVG operations, not a new public pipeline API.
 ## First implementation step — merged
 
 The user requested only the Web Component as the first reviewable step.
-`AtlasMap` extends `HTMLElement`, creates an open Shadow DOM with an empty SVG
+`MapElement` extends `HTMLElement`, creates an open Shadow DOM with an empty SVG
 surface, and observes the host content size while connected. Detaching disconnects
 the observer; reconnecting reuses the surface and resumes observation.
 The host application provides the element's size and explicitly registers
@@ -115,14 +128,15 @@ asynchronous map loading, backgrounds, camera behavior, and public interaction
 events remain subsequent steps. The synchronous browser custom-element constructor
 does not establish the future asynchronous loading contract.
 
-Following the user's review, static markup and CSS now live in `atlas-map.html`
-beside `atlas-map.ts`. Vite imports the template as a string through `?raw`; component styles remain isolated inside Shadow DOM. This separation
+Following the user's review, static markup and CSS now live in `map-element.html`
+beside `map-element.ts`. Vite imports the template as a string through `?raw`; component styles remain isolated inside Shadow DOM. This separation
 is prepared for review and does not define the map material system.
 
 ## Map definition and background step — merged
 
 Following review, the component accepts `MapDefinition`: serializable map data
-with a `background` description (image URL and explicit map-space width/height).
+with a `background` description (image URL and explicit map-space dimensions under
+`size: { width, height }`).
 The earlier `MapRuntime` wrapper was removed because it did not yet own runtime
 behavior. This minimal definition is not the final map JSON schema/resource registry.
 
@@ -144,7 +158,7 @@ scale and the background center; public camera controls are a later step.
 The Factory ground-floor example exercises this slice. Layers, mutable objects,
 resource registry/custom loaders, and interaction are still outside this step.
 
-The renderer now has an abstract `AtlasRenderer` base and an SVG-specific
+The renderer now has an abstract `Renderer` base and an SVG-specific
 `SvgRenderer` implementation, as requested during review. The component types its
 renderer through the base class. Background preparation returns a `show()` handle,
 so SVG elements stay inside the concrete renderer and a load is displayed only
@@ -154,30 +168,37 @@ not the complete renderer API.
 ## Camera integration — merged
 
 The component now owns an independent camera and subscribes to its changes while
-connected. `AtlasRenderer.render(viewport, bounds)` receives display dimensions
+connected. `Renderer.render(viewport, bounds)` receives display dimensions
 and the calculated map-space rectangle; `SvgRenderer` only applies these values.
 The previous renderer-owned center/scale calculations moved to `Camera`.
 See [camera implementation](CAMERA.md) for the proposed API and scope.
 
 ## Object display — merged
 
-The first object slice adds optional `objects` to `MapDefinition`, currently using
-`{ id?, geometry: { kind: 'point', position: { x, y } } }`. Atlas renders geometry;
+The first object slice adds optional `objects` to `MapDefinition`. With the later
+concrete-object refactor, point data is `{ id?, kind: 'point', position: { x, y } }`. Line and route data
+contain `points` directly; the spatial subsystem derives internal live geometry
+views from their owned points. Atlas renders geometry;
 marker and zone semantics belong to the application. Explicit IDs must be non-empty
-and unique within the map; omitted IDs are generated by `AtlasId()` and retained
+and unique within the map; omitted IDs are generated by `createId()` and retained
 in the prepared definition and runtime objects. IDs are opaque strings.
 
 `element.objects` is an iterable collection with `size` and `get(id)`. Each
-`AtlasObject` is an `EventTarget`; assigning `object.geometry` validates and copies
-its value, then emits `change`. The component coalesces changes into its next render
-frame and reuses SVG elements. Geometry is immutable when read. Collection mutation,
+`MapObject` is an `EventTarget`. The concrete `MapPoint`, `MapLine`, and `MapRoute` extend it;
+assigning `MapPoint.position` validates and copies its value, then emits `change`.
+Lines and routes forward point changes without storing or rebuilding geometry.
+The component coalesces changes into its next render frame and reuses SVG elements.
+Positions are immutable coordinate values; internal geometry views are readonly
+and read current positions. Collection mutation,
 nested setters, and batch are later steps. A successful map load replaces the
 collection; retained old objects remain usable but no longer update this component.
 Failed preparation preserves the previous collection and display. Disconnect and
 reconnect release and restore subscriptions while keeping the objects.
 
-`element.definition` remains the immutable input snapshot with resolved IDs;
-runtime edits do not mutate it. Live export is a separate planned API.
+`element.definition` returns `ResolvedMapDefinition | undefined`, retaining the
+type-level guarantee of required IDs on objects and their owned points. This type
+is exported from the package root. The value remains the immutable input snapshot
+with resolved IDs; runtime edits do not mutate it. Live export is a separate planned API.
 
 `load(definition)` has no appearance-settings argument. The proposed `MapSettings`
 was removed after review: a global point-icon setting would bypass the planned

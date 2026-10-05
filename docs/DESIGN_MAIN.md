@@ -14,12 +14,34 @@ continue between answers rather than relying on HTML anchors.
 
 - Desktop/mobile, map viewing; the editor is a separate library consumer.
 - Serializable JSON and runtime instances with behavior are separate.
+- Every object shares `MapObjectDefinition` (`id?`, `kind`) and the runtime `MapObject`
+  base (identity and events). `MapPoint`, `MapLine`, and
+  `MapRoute` specialize this foundation. Independent, line-owned, and route-owned points use
+  the same `MapPointDefinition` / `MapPoint` pair. Materials and other common properties will
+  extend it when their contracts are implemented.
 - Atlas objects contain geometry; marker/zone semantics belong to the application.
+- Internal `Geometry` views cover point, line, and polyline forms. Compound geometry is deferred
+  until a concrete use case needs it. Routes use `polyline` with ordered,
+  identifiable points; consecutive points define connected segments without line objects.
+  Owners keep behavior and validation. See
+  [route polylines](design/GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05).
+- Application classification lives in `data.type`, with no separate object-level
+  `type` field. `kind` remains structural. See
+  [classification decision](design/GEOMETRY_AND_ROUTES.md#application-classification--accepted-2026-10-05).
 - Coordinates: x right, y down, z up. SVG first; real 3D is a future direction.
 - Shared objects; layers select objects and clip them using clip. No separate level concept.
 - stackIndex defines composition; it is neither height z nor a substitute for depth in 3D.
-- Routes contain lines, with no intermediate segments or shared route.points.
-  Route behavior maintains continuity.
+- Line and route definitions expose `points` directly; point definitions group
+  coordinates in `position`. IDs are optional in input and stable at runtime.
+  A line owns exactly two points; route point order guarantees continuity.
+- Validated, copied definitions with completed IDs use `Resolved` / `resolve` names.
+  `WithId` requires only the root ID; resolved line and route definitions explicitly
+  require IDs on their owned points. See
+  [identity types](design/GEOMETRY_AND_ROUTES.md#required-identity-type--accepted-2026-10-05).
+  `map.definition` retains this guarantee as `ResolvedMapDefinition | undefined`.
+- Background dimensions use `size: { width, height }`. A future optional third
+  dimension is deferred. Runtime objects expose `position` or owned `points`;
+  the spatial subsystem prepares live geometry views for rendering and queries.
 - Materials are named, with explicit inheritance. Specificity selects one material
   rather than automatically mixing materials across levels. Meta/styles are outdated terms.
 - Properties/behaviors are registered in isolated configuration before creating a map.
@@ -69,10 +91,32 @@ Hit testing has moved out of the renderer into the internal spatial subsystem;
 both consume shared scene geometry. This refactor is merged; see
 [spatial implementation](design/RENDERER_AND_COMPONENT.md#spatial-implementation--merged).
 Straight line geometry, SVG display, spatial picking, and runtime endpoint updates
-are the current reviewable step; see
-[line geometry](design/GEOMETRY_AND_ROUTES.md#line-geometry--pending-review).
-Route composition and continuity are the proposed next step, subject to review
-against the generic object model.
+are merged; see [line geometry](design/GEOMETRY_AND_ROUTES.md#line-geometry--merged).
+Route loading, point-ID resolution, polyline display, and point/path interaction
+are the current reviewable implementation step; route membership editing remains subsequent.
+`MapRouteDefinition` uses `points` directly; the runtime derives polyline geometry. `RouteLine`, `RouteLines`, and endpoint snapping are removed.
+See [route polylines](design/GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05).
+All JSON objects explicitly declare their structural kind. Scene entries separate
+live geometry from runtime identity. Scene entries and click events preserve the
+`MapEntry` union, allowing narrowing by `kind`. A path click returns its `MapRoute`; a vertex
+click returns its `MapPoint` with the owning route. Point symbols use temporary
+appearance defaults independent of whether IDs were supplied or generated.
+Map-object definitions and runtime classes now use the `Map` prefix consistently.
+Standalone and route-owned points share `MapPointDefinition` (`id?`, `kind: 'point'`,
+`position: { x, y }`) and `MapPoint`. Changing an owned point notifies its owner and
+the component; internal geometry views read the current position without being
+rebuilt. Route membership editing remains subsequent. See
+[shared point object and naming](design/GEOMETRY_AND_ROUTES.md#shared-point-object-and-naming--accepted-2026-10-05).
+Independent lines now use `MapLineDefinition` / `MapLine` with `kind: 'line'`.
+The generic geometry-object wrapper and standalone polyline loading are removed;
+`PolylineGeometry` remains route geometry. See
+[concrete map objects](design/GEOMETRY_AND_ROUTES.md#concrete-map-objects--accepted-2026-10-05).
+Point positions and background sizes are grouped under `position` and `size`.
+Lines and routes both own points. See
+[grouped data](design/GEOMETRY_AND_ROUTES.md#grouped-positions-sizes-and-owned-points--accepted-2026-10-05).
+Runtime geometry accessors are removed: points expose `position`, and owners forward
+changes without rebuilding geometry. Stable internal spatial views read those
+positions. See [object positions](design/GEOMETRY_AND_ROUTES.md#object-positions-and-internal-geometry-views--accepted-2026-10-05).
 
 The first architecture pass is sufficient to proceed to prototype validation.
 The user agreed to the prototype scope and goal: validate the idea, identify

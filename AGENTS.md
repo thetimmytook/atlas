@@ -42,6 +42,14 @@ code from the design drafts until implementation is requested.
 
 ## Naming
 
+- Do not prefix ordinary API names with Atlas. Use descriptive names such as
+  MapElement, MapObject, Renderer, MapRoute, and createId. Keep the prefix for
+  AtlasError and its related types so errors identify their library of origin.
+- Use `Map` for map-object classes and their definitions: `MapPointDefinition` /
+  `MapPoint`, `MapRouteDefinition` / `MapRoute`, and `MapObjectDefinition` /
+  `MapObject`. `*Definition` describes serializable input with optional `id`;
+  runtime objects have stable IDs. Mathematical `Point`, `Rect`, and `Size`
+  keep their unprefixed names. `MapDefinition` describes the whole map.
 - Use `UPPER_SNAKE_CASE` for module-level/global string and numeric constants
   such as `SVG_NAMESPACE`. Local variables, functions, and object instances
   remain `camelCase`; declaring a binding with `const` alone does not require uppercase.
@@ -78,7 +86,7 @@ code from the design drafts until implementation is requested.
   and all files under `examples/` have no class-count limit.
   Related interfaces and types may accompany a class.
 - Keep each concrete renderer in its own directory under `src/renderers/`.
-  Keep the shared `AtlasRenderer` base at the renderers root and renderer-specific
+  Keep the shared `Renderer` base at the renderers root and renderer-specific
   helpers in an adjacent utils file, without a separate utils directory.
 
 ## Errors

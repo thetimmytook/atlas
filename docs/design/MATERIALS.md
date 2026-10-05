@@ -7,12 +7,31 @@ over earlier proposals; explicitly open questions are not decisions.
 
 ## Object-model clarification
 
-The current generic-object model replaces built-in marker semantics with geometry
-primitives. The older kind/type assignment examples below need adaptation to that
-model; their replacement API is not yet settled. Named materials and explicit
-inheritance remain accepted. The proposed `MapSettings.point` API was removed after review. Temporary point
-size, stroke, and CSS colors will be replaced by resolved material properties;
-they are not a public appearance contract.
+The current map-object model keeps marker semantics in the application. Concrete
+objects are `MapPoint`, `MapLine`, and `MapRoute`. The older kind/type assignment
+examples below need adaptation to this model; their replacement API is not yet
+settled. Named materials and explicit inheritance remain accepted. The proposed
+`MapSettings.point` API was removed after review. Temporary point size, stroke,
+and CSS colors will be replaced by resolved material properties; they are not a
+public appearance contract.
+
+All objects, including routes and their owned points, share the `MapObjectDefinition`
+and `MapObject` foundations. Material assignment belongs to this common contract
+when implemented; this refactor does not choose its field schema or add a separate
+route-only appearance API. Object `kind` is `point`, `line`, or `route` in the current
+prototype. Points expose `position`; lines and routes expose owned `points`.
+Geometric forms (`point`, `line`, `polyline`) are internal spatial views used by
+rendering and queries, not a public `geometry` property on map objects. Earlier
+`ObjectDefinition`, `kind: 'geometry'`, and route-owned-line wording is historical.
+Material selection must account for the current object model when its earlier
+kind/type rules are revised.
+
+The accepted [classification decision](GEOMETRY_AND_ROUTES.md#application-classification--accepted-2026-10-05)
+moves application `type` to `data.type`; objects have no separate semantic `type`
+field. References to semantic type in the earlier rules below mean this application
+classification. They do not introduce an implicit data selector: how material
+assignment uses application data remains open. Named materials, explicit inheritance,
+and selection of one assigned material remain accepted.
 
 ## Appearance — clarification replacing Meta
 
@@ -25,7 +44,9 @@ they are not a public appearance contract.
   own values override inherited ones. Built-in materials allow maps to work without
   manually defining their appearance.
 - Motivation: explicit dependencies and encapsulation instead of an implicit CSS-like cascade.
-- Confirmed: specificity kind → kind + type → object selects one assigned material
+- Previously agreed specificity kind → kind + semantic classification → object
+  selects one assigned material. Classification now lives in data.type; the exact
+  mapping remains open. The principle is to select one material
   rather than blending properties from materials at these levels. Properties resolve
   only through the selected material's explicit inheritance chain.
 - Each kind has a built-in material; the application may assign materials by kind/type
@@ -58,8 +79,9 @@ they are not a public appearance contract.
 Latest clarification: the user restores material/materials instead of styles.
 No separate style concept is introduced on top of the previously chosen materials.
 Exact API names and the separation of material registry and assignment rules are still discussed.
-Three application levels are accepted: kind → kind + type → specific object;
-the more specific level overrides specified properties. Built-in appearance,
+Three application levels were accepted: kind → kind + semantic classification → specific object;
+classification now lives in data.type and its assignment mechanism remains open.
+The more specific level overrides specified properties. Built-in appearance,
 partial overrides, and updates independent of data remain.
 The user confirmed specificity as an Atlas approach that can be adapted later.
 Source/Unreal were discussed only as examples; their architecture, shader graphs,

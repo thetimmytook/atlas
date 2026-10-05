@@ -10,8 +10,8 @@ export function validateSize(
   value: Size,
   options: NumberValidationOptions = {},
 ): void {
-  validateNumber(`${field}.width`, value.width, options);
-  validateNumber(`${field}.height`, value.height, options);
+  validateNumber(`${field}.width`, value?.width, options);
+  validateNumber(`${field}.height`, value?.height, options);
 
   if (value.width < 0 || value.height < 0) {
     throw new AtlasError('Dimensions must be non-negative.', {

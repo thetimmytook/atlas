@@ -1,4 +1,4 @@
-import { AtlasRenderer } from '#renderers/atlas-renderer.js';
+import { Renderer } from '#renderers/renderer.js';
 
 import {
   applyGeometry,
@@ -10,11 +10,11 @@ import {
 import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
-import type { PreparedScene } from '#renderers/atlas-renderer.js';
+import type { PreparedScene } from '#renderers/renderer.js';
 import type { SceneGeometry } from '#spatial/scene-geometry.js';
 import type { SvgObject } from './svg-renderer.utils.js';
 
-export class SvgRenderer extends AtlasRenderer {
+export class SvgRenderer extends Renderer {
   readonly #surface: SVGSVGElement;
   #objects: readonly SvgObject[] = [];
 
@@ -28,7 +28,7 @@ export class SvgRenderer extends AtlasRenderer {
     geometry: SceneGeometry,
   ): Promise<PreparedScene> {
     const image = await prepareImage(background);
-    const objects = geometry.objects.map(object => createObject(object, geometry.symbols));
+    const objects = geometry.objects.map(entry => createObject(entry, geometry.symbols));
 
     return {
       show: (): void => {
@@ -53,7 +53,7 @@ export class SvgRenderer extends AtlasRenderer {
     const scale = bounds.width / viewport.width;
 
     for (const entry of this.#objects) {
-      const { geometry } = entry.object;
+      const { geometry } = entry.source;
       applyGeometry(entry.element, entry.shape, geometry);
       applyScreenScale(entry.shape, geometry.kind, scale);
       entry.element.removeAttribute('visibility');

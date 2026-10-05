@@ -24,6 +24,9 @@ over earlier proposals; explicitly open questions are not decisions.
   its name and path. This catches typos and missing extension registrations. Keys inside
   application data are not checked against the Atlas registry; data must still be
   JSON-serializable.
+- Application classification is stored in optional data.type, not a separate
+  structural type property. Its values belong to the application and do not need
+  registration in Atlas's structural property registry.
 - Property registration must specify applicability: the object/object type or multiple
   types that support it. Applying a known property to an unsuitable object is rejected
   with a clear error. The exact designation mechanism (kind, classes, capabilities,

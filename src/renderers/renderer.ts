@@ -8,7 +8,7 @@ export interface PreparedScene {
   show(): void;
 }
 
-export abstract class AtlasRenderer {
+export abstract class Renderer {
   abstract prepare(
     background: BackgroundDescription,
     geometry: SceneGeometry,
