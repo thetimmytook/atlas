@@ -46,8 +46,8 @@ Merged in PR #14 on 2026-10-06 with the simplified ID handling decision below.
 `MapRoute.addPoint(definition: MapPointDefinition): MapPoint` adds one point to the
 end of a route and returns its new runtime instance. In an empty route,
 this creates the first point; subsequent points create connecting segments through
-the existing ordered-point model. The insertion/removal step below extends this
-contract; replacement remains deferred.
+the existing ordered-point model. The insertion/removal and range replacement steps
+below extend this contract.
 
 The operation validates and copies input and generates an omitted ID. Explicit
 duplicate IDs are accepted under the ID handling decision below. Invalid input preserves state and emits
@@ -74,6 +74,8 @@ segment. Historical line-based examples below are superseded and do not authoriz
 an `addLine` implementation. Independent `MapLine` objects remain supported.
 
 ## Route point insertion and removal — accepted 2026-10-06, implemented for review
+
+Merged in PR #19 on 2026-10-06.
 
 The user approved point removal and the next insertion step together.
 `MapRoute.insertPoint(index: number, definition: MapPointDefinition): MapPoint`
@@ -104,10 +106,62 @@ nodes are reused; inserted symbols occupy their route's composition position, an
 removed symbols disappear. Spatial queries observe the new path immediately,
 including inside change handlers and before rendering. A point removed in a surface
 handler cannot produce an object click through its former route. Disconnected maps
-observe current membership on reconnect. Range replacement remains a separate step.
+observe current membership on reconnect. Range replacement is described below.
 
 The Factory example inserts between the first two vertices and removes the most
 recent inserted point through retained instance identity.
+
+## Route point range replacement — accepted 2026-10-06, implemented for review
+
+`MapRoute.replacePoints` has this contract:
+
+```ts
+replacePoints(
+  startIndex: number,
+  endIndex: number,
+  definitions: readonly MapPointDefinition[],
+): readonly MapPoint[];
+```
+
+It replaces the half-open range `[startIndex, endIndex)` and returns a frozen array
+of the new runtime points in
+insertion order. Both indices must be integers satisfying
+`0 <= startIndex <= endIndex <= route.points.length`. Negative indices, rounding,
+and clamping are unsupported. Invalid bounds throw `AtlasError` with
+`INVALID_ROUTE_POINT_RANGE` and the indices/bounds in `details`.
+
+An empty range inserts before `startIndex`; the array length inserts at the end.
+An empty replacement list deletes the selected range. Selecting
+`[0, route.points.length)` replaces the whole route, or clears it with an empty
+list. An empty range with an empty list returns a frozen empty array, retains the
+current `route.points` array, and emits no event. An empty route accepts only
+`[0, 0)`.
+
+All definitions are validated and copied, and all new points are created before
+route membership or subscriptions change. Invalid input or failed preparation
+preserves the point array, membership, and subscriptions and emits no `change`.
+Input must be an array of explicit `kind: 'point'` definitions with valid positions
+and optional IDs. Missing IDs are generated; explicit duplicate IDs remain accepted.
+
+Every selected point is removed, and every new definition creates a new `MapPoint`,
+even when its ID or coordinates match a selected point. Points before `startIndex`
+and from `endIndex` onward retain their exact instances and IDs. There is no
+endpoint-matching or snapping requirement: connectivity follows the resulting
+ordered points. The route releases removed-point subscriptions; retained external
+references stay editable and emit their own events. A removed point also attached
+as a map root keeps that root appearance and subscription.
+
+A successful change replaces the frozen readonly point array and emits exactly
+one `change` after membership and subscriptions are updated. Previously retained
+arrays keep their old membership and live point references. `map.definition`
+remains the immutable resolved load snapshot. Geometry and picking see the new
+order immediately, including inside change handlers. SVG updates on the next
+scheduled frame, retaining surviving scene entries, coordinate views, and nodes.
+Same-length replacement is detected by array identity, including after reconnect.
+Meaningful event payloads and `map.batch` remain separate steps.
+
+The Factory example replaces the whole route interior with two new vertices in one
+operation while preserving both endpoint instances and IDs.
 
 ## ID handling — accepted 2026-10-06, implemented for review
 

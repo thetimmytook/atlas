@@ -112,7 +112,7 @@ and do not depend on the component's connection or listener order. Ordinary posi
 edits and camera changes retain the arrays and nodes. See the
 [append contract](RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
 
-Route point insertion and removal are implemented for review. Polyline arrays
+Route point insertion and removal are merged in PR #19. Polyline arrays
 follow current membership/order and reuse weakly cached coordinate views for
 surviving points. Existing scene entries and SVG nodes remain stable; synchronization
 inserts new symbols in order and removes retired ones. Spatial queries read the
@@ -120,6 +120,15 @@ current path before rendering. If a surface handler removes a hit route point,
 the component checks its current owned membership and suppresses the stale click.
 Reconnect applies edits made while disconnected. See the
 [editing contract](RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review).
+
+Route point range replacement is implemented for review using the same array-identity
+detection and synchronization. New geometry and scene entries follow the resulting
+point order even when the point count is unchanged. Surviving coordinate views,
+entries, path nodes, and point nodes are reused; removed vertex nodes are retired.
+Picking sees replacements before rendering and suppresses a stale click if a surface
+handler replaces the hit point. Reconnect applies replacement made while detached.
+No renderer-specific behavior is added to the runtime. See the
+[replacement contract](RUNTIME_AND_LOADING.md#route-point-range-replacement--accepted-2026-10-06-implemented-for-review).
 
 Root-object addition is merged in PR #15. Shared scene descriptions also
 detect growth in the root collection, refresh their ordered entries lazily, and
