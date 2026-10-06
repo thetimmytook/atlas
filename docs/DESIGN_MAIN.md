@@ -36,9 +36,11 @@ continue between answers rather than relying on HTML anchors.
 - Line and route definitions expose `points` directly; point definitions group
   coordinates in `position`. IDs are optional in input and stable at runtime.
   A line owns exactly two points; route point order guarantees continuity.
-- Routes support copied point insertion by index and removal by exact instance.
+- Routes support copied point insertion by index, removal by exact instance, and
+  replacement of a half-open index range with copied definitions.
   Surviving points, coordinate views, and SVG nodes retain their identity. See
-  [route point editing](design/RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review).
+  [route point editing](design/RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review)
+  and [range replacement](design/RUNTIME_AND_LOADING.md#route-point-range-replacement--accepted-2026-10-06-implemented-for-review).
 - Validated, copied definitions with completed IDs use `Resolved` / `resolve` names.
   `WithId` requires only the root ID; resolved line and route definitions explicitly
   require IDs on their owned points. See
@@ -118,11 +120,16 @@ are merged; see [line geometry](design/GEOMETRY_AND_ROUTES.md#line-geometry--mer
 Route loading, point-ID resolution, polyline display, and point/path interaction
 are merged in PR #13. `MapRoute.addPoint` is merged in PR #14: append a copied
 point definition, replace the readonly point array, and update SVG and spatial picking.
-`addLine` is removed from route plans. Point insertion and removal are implemented
-for review: `insertPoint(index, definition)` copies a point, and `removePoint(point)`
+`addLine` is removed from route plans. Point insertion and removal are merged in
+PR #19: `insertPoint(index, definition)` copies a point, and `removePoint(point)`
 detaches the exact owned instance. Internal geometry now follows current membership
-and order while reusing surviving coordinate views and SVG nodes. Replacement remains
-subsequent. The example can insert a middle point and remove it by reference.
+and order while reusing surviving coordinate views and SVG nodes. Range replacement
+is implemented for review: `replacePoints(startIndex, endIndex, definitions)` replaces
+`[startIndex, endIndex)` in one operation and returns the new points. It validates all
+input before changing membership and preserves outside instances and IDs. The example
+can insert/remove a middle point and replace the route interior while retaining endpoints.
+Event payloads and `map.batch` remain subsequent separate steps. See
+[range replacement](design/RUNTIME_AND_LOADING.md#route-point-range-replacement--accepted-2026-10-06-implemented-for-review).
 See [route append](design/RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
 Dynamic root-object addition through `map.objects.add` is merged in PR #15.
 It uses the same validation, copying, and ID generation as loading; existing scene
@@ -147,8 +154,8 @@ Map-object definitions and runtime classes now use the `Map` prefix consistently
 Standalone and route-owned points share `MapPointDefinition` (`id?`, `kind: 'point'`,
 `position: { x, y }`) and `MapPoint`. Changing an owned point notifies its owner and
 the component; internal geometry views read the current position without being
-rebuilt. Route point appending is merged in PR #14; insertion/removal are implemented
-for review, and range replacement remains subsequent. See
+rebuilt. Route point appending is merged in PR #14; insertion/removal are merged in PR #19,
+and range replacement is implemented for review. See
 [shared point object and naming](design/GEOMETRY_AND_ROUTES.md#shared-point-object-and-naming--accepted-2026-10-05).
 Independent lines now use `MapLineDefinition` / `MapLine` with `kind: 'line'`.
 The generic geometry-object wrapper and standalone polyline loading are removed;

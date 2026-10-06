@@ -85,10 +85,12 @@
       and its route. Objects are illustrative positions, not verified loot locations or paths. Use
       “Move line end” to update the independent line or “Move route point” to update the route. “Add
       route point” appends a new vertex that can be inspected and moved. “Insert route point” adds a
-      vertex between the first two; “Remove inserted point” removes the most recent insertion. “Add
-      point” creates an independent point at the camera center; “Move added point” moves the most
-      recent one. “Remove added point” detaches that point from the map. It can still be moved while
-      detached; “Restore added point” returns the same point at its current position.
+      vertex between the first two; “Remove inserted point” removes the most recent insertion.
+      “Replace route interior” replaces every point between the endpoints with two new vertices in
+      one operation, keeping both endpoints. “Add point” creates an independent point at the camera
+      center; “Move added point” moves the most recent one. “Remove added point” detaches that point
+      from the map. It can still be moved while detached; “Restore added point” returns the same
+      point at its current position.
     </p>
     <p id="status" role="status">Loading map…</p>
     <fieldset class="controls" aria-label="Map controls" disabled>
@@ -104,6 +106,7 @@
       <button type="button" id="add-route-point">Add route point</button>
       <button type="button" id="insert-route-point">Insert route point</button>
       <button type="button" id="remove-route-point" disabled>Remove inserted point</button>
+      <button type="button" id="replace-route-points">Replace route interior</button>
       <button type="button" id="add-point">Add point</button>
       <button type="button" id="move-added-point" disabled>Move added point</button>
       <button type="button" id="remove-added-point" disabled>Remove added point</button>
@@ -263,6 +266,17 @@
         route.removePoint(insertedRoutePoint);
         document.querySelector('#remove-route-point').disabled = true;
         status.textContent = `Removed route point ${insertedRoutePoint.id}; route has ${route.points.length} points.`;
+      };
+      document.querySelector('#replace-route-points').onclick = () => {
+        const route = map.objects.get('demo-route');
+        const start = route.points[0];
+        const end = route.points.at(-1);
+        const points = route.replacePoints(1, route.points.length - 1, [
+          { kind: 'point', position: new Point(start.position.x, end.position.y) },
+          { kind: 'point', position: new Point(end.position.x, start.position.y) },
+        ]);
+        document.querySelector('#remove-route-point').disabled = true;
+        status.textContent = `Replaced route interior with ${points.length} new points; endpoints ${start.id} and ${end.id} retained.`;
       };
       let addedPoint;
       document.querySelector('#add-point').onclick = () => {

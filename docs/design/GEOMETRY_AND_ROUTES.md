@@ -40,9 +40,13 @@ and SVG nodes for existing objects are reused. New point symbols remain above th
 path and below later map objects. Picking observes the new vertex and connecting
 segment immediately, independently of rendering. `addLine` is removed from the
 route API plans: consecutive owned points already define segments. Insertion and
-removal are implemented for review under the
+removal are merged in PR #19 under the
 [editing contract](RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review);
-replacement remains a future step. See the full
+range replacement is implemented for review under the
+[replacement contract](RUNTIME_AND_LOADING.md#route-point-range-replacement--accepted-2026-10-06-implemented-for-review).
+It replaces exactly the selected ordered points with new instances, without ID or
+coordinate matching; surviving points and their coordinate views retain identity.
+No external-endpoint agreement is required. See the full
 [append contract](RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
 
 ## Object positions and internal geometry views — accepted 2026-10-05
@@ -62,8 +66,8 @@ geometry views for rendering and spatial queries. Point/line getters read curren
 positions; route coordinate views expose live x/y getters in one stable readonly
 array. Reads and point edits do not recreate these views or copy route arrays.
 Readonly live views are internal projections, not immutable coordinate snapshots.
-This originally covered position edits only; the append and insertion/removal
-decisions extend it to membership changes. Coordinate views are weakly cached by
+This originally covered position edits only; the append, insertion/removal, and range
+replacement decisions extend it to membership changes. Coordinate views are weakly cached by
 point identity and reused in the new order; reads and position edits keep the array.
 
 This supersedes the earlier public geometry getters/setters and geometry-rebuilding

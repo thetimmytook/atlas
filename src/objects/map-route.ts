@@ -68,6 +68,52 @@ export class MapRoute extends MapObject {
     return true;
   }
 
+  /** Replace [startIndex, endIndex) with copied points and return the new instances. */
+  replacePoints(
+    startIndex: number,
+    endIndex: number,
+    definitions: readonly MapPointDefinition[],
+  ): readonly MapPoint[] {
+    if (
+      !Number.isInteger(startIndex) ||
+      !Number.isInteger(endIndex) ||
+      startIndex < 0 ||
+      startIndex > endIndex ||
+      endIndex > this.#points.length
+    ) {
+      throw new AtlasError('Route point range must use integers within replacement bounds.', {
+        code: 'INVALID_ROUTE_POINT_RANGE',
+        details: { startIndex, endIndex, minimum: 0, maximum: this.#points.length },
+      });
+    }
+
+    validateMapPoints('definitions', definitions);
+    const points = createMapPoints(definitions);
+
+    if (startIndex === endIndex && points.length === 0) {
+      return points;
+    }
+
+    const removed = this.#points.slice(startIndex, endIndex);
+    this.#points = Object.freeze([
+      ...this.#points.slice(0, startIndex),
+      ...points,
+      ...this.#points.slice(endIndex),
+    ]);
+
+    for (const point of removed) {
+      point.removeEventListener('change', this.#pointChange);
+    }
+
+    for (const point of points) {
+      point.addEventListener('change', this.#pointChange);
+    }
+
+    this.dispatchEvent(new Event('change'));
+
+    return points;
+  }
+
   readonly #pointChange = (): void => {
     this.dispatchEvent(new Event('change'));
   };
