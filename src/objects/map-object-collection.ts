@@ -1,16 +1,22 @@
+import { resolveMapEntry } from '#definitions/map-definition.js';
+
 import { MapLine } from './map-line.js';
 import { MapPoint } from './map-point.js';
 import { MapRoute } from './map-route.js';
 
-import type { ResolvedMapEntry } from '#definitions/map-definition.js';
+import type { MapEntryDefinition, ResolvedMapEntry } from '#definitions/map-definition.js';
+import type { MapLineDefinition } from '#definitions/map-line-definition.js';
+import type { MapPointDefinition } from '#definitions/map-point-definition.js';
+import type { MapRouteDefinition } from '#definitions/map-route-definition.js';
 
 export type MapEntry = MapLine | MapPoint | MapRoute;
 
-/** Read access to the runtime objects of one successfully prepared map. */
-export class MapObjectCollection implements Iterable<MapEntry> {
-  readonly #objects: readonly MapEntry[];
+/** Ordered runtime objects with copied-definition additions and first-match ID lookup. */
+export class MapObjectCollection extends EventTarget implements Iterable<MapEntry> {
+  #objects: readonly MapEntry[];
 
   constructor(definitions: readonly ResolvedMapEntry[] = []) {
+    super();
     this.#objects = Object.freeze(definitions.map(createMapObject));
   }
 
@@ -21,6 +27,22 @@ export class MapObjectCollection implements Iterable<MapEntry> {
   /** Return the first root object with this ID in collection order. */
   get(id: string): MapEntry | undefined {
     return this.#objects.find(object => object.id === id);
+  }
+
+  add(definition: MapPointDefinition): MapPoint;
+  add(definition: MapLineDefinition): MapLine;
+  add(definition: MapRouteDefinition): MapRoute;
+  add(definition: MapEntryDefinition): MapEntry;
+
+  /** Validate and create before committing membership; existing iterators keep their snapshot. */
+  add(definition: MapEntryDefinition): MapEntry {
+    const object = createMapObject(resolveMapEntry(definition));
+    this.#objects = Object.freeze([...this.#objects, object]);
+
+    // Prototype membership notification; replace with the agreed collection event contract.
+    this.dispatchEvent(new CustomEvent<MapEntry>('add', { detail: object }));
+
+    return object;
   }
 
   [Symbol.iterator](): ArrayIterator<MapEntry> {

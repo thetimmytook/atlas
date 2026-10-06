@@ -41,6 +41,8 @@ Sharing one runtime map between multiple views remains a separate design questio
 
 ## Route append — accepted 2026-10-05, implemented for review
 
+Merged in PR #14 on 2026-10-06 with the simplified ID handling decision below.
+
 `MapRoute.addPoint(definition: MapPointDefinition): MapPoint` adds one point to the
 end of a route and returns its new runtime instance. In an empty route,
 this creates the first point; subsequent points create connecting segments through
@@ -72,6 +74,8 @@ an `addLine` implementation. Independent `MapLine` objects remain supported.
 
 ## ID handling — accepted 2026-10-06, implemented for review
 
+Merged in PR #14 on 2026-10-06. The earlier uniqueness experiments remain historical.
+
 Atlas generates an omitted ID through `createId()` using `crypto.randomUUID()`.
 Explicit IDs remain non-empty opaque strings and are preserved as supplied.
 IDs remain stable for the lifetime of each runtime object. Atlas does not reserve
@@ -94,6 +98,44 @@ below are superseded and removed from the implementation.
 An opt-in debug method to find duplicate IDs is a possible later diagnostic,
 not an implemented or agreed public API. Its result format and placement remain
 open; it would report duplicates without making ordinary loading or edits fail.
+
+## Runtime object addition — accepted 2026-10-06, implemented for review
+
+`map.objects.add(definition)` accepts a `MapPointDefinition`, `MapLineDefinition`,
+or `MapRouteDefinition`, appends a new root object, and returns its concrete runtime
+instance. TypeScript overloads preserve the point/line/route return type; a union
+definition returns `MapEntry`. Validation, copying, and ID generation use the same
+resolver as loading. Invalid input changes no membership and emits no notification.
+Explicit duplicate IDs remain accepted. `get(id)` still returns the first matching
+root, size counts every root, and iteration follows collection order.
+
+The operation creates the complete object before changing membership. A retained
+iterator keeps its original membership; a new iterator includes additions.
+The object and owned points are copies of the input. Mutation of the original
+definition does not update the map. `map.definition` remains the resolved load
+snapshot and does not gain dynamically added objects.
+
+New roots render above earlier roots in the current flat composition model;
+route vertices follow their path within that root's position. Picking reads the
+updated scene immediately, including from an addition handler, while SVG updates
+on the next frame. Existing scene entries, geometry views, and SVG nodes are reused.
+Added points, line endpoints, and route points propagate later changes in the same
+way as loaded objects; added routes also support `addPoint`.
+
+The component subscribes to additions and new object changes while connected.
+Reconnect observes additions made while disconnected. Successful loading replaces
+the collection; retained old collections and objects stay usable independently,
+and their additions/edits do not update the replacement map.
+
+Prototype notification: the collection extends `EventTarget` and emits a synchronous
+`CustomEvent<MapEntry>('add', { detail: object })` after membership is committed.
+The component uses it to observe the new instance and schedule rendering. This is
+a provisional membership notification, not the settled collection/change-event
+contract; replace it when that contract is agreed. No root-object removal or
+replacement is implemented in this step. Scene invalidation uses growing collection
+size for now; those operations will need invalidation that also detects equal-size edits.
+
+The Factory example includes Add point and Move added point controls.
 
 ## Object ID registry — superseded experiment, 2026-10-06
 
@@ -173,7 +215,7 @@ TypeScript pre-transform that was needed to execute modern decorator syntax.
 
 The runtime collection is named `MapObjectCollection` and lives alongside map
 objects in `src/objects/map-object-collection.ts`. The public property remains
-`map.objects`, with `size`, `get(id)`, and iteration. A separate `collections/`
+`map.objects`, with `size`, `get(id)`, `add(definition)`, and iteration. A separate `collections/`
 directory is unnecessary for this domain-specific collection; introduce shared
 collection infrastructure only when concrete consumers need it.
 

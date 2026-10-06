@@ -17,6 +17,7 @@ import html from './map-element.html?raw';
 import type { MapDefinition, ResolvedMapDefinition } from '#definitions/map-definition.js';
 import type { SurfaceInputDetail } from '#interaction/camera-controls.js';
 import type { ClickTrigger } from '#interaction/map-surface-event.js';
+import type { MapEntry } from '#objects/map-object-collection.js';
 import type { Renderer } from '#renderers/renderer.js';
 
 export class MapElement extends HTMLElement {
@@ -202,13 +203,29 @@ export class MapElement extends HTMLElement {
     }
 
     this.#objectConnection = new AbortController();
+    this.#objects.addEventListener('add', this.#objectAdded, {
+      signal: this.#objectConnection.signal,
+    });
 
     for (const object of this.#objects) {
-      object.addEventListener('change', this.#requestRender, {
-        signal: this.#objectConnection.signal,
-      });
+      this.#observeObject(object);
     }
   }
+
+  #observeObject(object: MapEntry): void {
+    const connection = this.#objectConnection;
+
+    if (!connection) {
+      return;
+    }
+
+    object.addEventListener('change', this.#requestRender, { signal: connection.signal });
+  }
+
+  readonly #objectAdded = (event: Event): void => {
+    this.#observeObject((event as CustomEvent<MapEntry>).detail);
+    this.#requestRender();
+  };
 
   readonly #requestRender = (): void => {
     if (!this.isConnected || this.#renderFrame !== undefined) {

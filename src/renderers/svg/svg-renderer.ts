@@ -86,7 +86,7 @@ export class SvgRenderer extends Renderer {
     this.#sources = sources;
     let next: SVGGElement | null = null;
 
-    // Insert appended vertices within their owner's composition position, reusing old nodes.
+    // Insert new objects and vertices in composition order, reusing old nodes.
     for (let index = this.#objects.length - 1; index >= 0; index--) {
       const object = this.#objects.at(index)!;
 

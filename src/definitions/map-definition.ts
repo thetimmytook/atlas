@@ -51,47 +51,9 @@ export function resolveMapDefinition(definition: MapDefinition): ResolvedMapDefi
 
   const definitions = definition.objects ?? [];
 
-  const objects = Array.from(definitions.entries(), ([index, object]): ResolvedMapEntry => {
-    const field = `objects[${index}]`;
-    const kind = object?.kind;
-
-    if (!objectKinds.includes(kind)) {
-      throw new AtlasError('Unsupported object kind.', {
-        code: 'INVALID_OBJECT_KIND',
-        details: { field: `${field}.kind`, kind },
-      });
-    }
-
-    validateObjectId(`${field}.id`, object.id);
-
-    if (object.kind === 'point') {
-      validateMapPoint(field, object);
-
-      return resolveMapPoint(object);
-    }
-
-    if (object.kind === 'line') {
-      validateLinePoints(`${field}.points`, object.points);
-    } else {
-      validateMapPoints(`${field}.points`, object.points);
-    }
-
-    const id = object.id ?? createId();
-
-    if (object.kind === 'route') {
-      return Object.freeze({
-        id,
-        kind: 'route',
-        points: resolveMapPoints(object.points),
-      });
-    }
-
-    return Object.freeze({
-      id,
-      kind: object.kind,
-      points: resolveMapPoints(object.points),
-    });
-  });
+  const objects = Array.from(definitions.entries(), ([index, object]) =>
+    resolveMapEntry(object, `objects[${index}]`),
+  );
 
   return Object.freeze({
     background: Object.freeze({
@@ -99,5 +61,47 @@ export function resolveMapDefinition(definition: MapDefinition): ResolvedMapDefi
       size: new Size(background.size.width, background.size.height),
     }),
     objects: Object.freeze(objects),
+  });
+}
+
+/** Shared validation and copying for map loading and runtime additions. */
+export function resolveMapEntry(object: MapEntryDefinition, field = 'object'): ResolvedMapEntry {
+  const kind = object?.kind;
+
+  if (!objectKinds.includes(kind)) {
+    throw new AtlasError('Unsupported object kind.', {
+      code: 'INVALID_OBJECT_KIND',
+      details: { field: `${field}.kind`, kind },
+    });
+  }
+
+  validateObjectId(`${field}.id`, object.id);
+
+  if (object.kind === 'point') {
+    validateMapPoint(field, object);
+
+    return resolveMapPoint(object);
+  }
+
+  if (object.kind === 'line') {
+    validateLinePoints(`${field}.points`, object.points);
+  } else {
+    validateMapPoints(`${field}.points`, object.points);
+  }
+
+  const id = object.id ?? createId();
+
+  if (object.kind === 'route') {
+    return Object.freeze({
+      id,
+      kind: 'route',
+      points: resolveMapPoints(object.points),
+    });
+  }
+
+  return Object.freeze({
+    id,
+    kind: object.kind,
+    points: resolveMapPoints(object.points),
   });
 }
