@@ -38,39 +38,62 @@ const defaultSymbols: SceneSymbols = Object.freeze({
   line: Object.freeze({ strokeWidth: 4, lineCap: 'round' }),
 });
 
-/** Prepare shared geometry descriptions once; positions remain owned by runtime objects. */
+/** Reuse live views; only membership changes replace the ordered scene-entry array. */
 export function prepareSceneGeometry(objects: Iterable<MapEntry>): SceneGeometry {
-  const entries: SceneObject[] = [];
+  const roots = Array.from(objects);
+  const routes = roots.filter(object => object.kind === 'route');
+  const routePoints = new Map<MapRoute, readonly MapPoint[]>();
+  const cache = new Map<MapEntry, SceneObject>();
 
-  for (const object of objects) {
-    entries.push(
-      Object.freeze({
-        object,
-        geometry: createGeometry(object),
-      }),
+  const entryFor = (object: MapEntry, route?: MapRoute): SceneObject => {
+    const cached = cache.get(object);
+
+    if (cached) {
+      return cached;
+    }
+
+    const entry: SceneObject = Object.freeze({
+      object,
+      geometry: createGeometry(object),
+      ...(route ? { route } : {}),
+    });
+    cache.set(object, entry);
+
+    return entry;
+  };
+
+  const prepareEntries = (): readonly SceneObject[] =>
+    Object.freeze(
+      roots.reduce<SceneObject[]>((entries, object) => {
+        entries.push(entryFor(object));
+
+        // Temporary: line endpoints only drive the stroke; endpoint symbols and
+        // interaction will follow their material/property configuration.
+        if (object.kind !== 'route') {
+          return entries;
+        }
+
+        routePoints.set(object, object.points);
+
+        // Temporary point symbols at every route vertex; resolved point materials and
+        // interaction properties will select their presentation independently of IDs.
+        for (const point of object.points) {
+          entries.push(entryFor(point, object));
+        }
+
+        return entries;
+      }, []),
     );
-
-    // Temporary: line endpoints only drive the stroke; endpoint symbols and
-    // interaction will follow their material/property configuration.
-    if (object.kind !== 'route') {
-      continue;
-    }
-
-    // Temporary point symbols at every route vertex; resolved point materials and
-    // interaction properties will select their presentation independently of IDs.
-    for (const point of object.points) {
-      entries.push(
-        Object.freeze({
-          object: point,
-          route: object,
-          geometry: createGeometry(point),
-        }),
-      );
-    }
-  }
+  let entries = prepareEntries();
 
   return Object.freeze({
-    objects: Object.freeze(entries),
+    get objects(): readonly SceneObject[] {
+      if (routes.some(route => routePoints.get(route) !== route.points)) {
+        entries = prepareEntries();
+      }
+
+      return entries;
+    },
     symbols: defaultSymbols,
   });
 }
@@ -97,9 +120,22 @@ function createGeometry(object: MapEntry): Geometry {
     });
   }
 
+  let points = object.points;
+  let positions = Object.freeze(points.map(createPositionView));
+
   return Object.freeze({
     kind: 'polyline',
-    points: Object.freeze(object.points.map(createPositionView)),
+    get points(): readonly Point[] {
+      if (points !== object.points) {
+        positions = Object.freeze([
+          ...positions,
+          ...object.points.slice(points.length).map(createPositionView),
+        ]);
+        points = object.points;
+      }
+
+      return positions;
+    },
   });
 }
 

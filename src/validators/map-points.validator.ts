@@ -35,19 +35,16 @@ export function validateLinePoints(field: string, points: MapLineDefinition['poi
   }
 }
 
-/** Called after validation and reservation of all explicit object and point IDs. */
+/** Copy validated point definitions and fill omitted IDs. */
 export function resolveMapPoints(
   points: MapLineDefinition['points'],
-  ids: Set<string>,
 ): ResolvedMapLineDefinition['points'];
 export function resolveMapPoints(
   points: readonly MapPointDefinition[],
-  ids: Set<string>,
 ): readonly WithId<MapPointDefinition>[];
 
 export function resolveMapPoints(
   points: readonly MapPointDefinition[],
-  ids: Set<string>,
 ): readonly WithId<MapPointDefinition>[] {
-  return Object.freeze(points.map(point => resolveMapPoint(point, ids)));
+  return Object.freeze(points.map(point => resolveMapPoint(point)));
 }

@@ -178,18 +178,12 @@ export class MapElement extends HTMLElement {
     const mapPoint = this.#coordinates.clientToMap(input.clientPoint);
     const shouldClick = this.#clickTrigger === type && (type === 'press' || input.isClick === true);
     const hit = shouldClick ? this.#spatial?.hitTest(mapPoint, this.#camera) : undefined;
+    const objects = this.#objects;
 
     this.dispatchEvent(new MapSurfaceEvent(type, mapPoint, input));
 
     // A surface listener may disconnect the component or replace its map.
-    if (!hit || !this.isConnected) {
-      return;
-    }
-
-    const owner = hit.route ?? hit.object;
-    const current = this.#objects.get(owner.id);
-
-    if (current !== owner) {
+    if (!hit || !this.isConnected || this.#objects !== objects) {
       return;
     }
 

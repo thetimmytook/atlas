@@ -11,12 +11,14 @@ import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
 import type { PreparedScene } from '#renderers/renderer.js';
-import type { SceneGeometry } from '#spatial/scene-geometry.js';
+import type { SceneGeometry, SceneObject } from '#spatial/scene-geometry.js';
 import type { SvgObject } from './svg-renderer.utils.js';
 
 export class SvgRenderer extends Renderer {
   readonly #surface: SVGSVGElement;
   #objects: readonly SvgObject[] = [];
+  #geometry: SceneGeometry | undefined;
+  #sources: readonly SceneObject[] = [];
 
   constructor(surface: SVGSVGElement) {
     super();
@@ -28,11 +30,14 @@ export class SvgRenderer extends Renderer {
     geometry: SceneGeometry,
   ): Promise<PreparedScene> {
     const image = await prepareImage(background);
-    const objects = geometry.objects.map(entry => createObject(entry, geometry.symbols));
+    const sources = geometry.objects;
+    const objects = sources.map(entry => createObject(entry, geometry.symbols));
 
     return {
       show: (): void => {
         this.#objects = objects;
+        this.#geometry = geometry;
+        this.#sources = sources;
         this.#surface.replaceChildren(image, ...objects.map(object => object.element));
       },
     };
@@ -51,12 +56,45 @@ export class SvgRenderer extends Renderer {
       `${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}`,
     );
     const scale = bounds.width / viewport.width;
+    this.#syncObjects();
 
     for (const entry of this.#objects) {
       const { geometry } = entry.source;
       applyGeometry(entry.element, entry.shape, geometry);
       applyScreenScale(entry.shape, geometry.kind, scale);
       entry.element.removeAttribute('visibility');
+    }
+  }
+
+  #syncObjects(): void {
+    const geometry = this.#geometry;
+
+    if (!geometry) {
+      return;
+    }
+
+    const sources = geometry.objects;
+
+    if (sources === this.#sources) {
+      return;
+    }
+
+    const previous = new Map(this.#objects.map(object => [object.source, object]));
+    this.#objects = sources.map(
+      source => previous.get(source) ?? createObject(source, geometry.symbols),
+    );
+    this.#sources = sources;
+    let next: SVGGElement | null = null;
+
+    // Insert appended vertices within their owner's composition position, reusing old nodes.
+    for (let index = this.#objects.length - 1; index >= 0; index--) {
+      const object = this.#objects.at(index)!;
+
+      if (object.element.nextSibling !== next || object.element.parentNode !== this.#surface) {
+        this.#surface.insertBefore(object.element, next);
+      }
+
+      next = object.element;
     }
   }
 }

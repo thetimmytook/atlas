@@ -1,7 +1,8 @@
 import { AtlasError } from '#errors/atlas-error.js';
 import { Point } from '#math/point.js';
-import { resolveObjectId } from '#objects/create-id.js';
+import { createId } from '#objects/create-id.js';
 
+import { validateObjectId } from './object-id.validator.js';
 import { validatePoint } from './point.validator.js';
 
 import type { WithId } from '#definitions/identity.js';
@@ -15,16 +16,14 @@ export function validateMapPoint(field: string, point: MapPointDefinition): void
     });
   }
 
+  validateObjectId(`${field}.id`, point.id);
   validatePoint(`${field}.position`, point.position);
 }
 
-/** Called after validation and reservation of all explicit object and point IDs. */
-export function resolveMapPoint(
-  point: MapPointDefinition,
-  ids: Set<string>,
-): WithId<MapPointDefinition> {
+/** Copy a validated definition and fill an omitted ID. */
+export function resolveMapPoint(point: MapPointDefinition): WithId<MapPointDefinition> {
   return Object.freeze({
-    id: resolveObjectId(point.id, ids),
+    id: point.id ?? createId(),
     kind: 'point',
     position: new Point(point.position.x, point.position.y),
   });
