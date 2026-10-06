@@ -42,8 +42,11 @@ route-operation and ID-API expansion; preserve existing behavior. Range replacem
 remains recorded as implemented for review, not automatically approved by this plan.
 
 1. **Protect current behavior with focused tests (finding 15).** Choose the test runner
-   and component-test environment as a concrete tooling step; Vitest and happy-dom
-   are review suggestions, not selected dependencies. Cover validation atomicity,
+   and component-test environment as a concrete tooling step. Model/spatial/camera
+   regression tests are merged: Vitest with the Node environment (77 tests).
+   Component load/lifecycle contract tests using browser stand-ins are implemented
+   for review with the scene extraction below; a full DOM test environment remains
+   a separate decision. Cover validation atomicity,
    route membership/order and surviving identity, immediate picking before render,
    stale-click suppression, detach/reconnect, reattachment during removal handlers,
    failed-load preservation, and camera behavior. Start with DOM-independent model,
@@ -157,3 +160,14 @@ and separate commit authorization are still required.
 
 These are proposed working steps and criteria, not additional approved requirements.
 Source-map research: [TARKOV_MAP_AUDIT.md](../TARKOV_MAP_AUDIT.md).
+
+## Benchmark step one — implemented for review, 2026-10-06
+
+A standalone real-browser Atlas SVG benchmark now exercises deterministic 3000/5000
+root point-only and mixed point/line/route scenes with the current Factory background.
+Load, pan, zoom, internal picking, geometry edits, add/remove, route membership, and
+wheel dispatch are measured before runtime architecture changes. Production timing
+and intrusive counters are separate. See [baseline and method](../performance/BASELINE.md).
+Leaflet SVG/Canvas comparison is pending the user's approval of step one. Mobile,
+layers/z/clipping, labels, and full prototype validation remain outstanding; no
+numerical load gate has been passed or new architecture contract accepted.

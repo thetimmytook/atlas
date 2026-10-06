@@ -155,6 +155,51 @@ is unchanged. Older line-identity wording below is historical.
   contour, zone radius) stays in map coordinates and scales when zooming in.
   The exact configuration API remains open.
 
+## Zoom-dependent detail and marker aggregation — future proposal, 2026-10-06
+
+The user identified visual crowding at a whole-map view and proposed optional LOD
+as a later, non-priority direction. This records an open proposal, not an approved
+API or an addition to the current prototype implementation sequence.
+
+Two approaches remain separate:
+
+- Zoom-dependent presentation: keep important objects visible at an overview scale,
+  reveal secondary symbols and labels when zooming in, and optionally reduce zone
+  presentation at small scales. The application determines semantic importance;
+  Atlas must not infer it from a marker category. Threshold units, configuration,
+  material integration, and overrides for focused/selected objects remain open.
+- Marker aggregation: replace crowded eligible point symbols with a derived summary
+  that expands back into individual symbols as scale increases. The user proposed
+  a rectangular summary containing one symbol per category with counts. Category
+  grouping and summary appearance belong to application configuration; this does
+  not settle a built-in widget or automatically merge zone/route geometry.
+
+Architectural recommendations for later review:
+
+- Derive presentation for a specific view without changing runtime membership,
+  object positions, IDs, or serializable source geometry. Rendering and picking
+  must agree about individual symbols, hidden representations, and summaries.
+- Apply active-layer selection, clipping, and application filters before deriving
+  summaries. Define the counted entity and deduplication policy explicitly; repeated
+  appearances and duplicate IDs must not accidentally inflate or collapse counts.
+- Use screen-space proximity for marker grouping. A simple grid at discrete detail
+  levels is a candidate; stable membership during pan and zoom-threshold transitions
+  need validation. No spatial index or clustering dependency is selected now.
+- A summary interaction must remain distinguishable from an individual-object
+  click. The application chooses whether to zoom, open a list, or take another
+  action; event payloads and summary identity remain open.
+- Zone detail needs separate semantic rules: suppressing an outline/label, reducing
+  fill, and hiding a hazard are different choices. Marker aggregation does not
+  automatically define zone LOD.
+
+Suggested order after the current prototype work: validate simple zoom-dependent
+detail first, then aggregation if crowding remains. Preserve unaggregated load
+benchmarks so LOD does not conceal the cost of the underlying scene.
+
+Reference mechanisms, not Atlas dependencies or contracts:
+[Google Maps marker visibility by zoom](https://developers.google.com/maps/documentation/javascript/advanced-markers/collision-behavior#control_marker_visibility_by_map_zoom_level)
+and [Leaflet marker clustering](https://github.com/Leaflet/Leaflet.markercluster).
+
 ## First surface events and object click/tap — merged
 
 `press` and `release` are surface events emitted by the map component, including
