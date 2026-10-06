@@ -84,7 +84,8 @@
       Click or tap a route, point, or independent line to inspect it. A route point shows its own ID
       and its route. Objects are illustrative positions, not verified loot locations or paths. Use
       “Move line end” to update the independent line or “Move route point” to update the route. “Add
-      route point” appends a new vertex that can be inspected and moved.
+      route point” appends a new vertex that can be inspected and moved. “Add point” creates an
+      independent point at the camera center; “Move added point” moves the most recent one.
     </p>
     <p id="status" role="status">Loading map…</p>
     <fieldset class="controls" aria-label="Map controls" disabled>
@@ -98,6 +99,8 @@
       <button type="button" id="move-line-end">Move line end</button>
       <button type="button" id="move-route-point">Move route point</button>
       <button type="button" id="add-route-point">Add route point</button>
+      <button type="button" id="add-point">Add point</button>
+      <button type="button" id="move-added-point" disabled>Move added point</button>
     </fieldset>
     <p>
       <label for="click-trigger">Object click on</label>
@@ -233,6 +236,16 @@
           ),
         });
         status.textContent = `Added route point ${point.id}; route has ${route.points.length} points.`;
+      };
+      let addedPoint;
+      document.querySelector('#add-point').onclick = () => {
+        addedPoint = map.objects.add({ kind: 'point', position: map.camera.center });
+        document.querySelector('#move-added-point').disabled = false;
+        status.textContent = `Added point ${addedPoint.id}; map has ${map.objects.size} objects.`;
+      };
+      document.querySelector('#move-added-point').onclick = () => {
+        const { x, y } = addedPoint.position;
+        addedPoint.position = new Point(x + 10, y);
       };
       document.querySelector('#up').onclick = () => move(0, -50);
       document.querySelector('#down').onclick = () => move(0, 50);

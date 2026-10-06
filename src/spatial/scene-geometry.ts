@@ -1,5 +1,5 @@
 import type { Point } from '#math/point.js';
-import type { MapEntry } from '#objects/map-object-collection.js';
+import type { MapEntry, MapObjectCollection } from '#objects/map-object-collection.js';
 import type { MapPoint } from '#objects/map-point.js';
 import type { MapRoute } from '#objects/map-route.js';
 import type { Geometry } from './geometry.js';
@@ -39,9 +39,9 @@ const defaultSymbols: SceneSymbols = Object.freeze({
 });
 
 /** Reuse live views; only membership changes replace the ordered scene-entry array. */
-export function prepareSceneGeometry(objects: Iterable<MapEntry>): SceneGeometry {
-  const roots = Array.from(objects);
-  const routes = roots.filter(object => object.kind === 'route');
+export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometry {
+  let roots = Array.from(objects);
+  let routes = roots.filter(object => object.kind === 'route');
   const routePoints = new Map<MapRoute, readonly MapPoint[]>();
   const cache = new Map<MapEntry, SceneObject>();
 
@@ -88,6 +88,15 @@ export function prepareSceneGeometry(objects: Iterable<MapEntry>): SceneGeometry
 
   return Object.freeze({
     get objects(): readonly SceneObject[] {
+      // Root membership only grows in this step; removal/replacement need their own invalidation.
+      if (objects.size !== roots.length) {
+        roots = Array.from(objects);
+        routes = roots.filter(object => object.kind === 'route');
+        entries = prepareEntries();
+
+        return entries;
+      }
+
       if (routes.some(route => routePoints.get(route) !== route.points)) {
         entries = prepareEntries();
       }
