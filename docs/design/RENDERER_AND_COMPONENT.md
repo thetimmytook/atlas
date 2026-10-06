@@ -159,6 +159,56 @@ owner/object pair. Each appearance keeps its SVG node and owning-route click con
 Separate maps retain independent scene entries and subscriptions for shared objects.
 See [instance attachment](RUNTIME_AND_LOADING.md#runtime-instance-attachment--accepted-2026-10-06-implemented-for-review).
 
+## Internal scene model — accepted 2026-10-06, implemented for review
+
+The first scene-ownership substep introduces internal `MapModel` in
+`src/objects/map-model.ts`. It owns the resolved definition snapshot, runtime root
+collection, prepared `SceneGeometry`, `Spatial`, and root/collection subscriptions.
+Runtime objects remain the source of coordinates and membership; the model adds no
+second mutable scene representation. It imports without `HTMLElement`, `document`,
+SVG, or a renderer. There is no package-root export or public core entry point.
+
+`MapElement` remains the browser view. It owns its viewport camera, controls,
+client/map coordinate conversion, DOM lifecycle and `ResizeObserver`, renderer,
+RAF scheduling/coalescing, public surface/click delivery, and asynchronous load
+coordination. Picking supplies that view's camera to the model's `Spatial` on each
+query. The model neither owns a camera nor manages multiple viewports.
+
+The connected view starts model observation and listens to its internal synchronous
+`change` event to request rendering. Disconnect stops observation, removes the
+view listener, and cancels the pending frame. Cleanup uses the set of actually
+observed roots, including a root already removed by an earlier handler. Reconnect
+subscribes to current membership once and schedules a render of current state.
+Earlier add/remove handlers may remove, reattach, or disconnect synchronously;
+subscription decisions use the final current membership and observation state.
+Retained runtime objects keep their own behavior and have no public `dispose()`.
+
+Loading validates/copies input, constructs an unobserved candidate, and prepares
+its display/resources while the active map remains usable. Only successful
+preparation applies the display and model; the previous model's subscriptions and
+view listener are then released. Failed candidates never start observation. The
+pre-load collection stays stable, and each successful load replaces it. Definition
+remains the immutable resolved input snapshot; overlap rejection and fit are unchanged.
+
+Existing structural scans, live geometry views, weak caches, and SVG synchronization
+are unchanged. Queries still see edits before painting and while observation is
+stopped. Surviving geometry entries/views and SVG nodes keep their identity. This
+ownership refactor makes no performance claim and introduces no dependencies.
+
+Focused Node/Vitest model tests cover observation, stopped edits, cleanup,
+reattachment, sharing and duplicate IDs. Component contract tests use minimal browser
+stand-ins and a prepared-renderer double while exercising real camera, controls,
+coordinates and spatial queries. Seven additional checks passed in the Codex in-app
+browser with real DOM/SVG: initial load, position edits, route membership edits,
+detach/reconnect, image-decode failure, root reattachment and replacement isolation.
+The Node stand-ins are not a full browser environment; physical mobile validation
+remains outside this step.
+
+Public standalone model lifecycle, a public core entry point, multiple viewport
+management, explicit invalidation/revisions, and affected SVG updates remain
+separate decisions or implementation steps. Layers/z/clipping, batch, materials,
+labels, constructor/validation changes, and a loader framework are outside this step.
+
 ## Component lifecycle
 
 - Framework integrations (React, etc.), if needed, ship as separate libraries

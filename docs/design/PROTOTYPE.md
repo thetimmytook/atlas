@@ -44,7 +44,9 @@ remains recorded as implemented for review, not automatically approved by this p
 1. **Protect current behavior with focused tests (finding 15).** Choose the test runner
    and component-test environment as a concrete tooling step. Model/spatial/camera
    regression tests are merged: Vitest with the Node environment (77 tests).
-   Component tests and a DOM environment remain a separately reviewed step. Cover validation atomicity,
+   Component load/lifecycle contract tests using browser stand-ins are implemented
+   for review with the scene extraction below; a full DOM test environment remains
+   a separate decision. Cover validation atomicity,
    route membership/order and surviving identity, immediate picking before render,
    stale-click suppression, detach/reconnect, reattachment during removal handlers,
    failed-load preservation, and camera behavior. Start with DOM-independent model,
@@ -62,9 +64,9 @@ remains recorded as implemented for review, not automatically approved by this p
    a DOM-independent model with a concrete consumer: the existing component.
    Keep camera, renderer, input, client-coordinate conversion, and browser lifecycle
    at the view boundary. Preserve atomic scene replacement after successful load.
-   Review model lifetime, disconnected edits, and public exposure before coding;
-   `MapRuntime` is a candidate name, not an approved signature. Multiple simultaneous
-   viewports remain outside mandatory prototype scope.
+   The bounded ownership extraction is now implemented for review as internal
+   `MapModel`; see the status below. Public model lifetime/exposure remains a separate
+   decision. Multiple simultaneous viewports remain outside mandatory prototype scope.
 4. **Make updates explicit and bounded (findings 9, 10, 17, 18).** Replace structural
    scans in geometry reads with explicit invalidation from root membership, route
    membership/order, and position changes. Select the simplest internal revision or
@@ -96,6 +98,28 @@ Commit authorization follows the repository instructions; this plan does not gra
 Numerical performance targets must be agreed before calling the load gate passed.
 If SVG falls short, use measurements to choose a bounded correction or document a
 limitation; neither `<use>` nor a different renderer is selected in advance.
+
+## Scene-ownership substep — implemented for review, 2026-10-06
+
+The user authorized only the first architecture substep: internal DOM-independent
+scene ownership with current public behavior preserved. `MapModel` owns the resolved
+input snapshot, runtime collection, prepared geometry, spatial queries and observation;
+`MapElement` remains the viewport/browser consumer. See the
+[concrete boundary and lifecycle](RENDERER_AND_COMPONENT.md#internal-scene-model--accepted-2026-10-06-implemented-for-review).
+
+The committed regression foundation uses Vitest in Node. Focused model tests and
+component load/lifecycle/stale-click contract tests are added in the same tooling,
+without new dependencies. Component tests supply minimal browser stand-ins and a
+renderer double. Seven additional real DOM/SVG checks passed in the Codex in-app
+browser, including surviving nodes, reconnect and failed image preparation. The
+model imports and queries without DOM or renderer globals. Physical mobile testing
+remains outstanding.
+
+This extraction preserves current geometry synchronization rather than implementing
+step 4. Public model lifecycle/core entry point, explicit invalidation/revisions,
+SVG performance work and later prototype features remain unimplemented. No benchmark
+or speed claim belongs to this substep; stress-baseline work is separate. Mini review
+and separate commit authorization are still required.
 
 ## Contract and documentation follow-up
 
