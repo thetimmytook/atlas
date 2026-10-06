@@ -1,0 +1,91 @@
+[
+  {
+    "runId": "timing-2026-10-06T13-44-06.144Z",
+    "buildMode": "production",
+    "sourceCommit": "10690f7a47263983fc1cb50665cada91bc6da3a1",
+    "dirty": "M eslint.config.mts\n M package.json\n?? benchmark.config.mts\n?? examples/stress.bench.ts\n?? examples/stress.html\n?? examples/stress.instrument.ts\n?? examples/stress.scene.ts\n?? tsconfig.examples.json",
+    "hashes": {
+      "examples/stress.html": "77c7d2460990079466402ecf46622ff6aca166d26ebcf2d9b1ae67481d17cbd3",
+      "examples/stress.bench.ts": "6cdd3dbad0629b18b8e477dcff786749d6183d6665f2e779e52f5a1ce49433f5",
+      "examples/stress.scene.ts": "e629165062e38393b56d0f951f63907fb7c07cef3ca93cfa3fc567d198e84e0f",
+      "examples/stress.instrument.ts": "f6128920b98b969b1ef78e67f64882276d0ae67702d85b92c2f4cbb992ccd556",
+      "benchmark.config.mts": "2c06eebb67e3b3005c6b1412a87a0f9779766d012a51078109a45966711f98ec",
+      "package.json": "bcc1a1820c688daa7848b285d74c87cf966b9e57147d897642ba5122ce2e027b",
+      "package-lock.json": "acb191dac892053c23ed7741da1edbfb66d8a4b77342ed366f94eca651202dd0",
+      "examples/factory/Factory-ground-floor.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b"
+    },
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+    "platform": "MacIntel",
+    "hardwareConcurrency": 8,
+    "viewport": {
+      "width": 800,
+      "height": 480
+    },
+    "window": {
+      "width": 1100,
+      "height": 900
+    },
+    "dpr": 1,
+    "seed": 1096043603,
+    "warmups": 1,
+    "repeats": 5,
+    "motionMs": 1500,
+    "querySamples": 200,
+    "instrumented": false,
+    "backgroundCache": "explicit Image.decode warmup before every run; network cold load not measured",
+    "scenes": [
+      {
+        "id": "points-3000-seed-41544c53",
+        "roots": 3000,
+        "composition": "points",
+        "counts": {
+          "points": 3000,
+          "lines": 0,
+          "routes": 0,
+          "ownedPoints": 0,
+          "routeVertices": 0,
+          "visualPrimitives": 3000
+        }
+      },
+      {
+        "id": "points-5000-seed-41544c53",
+        "roots": 5000,
+        "composition": "points",
+        "counts": {
+          "points": 5000,
+          "lines": 0,
+          "routes": 0,
+          "ownedPoints": 0,
+          "routeVertices": 0,
+          "visualPrimitives": 5000
+        }
+      },
+      {
+        "id": "mixed-3000-seed-41544c53",
+        "roots": 3000,
+        "composition": "mixed",
+        "counts": {
+          "points": 1800,
+          "lines": 600,
+          "routes": 600,
+          "ownedPoints": 5400,
+          "routeVertices": 4200,
+          "visualPrimitives": 7200
+        }
+      },
+      {
+        "id": "mixed-5000-seed-41544c53",
+        "roots": 5000,
+        "composition": "mixed",
+        "counts": {
+          "points": 3000,
+          "lines": 1000,
+          "routes": 1000,
+          "ownedPoints": 8996,
+          "routeVertices": 6996,
+          "visualPrimitives": 11996
+        }
+      }
+    ]
+  }
+]

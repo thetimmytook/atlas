@@ -74,6 +74,24 @@ identity, and client-coordinate conversion need the next separately reviewed DOM
 test step. DOM emulation does not validate real layout or browser performance.
 Real-browser E2E tooling remains a separate decision.
 
+## Browser benchmark
+
+`npm run bench:build` builds the standalone `examples/stress.html` production app
+into ignored `dist/benchmark`; `npm run bench:preview` serves it at port 8081.
+Build it after `npm run build`, which clears the library output directory.
+`npm run bench:dev` is explicitly development mode. The browser performs all timing;
+Node only builds/serves and captures source metadata. Benchmark source has its own
+TypeScript/ESLint scope and is excluded by Vitest's `tests/**/*.test.ts` include.
+Library mode still starts solely at `src/index.ts`, excluding benchmark code.
+Mutation scenarios validate definition-derived SVG coordinates, ordered primitives,
+root/owned-point membership, and picking through a spatial view retained before the
+operation. Diagnostic picking also uses a separate focused camera to distinguish
+changed objects in dense scenes. Preparation precedes timing and instrumentation
+reset; validation follows both timing and recording of instrumentation metrics.
+A mismatch invalidates the run. Historical baseline files remain unchanged; new
+exports identify this harness revision through source hashes.
+See [baseline method and limitations](performance/BASELINE.md).
+
 ## Deferred
 
 Framework adapters, workspace splits, package distribution/exports,
