@@ -43,13 +43,22 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
   let roots = Array.from(objects);
   let routes = roots.filter(object => object.kind === 'route');
   const routePoints = new WeakMap<MapRoute, readonly MapPoint[]>();
-  const cache = new WeakMap<MapEntry, SceneObject>();
+
+  // A point may appear as a root and as a route vertex; each owner needs its own scene entry.
+  const cache = new WeakMap<MapEntry, WeakMap<MapEntry, SceneObject>>();
 
   const entryFor = (object: MapEntry, route?: MapRoute): SceneObject => {
-    const cached = cache.get(object);
+    const owner = route ?? object;
+    let ownerEntries = cache.get(owner);
+    const cached = ownerEntries?.get(object);
 
     if (cached) {
       return cached;
+    }
+
+    if (!ownerEntries) {
+      ownerEntries = new WeakMap<MapEntry, SceneObject>();
+      cache.set(owner, ownerEntries);
     }
 
     const entry: SceneObject = Object.freeze({
@@ -57,7 +66,7 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
       geometry: createGeometry(object),
       ...(route ? { route } : {}),
     });
-    cache.set(object, entry);
+    ownerEntries.set(object, entry);
 
     return entry;
   };

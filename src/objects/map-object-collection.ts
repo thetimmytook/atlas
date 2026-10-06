@@ -11,7 +11,7 @@ import type { MapRouteDefinition } from '#definitions/map-route-definition.js';
 
 export type MapEntry = MapLine | MapPoint | MapRoute;
 
-/** Ordered runtime objects with copied-definition additions and reference-based removal. */
+/** Ordered runtime objects with definition copying and instance attachment/removal. */
 export class MapObjectCollection extends EventTarget implements Iterable<MapEntry> {
   #objects: readonly MapEntry[];
 
@@ -29,14 +29,23 @@ export class MapObjectCollection extends EventTarget implements Iterable<MapEntr
     return this.#objects.find(object => object.id === id);
   }
 
+  add<T extends MapEntry>(object: T): T;
   add(definition: MapPointDefinition): MapPoint;
   add(definition: MapLineDefinition): MapLine;
   add(definition: MapRouteDefinition): MapRoute;
-  add(definition: MapEntryDefinition): MapEntry;
+  add(input: MapEntryDefinition | MapEntry): MapEntry;
 
-  /** Validate and create before committing membership; existing iterators keep their snapshot. */
-  add(definition: MapEntryDefinition): MapEntry {
-    const object = createMapObject(resolveMapEntry(definition));
+  /** Copy definitions or attach instances; repeated instance attachment changes no membership. */
+  add(input: MapEntryDefinition | MapEntry): MapEntry {
+    const object =
+      input instanceof MapPoint || input instanceof MapLine || input instanceof MapRoute
+        ? input
+        : createMapObject(resolveMapEntry(input));
+
+    if (this.#objects.includes(object)) {
+      return object;
+    }
+
     this.#objects = Object.freeze([...this.#objects, object]);
 
     // Prototype membership notification; replace with the agreed collection event contract.
