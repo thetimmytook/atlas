@@ -28,6 +28,7 @@ export class MapElement extends HTMLElement {
   readonly #renderer: Renderer;
   #definition: ResolvedMapDefinition | undefined;
   #objects = new MapObjectCollection();
+  readonly #observedObjects = new Set<MapEntry>();
   #spatial: Spatial | undefined;
   #clickTrigger: ClickTrigger = 'release';
   #loading = false;
@@ -215,13 +216,17 @@ export class MapElement extends HTMLElement {
     this.#objects.removeEventListener('add', this.#objectAdded);
     this.#objects.removeEventListener('remove', this.#objectRemoved);
 
-    for (const object of this.#objects) {
+    // A removal listener may disconnect before the removed object's subscription is released.
+    for (const object of this.#observedObjects) {
       object.removeEventListener('change', this.#requestRender);
     }
+
+    this.#observedObjects.clear();
   }
 
   #observeObject(object: MapEntry): void {
     object.addEventListener('change', this.#requestRender);
+    this.#observedObjects.add(object);
   }
 
   #hasObject(object: MapEntry): boolean {
@@ -255,6 +260,7 @@ export class MapElement extends HTMLElement {
     }
 
     object.removeEventListener('change', this.#requestRender);
+    this.#observedObjects.delete(object);
     this.#requestRender();
   };
 
