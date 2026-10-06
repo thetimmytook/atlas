@@ -112,13 +112,23 @@ and do not depend on the component's connection or listener order. Ordinary posi
 edits and camera changes retain the arrays and nodes. See the
 [append contract](RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
 
-Root-object addition is implemented for review. Shared scene descriptions also
+Root-object addition is merged in PR #15. Shared scene descriptions also
 detect growth in the root collection, refresh their ordered entries lazily, and
 keep existing views and entries. The same SVG synchronization adds nodes for new
 roots and route vertices. The component observes additions and subscribes to each
 new object's changes while connected; reconnect observes roots added while detached.
 Spatial queries see new objects before rendering. See
 [runtime additions](RUNTIME_AND_LOADING.md#runtime-object-addition--accepted-2026-10-06-implemented-for-review).
+
+Root-object removal is implemented for review. Scene descriptions compare root
+instances as well as count, detecting a remove/add pair before the next read.
+Weak scene caches do not retain retired objects; SVG synchronization removes retired
+nodes while reusing surviving nodes and the background, even with a zero-sized viewport.
+The component explicitly removes its listener from a detached root and releases all
+collection/root listeners on disconnect or replacement load. Reconnect synchronizes
+removals made while detached. Picking uses current membership before rendering, and
+a root removed during a surface event cannot produce a stale object click. See
+[runtime removal](RUNTIME_AND_LOADING.md#runtime-object-removal--accepted-2026-10-06-implemented-for-review).
 
 ## Component lifecycle
 

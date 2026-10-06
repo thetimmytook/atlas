@@ -11,7 +11,7 @@ import type { MapRouteDefinition } from '#definitions/map-route-definition.js';
 
 export type MapEntry = MapLine | MapPoint | MapRoute;
 
-/** Ordered runtime objects with copied-definition additions and first-match ID lookup. */
+/** Ordered runtime objects with copied-definition additions and reference-based removal. */
 export class MapObjectCollection extends EventTarget implements Iterable<MapEntry> {
   #objects: readonly MapEntry[];
 
@@ -43,6 +43,20 @@ export class MapObjectCollection extends EventTarget implements Iterable<MapEntr
     this.dispatchEvent(new CustomEvent<MapEntry>('add', { detail: object }));
 
     return object;
+  }
+
+  /** Detach this exact root instance; retained references and iterators remain usable. */
+  remove(object: MapEntry): boolean {
+    if (!this.#objects.includes(object)) {
+      return false;
+    }
+
+    this.#objects = Object.freeze(this.#objects.filter(entry => entry !== object));
+
+    // Prototype membership notification; replace with the agreed collection event contract.
+    this.dispatchEvent(new CustomEvent<MapEntry>('remove', { detail: object }));
+
+    return true;
   }
 
   [Symbol.iterator](): ArrayIterator<MapEntry> {

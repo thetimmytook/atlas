@@ -46,6 +46,7 @@ export class SvgRenderer extends Renderer {
   override render(viewport: Size, bounds: Rect): void {
     this.#surface.setAttribute('width', String(viewport.width));
     this.#surface.setAttribute('height', String(viewport.height));
+    this.#syncObjects();
 
     if (viewport.width <= 0 || viewport.height <= 0) {
       return;
@@ -56,7 +57,6 @@ export class SvgRenderer extends Renderer {
       `${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}`,
     );
     const scale = bounds.width / viewport.width;
-    this.#syncObjects();
 
     for (const entry of this.#objects) {
       const { geometry } = entry.source;
@@ -80,9 +80,17 @@ export class SvgRenderer extends Renderer {
     }
 
     const previous = new Map(this.#objects.map(object => [object.source, object]));
-    this.#objects = sources.map(
-      source => previous.get(source) ?? createObject(source, geometry.symbols),
-    );
+    this.#objects = sources.map(source => {
+      const object = previous.get(source) ?? createObject(source, geometry.symbols);
+      previous.delete(source);
+
+      return object;
+    });
+
+    for (const object of previous.values()) {
+      object.element.remove();
+    }
+
     this.#sources = sources;
     let next: SVGGElement | null = null;
 

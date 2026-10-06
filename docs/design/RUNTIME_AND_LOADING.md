@@ -101,6 +101,8 @@ open; it would report duplicates without making ordinary loading or edits fail.
 
 ## Runtime object addition — accepted 2026-10-06, implemented for review
 
+Merged in PR #15 on 2026-10-06.
+
 `map.objects.add(definition)` accepts a `MapPointDefinition`, `MapLineDefinition`,
 or `MapRouteDefinition`, appends a new root object, and returns its concrete runtime
 instance. TypeScript overloads preserve the point/line/route return type; a union
@@ -131,11 +133,48 @@ Prototype notification: the collection extends `EventTarget` and emits a synchro
 `CustomEvent<MapEntry>('add', { detail: object })` after membership is committed.
 The component uses it to observe the new instance and schedule rendering. This is
 a provisional membership notification, not the settled collection/change-event
-contract; replace it when that contract is agreed. No root-object removal or
-replacement is implemented in this step. Scene invalidation uses growing collection
-size for now; those operations will need invalidation that also detects equal-size edits.
+contract; replace it when that contract is agreed. The original addition step had
+no removal/replacement and detected growing collection size. The removal step below
+also compares root identities so equal-size membership changes are detected.
 
 The Factory example includes Add point and Move added point controls.
+
+## Runtime object removal — accepted 2026-10-06, implemented for review
+
+`map.objects.remove(object: MapEntry): boolean` detaches the exact root runtime
+instance. It returns `true` after successful removal and `false` when that instance
+is absent. ID equality does not select another object: duplicate IDs remain accepted,
+and removing the first matching root makes `get(id)` return the next one, if any.
+Owned line/route points and objects from another collection return `false`.
+Removing a route removes its path and vertex symbols from the map while preserving
+the route's owned points and behavior. Editing route membership remains separate.
+
+Removal replaces the frozen root array. New iteration and size reflect the change;
+a retained iterator keeps its original membership and live object references.
+`map.definition` remains the immutable resolved load snapshot. The detached object
+keeps its ID, setters, events, and owned-point behavior. It has no public `dispose`.
+The current `add(definition)` still creates a copy; attaching the same runtime
+instance again remains a separate API step.
+
+Prototype notification: after membership is committed, the collection synchronously
+emits `CustomEvent<MapEntry>('remove', { detail: object })`. An absent-instance removal
+changes no membership and emits no event. As with `add`, this notification is
+provisional until the collection/change-event contract is agreed. The component
+removes its change listener from the detached root and schedules rendering; later
+changes to that root do not request map renders. Internal owner-to-point subscriptions
+remain part of the retained object's behavior.
+
+Picking sees current membership immediately, including inside a removal handler.
+A surface handler may remove a hit root; the component then suppresses the stale
+object click, also for a route-owned point. Removing and adding before a scene read
+is detected even when root count is unchanged. Scene descriptions compare ordered
+root instances; weak caches preserve live entries without retaining removed roots.
+The next SVG synchronization removes retired nodes and releases old scene entries,
+including with a zero-sized viewport; surviving nodes and the background are reused.
+While disconnected, rendering stays paused; reconnect synchronizes current membership.
+Successful loading replaces the collection and removes the old map subscriptions.
+
+The Factory example includes a Remove added point control.
 
 ## Object ID registry — superseded experiment, 2026-10-06
 
@@ -215,7 +254,7 @@ TypeScript pre-transform that was needed to execute modern decorator syntax.
 
 The runtime collection is named `MapObjectCollection` and lives alongside map
 objects in `src/objects/map-object-collection.ts`. The public property remains
-`map.objects`, with `size`, `get(id)`, `add(definition)`, and iteration. A separate `collections/`
+`map.objects`, with `size`, `get(id)`, `add(definition)`, `remove(object)`, and iteration. A separate `collections/`
 directory is unnecessary for this domain-specific collection; introduce shared
 collection infrastructure only when concrete consumers need it.
 
