@@ -46,7 +46,8 @@ Merged in PR #14 on 2026-10-06 with the simplified ID handling decision below.
 `MapRoute.addPoint(definition: MapPointDefinition): MapPoint` adds one point to the
 end of a route and returns its new runtime instance. In an empty route,
 this creates the first point; subsequent points create connecting segments through
-the existing ordered-point model. Insertion, removal, and replacement are deferred.
+the existing ordered-point model. The insertion/removal step below extends this
+contract; replacement remains deferred.
 
 The operation validates and copies input and generates an omitted ID. Explicit
 duplicate IDs are accepted under the ID handling decision below. Invalid input preserves state and emits
@@ -71,6 +72,42 @@ button for manual review.
 `addLine` is removed from route plans: consecutive points already define each
 segment. Historical line-based examples below are superseded and do not authorize
 an `addLine` implementation. Independent `MapLine` objects remain supported.
+
+## Route point insertion and removal — accepted 2026-10-06, implemented for review
+
+The user approved point removal and the next insertion step together.
+`MapRoute.insertPoint(index: number, definition: MapPointDefinition): MapPoint`
+inserts a newly validated, copied point before the given index. Valid indices are
+integers from `0` through `route.points.length`, inclusive: zero prepends, and the
+length appends. An empty route accepts only zero. Invalid indices throw `AtlasError`
+with `INVALID_ROUTE_POINT_INDEX` and the index/bounds in `details`. Invalid indices
+or definitions preserve membership and emit no change. Missing IDs are generated;
+explicit duplicate IDs remain accepted. `addPoint` uses insertion at the end.
+
+`MapRoute.removePoint(point: MapPoint): boolean` removes the exact owned instance,
+returning `true` when it was present and `false` otherwise. Equal IDs do not select
+another point. Removing an interior point connects its former neighbors directly;
+removing an endpoint shortens the path. Removing the last point leaves an empty
+route. The removed point remains functional, but the route releases its change
+subscription. If that point is also attached as a map root, its root appearance
+and map subscription remain active. Shared routes update independently in each map.
+
+Each successful operation replaces the frozen readonly point array and emits one
+`change` after membership and subscriptions are updated. Surviving point instances
+and IDs remain stable. Retained arrays preserve their old membership and live
+references; `map.definition` remains the resolved load snapshot. An absent-point
+removal preserves the array and emits no event.
+
+Internal polyline arrays now follow current point order after membership changes,
+reusing weakly cached coordinate views for surviving points. Scene entries and SVG
+nodes are reused; inserted symbols occupy their route's composition position, and
+removed symbols disappear. Spatial queries observe the new path immediately,
+including inside change handlers and before rendering. A point removed in a surface
+handler cannot produce an object click through its former route. Disconnected maps
+observe current membership on reconnect. Range replacement remains a separate step.
+
+The Factory example inserts between the first two vertices and removes the most
+recent inserted point through retained instance identity.
 
 ## ID handling — accepted 2026-10-06, implemented for review
 
@@ -180,6 +217,8 @@ Successful loading replaces the collection and removes the old map subscriptions
 The Factory example includes a Remove added point control.
 
 ## Runtime instance attachment — accepted 2026-10-06, implemented for review
+
+Merged in PR #17 on 2026-10-06.
 
 `map.objects.add(instance)` accepts an existing `MapPoint`, `MapLine`, or `MapRoute`
 and returns that exact reference. A generic overload preserves the instance's

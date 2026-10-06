@@ -140,17 +140,29 @@ function createGeometry(object: MapEntry): Geometry {
     });
   }
 
+  const cache = new WeakMap<MapPoint, Point>();
+
+  const positionFor = (point: MapPoint): Point => {
+    const cached = cache.get(point);
+
+    if (cached) {
+      return cached;
+    }
+
+    const position = createPositionView(point);
+    cache.set(point, position);
+
+    return position;
+  };
+
   let points = object.points;
-  let positions = Object.freeze(points.map(createPositionView));
+  let positions = Object.freeze(points.map(positionFor));
 
   return Object.freeze({
     kind: 'polyline',
     get points(): readonly Point[] {
       if (points !== object.points) {
-        positions = Object.freeze([
-          ...positions,
-          ...object.points.slice(points.length).map(createPositionView),
-        ]);
+        positions = Object.freeze(object.points.map(positionFor));
         points = object.points;
       }
 
