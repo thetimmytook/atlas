@@ -182,12 +182,13 @@ export class MapElement extends HTMLElement {
 
     this.dispatchEvent(new MapSurfaceEvent(type, mapPoint, input));
 
-    // A surface listener may disconnect the component or replace its map.
+    // A surface listener may disconnect the component, replace its map, or remove the hit.
     if (
       !hit ||
       !this.isConnected ||
       this.#objects !== objects ||
-      !this.#hasObject(hit.route ?? hit.object)
+      !this.#hasObject(hit.route ?? hit.object) ||
+      (hit.route && hit.object.kind === 'point' && !hit.route.points.includes(hit.object))
     ) {
       return;
     }

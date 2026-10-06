@@ -1,3 +1,4 @@
+import { AtlasError } from '#errors/atlas-error.js';
 import { validateMapPoints } from '#validators/map-points.validator.js';
 
 import { MapObject } from './map-object.js';
@@ -30,12 +31,41 @@ export class MapRoute extends MapObject {
 
   /** Append a copied definition; previously retained arrays keep their old membership. */
   addPoint(definition: MapPointDefinition): MapPoint {
+    return this.insertPoint(this.#points.length, definition);
+  }
+
+  /** Insert a copied point before index; the array length appends it. */
+  insertPoint(index: number, definition: MapPointDefinition): MapPoint {
+    if (!Number.isInteger(index) || index < 0 || index > this.#points.length) {
+      throw new AtlasError('Route point index must be an integer within insertion bounds.', {
+        code: 'INVALID_ROUTE_POINT_INDEX',
+        details: { field: 'index', index, minimum: 0, maximum: this.#points.length },
+      });
+    }
+
     const point = new MapPoint(definition);
     point.addEventListener('change', this.#pointChange);
-    this.#points = Object.freeze([...this.#points, point]);
+    this.#points = Object.freeze([
+      ...this.#points.slice(0, index),
+      point,
+      ...this.#points.slice(index),
+    ]);
     this.dispatchEvent(new Event('change'));
 
     return point;
+  }
+
+  /** Remove this exact owned point; retained references remain functional. */
+  removePoint(point: MapPoint): boolean {
+    if (!this.#points.includes(point)) {
+      return false;
+    }
+
+    this.#points = Object.freeze(this.#points.filter(entry => entry !== point));
+    point.removeEventListener('change', this.#pointChange);
+    this.dispatchEvent(new Event('change'));
+
+    return true;
   }
 
   readonly #pointChange = (): void => {

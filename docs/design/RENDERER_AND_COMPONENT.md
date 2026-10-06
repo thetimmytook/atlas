@@ -98,8 +98,8 @@ coordinate pairs with the same width. No runtime line objects are created.
 Point symbols are shared with existing point rendering/picking, with temporary
 presentation independent of point IDs. Zero/one-point polylines have no stroke;
 a lone route point can still render and receive clicks. Route coordinate getters
-read each owned point's current position. Views and their readonly coordinate
-array are created once during scene preparation; updates do not rebuild them.
+read each owned point's current position. Views are stable; their readonly coordinate
+array changes only with membership.
 Existing SVG nodes and scene entries are reused.
 
 The route append step is implemented for review. Shared scene descriptions detect
@@ -111,6 +111,15 @@ use the same current entries, so they see additions before the next render frame
 and do not depend on the component's connection or listener order. Ordinary position
 edits and camera changes retain the arrays and nodes. See the
 [append contract](RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
+
+Route point insertion and removal are implemented for review. Polyline arrays
+follow current membership/order and reuse weakly cached coordinate views for
+surviving points. Existing scene entries and SVG nodes remain stable; synchronization
+inserts new symbols in order and removes retired ones. Spatial queries read the
+current path before rendering. If a surface handler removes a hit route point,
+the component checks its current owned membership and suppresses the stale click.
+Reconnect applies edits made while disconnected. See the
+[editing contract](RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review).
 
 Root-object addition is merged in PR #15. Shared scene descriptions also
 detect growth in the root collection, refresh their ordered entries lazily, and
@@ -125,12 +134,14 @@ instances as well as count, detecting a remove/add pair before the next read.
 Weak scene caches do not retain retired objects; SVG synchronization removes retired
 nodes while reusing surviving nodes and the background, even with a zero-sized viewport.
 The component explicitly removes its listener from a detached root and releases all
-collection/root listeners on disconnect or replacement load. Reconnect synchronizes
+collection/root listeners on disconnect or replacement load. PR #18 tracks actually
+observed roots, ensuring cleanup even when a removal handler disconnects the component
+before its internal removal listener runs. Reconnect synchronizes
 removals made while detached. Picking uses current membership before rendering, and
 a root removed during a surface event cannot produce a stale object click. See
 [runtime removal](RUNTIME_AND_LOADING.md#runtime-object-removal--accepted-2026-10-06-implemented-for-review).
 
-Runtime-instance attachment is implemented for review. Reattached objects resume
+Runtime-instance attachment is merged in PR #17. Reattached objects resume
 their map subscriptions and display current geometry; adding an already present
 root instance causes no notification or render request. Synchronous reattachment
 inside a removal listener preserves the final active subscription. A point can be

@@ -36,6 +36,9 @@ continue between answers rather than relying on HTML anchors.
 - Line and route definitions expose `points` directly; point definitions group
   coordinates in `position`. IDs are optional in input and stable at runtime.
   A line owns exactly two points; route point order guarantees continuity.
+- Routes support copied point insertion by index and removal by exact instance.
+  Surviving points, coordinate views, and SVG nodes retain their identity. See
+  [route point editing](design/RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review).
 - Validated, copied definitions with completed IDs use `Resolved` / `resolve` names.
   `WithId` requires only the root ID; resolved line and route definitions explicitly
   require IDs on their owned points. See
@@ -115,7 +118,11 @@ are merged; see [line geometry](design/GEOMETRY_AND_ROUTES.md#line-geometry--mer
 Route loading, point-ID resolution, polyline display, and point/path interaction
 are merged in PR #13. `MapRoute.addPoint` is merged in PR #14: append a copied
 point definition, replace the readonly point array, and update SVG and spatial picking.
-`addLine` is removed from route plans; insertion, removal, and replacement remain subsequent.
+`addLine` is removed from route plans. Point insertion and removal are implemented
+for review: `insertPoint(index, definition)` copies a point, and `removePoint(point)`
+detaches the exact owned instance. Internal geometry now follows current membership
+and order while reusing surviving coordinate views and SVG nodes. Replacement remains
+subsequent. The example can insert a middle point and remove it by reference.
 See [route append](design/RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
 Dynamic root-object addition through `map.objects.add` is merged in PR #15.
 It uses the same validation, copying, and ID generation as loading; existing scene
@@ -124,10 +131,11 @@ Root removal through `map.objects.remove(object): boolean` is merged in PR #16.
 It uses reference identity, updates scene membership and SVG, and releases the map's
 change subscription while keeping the detached instance usable. The example can
 remove the added point. Root removal does not edit a route's owned-point membership.
-Runtime-instance attachment through `map.objects.add(instance)` is implemented for
-review. It preserves root and owned-point references, permits use in multiple maps,
+Runtime-instance attachment through `map.objects.add(instance)` is merged in PR #17.
+It preserves root and owned-point references, permits use in multiple maps,
 and resumes observation after removal. The example moves a detached point and restores
 it. A shared point has separate scene entries for its root and route-owned appearances.
+PR #18 fixes subscription cleanup when a removal handler disconnects the component.
 `MapRouteDefinition` uses `points` directly; the runtime derives polyline geometry. `RouteLine`, `RouteLines`, and endpoint snapping are removed.
 See [route polylines](design/GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05).
 All JSON objects explicitly declare their structural kind. Scene entries separate
@@ -139,7 +147,8 @@ Map-object definitions and runtime classes now use the `Map` prefix consistently
 Standalone and route-owned points share `MapPointDefinition` (`id?`, `kind: 'point'`,
 `position: { x, y }`) and `MapPoint`. Changing an owned point notifies its owner and
 the component; internal geometry views read the current position without being
-rebuilt. Route point appending is merged in PR #14; other membership edits remain subsequent. See
+rebuilt. Route point appending is merged in PR #14; insertion/removal are implemented
+for review, and range replacement remains subsequent. See
 [shared point object and naming](design/GEOMETRY_AND_ROUTES.md#shared-point-object-and-naming--accepted-2026-10-05).
 Independent lines now use `MapLineDefinition` / `MapLine` with `kind: 'line'`.
 The generic geometry-object wrapper and standalone polyline loading are removed;

@@ -35,12 +35,14 @@ preserving existing point instances and IDs. Previously retained arrays keep the
 old membership; coordinates on their point instances remain live. Position changes
 do not replace the point array or internal coordinate views.
 
-Internal polyline coordinate arrays extend only after point appending; scene entries
+Internal polyline coordinate arrays update only after membership changes; scene entries
 and SVG nodes for existing objects are reused. New point symbols remain above their
 path and below later map objects. Picking observes the new vertex and connecting
 segment immediately, independently of rendering. `addLine` is removed from the
-route API plans: consecutive owned points already define segments. Insertion,
-removal, and replacement remain future steps. See the full
+route API plans: consecutive owned points already define segments. Insertion and
+removal are implemented for review under the
+[editing contract](RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review);
+replacement remains a future step. See the full
 [append contract](RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
 
 ## Object positions and internal geometry views — accepted 2026-10-05
@@ -60,8 +62,9 @@ geometry views for rendering and spatial queries. Point/line getters read curren
 positions; route coordinate views expose live x/y getters in one stable readonly
 array. Reads and point edits do not recreate these views or copy route arrays.
 Readonly live views are internal projections, not immutable coordinate snapshots.
-This originally covered position edits only; the route append decision above
-extends the arrays after membership changes.
+This originally covered position edits only; the append and insertion/removal
+decisions extend it to membership changes. Coordinate views are weakly cached by
+point identity and reused in the new order; reads and position edits keep the array.
 
 This supersedes the earlier public geometry getters/setters and geometry-rebuilding
 descriptions below. Map definitions and ID rules are unchanged. The example edits
