@@ -49,9 +49,34 @@ custom generator, generated `*.html.ts` files, HTML watcher, and http-server are
 No runtime request for an HTML template is necessary in the built library.
 Templates are trusted source files, not a sanitizer for application data.
 
+## Regression tests
+
+Run `npm ci`, then `npm test` for a single test run. `npm test -- camera` filters
+by filename; `npm test -- --watch` enables watch mode. Run `npm run check` for
+type checking (including tests), lint, and formatting.
+
+Vitest 4.1.11 is a development dependency compatible with the checked Node 20.19.6,
+Vite 8.3.1, and TypeScript 6.0.3 setup. Its Node range includes Node 20 and its Vite
+peer range includes Vite 8. It reuses Vite's TypeScript/ESM processing and package.json
+imports without an additional loader. The built-in Node test runner would need a
+TypeScript loader and later handling for raw component templates. The separate
+vitest.config.mts avoids loading the declaration-build plugin during tests.
+
+Tests in `tests/` currently cover models, route editing, spatial queries, and camera
+state using the Node environment and native events. No DOM emulator is installed.
+The test TypeScript project and ESLint scope stay separate from browser source;
+runtime dependencies and package-root exports are unchanged. Tests observe public
+operations, events, picking results, and the existing shared scene-geometry contract.
+They use no snapshots or sleeps; event spies only record notifications and results.
+
+Component lifecycle, stale-click suppression, load/display preservation, SVG node
+identity, and client-coordinate conversion need the next separately reviewed DOM
+test step. DOM emulation does not validate real layout or browser performance.
+Real-browser E2E tooling remains a separate decision.
+
 ## Deferred
 
-Framework adapters, workspace splits, a test runner, package distribution/exports,
+Framework adapters, workspace splits, package distribution/exports,
 minification, publication, and CI remain outside the current scope. There is no
 `sideEffects: false` claim before actual registration behavior and consumption are
 validated. Runtime dependencies must be evaluated for concrete purpose and bundle cost.

@@ -11,7 +11,7 @@ import tseslint from 'typescript-eslint';
 import type { Linter } from 'eslint';
 
 const codeFiles = ['**/*.{ts,mts,js,mjs}'];
-const typedFiles = ['src/**/*.{ts,mts}'];
+const typedFiles = ['src/**/*.{ts,mts}', 'tests/**/*.{ts,mts}'];
 const sonarjsRecommended = sonarjs.configs?.recommended;
 
 if (!sonarjsRecommended) {
@@ -82,6 +82,16 @@ export default defineConfig([
     rules: {
       'import-x/no-nodejs-modules': 'error',
       'import-x/no-extraneous-dependencies': ['error', { devDependencies: false }],
+    },
+  },
+  {
+    files: ['tests/**/*.{ts,mts}'],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: { projectService: false, project: './tsconfig.tests.json' },
+    },
+    settings: {
+      'import-x/resolver': { typescript: { project: './tsconfig.tests.json' } },
     },
   },
   {
