@@ -248,6 +248,12 @@ export class MapElement extends HTMLElement {
 
   readonly #objectRemoved = (event: Event): void => {
     const object = (event as CustomEvent<MapEntry>).detail;
+
+    // An earlier removal listener may already have reattached the same instance.
+    if (this.#hasObject(object)) {
+      return;
+    }
+
     object.removeEventListener('change', this.#requestRender);
     this.#requestRender();
   };

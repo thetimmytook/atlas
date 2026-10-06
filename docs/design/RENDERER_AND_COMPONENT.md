@@ -120,7 +120,7 @@ new object's changes while connected; reconnect observes roots added while detac
 Spatial queries see new objects before rendering. See
 [runtime additions](RUNTIME_AND_LOADING.md#runtime-object-addition--accepted-2026-10-06-implemented-for-review).
 
-Root-object removal is implemented for review. Scene descriptions compare root
+Root-object removal is merged in PR #16. Scene descriptions compare root
 instances as well as count, detecting a remove/add pair before the next read.
 Weak scene caches do not retain retired objects; SVG synchronization removes retired
 nodes while reusing surviving nodes and the background, even with a zero-sized viewport.
@@ -129,6 +129,15 @@ collection/root listeners on disconnect or replacement load. Reconnect synchroni
 removals made while detached. Picking uses current membership before rendering, and
 a root removed during a surface event cannot produce a stale object click. See
 [runtime removal](RUNTIME_AND_LOADING.md#runtime-object-removal--accepted-2026-10-06-implemented-for-review).
+
+Runtime-instance attachment is implemented for review. Reattached objects resume
+their map subscriptions and display current geometry; adding an already present
+root instance causes no notification or render request. Synchronous reattachment
+inside a removal listener preserves the final active subscription. A point can be
+both a root and a route vertex, with stable scene entries cached separately per
+owner/object pair. Each appearance keeps its SVG node and owning-route click context.
+Separate maps retain independent scene entries and subscriptions for shared objects.
+See [instance attachment](RUNTIME_AND_LOADING.md#runtime-instance-attachment--accepted-2026-10-06-implemented-for-review).
 
 ## Component lifecycle
 

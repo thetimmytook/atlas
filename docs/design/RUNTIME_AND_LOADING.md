@@ -141,11 +141,14 @@ The Factory example includes Add point and Move added point controls.
 
 ## Runtime object removal — accepted 2026-10-06, implemented for review
 
+Merged in PR #16 on 2026-10-06.
+
 `map.objects.remove(object: MapEntry): boolean` detaches the exact root runtime
 instance. It returns `true` after successful removal and `false` when that instance
 is absent. ID equality does not select another object: duplicate IDs remain accepted,
 and removing the first matching root makes `get(id)` return the next one, if any.
-Owned line/route points and objects from another collection return `false`.
+An instance absent from this root collection returns `false`, including owned
+line/route points that have not also been attached as roots here.
 Removing a route removes its path and vertex symbols from the map while preserving
 the route's owned points and behavior. Editing route membership remains separate.
 
@@ -153,8 +156,8 @@ Removal replaces the frozen root array. New iteration and size reflect the chang
 a retained iterator keeps its original membership and live object references.
 `map.definition` remains the immutable resolved load snapshot. The detached object
 keeps its ID, setters, events, and owned-point behavior. It has no public `dispose`.
-The current `add(definition)` still creates a copy; attaching the same runtime
-instance again remains a separate API step.
+`add(definition)` still creates a copy. The instance-attachment step below adds a
+separate overload that retains an existing runtime instance.
 
 Prototype notification: after membership is committed, the collection synchronously
 emits `CustomEvent<MapEntry>('remove', { detail: object })`. An absent-instance removal
@@ -175,6 +178,43 @@ While disconnected, rendering stays paused; reconnect synchronizes current membe
 Successful loading replaces the collection and removes the old map subscriptions.
 
 The Factory example includes a Remove added point control.
+
+## Runtime instance attachment — accepted 2026-10-06, implemented for review
+
+`map.objects.add(instance)` accepts an existing `MapPoint`, `MapLine`, or `MapRoute`
+and returns that exact reference. A generic overload preserves the instance's
+concrete type, including a subclass. The root's ID, current position, owned-point
+instances, point order, and behavior are retained; attachment does not copy or
+generate IDs. Input recognized as an instance of these runtime classes uses this
+path; serializable definitions continue through the validated-copy path.
+
+If that instance is already a root in the same collection, `add` returns it without
+changing membership, composition order, or emitting `add`. Other instances with
+the same ID remain distinct roots. New attachments append in root order and emit
+the existing provisional addition notification after membership is committed.
+Retained iterators keep their original membership. `map.definition` remains the
+resolved load snapshot.
+
+A removed root can be edited and reattached; rendering and picking use its current
+state, including points appended to a detached route. The component resumes its
+change subscription. Removal listeners may reattach the same instance synchronously;
+the component checks current membership before removing its change subscription.
+No-op additions do not request rendering or duplicate subscriptions.
+
+One runtime instance may be present in several maps. Each map keeps its own
+collection, scene entries, rendering, and subscriptions. Removing it from one
+map leaves the other maps' membership and subscriptions active. This step supports
+the current point/line/route changes; it adds no global ownership mechanism.
+
+A route-owned point may also be attached as a root. Scene entries are cached per
+owner and object, so the two appearances keep distinct SVG nodes and click context:
+the root appearance has no route context, and the vertex appearance names its route.
+Removing one root appearance preserves the other active appearances. Editing the
+shared point updates its active root and owner displays. Owned-point membership
+remains controlled by the owning line or route; root removal does not edit it.
+
+The Factory example keeps Move added point available after removal and includes
+Restore added point, demonstrating editing and reattaching the same reference.
 
 ## Object ID registry — superseded experiment, 2026-10-06
 
@@ -254,7 +294,7 @@ TypeScript pre-transform that was needed to execute modern decorator syntax.
 
 The runtime collection is named `MapObjectCollection` and lives alongside map
 objects in `src/objects/map-object-collection.ts`. The public property remains
-`map.objects`, with `size`, `get(id)`, `add(definition)`, `remove(object)`, and iteration. A separate `collections/`
+`map.objects`, with `size`, `get(id)`, `add(input)`, `remove(object)`, and iteration. A separate `collections/`
 directory is unnecessary for this domain-specific collection; introduce shared
 collection infrastructure only when concrete consumers need it.
 
