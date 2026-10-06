@@ -62,6 +62,15 @@ Pointer/touch gestures, animation, fit padding, homeView, configurable camera
 constraints, and multiple-camera management remain later steps. No new runtime
 dependencies or browser input handlers were introduced.
 
+## Camera at the scene-model boundary — accepted 2026-10-06, implemented for review
+
+Internal scene ownership now lives in `MapModel`; the viewport's `Camera` remains
+in `MapElement`. `Spatial.hitTest(point, camera)` receives the camera per query, so
+the model has no single stored camera. Controls, coordinate conversion, resize,
+fit after successful load, and RAF scheduling remain view responsibilities.
+Failed preparation preserves the existing camera, and disconnect/reconnect retains
+its state. This extraction adds no camera API or multiple viewport management.
+
 ## Shared math primitives — accepted
 
 Use `src/math/` for the internal math module, without a dependency or separate

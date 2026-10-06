@@ -39,6 +39,32 @@ The current ID handling decision below applies independently of definition reuse
 The current prototype copies input into independent runtime objects on each load.
 Sharing one runtime map between multiple views remains a separate design question.
 
+## Internal model observation and loading — accepted 2026-10-06, implemented for review
+
+The [scene-ownership substep](RENDERER_AND_COMPONENT.md#internal-scene-model--accepted-2026-10-06-implemented-for-review)
+moves the immutable resolved load snapshot, root collection, geometry, spatial
+queries, and scene subscriptions into internal `MapModel`. The existing collection
+and runtime-object APIs, instance sharing and duplicate-ID semantics are unchanged.
+The component still validates/copies load input before candidate construction;
+constructor signatures and validation boundaries are unchanged.
+
+Observation is controlled internally by the connected view, using existing
+`EventTarget` mechanisms. Stopping it releases listeners from the collection and
+all actually observed roots, without disposing runtime objects. Restarting observes
+current membership without duplicate notifications. Queries continue to read current
+objects and route points even during stopped observation; reconnect requests display
+synchronization. No revisions or new dirty-state mechanism are implemented.
+
+A candidate has no scene subscriptions during renderer/image preparation. The old
+map remains active; failure preserves its objects, definition, camera, display and
+picking. Success swaps the prepared display and model, releases old observation,
+cancels a pending click and fits the new background. Overlapping loads still reject
+with `MAP_LOAD_IN_PROGRESS`. Old retained objects/collections remain functional
+without retaining the model through forgotten change listeners.
+
+The model is not exported from the package root. Public model lifecycle, a core
+entry point, live serialization and a new loader framework remain unimplemented.
+
 ## Route append — accepted 2026-10-05, implemented for review
 
 Merged in PR #14 on 2026-10-06 with the simplified ID handling decision below.
