@@ -31,6 +31,144 @@ IDs on objects and owned points after a successful load. It remains the immutabl
 resolved load input; runtime position edits do not change this snapshot.
 `load` continues to accept `MapDefinition` with optional IDs.
 
+## Map definition reuse — accepted 2026-10-06
+
+One `MapDefinition` may be reused to initialize multiple map instances; it is not
+bound to a single `MapElement`. The user explicitly confirmed this reuse rule.
+The current ID handling decision below applies independently of definition reuse.
+The current prototype copies input into independent runtime objects on each load.
+Sharing one runtime map between multiple views remains a separate design question.
+
+## Route append — accepted 2026-10-05, implemented for review
+
+`MapRoute.addPoint(definition: MapPointDefinition): MapPoint` adds one point to the
+end of a route and returns its new runtime instance. In an empty route,
+this creates the first point; subsequent points create connecting segments through
+the existing ordered-point model. Insertion, removal, and replacement are deferred.
+
+The operation validates and copies input and generates an omitted ID. Explicit
+duplicate IDs are accepted under the ID handling decision below. Invalid input preserves state and emits
+no change event. A successful append preserves existing point instances and IDs,
+emits `change`, and updates rendering and spatial picking. `map.definition` remains
+the resolved load snapshot.
+
+Each successful append replaces `route.points` with a new frozen readonly array.
+Previously retained arrays preserve their membership; their existing `MapPoint`
+instances remain live and editable. Position changes and repeated reads do not
+replace the array. The input must explicitly declare `kind: 'point'`, just as in
+map loading. Standalone and loaded routes use the same creation rules, with no
+occupied-ID registry or owner-specific creation callback.
+
+When `change` fires, the point belongs to the route and spatial queries already
+see the new vertex and segment. Rendering remains deferred to the next scheduled
+frame. Internal geometry and scene-entry arrays update lazily after membership
+changes; existing views and SVG nodes are retained. Reconnecting observes points
+appended while the component was detached. The Factory example includes an append
+button for manual review.
+
+`addLine` is removed from route plans: consecutive points already define each
+segment. Historical line-based examples below are superseded and do not authorize
+an `addLine` implementation. Independent `MapLine` objects remain supported.
+
+## ID handling — accepted 2026-10-06, implemented for review
+
+Atlas generates an omitted ID through `createId()` using `crypto.randomUUID()`.
+Explicit IDs remain non-empty opaque strings and are preserved as supplied.
+IDs remain stable for the lifetime of each runtime object. Atlas does not reserve
+IDs, search for collisions, or reject duplicates during loading or mutations.
+Application code and the editor decide whether uniqueness matters for their task
+and how to enforce it. A reusable definition carries no runtime ID registry.
+
+`MapObjectCollection` retains every root object in input order, including objects
+with the same ID. Its size counts all objects, and iteration yields all of them.
+`get(id)` returns the first matching root object in that order, or `undefined`.
+Owned points remain accessible through their line or route. Rendering and picking
+use runtime object identity rather than requiring unique ID strings; the component
+checks whether the loaded collection is still current before dispatching a click.
+
+`MapPoint` constructors and line/route point definitions accept optional IDs again.
+`MapRoute.addPoint` simply creates a `MapPoint`, appends it, and emits `change`.
+The registry, constructor injection, decorator, and scoped factory experiments
+below are superseded and removed from the implementation.
+
+An opt-in debug method to find duplicate IDs is a possible later diagnostic,
+not an implemented or agreed public API. Its result format and placement remain
+open; it would report duplicates without making ordinary loading or edits fail.
+
+## Object ID registry — superseded experiment, 2026-10-06
+
+Historical review variants below are superseded by the ID handling decision above.
+They describe the explored implementation, not current runtime requirements.
+
+`ObjectIdRegistry` owns occupied IDs, duplicate rejection, and collision-safe
+generation within one map. IDs may repeat in separate maps or replacement loads.
+Definition resolution uses a temporary registry: all explicit IDs are reserved
+before missing IDs are resolved. The runtime factory uses its own registry seeded
+with every resolved root and owned-point ID from the loaded map. A new point's ID
+is validated and occupied through `create(field, id)` before runtime construction.
+The registry is now internal, rather than a dependency supplied by library callers.
+
+### Factory creation — superseded trial, 2026-10-06
+
+This factory-only trial was paused. The user clarified that the expected result
+retains an annotation for automatic dependency injection, and requested agreement
+on definition reuse and ID scope before further implementation. The code below
+describes the earlier trial, not an accepted replacement architecture.
+
+The user clarified that the intended improvement was to remove explicit registry
+passing, then requested a concrete factory variant. `MapObjectCollection` creates
+one internal `MapObjectFactory` for each load. That factory reserves the resolved
+map IDs, constructs runtime objects, and binds its point-creation callback to every
+loaded route. Runtime objects have no `idRegistry` field or constructor parameter.
+The collection remains read-only with `size`, `get(id)`, and iteration.
+
+`route.addPoint(definition)` calls the bound factory, which validates the optional-ID
+input, assigns an available ID, and constructs a `MapPoint`. The route then commits
+membership and emits `change` as before. Rejected input does not occupy an ID, and
+rejected appends preserve membership and emit no change event. The factory retains
+only the shared ID namespace; existing rendering, picking, and snapshot behavior
+are unchanged. Lookup in `map.objects` still indexes only root objects.
+
+A standalone route lazily creates a local point factory seeded with its own ID and
+initial point IDs. It has the same append rules in an independent namespace.
+`bindPointFactory` is an internal symbol used only by the map factory to connect
+that callback; the symbol is not exported from the library entry point. It is a
+construction hook for this review variant, not a public map-attachment API or an
+exclusive-ownership check. There is no ambient current-map state, global registry,
+DI container, annotation framework, or mutable object-to-map lookup table.
+
+The provisional constructor boundary is now explicit: `MapPoint` takes
+`WithId<MapPointDefinition>`, while `MapLine(id, points)` and `MapRoute(id, points)`
+take point definitions with required IDs. Constructors validate and copy these
+already identified inputs. For example, `new MapRoute('route', [])` still works,
+and its `addPoint` accepts an omitted ID. Direct construction with missing point
+IDs now rejects instead of generating them. Input JSON, `map.load`, and
+`route.addPoint` continue to accept optional IDs. This narrower constructor
+contract is part of the trial; keep it only if factory creation is adopted,
+otherwise restore the earlier constructor-based resolution contract.
+`MapObjectFactory`, point-factory helpers, and `ObjectIdRegistry` are internal and
+are not additional application-facing creation APIs. A public root-object add API
+remains a separate step.
+
+### Constructor injection — superseded review variant
+
+The earlier implementation passed one `ObjectIdRegistry` through the constructors
+as `idRegistry` and retained it in `MapObject`. Standalone object trees received a
+local registry by default, and the registry class was exported for explicitly
+shared namespaces. Owners created points with explicit IDs first so generated IDs
+could not take later explicit IDs. This replaced the earlier route-specific
+`WeakMap` and `bindRouteIds`, but still required dependency threading. The factory
+trial above replaces those constructor arguments and the public registry export.
+
+### Unique ID decorator — superseded review variant, 2026-10-06
+
+The `@uniqueId(object => object.idRegistry)` method-decorator trial reserved an ID
+before `MapObject.#resolveId` resolved or generated it. It inherited the same map
+scope, but continued to require constructor injection. The user expected removal
+of explicit registry passing, which this wrapper did not provide. The factory
+trial removes the decorator, its private resolver method, and the extra Vite
+TypeScript pre-transform that was needed to execute modern decorator syntax.
+
 ## Updates and runtime objects — discussion ongoing
 
 The runtime collection is named `MapObjectCollection` and lives alongside map
@@ -73,7 +211,7 @@ collection infrastructure only when concrete consumers need it.
   error. The decision does not promise complete synchronization between maps;
   necessary internal runtime links will be determined during implementation.
 
-- Failed operations, such as mismatching addLine endpoints or duplicate IDs, throw
+- Failed operations, such as invalid point coordinates or empty explicit IDs, throw
   an exception with a clear code and description. The calling application may use
   try/catch; logging does not replace an exception.
 - An operation rejected by validation does not change object state. This guarantee
@@ -117,6 +255,13 @@ collection infrastructure only when concrete consumers need it.
 - The earlier proposal to use only map.updateObject(id, patch) and ignore all mutations
   was not accepted. Mutating original input JSON and mutating a runtime instance are
   different operations; precise rules still need to be stated.
+
+### Historical route-line editing — superseded
+
+The bullets below retain the earlier line-based design history. The ordered-point
+model and accepted append contract above replace it; `addLine` is removed from
+the current plans.
+
 - Accepted: route.lines is a custom stable runtime collection with domain methods
   and iteration support. The primary addition path is route.lines.add(description).
   The collection does not imitate Array APIs such as push/splice.
