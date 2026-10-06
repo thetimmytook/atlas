@@ -7,17 +7,15 @@ import { MapSurfaceEvent } from '#interaction/map-surface-event.js';
 import { ObjectClickEvent } from '#interaction/object-click-event.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
-import { MapObjectCollection } from '#objects/map-object-collection.js';
+import { MapModel } from '#objects/map-model.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
-import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
-import { Spatial } from '#spatial/spatial.js';
 
 import html from './map-element.html?raw';
 
 import type { MapDefinition, ResolvedMapDefinition } from '#definitions/map-definition.js';
 import type { SurfaceInputDetail } from '#interaction/camera-controls.js';
 import type { ClickTrigger } from '#interaction/map-surface-event.js';
-import type { MapEntry } from '#objects/map-object-collection.js';
+import type { MapObjectCollection } from '#objects/map-object-collection.js';
 import type { Renderer } from '#renderers/renderer.js';
 
 export class MapElement extends HTMLElement {
@@ -26,10 +24,7 @@ export class MapElement extends HTMLElement {
   readonly #camera = new Camera();
   #renderFrame: number | undefined;
   readonly #renderer: Renderer;
-  #definition: ResolvedMapDefinition | undefined;
-  #objects = new MapObjectCollection();
-  readonly #observedObjects = new Set<MapEntry>();
-  #spatial: Spatial | undefined;
+  #model = new MapModel();
   #clickTrigger: ClickTrigger = 'release';
   #loading = false;
   #resizeObserver: ResizeObserver | undefined;
@@ -79,20 +74,20 @@ export class MapElement extends HTMLElement {
   }
 
   fit(): void {
-    if (!this.#definition) {
+    if (!this.#model.definition) {
       return;
     }
 
-    const { width, height } = this.#definition.background.size;
+    const { width, height } = this.#model.definition.background.size;
     this.#camera.fit(new Rect(0, 0, width, height));
   }
 
   get objects(): MapObjectCollection {
-    return this.#objects;
+    return this.#model.objects;
   }
 
   get definition(): ResolvedMapDefinition | undefined {
-    return this.#definition;
+    return this.#model.definition;
   }
 
   async load(definition: MapDefinition): Promise<void> {
@@ -106,17 +101,14 @@ export class MapElement extends HTMLElement {
 
     try {
       const resolvedDefinition = resolveMapDefinition(definition);
-      const objects = new MapObjectCollection(resolvedDefinition.objects);
-      const geometry = prepareSceneGeometry(objects);
-      const spatial = new Spatial(geometry);
-      const scene = await this.#renderer.prepare(resolvedDefinition.background, geometry);
-      this.#unobserveObjects();
+      const model = new MapModel(resolvedDefinition);
+      const scene = await this.#renderer.prepare(resolvedDefinition.background, model.geometry);
+      const previousModel = this.#model;
       scene.show();
-      this.#objects = objects;
-      this.#spatial = spatial;
+      this.#model = model;
+      this.#unobserveModel(previousModel);
       this.#controls.cancelClick();
-      this.#definition = resolvedDefinition;
-      this.#observeObjects();
+      this.#observeModel();
       this.fit();
     } finally {
       this.#loading = false;
@@ -128,7 +120,7 @@ export class MapElement extends HTMLElement {
       return;
     }
 
-    this.#observeObjects();
+    this.#observeModel();
     this.#controls.addEventListener('press', this.#surfacePress);
     this.#controls.addEventListener('release', this.#surfaceRelease);
     this.#controls.connect();
@@ -147,7 +139,7 @@ export class MapElement extends HTMLElement {
   }
 
   disconnectedCallback(): void {
-    this.#unobserveObjects();
+    this.#unobserveModel(this.#model);
     this.#controls.disconnect();
     this.#controls.removeEventListener('press', this.#surfacePress);
     this.#controls.removeEventListener('release', this.#surfaceRelease);
@@ -177,8 +169,13 @@ export class MapElement extends HTMLElement {
     const input = (event as CustomEvent<SurfaceInputDetail>).detail;
     const mapPoint = this.#coordinates.clientToMap(input.clientPoint);
     const shouldClick = this.#clickTrigger === type && (type === 'press' || input.isClick === true);
-    const hit = shouldClick ? this.#spatial?.hitTest(mapPoint, this.#camera) : undefined;
-    const objects = this.#objects;
+
+    // The pre-load collection is available, but has no prepared display to pick.
+    const hit =
+      shouldClick && this.#model.definition
+        ? this.#model.spatial.hitTest(mapPoint, this.#camera)
+        : undefined;
+    const model = this.#model;
 
     this.dispatchEvent(new MapSurfaceEvent(type, mapPoint, input));
 
@@ -186,8 +183,8 @@ export class MapElement extends HTMLElement {
     if (
       !hit ||
       !this.isConnected ||
-      this.#objects !== objects ||
-      !this.#hasObject(hit.route ?? hit.object) ||
+      this.#model !== model ||
+      !this.#model.hasObject(hit.route ?? hit.object) ||
       (hit.route && hit.object.kind === 'point' && !hit.route.points.includes(hit.object))
     ) {
       return;
@@ -200,70 +197,19 @@ export class MapElement extends HTMLElement {
     this.dispatchEvent(new ObjectClickEvent(hit.object, mapPoint, input.clientPoint, hit.route));
   }
 
-  #observeObjects(): void {
+  #observeModel(): void {
     if (!this.isConnected) {
       return;
     }
 
-    this.#objects.addEventListener('add', this.#objectAdded);
-    this.#objects.addEventListener('remove', this.#objectRemoved);
-
-    for (const object of this.#objects) {
-      this.#observeObject(object);
-    }
+    this.#model.addEventListener('change', this.#requestRender);
+    this.#model.observeChanges();
   }
 
-  #unobserveObjects(): void {
-    this.#objects.removeEventListener('add', this.#objectAdded);
-    this.#objects.removeEventListener('remove', this.#objectRemoved);
-
-    // A removal listener may disconnect before the removed object's subscription is released.
-    for (const object of this.#observedObjects) {
-      object.removeEventListener('change', this.#requestRender);
-    }
-
-    this.#observedObjects.clear();
+  #unobserveModel(model: MapModel): void {
+    model.unobserveChanges();
+    model.removeEventListener('change', this.#requestRender);
   }
-
-  #observeObject(object: MapEntry): void {
-    object.addEventListener('change', this.#requestRender);
-    this.#observedObjects.add(object);
-  }
-
-  #hasObject(object: MapEntry): boolean {
-    for (const entry of this.#objects) {
-      if (entry === object) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  readonly #objectAdded = (event: Event): void => {
-    const object = (event as CustomEvent<MapEntry>).detail;
-
-    // An earlier addition listener may already have removed the new object.
-    if (!this.#hasObject(object)) {
-      return;
-    }
-
-    this.#observeObject(object);
-    this.#requestRender();
-  };
-
-  readonly #objectRemoved = (event: Event): void => {
-    const object = (event as CustomEvent<MapEntry>).detail;
-
-    // An earlier removal listener may already have reattached the same instance.
-    if (this.#hasObject(object)) {
-      return;
-    }
-
-    object.removeEventListener('change', this.#requestRender);
-    this.#observedObjects.delete(object);
-    this.#requestRender();
-  };
 
   readonly #requestRender = (): void => {
     if (!this.isConnected || this.#renderFrame !== undefined) {
