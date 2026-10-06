@@ -27,6 +27,22 @@ separate steps. Ordinary API names use no Atlas prefix; the error family retains
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
 
+## Route point appending — accepted 2026-10-05, implemented for review
+
+`MapRoute.addPoint` accepts a `MapPointDefinition`, appends a new owned `MapPoint`,
+and returns it. The operation replaces the frozen readonly point array while
+preserving existing point instances and IDs. Previously retained arrays keep their
+old membership; coordinates on their point instances remain live. Position changes
+do not replace the point array or internal coordinate views.
+
+Internal polyline coordinate arrays extend only after point appending; scene entries
+and SVG nodes for existing objects are reused. New point symbols remain above their
+path and below later map objects. Picking observes the new vertex and connecting
+segment immediately, independently of rendering. `addLine` is removed from the
+route API plans: consecutive owned points already define segments. Insertion,
+removal, and replacement remain future steps. See the full
+[append contract](RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
+
 ## Object positions and internal geometry views — accepted 2026-10-05
 
 Remove the `geometry` property from `MapObject`, `MapPoint`, `MapLine`, and
@@ -44,7 +60,8 @@ geometry views for rendering and spatial queries. Point/line getters read curren
 positions; route coordinate views expose live x/y getters in one stable readonly
 array. Reads and point edits do not recreate these views or copy route arrays.
 Readonly live views are internal projections, not immutable coordinate snapshots.
-Point membership editing remains a later step.
+This originally covered position edits only; the route append decision above
+extends the arrays after membership changes.
 
 This supersedes the earlier public geometry getters/setters and geometry-rebuilding
 descriptions below. Map definitions and ID rules are unchanged. The example edits
@@ -130,9 +147,10 @@ line endpoints, and route vertices all use this same definition and runtime clas
 Line and route definitions expose `points` directly, with no input `geometry`
 wrapper. `MapLineDefinition.points` is a readonly tuple of exactly two
 `MapPointDefinition` values; `MapRouteDefinition.points` is an ordered readonly
-array. IDs are optional for both owners and points and share the map-wide namespace.
-Resolution reserves every explicit ID before generating missing ones, copies
-nested positions, and preserves IDs when resolved data is loaded again.
+array. IDs are optional for both owners and points. Resolution copies nested positions,
+preserves explicit IDs, and generates missing ones; loading resolved data preserves
+its IDs. The later [ID handling decision](RUNTIME_AND_LOADING.md#id-handling--accepted-2026-10-06-implemented-for-review)
+removes the earlier map-wide uniqueness checks and ID reservation.
 
 Runtime `MapLine.points` and `MapRoute.points` are stable readonly collections of
 owned `MapPoint` instances. Their `geometry` getters expose derived `LineGeometry`
@@ -255,9 +273,10 @@ tolerance are unnecessary here.
 ```
 
 Point IDs are optional in input and generated when absent. They remain stable at
-runtime, are retained in the resolved definition, and share the map-wide namespace
-with object IDs. All explicit IDs are reserved before generation, including IDs of
-later objects and points. The mathematical `Point` remains a coordinate without ID.
+runtime and are retained in the resolved definition. The later
+[ID handling decision](RUNTIME_AND_LOADING.md#id-handling--accepted-2026-10-06-implemented-for-review)
+removes ID reservation and duplicate rejection: explicit IDs are preserved, and
+missing IDs use `crypto.randomUUID()`. The mathematical `Point` remains a coordinate without ID.
 Application `data` and `label` on significant points remain future work; this step
 adds no placeholder fields for them.
 
@@ -271,11 +290,11 @@ coordinates do not duplicate point identity. `map.definition` remains the resolv
 load input, not a live export of runtime edits.
 
 Validation rejects non-finite coordinates, malformed/sparse point arrays, wrong
-geometry kinds, and duplicate/invalid IDs. Input is copied without mutation.
+geometry kinds, and invalid explicit IDs. Duplicate IDs are accepted. Input is copied without mutation.
 Empty routes are valid and have no visible geometry. A single-point route has no
 connecting stroke but can display its point. Coincident consecutive points and a
-repeated closing coordinate are accepted; distinct point occurrences still have
-distinct IDs. No implicit closed-path flag is added.
+repeated closing coordinate are accepted; distinct point occurrences are separate
+runtime objects even when explicit IDs repeat. No implicit closed-path flag is added.
 
 A path click identifies the route. A displayed point click identifies the runtime
 point plus its owning route. ID presence does not enable visibility or interaction.
@@ -414,8 +433,9 @@ by the route-polyline decision above.
 
 `Route` is a runtime class extending `MapObject` within Atlas. The route itself belongs
 to `map.objects` and owns its ordered `lines`. These are encapsulated route parts,
-not references to independently registered map lines. The route implements the
-already agreed `addLine()`, `addPoint()`, and continuity behavior. Application
+not references to independently registered map lines. The earlier contract included
+`addLine()`, `addPoint()`, and continuity behavior; the current append decision
+replaces it and removes `addLine` from the planned API. Application
 meaning, such as a quest or evacuation route, stays outside Atlas.
 
 Ownership and behavior were already recorded in the route and runtime decisions;
@@ -454,9 +474,9 @@ generating missing IDs, with one namespace for routes, lines, and other objects.
 iteration, matching the existing read-access convention of `map.objects`.
 The initial runtime lines expose read-only ID and geometry access. Read-only
 geometry is a temporary limitation until route editing provides the agreed
-continuity-preserving setters. `addLine`, `addPoint`, synchronized endpoint editing,
-removal, and replacement remain planned for later review; this slice does not
-expose edits that could break continuity.
+continuity-preserving setters. The plan for this historical slice included `addPoint`,
+synchronized endpoint editing, removal, and replacement. `addLine` is removed from
+the current route API plans; the append contract above is the current implementation.
 
 Normalization validates finite endpoints and the complete ordered chain, without
 mutating input. A gap beyond the provisional absolute tolerance of `1e-6` map units
@@ -572,6 +592,10 @@ verified traversable route.
 - The exact geometry field schema and extensibility of kind are not yet finalized.
 
 ## 4. Routes and identity — discussion ongoing
+
+The map-wide uniqueness rules in this historical discussion are superseded by the
+[ID handling decision](RUNTIME_AND_LOADING.md#id-handling--accepted-2026-10-06-implemented-for-review).
+The route-segment structure is superseded by the later polyline decision above.
 
 Accepted:
 

@@ -1,13 +1,13 @@
 import { AtlasError } from '#errors/atlas-error.js';
 import { Size } from '#math/size.js';
-import { resolveObjectId } from '#objects/create-id.js';
+import { createId } from '#objects/create-id.js';
 import { resolveMapPoint, validateMapPoint } from '#validators/map-point.validator.js';
 import {
   resolveMapPoints,
   validateLinePoints,
   validateMapPoints,
 } from '#validators/map-points.validator.js';
-import { reserveObjectId } from '#validators/object-id.validator.js';
+import { validateObjectId } from '#validators/object-id.validator.js';
 import { validateSize } from '#validators/size.validator.js';
 
 import type { WithId } from './identity.js';
@@ -49,10 +49,9 @@ export function resolveMapDefinition(definition: MapDefinition): ResolvedMapDefi
 
   validateSize('background.size', background.size, { positive: true });
 
-  const ids = new Set<string>();
   const definitions = definition.objects ?? [];
 
-  for (const [index, object] of definitions.entries()) {
+  const objects = Array.from(definitions.entries(), ([index, object]): ResolvedMapEntry => {
     const field = `objects[${index}]`;
     const kind = object?.kind;
 
@@ -63,11 +62,12 @@ export function resolveMapDefinition(definition: MapDefinition): ResolvedMapDefi
       });
     }
 
-    reserveObjectId(`${field}.id`, object.id, ids);
+    validateObjectId(`${field}.id`, object.id);
 
     if (object.kind === 'point') {
       validateMapPoint(field, object);
-      continue;
+
+      return resolveMapPoint(object);
     }
 
     if (object.kind === 'line') {
@@ -76,30 +76,20 @@ export function resolveMapDefinition(definition: MapDefinition): ResolvedMapDefi
       validateMapPoints(`${field}.points`, object.points);
     }
 
-    for (const [pointIndex, point] of object.points.entries()) {
-      reserveObjectId(`${field}.points[${pointIndex}].id`, point.id, ids);
-    }
-  }
-
-  const objects = definitions.map((object): ResolvedMapEntry => {
-    if (object.kind === 'point') {
-      return resolveMapPoint(object, ids);
-    }
-
-    const id = resolveObjectId(object.id, ids);
+    const id = object.id ?? createId();
 
     if (object.kind === 'route') {
       return Object.freeze({
         id,
         kind: 'route',
-        points: resolveMapPoints(object.points, ids),
+        points: resolveMapPoints(object.points),
       });
     }
 
     return Object.freeze({
       id,
       kind: object.kind,
-      points: resolveMapPoints(object.points, ids),
+      points: resolveMapPoints(object.points),
     });
   });
 

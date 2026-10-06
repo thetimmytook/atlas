@@ -30,9 +30,11 @@ export class Spatial {
       return undefined;
     }
 
+    const objects = this.#geometry.objects;
+
     // Reverse composition order avoids scanning objects behind the first hit.
-    for (let index = this.#geometry.objects.length - 1; index >= 0; index--) {
-      const entry = this.#geometry.objects.at(index);
+    for (let index = objects.length - 1; index >= 0; index--) {
+      const entry = objects.at(index);
 
       if (!entry) {
         continue;

@@ -35,6 +35,12 @@ and API Extractor to bundle declarations. Output is unminified ESM with a source
 map and a single `index.d.ts` in ignored `dist/`. ES2022 is provisional, not an approved browser matrix.
 The build contains no Vite development client. No runtime dependencies are present.
 
+The earlier `@uniqueId` trial required an extra TypeScript pre-transform because
+Vite preserved native decorator syntax. The
+[ID handling decision](design/RUNTIME_AND_LOADING.md#id-handling--accepted-2026-10-06-implemented-for-review)
+removes the registry and decorator experiments. The normal dev/build pipeline
+needs no custom decorator transform or additional packages.
+
 ## Templates
 
 A component imports its neighboring HTML with `?raw`. Vite embeds the string, including

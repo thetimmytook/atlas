@@ -14,6 +14,8 @@ continue between answers rather than relying on HTML anchors.
 
 - Desktop/mobile, map viewing; the editor is a separate library consumer.
 - Serializable JSON and runtime instances with behavior are separate.
+- One `MapDefinition` may be reused to initialize multiple map instances. See
+  [definition reuse](design/RUNTIME_AND_LOADING.md#map-definition-reuse--accepted-2026-10-06).
 - Every object shares `MapObjectDefinition` (`id?`, `kind`) and the runtime `MapObject`
   base (identity and events). `MapPoint`, `MapLine`, and
   `MapRoute` specialize this foundation. Independent, line-owned, and route-owned points use
@@ -39,6 +41,12 @@ continue between answers rather than relying on HTML anchors.
   require IDs on their owned points. See
   [identity types](design/GEOMETRY_AND_ROUTES.md#required-identity-type--accepted-2026-10-05).
   `map.definition` retains this guarantee as `ResolvedMapDefinition | undefined`.
+- Missing IDs are generated with `createId()` using `crypto.randomUUID()`.
+  Explicit duplicate IDs are accepted; their meaning and prevention belong to the
+  application or editor. Runtime objects need no ID registry, injection, or
+  uniqueness decorators. Collections retain every object, and `get(id)` returns
+  the first matching root object in collection order. See
+  [ID handling](design/RUNTIME_AND_LOADING.md#id-handling--accepted-2026-10-06-implemented-for-review).
 - Background dimensions use `size: { width, height }`. A future optional third
   dimension is deferred. Runtime objects expose `position` or owned `points`;
   the spatial subsystem prepares live geometry views for rendering and queries.
@@ -93,7 +101,10 @@ both consume shared scene geometry. This refactor is merged; see
 Straight line geometry, SVG display, spatial picking, and runtime endpoint updates
 are merged; see [line geometry](design/GEOMETRY_AND_ROUTES.md#line-geometry--merged).
 Route loading, point-ID resolution, polyline display, and point/path interaction
-are the current reviewable implementation step; route membership editing remains subsequent.
+are merged in PR #13. `MapRoute.addPoint` is implemented for review: append a copied
+point definition, replace the readonly point array, and update SVG and spatial picking.
+`addLine` is removed from route plans; insertion, removal, and replacement remain subsequent.
+See [route append](design/RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
 `MapRouteDefinition` uses `points` directly; the runtime derives polyline geometry. `RouteLine`, `RouteLines`, and endpoint snapping are removed.
 See [route polylines](design/GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05).
 All JSON objects explicitly declare their structural kind. Scene entries separate
@@ -105,7 +116,7 @@ Map-object definitions and runtime classes now use the `Map` prefix consistently
 Standalone and route-owned points share `MapPointDefinition` (`id?`, `kind: 'point'`,
 `position: { x, y }`) and `MapPoint`. Changing an owned point notifies its owner and
 the component; internal geometry views read the current position without being
-rebuilt. Route membership editing remains subsequent. See
+rebuilt. Route point appending is implemented for review; other membership edits remain subsequent. See
 [shared point object and naming](design/GEOMETRY_AND_ROUTES.md#shared-point-object-and-naming--accepted-2026-10-05).
 Independent lines now use `MapLineDefinition` / `MapLine` with `kind: 'line'`.
 The generic geometry-object wrapper and standalone polyline loading are removed;
