@@ -105,7 +105,8 @@ Full contract consolidation is a separate future step, not performed automatical
 ## Where we stopped
 
 The solution review (findings 5–18) has revised the next-work plan:
-focused regression tests → reproducible 3000/5000-object baseline → DOM-independent
+merged model/spatial/camera regression tests → Atlas baseline under mini review →
+Leaflet comparison after approval → DOM-independent
 scene ownership → explicit invalidation and affected SVG updates → layers/z/clipping
 validation → remaining batch/material/label and platform work. See the
 [revised prototype plan](design/PROTOTYPE.md#revised-implementation-plan--solution-review-2026-10-06).
@@ -113,6 +114,11 @@ Further route-operation and ID-API expansion is paused. Existing accepted contra
 remain in effect; ownership restrictions, constructor changes, test tooling, and new
 model/renderer signatures require separate review. Performance claims need measured
 results and agreed numerical targets. This plan does not authorize implementation.
+
+The reproducible browser stress example and Atlas SVG baseline are implemented for
+review: [method and results](performance/BASELINE.md). Runtime architecture is unchanged.
+The next benchmark substep is Leaflet SVG/Canvas after user approval; mobile and full
+prototype scope remain unvalidated.
 
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
 The Web Component shell and Factory background with `MapDefinition` are merged.
