@@ -42,8 +42,8 @@ const defaultSymbols: SceneSymbols = Object.freeze({
 export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometry {
   let roots = Array.from(objects);
   let routes = roots.filter(object => object.kind === 'route');
-  const routePoints = new Map<MapRoute, readonly MapPoint[]>();
-  const cache = new Map<MapEntry, SceneObject>();
+  const routePoints = new WeakMap<MapRoute, readonly MapPoint[]>();
+  const cache = new WeakMap<MapEntry, SceneObject>();
 
   const entryFor = (object: MapEntry, route?: MapRoute): SceneObject => {
     const cached = cache.get(object);
@@ -88,8 +88,10 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
 
   return Object.freeze({
     get objects(): readonly SceneObject[] {
-      // Root membership only grows in this step; removal/replacement need their own invalidation.
-      if (objects.size !== roots.length) {
+      // A removal followed by an addition can preserve size; compare the actual root instances.
+      const current = objects[Symbol.iterator]();
+
+      if (objects.size !== roots.length || roots.some(object => current.next().value !== object)) {
         roots = Array.from(objects);
         routes = roots.filter(object => object.kind === 'route');
         entries = prepareEntries();

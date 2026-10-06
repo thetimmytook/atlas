@@ -85,7 +85,8 @@
       and its route. Objects are illustrative positions, not verified loot locations or paths. Use
       “Move line end” to update the independent line or “Move route point” to update the route. “Add
       route point” appends a new vertex that can be inspected and moved. “Add point” creates an
-      independent point at the camera center; “Move added point” moves the most recent one.
+      independent point at the camera center; “Move added point” moves the most recent one. “Remove
+      added point” detaches that point from the map.
     </p>
     <p id="status" role="status">Loading map…</p>
     <fieldset class="controls" aria-label="Map controls" disabled>
@@ -101,6 +102,7 @@
       <button type="button" id="add-route-point">Add route point</button>
       <button type="button" id="add-point">Add point</button>
       <button type="button" id="move-added-point" disabled>Move added point</button>
+      <button type="button" id="remove-added-point" disabled>Remove added point</button>
     </fieldset>
     <p>
       <label for="click-trigger">Object click on</label>
@@ -241,11 +243,18 @@
       document.querySelector('#add-point').onclick = () => {
         addedPoint = map.objects.add({ kind: 'point', position: map.camera.center });
         document.querySelector('#move-added-point').disabled = false;
+        document.querySelector('#remove-added-point').disabled = false;
         status.textContent = `Added point ${addedPoint.id}; map has ${map.objects.size} objects.`;
       };
       document.querySelector('#move-added-point').onclick = () => {
         const { x, y } = addedPoint.position;
         addedPoint.position = new Point(x + 10, y);
+      };
+      document.querySelector('#remove-added-point').onclick = () => {
+        map.objects.remove(addedPoint);
+        document.querySelector('#move-added-point').disabled = true;
+        document.querySelector('#remove-added-point').disabled = true;
+        status.textContent = `Removed point ${addedPoint.id}; map has ${map.objects.size} objects.`;
       };
       document.querySelector('#up').onclick = () => move(0, -50);
       document.querySelector('#down').onclick = () => move(0, 50);

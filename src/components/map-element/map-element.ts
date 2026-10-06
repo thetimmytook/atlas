@@ -30,7 +30,6 @@ export class MapElement extends HTMLElement {
   #objects = new MapObjectCollection();
   #spatial: Spatial | undefined;
   #clickTrigger: ClickTrigger = 'release';
-  #objectConnection: AbortController | undefined;
   #loading = false;
   #resizeObserver: ResizeObserver | undefined;
 
@@ -110,7 +109,7 @@ export class MapElement extends HTMLElement {
       const geometry = prepareSceneGeometry(objects);
       const spatial = new Spatial(geometry);
       const scene = await this.#renderer.prepare(resolvedDefinition.background, geometry);
-      this.#objectConnection?.abort();
+      this.#unobserveObjects();
       scene.show();
       this.#objects = objects;
       this.#spatial = spatial;
@@ -147,8 +146,7 @@ export class MapElement extends HTMLElement {
   }
 
   disconnectedCallback(): void {
-    this.#objectConnection?.abort();
-    this.#objectConnection = undefined;
+    this.#unobserveObjects();
     this.#controls.disconnect();
     this.#controls.removeEventListener('press', this.#surfacePress);
     this.#controls.removeEventListener('release', this.#surfaceRelease);
@@ -184,7 +182,12 @@ export class MapElement extends HTMLElement {
     this.dispatchEvent(new MapSurfaceEvent(type, mapPoint, input));
 
     // A surface listener may disconnect the component or replace its map.
-    if (!hit || !this.isConnected || this.#objects !== objects) {
+    if (
+      !hit ||
+      !this.isConnected ||
+      this.#objects !== objects ||
+      !this.#hasObject(hit.route ?? hit.object)
+    ) {
       return;
     }
 
@@ -196,34 +199,56 @@ export class MapElement extends HTMLElement {
   }
 
   #observeObjects(): void {
-    this.#objectConnection?.abort();
-
     if (!this.isConnected) {
       return;
     }
 
-    this.#objectConnection = new AbortController();
-    this.#objects.addEventListener('add', this.#objectAdded, {
-      signal: this.#objectConnection.signal,
-    });
+    this.#objects.addEventListener('add', this.#objectAdded);
+    this.#objects.addEventListener('remove', this.#objectRemoved);
 
     for (const object of this.#objects) {
       this.#observeObject(object);
     }
   }
 
-  #observeObject(object: MapEntry): void {
-    const connection = this.#objectConnection;
+  #unobserveObjects(): void {
+    this.#objects.removeEventListener('add', this.#objectAdded);
+    this.#objects.removeEventListener('remove', this.#objectRemoved);
 
-    if (!connection) {
-      return;
+    for (const object of this.#objects) {
+      object.removeEventListener('change', this.#requestRender);
+    }
+  }
+
+  #observeObject(object: MapEntry): void {
+    object.addEventListener('change', this.#requestRender);
+  }
+
+  #hasObject(object: MapEntry): boolean {
+    for (const entry of this.#objects) {
+      if (entry === object) {
+        return true;
+      }
     }
 
-    object.addEventListener('change', this.#requestRender, { signal: connection.signal });
+    return false;
   }
 
   readonly #objectAdded = (event: Event): void => {
-    this.#observeObject((event as CustomEvent<MapEntry>).detail);
+    const object = (event as CustomEvent<MapEntry>).detail;
+
+    // An earlier addition listener may already have removed the new object.
+    if (!this.#hasObject(object)) {
+      return;
+    }
+
+    this.#observeObject(object);
+    this.#requestRender();
+  };
+
+  readonly #objectRemoved = (event: Event): void => {
+    const object = (event as CustomEvent<MapEntry>).detail;
+    object.removeEventListener('change', this.#requestRender);
     this.#requestRender();
   };
 

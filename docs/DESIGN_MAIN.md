@@ -51,6 +51,10 @@ continue between answers rather than relying on HTML anchors.
   its runtime instance. Rendering and picking observe additions; later instance
   edits update the map. See
   [runtime additions](design/RUNTIME_AND_LOADING.md#runtime-object-addition--accepted-2026-10-06-implemented-for-review).
+- `map.objects.remove(object)` detaches the exact root instance and returns whether
+  it was present. Rendering, picking, and map subscriptions release it; an externally
+  retained reference remains functional. See
+  [runtime removal](design/RUNTIME_AND_LOADING.md#runtime-object-removal--accepted-2026-10-06-implemented-for-review).
 - Background dimensions use `size: { width, height }`. A future optional third
   dimension is deferred. Runtime objects expose `position` or owned `points`;
   the spatial subsystem prepares live geometry views for rendering and queries.
@@ -109,9 +113,13 @@ are merged in PR #13. `MapRoute.addPoint` is merged in PR #14: append a copied
 point definition, replace the readonly point array, and update SVG and spatial picking.
 `addLine` is removed from route plans; insertion, removal, and replacement remain subsequent.
 See [route append](design/RUNTIME_AND_LOADING.md#route-append--accepted-2026-10-05-implemented-for-review).
-Dynamic root-object addition through `map.objects.add` is implemented for review.
+Dynamic root-object addition through `map.objects.add` is merged in PR #15.
 It uses the same validation, copying, and ID generation as loading; existing scene
 entries and SVG nodes are reused. The example adds and moves an independent point.
+Root removal through `map.objects.remove(object): boolean` is implemented for review.
+It uses reference identity, updates scene membership and SVG, and releases the map's
+change subscription while keeping the detached instance usable. The example can
+remove the added point. Root removal does not edit a route's owned-point membership.
 `MapRouteDefinition` uses `points` directly; the runtime derives polyline geometry. `RouteLine`, `RouteLines`, and endpoint snapping are removed.
 See [route polylines](design/GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05).
 All JSON objects explicitly declare their structural kind. Scene entries separate
