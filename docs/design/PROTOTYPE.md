@@ -28,14 +28,97 @@ and a justified direction for the next steps.
 Accepting this scope does not itself settle previously open signatures,
 the layer-group contract, or the complete volumetric-zone schema.
 
-## Proposed implementation sequence
+## Revised implementation plan — solution review, 2026-10-06
 
-1. Vertical slice: data → runtime → SVG inside the component, one background,
-   a marker, a camera, and an event delivered to the external application.
-2. Geometry and layers: two buildings, independent floor selection, a route between
-   them, a volumetric zone, and slices; define minimal contracts through this example.
-3. Updates and appearance: runtime setters, batch, materials, and the label extension.
-4. Load, mobile-input, and accessibility checks; record measurements and conclusions.
+This replaces the earlier proposed sequence following solution-review findings 5–18.
+The agreed prototype scope remains unchanged. The sequence is the working plan;
+architecture details, new public signatures, ownership restrictions, and tooling
+choices still require their own review. No implementation is authorized by this document.
+
+The initial vertical slice is implemented: background, camera/input, points, lines,
+routes, runtime edits, and application events. The next work must validate the risky
+parts of the prototype rather than expand route editing or ID handling. Freeze further
+route-operation and ID-API expansion; preserve existing behavior. Range replacement
+remains recorded as implemented for review, not automatically approved by this plan.
+
+1. **Protect current behavior with focused tests (finding 15).** Choose the test runner
+   and component-test environment as a concrete tooling step; Vitest and happy-dom
+   are review suggestions, not selected dependencies. Cover validation atomicity,
+   route membership/order and surviving identity, immediate picking before render,
+   stale-click suppression, detach/reconnect, reattachment during removal handlers,
+   failed-load preservation, and camera behavior. Start with DOM-independent model,
+   spatial, and camera tests; use component tests for browser-boundary behavior.
+   These tests must run before and after the following refactors.
+2. **Establish an early load baseline (findings 10, 16–18).** Add a reproducible stress
+   example for 3000 and 5000 root objects, with documented point/line/route counts and
+   owned-vertex counts. Measure initial load, mass additions/removals, pan, zoom,
+   hit testing, and individual geometry edits. Record frame timing, SVG attribute
+   writes, scene synchronization work, and repeated layout reads where useful.
+   Record device/browser and distinguish synthetic desktop results from actual mobile
+   measurements. Do this before optimization so the next steps have a comparison.
+3. **Separate scene ownership from the browser view (finding 8).** Extract the current
+   object collection, scene geometry, spatial queries, and their subscriptions into
+   a DOM-independent model with a concrete consumer: the existing component.
+   Keep camera, renderer, input, client-coordinate conversion, and browser lifecycle
+   at the view boundary. Preserve atomic scene replacement after successful load.
+   Review model lifetime, disconnected edits, and public exposure before coding;
+   `MapRuntime` is a candidate name, not an approved signature. Multiple simultaneous
+   viewports remain outside mandatory prototype scope.
+4. **Make updates explicit and bounded (findings 9, 10, 17, 18).** Replace structural
+   scans in geometry reads with explicit invalidation from root membership, route
+   membership/order, and position changes. Select the simplest internal revision or
+   dirty-state mechanism under review; a new public event payload API is not a
+   prerequisite. Picking must still see current state before painting, including
+   disconnected edits and synchronous handlers. Preserve surviving entries/nodes.
+   Update SVG geometry only for affected objects; pan should update the view without
+   rewriting unchanged object geometry, and zoom should update only the output that
+   depends on screen scale. Address repeated membership scans, collection-copy costs,
+   and layout reads using baseline evidence. Do not claim a Set alone fixes immutable
+   array copying. Rerun the same load scenes and record before/after results.
+5. **Validate layers, z, and clipping as the next feature (findings 6, 11).** First
+   review the minimal scene/renderer contract with layer content, backgrounds,
+   composition order, clipping, and picking eligibility together. Avoid cementing
+   the current separate background argument or flat list as the final scene API.
+   Build two buildings with independent floor selection, a connecting route, and
+   a vertically extruded zone with slices. Validate that clipping retains original
+   object identity and source geometry. Repeat the load measurements with layers,
+   labels when available, and a heavy background. This is the central prototype
+   validation gate; broader API work must not postpone it.
+6. **Complete the remaining agreed slice.** Add synchronous nested batch, minimal
+   materials with explicit inheritance, and the label registration example in
+   separate reviewable steps. Reuse the update boundaries established above.
+   Complete desktop/mobile input and accessibility validation, then document the
+   prototype's demonstrated limits and justified next steps.
+
+Each implementation substep needs its relevant checks and concrete mini review.
+Commit authorization follows the repository instructions; this plan does not grant it.
+Numerical performance targets must be agreed before calling the load gate passed.
+If SVG falls short, use measurements to choose a bounded correction or document a
+limitation; neither `<use>` nor a different renderer is selected in advance.
+
+## Contract and documentation follow-up
+
+- **Current contract summary (finding 7):** consolidate a short description of the
+  implemented public contract, distinguishing merged behavior, work under review,
+  temporary contracts, and future design. Move superseded history to linked archives
+  without deleting original documents. Start with the boundaries touched by the
+  plan; do not require a full documentation rewrite before prototype validation.
+- **Ownership/sharing (finding 12):** existing instance attachment and shared-point
+  behavior remain accepted. Review their concrete consumer, lifetime, and eventual
+  export semantics during the model-boundary step. Single ownership or unsupported
+  shared export are alternatives requiring a user decision, not changes adopted
+  from the review. Do not add more sharing machinery meanwhile.
+- **Validation/constructors (finding 13):** inventory public construction paths and
+  choose one clear validation/copying boundary before changing constructors. Keep
+  validation at every public input boundary while avoiding redundant validation of
+  trusted internal data. Constructor signature unification is a proposal, not a
+  prerequisite or an approved breaking change.
+- **Geometry dispatch (finding 14):** when zones introduce the next geometry kind,
+  review where kind-specific logic belongs within each subsystem. Consolidate only
+  repeated logic with a concrete consumer; no plugin registry or generic extension
+  framework is planned.
+- Findings 5–7 establish direction and scope discipline. Findings 8–11 and 15–18
+  drive the ordered work above; findings 12–14 remain bounded decision points.
 
 ## Proposed verifiable success criteria
 
