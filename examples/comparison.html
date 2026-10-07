@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas / Leaflet comparison</title>
+    <style>
+      body {
+        margin: 16px;
+        font:
+          14px system-ui,
+          sans-serif;
+        color: #233044;
+      }
+      fieldset {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      button,
+      select {
+        min-height: 44px;
+      }
+      #stage {
+        width: min(800px, 100%);
+        height: 480px;
+        background: #edf2f8;
+      }
+      #stage .comparison-leaflet {
+        width: 100%;
+        height: 100%;
+        background: #edf2f8;
+      }
+      atlas-map {
+        width: 100%;
+        height: 100%;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      textarea {
+        display: block;
+        width: 98%;
+        height: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Atlas / Leaflet comparison</h1>
+    <p>
+      Flat 2D geometry with the current Factory background and temporary appearance. No layers, z,
+      or labels. <a href="./stress.html">Original Atlas diagnostics/baseline</a>.
+    </p>
+    <fieldset id="controls">
+      <legend>Scene and scenario</legend>
+      <label
+        >Preview variant
+        <select id="variant">
+          <option>Atlas SVG</option>
+          <option>Leaflet SVG</option>
+          <option>Leaflet Canvas</option>
+        </select></label
+      >
+      <label
+        >Roots
+        <select id="roots">
+          <option>3000</option>
+          <option>5000</option>
+        </select></label
+      >
+      <label
+        >Scene
+        <select id="composition">
+          <option value="points">Points</option>
+          <option value="mixed">Mixed</option>
+        </select></label
+      >
+      <label
+        >Scenario
+        <select id="scenario"></select
+      ></label>
+      <button id="preview">Preview scene</button>
+      <button id="smoke">Preview sparse smoke</button>
+      <button id="run">Run selected (1 warmup + 5 repeats)</button>
+      <button id="suite">Run all four scenes</button>
+      <button id="canvas-diagnostic">Check Canvas drawing and fault recovery</button>
+      <button id="instrument">Instrument all four scenes (separate run)</button>
+    </fieldset>
+    <label
+      >Device/OS/power/thermal notes<textarea id="device">Unknown; fill before export.</textarea>
+    </label>
+    <p id="status" role="status">Ready</p>
+    <div id="stage"></div>
+    <pre id="summary"></pre>
+    <button id="csv">Download CSV</button>
+    <button id="json">Download run metadata</button>
+    <label>CSV<textarea id="results" readonly></textarea></label>
+    <label>Run metadata<textarea id="metadata" readonly></textarea></label>
+    <script type="module" src="./comparison.bench.ts"></script>
+  </body>
+</html>

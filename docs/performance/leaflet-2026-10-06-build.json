@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "f393bc3bb2ad7d0b2cf6afc98904aab7c179ae33",
+  "inputHashVerification": "All 57 captured build input hashes matched saved workspace after timing/counters. Documentation and result additions are not build inputs.",
+  "builtAssetHashes": {
+    "dist/benchmark/assets/Factory-ground-floor-CwOITdba.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b",
+    "dist/benchmark/assets/baseline-CdCuW9-G.js": "1e88533197d038842b5c590ee5172f74ed68d963c54d1a117ec26b51037bb678",
+    "dist/benchmark/assets/baseline-CdCuW9-G.js.map": "ed95facb281d402c4c05ee5bb380f1d34e749591bc8808c93e625371e18ec2ee",
+    "dist/benchmark/assets/comparison-DvTUgzRd.css": "652db25ba73a950c59e63c6fd4c974fc6920a9f2f95ff5bbb7ad4a017ce78743",
+    "dist/benchmark/assets/comparison-rYwBvznq.js": "607c8fd853f1470bf2ee32a023fb6f38c96ff3a6d421b61b7cebf91c43cdbd54",
+    "dist/benchmark/assets/comparison-rYwBvznq.js.map": "cd7805676165f2c6393aabe02a34ce62a4d6413e3f8aab2fb082a27c62befce6",
+    "dist/benchmark/assets/stress.check-Dy8Vr0dN.js": "7c4b0068eee19e288c5d0b10ed46f92f2005f9487143f0a491f458b9c3842e76",
+    "dist/benchmark/assets/stress.check-Dy8Vr0dN.js.map": "4e9422b03b906a001108d536cc2555b582ffbf27109553acc7d4ecab0d8324e4",
+    "dist/benchmark/examples/comparison.html": "ad3852b1cb6b575b9c69c42dcdc95af77c6bfd2dba939f216dffd1b18ea5d82d",
+    "dist/benchmark/examples/stress.html": "84afe14096974c99fac9b0f41f8b0730a03ccb5da897763f8984527e74d86cb9"
+  }
+}

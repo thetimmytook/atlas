@@ -109,8 +109,8 @@ Full contract consolidation is a separate future step, not performed automatical
 ## Where we stopped
 
 The solution review (findings 5–18) has revised the next-work plan:
-merged model/spatial/camera regression tests → Atlas baseline under mini review →
-Leaflet comparison after approval → DOM-independent
+merged model/spatial/camera regression tests → Atlas baseline and Leaflet comparison
+under mini review → DOM-independent
 scene ownership (implemented for review) → explicit invalidation and affected SVG updates → layers/z/clipping
 validation → remaining batch/material/label and platform work. See the
 [revised prototype plan](design/PROTOTYPE.md#revised-implementation-plan--solution-review-2026-10-06).
@@ -128,8 +128,9 @@ results and agreed numerical targets. This plan does not authorize implementatio
 The reproducible browser stress example and Atlas SVG baseline are implemented for
 review: [method and results](performance/BASELINE.md). The benchmark step itself left
 runtime architecture unchanged.
-The next benchmark substep is Leaflet SVG/Canvas after user approval; mobile and full
-prototype scope remain unvalidated.
+The separately requested Leaflet SVG/Canvas comparison is implemented for mini review:
+[method, fresh Atlas/Leaflet results and limitations](performance/LEAFLET_COMPARISON.md).
+Mobile and full prototype scope remain unvalidated.
 
 Focused real-SVG regression coverage is implemented for review: 16 direct renderer
 tests and 13 real-browser component integrations, alongside 103 merged Node tests.
