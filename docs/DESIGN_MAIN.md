@@ -131,6 +131,14 @@ runtime architecture unchanged.
 The next benchmark substep is Leaflet SVG/Canvas after user approval; mobile and full
 prototype scope remain unvalidated.
 
+Focused real-SVG regression coverage is implemented for review: 16 direct renderer
+tests and 13 real-browser component integrations, alongside 103 merged Node tests.
+See [browser coverage](design/RENDERER_AND_COMPONENT.md#browser-svg-regression-coverage--implemented-for-review-2026-10-06).
+On 2026-10-07 the browser suite was rerun against master at a317f54, including the
+DOM-independent scene ownership merged in PR #23. Explicit invalidation and affected
+SVG updates remain future work; this desktop Chromium run does not complete
+mobile/prototype validation.
+
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
 The Web Component shell and Factory background with `MapDefinition` are merged.
 Camera center/zoom, fit, and example buttons are merged. Mouse/touch controls and

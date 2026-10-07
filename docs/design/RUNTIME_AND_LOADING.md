@@ -335,6 +335,26 @@ remains controlled by the owning line or route; root removal does not edit it.
 The Factory example keeps Move added point available after removal and includes
 Restore added point, demonstrating editing and reattaching the same reference.
 
+## Browser lifecycle regression coverage — implemented for review, 2026-10-06
+
+Focused real-browser tests complement the existing model/spatial tests. Runtime
+edits, route membership changes (including equal-length replacement), root
+removal/replacement with duplicate IDs, and shared root/route point appearances
+are checked against actual SVG coordinates and surviving nodes. Provider pointer
+tasks verify current picking before the next RAF.
+
+Component tests also protect edits while detached, repeated reconnect without
+duplicated clicks, stale-click suppression after synchronous removal/disconnect,
+and shared instances across two components. Real resource and decoding failures
+preserve the previous definition, collection, camera, SVG nodes, and picking; a
+later successful load retires the old scene and its retained objects remain
+independent. See [browser coverage](RENDERER_AND_COMPONENT.md#browser-svg-regression-coverage--implemented-for-review-2026-10-06)
+and [test commands](../TOOLING.md#regression-tests).
+
+The suite also passed against the `MapModel` ownership extraction merged in PR #23
+on 2026-10-07. This is behavior protection on the current `master`, not implementation of dirty
+tracking, revisions, batch, new event payloads, or the planned invalidation step.
+
 ## Object ID registry — superseded experiment, 2026-10-06
 
 Historical review variants below are superseded by the ID handling decision above.
