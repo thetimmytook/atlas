@@ -1,0 +1,993 @@
+{
+  "report": {
+    "browser": "153.0.8010.12",
+    "functionalFailure": "Comparison correctness check failed. {\"check\":\"Sparse Canvas new/old symbol/path probe coverage\"}",
+    "failedCase": {
+      "fixture": "line-endpoint",
+      "scenario": "position-single",
+      "mode": "normal",
+      "definitions": [
+        {
+          "id": "line",
+          "kind": "line",
+          "points": [
+            {
+              "id": "line-start",
+              "kind": "point",
+              "position": {
+                "x": 45,
+                "y": 30
+              }
+            },
+            {
+              "id": "line-end",
+              "kind": "point",
+              "position": {
+                "x": 15,
+                "y": 60
+              }
+            }
+          ]
+        },
+        {
+          "id": "gutter",
+          "kind": "point",
+          "position": {
+            "x": 20,
+            "y": 70
+          }
+        }
+      ],
+      "expected": [
+        {
+          "id": "line",
+          "kind": "line",
+          "points": [
+            {
+              "id": "line-start",
+              "kind": "point",
+              "position": {
+                "x": 46,
+                "y": 31
+              }
+            },
+            {
+              "id": "line-end",
+              "kind": "point",
+              "position": {
+                "x": 15,
+                "y": 60
+              }
+            }
+          ]
+        },
+        {
+          "id": "gutter",
+          "kind": "point",
+          "position": {
+            "x": 20,
+            "y": 70
+          }
+        }
+      ],
+      "required": ["orange-new", "orange-old", "clear-new"],
+      "initial": {
+        "passed": true,
+        "compared": 379996,
+        "mismatches": 0,
+        "examples": [],
+        "changes": {
+          "blue-new": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "blue-old": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "orange-new": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "orange-old": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "clear-new": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "symbol-cleared": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "path-cleared": {
+            "probes": 0,
+            "mismatches": 0
+          }
+        },
+        "backing": {
+          "width": 800,
+          "height": 480,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "output": {
+        "passed": true,
+        "compared": 379792,
+        "mismatches": 0,
+        "examples": [],
+        "changes": {
+          "blue-new": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "blue-old": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "orange-new": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "orange-old": {
+            "probes": 67,
+            "mismatches": 0
+          },
+          "clear-new": {
+            "probes": 67,
+            "mismatches": 0
+          },
+          "symbol-cleared": {
+            "probes": 0,
+            "mismatches": 0
+          },
+          "path-cleared": {
+            "probes": 67,
+            "mismatches": 0
+          }
+        },
+        "backing": {
+          "width": 800,
+          "height": 480,
+          "scaleX": 1,
+          "scaleY": 1
+        }
+      },
+      "failed": "Comparison correctness check failed. {\"check\":\"Sparse Canvas new/old symbol/path probe coverage\"}"
+    },
+    "timingFailed": true,
+    "timingFailure": "Comparison correctness check failed. {\"check\":\"Sparse Canvas new/old symbol/path probe coverage\"}",
+    "completedSamples": 0,
+    "preflightStatus": "failed",
+    "timingRows": 0,
+    "pageErrors": []
+  },
+  "functional": {
+    "runId": "canvas-functional-2026-10-07T06-15-51.636Z",
+    "sourceCommit": "f393bc3bb2ad7d0b2cf6afc98904aab7c179ae33",
+    "dirty": "M benchmark.config.mts\n M docs/DESIGN_MAIN.md\n M docs/design/PLATFORMS_AND_PERFORMANCE.md\n M package-lock.json\n M package.json\n?? docs/performance/LEAFLET_COMPARISON.md\n?? docs/performance/leaflet-2026-10-06-150104-summary.csv\n?? docs/performance/leaflet-2026-10-06-150104-timing.csv\n?? docs/performance/leaflet-2026-10-06-155113-instrument.csv\n?? docs/performance/leaflet-2026-10-06-build.json\n?? docs/performance/leaflet-2026-10-06-exclusion-check.json\n?? docs/performance/leaflet-2026-10-06-runs.json\n?? examples/comparison.adapter.ts\n?? examples/comparison.bench.ts\n?? examples/comparison.canvas-controls.ts\n?? examples/comparison.canvas-fixtures.ts\n?? examples/comparison.canvas.ts\n?? examples/comparison.expected.ts\n?? examples/comparison.html\n?? examples/comparison.instrument.ts\n?? examples/comparison.leaflet.ts",
+    "hashes": {
+      "examples/comparison.html": "81d852aa7ccae30aba71b7c718631566bf9e0c59b30b78bb71ac0d719242f8b1",
+      "examples/comparison.bench.ts": "fd4a79246eb0db35202ccbbac85fbbd57a44e7d45a3986b2c447a1623fb5f6b4",
+      "examples/comparison.adapter.ts": "76e5208773a73aafa803508132aa5b169cf275dca542f5071ae9e4827f6b5a34",
+      "examples/comparison.leaflet.ts": "0874b033c0b980444b05fe3dd8d302003cd638c9c6a4a7191b688aa78a575ded",
+      "examples/comparison.expected.ts": "d4473612de95bd0625ce0e4508ae0a26ae415444070af6d549a2a28b55848031",
+      "examples/comparison.instrument.ts": "71ebe16c08857f91b9c065c19353b7ff491e65832645bf82613b36c7d1ca8e5f",
+      "examples/comparison.canvas.ts": "0e3f479f6f941f60898dc434eeb71ef147f8811fad1d72918099b0809cb24fca",
+      "examples/comparison.canvas-fixtures.ts": "5bd86a948ee3dc95228f83274a15028618fdbedc0016b0039f75cc24fb8e7749",
+      "examples/comparison.canvas-controls.ts": "8d9e459ef1625bda3b678c64b405c84a070fa90d9ec51d0b3c52cf15c87cfd02",
+      "examples/stress.html": "77c7d2460990079466402ecf46622ff6aca166d26ebcf2d9b1ae67481d17cbd3",
+      "examples/stress.bench.ts": "78d095f21510bf44a1c57902c3072bb1b8d2a3240fe08755317b2d5ce5c5d512",
+      "examples/stress.check.ts": "3b3e38052e6622be1a2662304d1b3e15e74f55ce2d59e2ced8a32c048f972ce1",
+      "examples/stress.scene.ts": "e629165062e38393b56d0f951f63907fb7c07cef3ca93cfa3fc567d198e84e0f",
+      "examples/stress.instrument.ts": "f6128920b98b969b1ef78e67f64882276d0ae67702d85b92c2f4cbb992ccd556",
+      "benchmark.config.mts": "393ae0421095df849505461e413fbd814b16249d27a02ec3a107adc643eb4897",
+      "package.json": "58a02140abddb56ed414ac69d95c69c6012852e527dba92653411c67fe74e1f2",
+      "package-lock.json": "69c8a47e69aa89732f47ff8bdcc34836b3a1235c10aaa7bf31142be5958f944f",
+      "examples/factory/Factory-ground-floor.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b",
+      "tsconfig.json": "6ebd07c6a92c3d1e64663c4dbbb716fc172b2c1191a673bd036226f24ad73d71",
+      "tsconfig.examples.json": "81b84a740cb96b01033dad8c5da33a20d64c5806692bd492fdfec1e2c038ea98",
+      "node_modules/leaflet/dist/leaflet-src.js": "b4fa27bd78a8487450b75fb8ced591e66cffd4a1b55f7c87373557a6b3f680ba",
+      "node_modules/leaflet/dist/leaflet.css": "a7837102824184820dfa198d1ebcd109ff6d0ff9a2672a074b9a1b4d147d04c6",
+      "src/assets.d.ts": "a8f55248c82d32e1d0e2d9ab58ea4c518b3ff78da6ce1556dcc3f84192a1b258",
+      "src/index.ts": "f63a40215ec9ea7805a2ce584bb245da63ea525b8c2c40d76d8b383856a1f2ac",
+      "src/camera/camera.ts": "7cc81f334f36225af7578a55836b6559195eac90fc11160303e644d1b3a458b6",
+      "src/definitions/identity.ts": "8a5c5bc88356c883e3f25e9e68654be5cbdc700adb4bebb464dcfc2f1d2394c1",
+      "src/definitions/map-definition.ts": "2d833d6a2a1375f502da8a974ae4edf48cac42b22b68155b3c2b662f8244ee26",
+      "src/definitions/map-line-definition.ts": "27c02dc25daf2d12284939a53ff5af021907ce2dd6c943e32cf7dd9870520f5b",
+      "src/definitions/map-object-definition.ts": "79c9643339c1397332b96e17992bb812e314fd402313b88e2bfa867e966a45f8",
+      "src/definitions/map-point-definition.ts": "7ce92a103803d991b2a776c488cfde15e495dc08115a3fb957154cb096f5f1e0",
+      "src/definitions/map-route-definition.ts": "f9d5fd42fab3f9d76c4a369fe1b77ca0182553e2a715f55df483e784c5c47127",
+      "src/errors/atlas-error.ts": "9a9fba09a8fae8850739caf416b0d33d1b2537c6e7ecee0696c6e4cd90639495",
+      "src/interaction/camera-controls.ts": "6b544980cc5e196846ee2851162a6c3234f9a343ec73a0996b1b3f4dbe5c2485",
+      "src/interaction/map-coordinates.ts": "7018e3cc91c19b9b7a44694fd6182b3e0985076e0077702c29c94f24933af856",
+      "src/interaction/map-surface-event.ts": "a2754e6c45a16f161c26277c48e917fb127446a493352e221e73bc4bc04d137f",
+      "src/interaction/object-click-event.ts": "26a6d0963792252979b3c2e899106d90aaab66d32bd21f6216b807011b235735",
+      "src/math/distance.ts": "c5cf0d72a32ec3271098afd627bfffb99fef2517b469bb8c5f453c34111b5b7c",
+      "src/math/point.ts": "ac6f57da7d736a5e389c6f285ef0a5063ada6a51cd75031234a252c92ab3daae",
+      "src/math/rect.ts": "d5839ac951a2733bf7655062d579c4ef43593c14e380e35c654208536827600e",
+      "src/math/size.ts": "a492d36a4032966f754db980dcab1fcdd4d6198f1ad8a4d8452e8a1380ee8bda",
+      "src/objects/create-id.ts": "96e3eecb7c7dd9d0c2f2dda418daf77fc14a002f7ec52330c9dc08bed2c00b0c",
+      "src/objects/map-line.ts": "0c97867144cf6c06d96abae326da5297cb13508f76af3561197e99b79b58c9be",
+      "src/objects/map-object-collection.ts": "21a1e2383ff77835a40faf92962afdb521eaab8fc35c0d5826cae52b895f4a85",
+      "src/objects/map-object.ts": "2d7b8d13b94815d0cbe4f1a87b32abbbecff40447181f986a03ac06436a4ed91",
+      "src/objects/map-point.ts": "3149b90579439a934e1e00b0ea2a26ad8a82e9ff4761d1194c2d431f60f52a4b",
+      "src/objects/map-route.ts": "b07cfc366853d559b7491875873d8b29c46f33b1f996a911b8246fb744eccc23",
+      "src/renderers/renderer.ts": "50ae96032ac13d5f544765f2970eb4008a8c3f736cd087ce4fbb025070c0d561",
+      "src/spatial/geometry.ts": "1f5087902545216a4ff1375ebdf8bc4ca5e96b1d6780a5650ae15115d69c167b",
+      "src/spatial/scene-geometry.ts": "2208173bebdbff541c79199b6665cdff07759e1108a29a21310ed181dabc7616",
+      "src/spatial/spatial.ts": "3804fb0ee7b326b2faba76b0e3243828614813e21d1fff240fcdb64bf52d39e6",
+      "src/validators/map-point.validator.ts": "4ac663298adfa677bb525c001572a11886ca5697a5e1231653d023fe1233113f",
+      "src/validators/map-points.validator.ts": "474d3490d515afd9199d4a1c287bdc88108c70e409b240fd080fdc6abfed1c4e",
+      "src/validators/number.validator.ts": "551bd4590cc5f1850329269e26a26dfb0eb3a2920df1d704a531f779857177ef",
+      "src/validators/object-id.validator.ts": "0a8ad2b44b074464510e72edfd766a5eb6c9a6aded68a252ec8e22823a9d534f",
+      "src/validators/point.validator.ts": "295af3c4cf091c3c9e76579e4bd64de37454abc0bfb16a76cc1710444cd231c5",
+      "src/validators/size.validator.ts": "b571b9ab3e54989c67974cfc45e3fdf5dd5398edf5217abb0d21b23853931d04",
+      "src/components/map-element/map-element.html": "5a378991e5f43557aceb7edee13650af85df4eaadf0ea4f7af690d62a37b504c",
+      "src/components/map-element/map-element.ts": "d04c90eb5631b7408efed2b1cef29857418402b048110f3b7cdd14fc34b193b9",
+      "src/renderers/svg/svg-renderer.ts": "0fac7599b6aed9c1c4687e2926892e005535bbe7da98f0067ca827636c8ad4bf",
+      "src/renderers/svg/svg-renderer.utils.ts": "10126e562cb9d97b3a1705d202e4dfc99a519a86b758fb5498fd1835eff4c7e7"
+    },
+    "buildMode": "production",
+    "version": "1.9.4",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+    "platform": "MacIntel",
+    "deviceNotes": "Unknown; fill before export.",
+    "viewport": {
+      "width": 800,
+      "height": 480
+    },
+    "window": {
+      "width": 1100,
+      "height": 1100
+    },
+    "dpr": 1,
+    "injection": "instance context clearRect/fill/stroke suppressed only after verified initial output; restored in finally; public camera round-trip redraw recovery",
+    "boundaries": "functional only; native reference rendering and pixel readback; no timing CSV rows",
+    "canvasControls": {
+      "mode": "diagnostic",
+      "status": "failed",
+      "cases": [
+        {
+          "fixture": "independent-point",
+          "scenario": "position-single",
+          "mode": "normal",
+          "definitions": [
+            {
+              "id": "independent",
+              "kind": "point",
+              "position": {
+                "x": 45,
+                "y": 30
+              }
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "expected": [
+            {
+              "id": "independent",
+              "kind": "point",
+              "position": {
+                "x": 46,
+                "y": 31
+              }
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "required": ["blue-new", "symbol-cleared"],
+          "initial": {
+            "passed": true,
+            "compared": 380676,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "output": {
+            "passed": true,
+            "compared": 380608,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 18,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 24,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 24,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "modelPassed": true
+        },
+        {
+          "fixture": "line-endpoint",
+          "scenario": "position-single",
+          "mode": "normal",
+          "definitions": [
+            {
+              "id": "line",
+              "kind": "line",
+              "points": [
+                {
+                  "id": "line-start",
+                  "kind": "point",
+                  "position": {
+                    "x": 45,
+                    "y": 30
+                  }
+                },
+                {
+                  "id": "line-end",
+                  "kind": "point",
+                  "position": {
+                    "x": 15,
+                    "y": 60
+                  }
+                }
+              ]
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "expected": [
+            {
+              "id": "line",
+              "kind": "line",
+              "points": [
+                {
+                  "id": "line-start",
+                  "kind": "point",
+                  "position": {
+                    "x": 46,
+                    "y": 31
+                  }
+                },
+                {
+                  "id": "line-end",
+                  "kind": "point",
+                  "position": {
+                    "x": 15,
+                    "y": 60
+                  }
+                }
+              ]
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "required": ["orange-new", "orange-old", "clear-new"],
+          "initial": {
+            "passed": true,
+            "compared": 379996,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "output": {
+            "passed": true,
+            "compared": 379792,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 67,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 67,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 67,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "failed": "Comparison correctness check failed. {\"check\":\"Sparse Canvas new/old symbol/path probe coverage\"}"
+        }
+      ]
+    },
+    "failed": true,
+    "reason": "Comparison correctness check failed. {\"check\":\"Sparse Canvas new/old symbol/path probe coverage\"}"
+  },
+  "timing": {
+    "runId": "comparison-timing-2026-10-07T06-15-51.953Z",
+    "sourceCommit": "f393bc3bb2ad7d0b2cf6afc98904aab7c179ae33",
+    "dirty": "M benchmark.config.mts\n M docs/DESIGN_MAIN.md\n M docs/design/PLATFORMS_AND_PERFORMANCE.md\n M package-lock.json\n M package.json\n?? docs/performance/LEAFLET_COMPARISON.md\n?? docs/performance/leaflet-2026-10-06-150104-summary.csv\n?? docs/performance/leaflet-2026-10-06-150104-timing.csv\n?? docs/performance/leaflet-2026-10-06-155113-instrument.csv\n?? docs/performance/leaflet-2026-10-06-build.json\n?? docs/performance/leaflet-2026-10-06-exclusion-check.json\n?? docs/performance/leaflet-2026-10-06-runs.json\n?? examples/comparison.adapter.ts\n?? examples/comparison.bench.ts\n?? examples/comparison.canvas-controls.ts\n?? examples/comparison.canvas-fixtures.ts\n?? examples/comparison.canvas.ts\n?? examples/comparison.expected.ts\n?? examples/comparison.html\n?? examples/comparison.instrument.ts\n?? examples/comparison.leaflet.ts",
+    "hashes": {
+      "examples/comparison.html": "81d852aa7ccae30aba71b7c718631566bf9e0c59b30b78bb71ac0d719242f8b1",
+      "examples/comparison.bench.ts": "fd4a79246eb0db35202ccbbac85fbbd57a44e7d45a3986b2c447a1623fb5f6b4",
+      "examples/comparison.adapter.ts": "76e5208773a73aafa803508132aa5b169cf275dca542f5071ae9e4827f6b5a34",
+      "examples/comparison.leaflet.ts": "0874b033c0b980444b05fe3dd8d302003cd638c9c6a4a7191b688aa78a575ded",
+      "examples/comparison.expected.ts": "d4473612de95bd0625ce0e4508ae0a26ae415444070af6d549a2a28b55848031",
+      "examples/comparison.instrument.ts": "71ebe16c08857f91b9c065c19353b7ff491e65832645bf82613b36c7d1ca8e5f",
+      "examples/comparison.canvas.ts": "0e3f479f6f941f60898dc434eeb71ef147f8811fad1d72918099b0809cb24fca",
+      "examples/comparison.canvas-fixtures.ts": "5bd86a948ee3dc95228f83274a15028618fdbedc0016b0039f75cc24fb8e7749",
+      "examples/comparison.canvas-controls.ts": "8d9e459ef1625bda3b678c64b405c84a070fa90d9ec51d0b3c52cf15c87cfd02",
+      "examples/stress.html": "77c7d2460990079466402ecf46622ff6aca166d26ebcf2d9b1ae67481d17cbd3",
+      "examples/stress.bench.ts": "78d095f21510bf44a1c57902c3072bb1b8d2a3240fe08755317b2d5ce5c5d512",
+      "examples/stress.check.ts": "3b3e38052e6622be1a2662304d1b3e15e74f55ce2d59e2ced8a32c048f972ce1",
+      "examples/stress.scene.ts": "e629165062e38393b56d0f951f63907fb7c07cef3ca93cfa3fc567d198e84e0f",
+      "examples/stress.instrument.ts": "f6128920b98b969b1ef78e67f64882276d0ae67702d85b92c2f4cbb992ccd556",
+      "benchmark.config.mts": "393ae0421095df849505461e413fbd814b16249d27a02ec3a107adc643eb4897",
+      "package.json": "58a02140abddb56ed414ac69d95c69c6012852e527dba92653411c67fe74e1f2",
+      "package-lock.json": "69c8a47e69aa89732f47ff8bdcc34836b3a1235c10aaa7bf31142be5958f944f",
+      "examples/factory/Factory-ground-floor.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b",
+      "tsconfig.json": "6ebd07c6a92c3d1e64663c4dbbb716fc172b2c1191a673bd036226f24ad73d71",
+      "tsconfig.examples.json": "81b84a740cb96b01033dad8c5da33a20d64c5806692bd492fdfec1e2c038ea98",
+      "node_modules/leaflet/dist/leaflet-src.js": "b4fa27bd78a8487450b75fb8ced591e66cffd4a1b55f7c87373557a6b3f680ba",
+      "node_modules/leaflet/dist/leaflet.css": "a7837102824184820dfa198d1ebcd109ff6d0ff9a2672a074b9a1b4d147d04c6",
+      "src/assets.d.ts": "a8f55248c82d32e1d0e2d9ab58ea4c518b3ff78da6ce1556dcc3f84192a1b258",
+      "src/index.ts": "f63a40215ec9ea7805a2ce584bb245da63ea525b8c2c40d76d8b383856a1f2ac",
+      "src/camera/camera.ts": "7cc81f334f36225af7578a55836b6559195eac90fc11160303e644d1b3a458b6",
+      "src/definitions/identity.ts": "8a5c5bc88356c883e3f25e9e68654be5cbdc700adb4bebb464dcfc2f1d2394c1",
+      "src/definitions/map-definition.ts": "2d833d6a2a1375f502da8a974ae4edf48cac42b22b68155b3c2b662f8244ee26",
+      "src/definitions/map-line-definition.ts": "27c02dc25daf2d12284939a53ff5af021907ce2dd6c943e32cf7dd9870520f5b",
+      "src/definitions/map-object-definition.ts": "79c9643339c1397332b96e17992bb812e314fd402313b88e2bfa867e966a45f8",
+      "src/definitions/map-point-definition.ts": "7ce92a103803d991b2a776c488cfde15e495dc08115a3fb957154cb096f5f1e0",
+      "src/definitions/map-route-definition.ts": "f9d5fd42fab3f9d76c4a369fe1b77ca0182553e2a715f55df483e784c5c47127",
+      "src/errors/atlas-error.ts": "9a9fba09a8fae8850739caf416b0d33d1b2537c6e7ecee0696c6e4cd90639495",
+      "src/interaction/camera-controls.ts": "6b544980cc5e196846ee2851162a6c3234f9a343ec73a0996b1b3f4dbe5c2485",
+      "src/interaction/map-coordinates.ts": "7018e3cc91c19b9b7a44694fd6182b3e0985076e0077702c29c94f24933af856",
+      "src/interaction/map-surface-event.ts": "a2754e6c45a16f161c26277c48e917fb127446a493352e221e73bc4bc04d137f",
+      "src/interaction/object-click-event.ts": "26a6d0963792252979b3c2e899106d90aaab66d32bd21f6216b807011b235735",
+      "src/math/distance.ts": "c5cf0d72a32ec3271098afd627bfffb99fef2517b469bb8c5f453c34111b5b7c",
+      "src/math/point.ts": "ac6f57da7d736a5e389c6f285ef0a5063ada6a51cd75031234a252c92ab3daae",
+      "src/math/rect.ts": "d5839ac951a2733bf7655062d579c4ef43593c14e380e35c654208536827600e",
+      "src/math/size.ts": "a492d36a4032966f754db980dcab1fcdd4d6198f1ad8a4d8452e8a1380ee8bda",
+      "src/objects/create-id.ts": "96e3eecb7c7dd9d0c2f2dda418daf77fc14a002f7ec52330c9dc08bed2c00b0c",
+      "src/objects/map-line.ts": "0c97867144cf6c06d96abae326da5297cb13508f76af3561197e99b79b58c9be",
+      "src/objects/map-object-collection.ts": "21a1e2383ff77835a40faf92962afdb521eaab8fc35c0d5826cae52b895f4a85",
+      "src/objects/map-object.ts": "2d7b8d13b94815d0cbe4f1a87b32abbbecff40447181f986a03ac06436a4ed91",
+      "src/objects/map-point.ts": "3149b90579439a934e1e00b0ea2a26ad8a82e9ff4761d1194c2d431f60f52a4b",
+      "src/objects/map-route.ts": "b07cfc366853d559b7491875873d8b29c46f33b1f996a911b8246fb744eccc23",
+      "src/renderers/renderer.ts": "50ae96032ac13d5f544765f2970eb4008a8c3f736cd087ce4fbb025070c0d561",
+      "src/spatial/geometry.ts": "1f5087902545216a4ff1375ebdf8bc4ca5e96b1d6780a5650ae15115d69c167b",
+      "src/spatial/scene-geometry.ts": "2208173bebdbff541c79199b6665cdff07759e1108a29a21310ed181dabc7616",
+      "src/spatial/spatial.ts": "3804fb0ee7b326b2faba76b0e3243828614813e21d1fff240fcdb64bf52d39e6",
+      "src/validators/map-point.validator.ts": "4ac663298adfa677bb525c001572a11886ca5697a5e1231653d023fe1233113f",
+      "src/validators/map-points.validator.ts": "474d3490d515afd9199d4a1c287bdc88108c70e409b240fd080fdc6abfed1c4e",
+      "src/validators/number.validator.ts": "551bd4590cc5f1850329269e26a26dfb0eb3a2920df1d704a531f779857177ef",
+      "src/validators/object-id.validator.ts": "0a8ad2b44b074464510e72edfd766a5eb6c9a6aded68a252ec8e22823a9d534f",
+      "src/validators/point.validator.ts": "295af3c4cf091c3c9e76579e4bd64de37454abc0bfb16a76cc1710444cd231c5",
+      "src/validators/size.validator.ts": "b571b9ab3e54989c67974cfc45e3fdf5dd5398edf5217abb0d21b23853931d04",
+      "src/components/map-element/map-element.html": "5a378991e5f43557aceb7edee13650af85df4eaadf0ea4f7af690d62a37b504c",
+      "src/components/map-element/map-element.ts": "d04c90eb5631b7408efed2b1cef29857418402b048110f3b7cdd14fc34b193b9",
+      "src/renderers/svg/svg-renderer.ts": "0fac7599b6aed9c1c4687e2926892e005535bbe7da98f0067ca827636c8ad4bf",
+      "src/renderers/svg/svg-renderer.utils.ts": "10126e562cb9d97b3a1705d202e4dfc99a519a86b758fb5498fd1835eff4c7e7"
+    },
+    "buildMode": "production",
+    "variants": ["Atlas SVG", "Leaflet SVG", "Leaflet Canvas"],
+    "versions": {
+      "Atlas": "f393bc3bb2ad7d0b2cf6afc98904aab7c179ae33",
+      "Leaflet": "1.9.4"
+    },
+    "leafletApiDocumentation": "https://github.com/Leaflet/Leaflet/tree/v1.9.4/src",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+    "platform": "MacIntel",
+    "hardwareConcurrency": 8,
+    "deviceNotes": "Unknown; fill before export.",
+    "viewport": {
+      "width": 800,
+      "height": 480
+    },
+    "window": {
+      "width": 1100,
+      "height": 1100
+    },
+    "dpr": 1,
+    "seed": 1096043603,
+    "scenarios": ["route-update"],
+    "symbols": {
+      "pointRadius": 11,
+      "pointStroke": 2,
+      "fill": "#2775d9",
+      "pointStrokeColor": "#ffffff",
+      "lineStroke": 4,
+      "lineColor": "#d95012",
+      "caps": "round",
+      "joins": "round"
+    },
+    "initialCamera": {
+      "x": 65.409155,
+      "y": 70.61621,
+      "scale": 3.3986530854601233
+    },
+    "background": {
+      "size": {
+        "width": 130.81831,
+        "height": 141.23242
+      },
+      "source": "Factory-ground-floor.svg"
+    },
+    "instrumented": false,
+    "warmups": 1,
+    "repeats": 5,
+    "motionMs": 1500,
+    "rafOpportunities": 2,
+    "backgroundCache": "Image.decode once before run; warm cache; navigation/module download excluded",
+    "order": "scene reversal every other repeat; engine cyclic rotation then reversal every other repeat",
+    "settings": {
+      "crs": "Simple; [-y,x]",
+      "zoom": "log2(CSS pixels per map unit)",
+      "zoomSnap": 0,
+      "animations": false,
+      "smoothFactor": 0,
+      "noClip": true,
+      "rendererPadding": 0,
+      "interactivePaths": false
+    },
+    "boundaries": {
+      "create_to_raf_opportunities_ms": "construction/connection + 2 RAF + engine setup with decoded background, scene and camera + 2 RAF",
+      "atlas_load_promise_ms": "call/resolution of MapElement.load",
+      "leaflet_scene_setup_ms": "Leaflet map construction, camera, overlay and path installation, image load/decode; not readiness event",
+      "operation_sync_ms": "prepared synchronous mutation API sequence, adapter translation and checkpoint bookkeeping",
+      "operation_to_raf_opportunities_ms": "same mutation start to 2 subsequent RAF callbacks; not pixel presentation",
+      "frame_interval_ms": "consecutive RAF timestamps during 1500ms wall-clock trajectory; not renderer or paint duration"
+    },
+    "unavailable": {
+      "leafletPicking": "No public synchronous query equivalent to Spatial.hitTest; no custom scan",
+      "leafletWheel": "native handler debounce and scale/input semantics differ",
+      "canvasSvgCounters": "N/A; no claim about Canvas drawing cost",
+      "routePointsOnly": "N/A; no routes"
+    },
+    "correctness": {
+      "Atlas": "existing definition oracle: model/spatial/SVG + background/camera",
+      "LeafletSVG": "public layer geometry/membership + actual ordered DOM path geometry/styles + independent CRS controls",
+      "LeafletCanvas": "each dense sample: public layer geometry/membership, camera/background and gutter pixel; sparse native Canvas reference preflight checks changed symbols/paths and old disappearance"
+    },
+    "scenes": [
+      {
+        "id": "mixed-3000-seed-41544c53",
+        "roots": 3000,
+        "composition": "mixed",
+        "counts": {
+          "points": 1800,
+          "lines": 600,
+          "routes": 600,
+          "ownedPoints": 5400,
+          "routeVertices": 4200,
+          "visualPrimitives": 7200
+        }
+      }
+    ],
+    "canvasPreflight": {
+      "mode": "preflight",
+      "status": "failed",
+      "cases": [
+        {
+          "fixture": "independent-point",
+          "scenario": "position-single",
+          "mode": "normal",
+          "definitions": [
+            {
+              "id": "independent",
+              "kind": "point",
+              "position": {
+                "x": 45,
+                "y": 30
+              }
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "expected": [
+            {
+              "id": "independent",
+              "kind": "point",
+              "position": {
+                "x": 46,
+                "y": 31
+              }
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "required": ["blue-new", "symbol-cleared"],
+          "initial": {
+            "passed": true,
+            "compared": 380676,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "output": {
+            "passed": true,
+            "compared": 380608,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 18,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 24,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 24,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "modelPassed": true
+        },
+        {
+          "fixture": "line-endpoint",
+          "scenario": "position-single",
+          "mode": "normal",
+          "definitions": [
+            {
+              "id": "line",
+              "kind": "line",
+              "points": [
+                {
+                  "id": "line-start",
+                  "kind": "point",
+                  "position": {
+                    "x": 45,
+                    "y": 30
+                  }
+                },
+                {
+                  "id": "line-end",
+                  "kind": "point",
+                  "position": {
+                    "x": 15,
+                    "y": 60
+                  }
+                }
+              ]
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "expected": [
+            {
+              "id": "line",
+              "kind": "line",
+              "points": [
+                {
+                  "id": "line-start",
+                  "kind": "point",
+                  "position": {
+                    "x": 46,
+                    "y": 31
+                  }
+                },
+                {
+                  "id": "line-end",
+                  "kind": "point",
+                  "position": {
+                    "x": 15,
+                    "y": 60
+                  }
+                }
+              ]
+            },
+            {
+              "id": "gutter",
+              "kind": "point",
+              "position": {
+                "x": 20,
+                "y": 70
+              }
+            }
+          ],
+          "required": ["orange-new", "orange-old", "clear-new"],
+          "initial": {
+            "passed": true,
+            "compared": 379996,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "output": {
+            "passed": true,
+            "compared": 379792,
+            "mismatches": 0,
+            "examples": [],
+            "changes": {
+              "blue-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "blue-old": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-new": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "orange-old": {
+                "probes": 67,
+                "mismatches": 0
+              },
+              "clear-new": {
+                "probes": 67,
+                "mismatches": 0
+              },
+              "symbol-cleared": {
+                "probes": 0,
+                "mismatches": 0
+              },
+              "path-cleared": {
+                "probes": 67,
+                "mismatches": 0
+              }
+            },
+            "backing": {
+              "width": 800,
+              "height": 480,
+              "scaleX": 1,
+              "scaleY": 1
+            }
+          },
+          "failed": "Comparison correctness check failed. {\"check\":\"Sparse Canvas new/old symbol/path probe coverage\"}"
+        }
+      ]
+    },
+    "completedSamples": 0,
+    "failed": true,
+    "reason": "Comparison correctness check failed. {\"check\":\"Sparse Canvas new/old symbol/path probe coverage\"}"
+  }
+}
