@@ -44,9 +44,12 @@ remains recorded as implemented for review, not automatically approved by this p
 1. **Protect current behavior with focused tests (finding 15).** Choose the test runner
    and component-test environment as a concrete tooling step. Model/spatial/camera
    regression tests are merged: Vitest with the Node environment (77 tests).
-   Component load/lifecycle contract tests using browser stand-ins are implemented
-   for review with the scene extraction below; a full DOM test environment remains
-   a separate decision. Cover validation atomicity,
+   Component load/lifecycle contract tests using browser stand-ins are merged with
+   the scene extraction in PR #23. Real-SVG Chromium coverage is implemented for
+   review: 16 renderer tests and 13 focused component integrations. See
+   [browser coverage](RENDERER_AND_COMPONENT.md#browser-svg-regression-coverage--implemented-for-review-2026-10-06).
+   This protects current results and surviving nodes before explicit invalidation;
+   it does not validate mobile support or bounded geometry writes. Cover validation atomicity,
    route membership/order and surviving identity, immediate picking before render,
    stale-click suppression, detach/reconnect, reattachment during removal handlers,
    failed-load preservation, and camera behavior. Start with DOM-independent model,

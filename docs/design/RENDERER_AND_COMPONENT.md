@@ -323,3 +323,37 @@ attributed tarkov.dev icon is retained as an unused asset for the material step.
 Click/tap interaction is merged; see
 [object events](LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--merged).
 Popups remain application UI.
+
+## Browser SVG regression coverage — implemented for review, 2026-10-06
+
+The requested Browser Mode step adds 16 real `SvgRenderer` tests and 13 focused
+`MapElement` integrations, alongside the 103 merged Node tests. See
+[installation and commands](../TOOLING.md#regression-tests).
+
+Direct renderer checks cover preparation/show/render of a mixed scene, point and
+line-endpoint edits, route vertex/path updates, append/insert/remove/range
+replacement (including equal-length replacement and duplicate IDs), empty and
+single-vertex routes, root replacement at unchanged collection size, and separate
+root/route appearances of a shared point. They check ordered coordinates and
+membership, retaining surviving SVG groups and primitives. Pan, zoom, resize,
+CSS-pixel symbol/stroke sizing, and zero-viewport recovery are also covered.
+
+Component checks use the actual registered Web Component, Shadow DOM,
+ResizeObserver, image decoder, RAF, and provider pointer clicks. They cover edits
+reaching SVG, picking before paint, route/vertex event identity, stale-click
+suppression after synchronous removal or disconnect, disconnected edits and
+repeated reconnect, failed-resource/decode preservation followed by replacement,
+and shared runtime instances in two components. Old retained objects cannot alter
+the replacement scene.
+
+The initial tests were prepared against `master` at `f393bc3` on 2026-10-06.
+On 2026-10-07 the branch was updated to `a317f54`, including the internal
+`MapModel` ownership extraction merged in PR #23. All 29 browser tests passed
+unchanged in two successive Chromium runs; the merged Node suite now has 103 tests,
+including model and component stand-in tests. The browser coverage supplements
+those contract tests with real output and native lifecycle/input behavior.
+
+Runtime implementation and public contracts are unchanged by this test step.
+The tests protect the next explicit-invalidation step without imposing
+geometry-write counts or claiming mobile, performance, or complete prototype
+validation.
