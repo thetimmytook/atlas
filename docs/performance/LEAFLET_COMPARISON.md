@@ -563,23 +563,50 @@ still tests clearRect/fill/stroke together, not each method independently.
 ## Integration and validation
 
 `package.json` adds only two exact devDependencies; `package-lock.json` adds their
-locked packages (including the declarations' GeoJSON type dependency). These files
-may intersect the parallel browser-regression task: merge both dependency sets and
-regenerate the lockfile together rather than replace either branch's whole file.
-No test/configuration file from that task is edited. Benchmark config adds the
-comparison HTML entry and hashes all relevant `src`/harness/package/background inputs;
-it remains separate from test infrastructure. New comparison files are example-local.
+locked packages (including the declarations' GeoJSON type dependency). PR preparation
+merged master at `1c2e54b`, retaining both Leaflet and the existing browser-regression
+dependency sets. Atlas source, regression tests and their configuration are identical
+to master. Benchmark config adds the comparison HTML entry and hashes all relevant
+`src`/harness/package/background inputs; new comparison files are example-local.
 
-Documentation navigation/platform-stage updates may intersect that task's status edits.
-Preserve both statuses during integration. The new performance document/dated exports
-are additive; original baseline documents/exports are not overwritten. Temporary build
-outputs, screenshots and traces remain outside Git. Changes remain uncommitted in
-`chore/leaflet-comparison` for mini review.
+The documentation conflict retained both the scene-model/browser-test status from
+master and the implemented comparison links. Dated exports are additive; original
+baseline documents/exports and all 18 prior Leaflet evidence files are unchanged.
+Two file-specific Git attributes preserve the raw CRLF summary/instrument CSV exports
+and their recorded SHA-256 values instead of normalizing them to LF on first commit.
+Temporary build outputs, screenshots and traces remain outside Git.
 
-All requested commands completed successfully: `npm ci`, `npm test` (77 tests,
-5 files), `npm run check`, `npm run build`, and `npm run bench:build`.
-The final check has one example-local duplicate-string lint warning and no errors;
+Before master integration, all requested commands completed successfully: `npm ci`,
+`npm test` (77 tests, 5 files), `npm run check`, `npm run build`, and
+`npm run bench:build`. The source/build input audit matched that saved worktree at
+that time; historical manifests still identify the original inputs and commits.
+The check has one example-local duplicate-string lint warning and no errors;
 library declaration generation retains the existing API Extractor TypeScript
 5.9.3-versus-6.0.3 warning. npm ci reports five audit findings (4 moderate, 1 high);
-no unrelated automatic dependency upgrades were made. A final source/build input
-hash audit confirms that measured code still matches the saved worktree.
+no unrelated automatic dependency upgrades were made.
+
+### PR integration rerun — 2026-10-07
+
+The merge commit `4aee307` passed `npm test` (103 tests, 7 files), `npm run check`,
+`npm run build`, `npm run bench:build`, and the unchanged `npm run test:browser`
+(29 tests, 2 files). A clean production benchmark build records that source commit,
+61 verified input hashes, and asset hashes in the new
+[integration verification](leaflet-canvas-2026-10-07-integration-verification.json).
+This rerun includes master's scene-model extraction without changing measured scenes.
+
+The [headless Chromium 153.0.8010.12 rerun](leaflet-canvas-2026-10-07-integration-headless.json)
+and [embedded Chromium 154.0.8037.98 rerun](leaflet-canvas-2026-10-07-integration-embedded.json)
+both use DPR 1 and viewport 1100 x 1100. Each passes 14 initial checks, seven normal
+cases, seven suppressed-drawing detections and seven recoveries; every required
+changed category has probes and detects mismatches under suppression. Diagonal
+line-endpoint counts remain 79/121/121 in headless and 93/133/133 in embedded for
+orange-new/orange-old/clear-new.
+
+Headless Run selected again passes preflight and accepts 15 samples, producing
+[30 separate timing rows](leaflet-canvas-2026-10-07-integration-timing.csv).
+A subsequent real drawing fault fails independent-point with `Sparse Canvas actual output`
+before any samples, retains the reason/failed case in metadata and leaves the accepted
+CSV byte-identical. The driver restores drawing methods in `finally`. Embedded
+integration repeats functional controls; selected-run fault propagation is tested in
+headless. These are functional integration results, not updated performance tables;
+the desktop Chromium/DPR and dense-output limitations above still apply.
