@@ -1,0 +1,59 @@
+name: Checks
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  checks:
+    name: Atlas checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - name: Install Chromium and Linux dependencies
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Browser regression tests
+        id: browser
+        run: npm run test:browser
+      - run: npm run build
+      - run: npm run bench:build
+      - name: Built example smoke test
+        id: e2e
+        run: npm run test:e2e
+      - name: Upload browser diagnostics
+        if: >-
+          ${{ failure() &&
+          (steps.browser.outcome == 'failure' || steps.e2e.outcome == 'failure') &&
+          hashFiles('node_modules/.cache/browser-tests/**',
+          'node_modules/.cache/vitest-attachments/**',
+          'node_modules/.cache/e2e/**') != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-diagnostics
+          path: |
+            node_modules/.cache/browser-tests/
+            node_modules/.cache/vitest-attachments/
+            node_modules/.cache/e2e/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7

@@ -77,7 +77,8 @@ cleans previous output after type checks pass. ES2022 is the provisional output 
 not a final browser compatibility guarantee; no automatic polyfills are added.
 
 All dependencies are development-only. The private package has no runtime dependencies,
-framework adapter, publishing configuration, CI, or placeholder test command.
+framework adapter or publishing configuration. GitHub Actions runs project checks;
+see [CI and e2e](docs/TOOLING.md#ci-and-built-example-smoke-test) for the local sequence.
 Vite's development client is not included in the library build.
 
 ESLint loads `eslint.config.mts` through `jiti`. Tooling configuration has its own

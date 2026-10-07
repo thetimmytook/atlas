@@ -141,6 +141,9 @@ SVG updates remain future work; this desktop Chromium run does not complete
 mobile/prototype validation.
 
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
+Project-check GitHub Actions and one smoke test of the built Factory example are
+implemented for review; the first GitHub Linux run remains unverified. See
+[CI and e2e](TOOLING.md#ci-and-built-example-smoke-test).
 The Web Component shell and Factory background with `MapDefinition` are merged.
 Camera center/zoom, fit, and example buttons are merged. Mouse/touch controls and
 map/client coordinate conversion are merged; see
