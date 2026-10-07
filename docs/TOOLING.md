@@ -51,28 +51,68 @@ Templates are trusted source files, not a sanitizer for application data.
 
 ## Regression tests
 
-Run `npm ci`, then `npm test` for a single test run. `npm test -- camera` filters
-by filename; `npm test -- --watch` enables watch mode. Run `npm run check` for
-type checking (including tests), lint, and formatting.
+Install development tools and the provider-managed Chromium build:
 
-Vitest 4.1.11 is a development dependency compatible with the checked Node 20.19.6,
-Vite 8.3.1, and TypeScript 6.0.3 setup. Its Node range includes Node 20 and its Vite
-peer range includes Vite 8. It reuses Vite's TypeScript/ESM processing and package.json
-imports without an additional loader. The built-in Node test runner would need a
-TypeScript loader and later handling for raw component templates. The separate
-vitest.config.mts avoids loading the declaration-build plugin during tests.
+```sh
+npm ci
+npx playwright install chromium
+```
 
-Tests in `tests/` currently cover models, route editing, spatial queries, and camera
-state using the Node environment and native events. No DOM emulator is installed.
-The test TypeScript project and ESLint scope stay separate from browser source;
-runtime dependencies and package-root exports are unchanged. Tests observe public
-operations, events, picking results, and the existing shared scene-geometry contract.
-They use no snapshots or sleeps; event spies only record notifications and results.
+On Linux, `npx playwright install --with-deps chromium` also installs required
+system libraries (that part may need administrator permission). Browser binaries
+are a local tool cache, not repository assets. Reinstall Chromium after changing
+the locked Playwright version.
 
-Component lifecycle, stale-click suppression, load/display preservation, SVG node
-identity, and client-coordinate conversion need the next separately reviewed DOM
-test step. DOM emulation does not validate real layout or browser performance.
-Real-browser E2E tooling remains a separate decision.
+Run the two suites independently:
+
+```sh
+npm test
+npm run test:browser
+npm run check
+npm run build
+```
+
+`npm test -- camera` filters Node tests by filename. `npm test -- --watch` enables
+Node watch mode; `npm run test:browser -- --watch` does the same for Browser Mode.
+`npm run test:browser -- svg-renderer` filters the renderer suite. Repeat the
+browser command to check stability; there are no test retries or arbitrary sleeps.
+
+Vitest 4.1.11 uses the existing Node 20.19.6, Vite 8.3.1, and TypeScript 6.0.3
+toolchain. The [Vitest 4 Playwright provider configuration](https://v4.vitest.dev/config/browser/playwright)
+uses `@vitest/browser-playwright`, whose exact peer dependency is `vitest@4.1.11`;
+the provider is therefore pinned to 4.1.11. Playwright 1.63.0 is also pinned and
+requires Node 20 or later. Both additions are development dependencies; the
+existing toolchain versions, runtime dependencies, and package-root exports are
+unchanged. Both test configs avoid the declaration-build plugin.
+
+Discovery is separate: `vitest.config.mts` runs Node tests under `tests/` while
+excluding `tests/browser/`; `vitest.browser.config.mts` includes only
+`tests/browser/**/*.browser.test.ts`, using Playwright and headless Chromium.
+The shared test TypeScript project includes Playwright action types and the
+existing HTML-import declaration for the real component template.
+
+The 103 Node tests cover models, route editing, spatial queries, camera state,
+and component load/lifecycle contracts using browser stand-ins.
+The 29 browser tests add 16 direct `SvgRenderer` regressions and 13 focused
+`MapElement` integrations. They use native SVG, registered custom elements,
+Shadow DOM, ResizeObserver, image decoding, browser RAF, and provider clicks.
+Small inline SVG backgrounds and an intentionally revoked local Blob URL keep
+fixtures independent of external network resources.
+
+Renderer tests call `render` explicitly and check coordinates, composition,
+membership, surviving group/shape references, and CSS-pixel symbols. Component
+tests wait for specific DOM assertions with a two-second timeout. Before-RAF
+picking tests edit objects in the capture phase of a trusted provider
+`pointerdown`, then record the still-old SVG during `objectclick`; edits and
+picking therefore happen in one native task before the next RAF. No renderer,
+document, SVG, ResizeObserver, RAF, or resource decoder is mocked. Test hosts and
+listeners are cleaned after every test. Diagnostic screenshots and Vitest
+attachments go into ignored `node_modules/.cache/`.
+
+This headless desktop Chromium regression run does not establish the supported
+browser matrix, mobile/touch behavior, accessibility, or performance targets.
+Scene invalidation and bounded geometry-write assertions remain the next
+optimization step; these tests currently protect results and surviving identity.
 
 ## Browser benchmark
 

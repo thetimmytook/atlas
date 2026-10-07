@@ -39,6 +39,32 @@ The current ID handling decision below applies independently of definition reuse
 The current prototype copies input into independent runtime objects on each load.
 Sharing one runtime map between multiple views remains a separate design question.
 
+## Internal model observation and loading — accepted 2026-10-06, implemented for review
+
+The [scene-ownership substep](RENDERER_AND_COMPONENT.md#internal-scene-model--accepted-2026-10-06-implemented-for-review)
+moves the immutable resolved load snapshot, root collection, geometry, spatial
+queries, and scene subscriptions into internal `MapModel`. The existing collection
+and runtime-object APIs, instance sharing and duplicate-ID semantics are unchanged.
+The component still validates/copies load input before candidate construction;
+constructor signatures and validation boundaries are unchanged.
+
+Observation is controlled internally by the connected view, using existing
+`EventTarget` mechanisms. Stopping it releases listeners from the collection and
+all actually observed roots, without disposing runtime objects. Restarting observes
+current membership without duplicate notifications. Queries continue to read current
+objects and route points even during stopped observation; reconnect requests display
+synchronization. No revisions or new dirty-state mechanism are implemented.
+
+A candidate has no scene subscriptions during renderer/image preparation. The old
+map remains active; failure preserves its objects, definition, camera, display and
+picking. Success swaps the prepared display and model, releases old observation,
+cancels a pending click and fits the new background. Overlapping loads still reject
+with `MAP_LOAD_IN_PROGRESS`. Old retained objects/collections remain functional
+without retaining the model through forgotten change listeners.
+
+The model is not exported from the package root. Public model lifecycle, a core
+entry point, live serialization and a new loader framework remain unimplemented.
+
 ## Route append — accepted 2026-10-05, implemented for review
 
 Merged in PR #14 on 2026-10-06 with the simplified ID handling decision below.
@@ -308,6 +334,26 @@ remains controlled by the owning line or route; root removal does not edit it.
 
 The Factory example keeps Move added point available after removal and includes
 Restore added point, demonstrating editing and reattaching the same reference.
+
+## Browser lifecycle regression coverage — implemented for review, 2026-10-06
+
+Focused real-browser tests complement the existing model/spatial tests. Runtime
+edits, route membership changes (including equal-length replacement), root
+removal/replacement with duplicate IDs, and shared root/route point appearances
+are checked against actual SVG coordinates and surviving nodes. Provider pointer
+tasks verify current picking before the next RAF.
+
+Component tests also protect edits while detached, repeated reconnect without
+duplicated clicks, stale-click suppression after synchronous removal/disconnect,
+and shared instances across two components. Real resource and decoding failures
+preserve the previous definition, collection, camera, SVG nodes, and picking; a
+later successful load retires the old scene and its retained objects remain
+independent. See [browser coverage](RENDERER_AND_COMPONENT.md#browser-svg-regression-coverage--implemented-for-review-2026-10-06)
+and [test commands](../TOOLING.md#regression-tests).
+
+The suite also passed against the `MapModel` ownership extraction merged in PR #23
+on 2026-10-07. This is behavior protection on the current `master`, not implementation of dirty
+tracking, revisions, batch, new event payloads, or the planned invalidation step.
 
 ## Object ID registry — superseded experiment, 2026-10-06
 

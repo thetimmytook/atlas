@@ -1,4 +1,7 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["tests/**/*.ts"]
+  "include": ["tests/**/*.ts", "src/assets.d.ts"],
+  "compilerOptions": {
+    "types": ["@vitest/browser-playwright"]
+  }
 }
