@@ -1,6 +1,7 @@
 import { trackScene, untrackScene } from './scene-invalidation.js';
 
 import type { Point } from '#math/point.js';
+import type { MapLayer } from '#objects/map-layer.js';
 import type { MapEntry, MapObjectCollection } from '#objects/map-object-collection.js';
 import type { MapPoint } from '#objects/map-point.js';
 import type { MapRoute } from '#objects/map-route.js';
@@ -25,12 +26,15 @@ export interface SceneSymbols {
 }
 
 export interface SceneObject {
+  readonly layer: MapLayer;
   readonly object: MapEntry;
   readonly geometry: Geometry;
   readonly route?: MapRoute;
 }
 
 export interface SceneGeometry {
+  /** Fixed bottom-to-top layer composition, shared by SVG and spatial queries. */
+  readonly layers: readonly MapLayer[];
   readonly objects: readonly SceneObject[];
   readonly symbols: SceneSymbols;
 
@@ -45,7 +49,11 @@ const defaultSymbols: SceneSymbols = Object.freeze({
 });
 
 /** Reuse live views; explicit membership invalidation replaces the ordered entries. */
-export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometry {
+export function prepareSceneGeometry(
+  objects: MapObjectCollection,
+  layers: readonly MapLayer[],
+): SceneGeometry {
+  const orderedLayers = Object.freeze([...layers].sort((a, b) => a.stackIndex - b.stackIndex));
   const invalidation: SceneInvalidation = { membership: true, changed: new Set() };
   const reference = new WeakRef(invalidation);
   const tracked = new Set<object>();
@@ -53,11 +61,19 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
   let entries: readonly SceneObject[] = [];
 
   // A point may appear as a root and as a route vertex; each owner needs its own scene entry.
-  const cache = new WeakMap<MapEntry, WeakMap<MapEntry, SceneObject>>();
+  const cache = new WeakMap<MapLayer, WeakMap<MapEntry, WeakMap<MapEntry, SceneObject>>>();
+  const geometries = new WeakMap<MapEntry, Geometry>();
 
-  const entryFor = (object: MapEntry, route?: MapRoute): SceneObject => {
+  const entryFor = (layer: MapLayer, object: MapEntry, route?: MapRoute): SceneObject => {
+    let layerEntries = cache.get(layer);
+
+    if (!layerEntries) {
+      layerEntries = new WeakMap();
+      cache.set(layer, layerEntries);
+    }
+
     const owner = route ?? object;
-    let ownerEntries = cache.get(owner);
+    let ownerEntries = layerEntries.get(owner);
     const cached = ownerEntries?.get(object);
 
     if (cached) {
@@ -66,12 +82,20 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
 
     if (!ownerEntries) {
       ownerEntries = new WeakMap<MapEntry, SceneObject>();
-      cache.set(owner, ownerEntries);
+      layerEntries.set(owner, ownerEntries);
+    }
+
+    let geometry = geometries.get(object);
+
+    if (!geometry) {
+      geometry = createGeometry(object);
+      geometries.set(object, geometry);
     }
 
     const entry: SceneObject = Object.freeze({
+      layer,
       object,
-      geometry: createGeometry(object),
+      geometry,
       ...(route ? { route } : {}),
     });
     ownerEntries.set(object, entry);
@@ -99,23 +123,25 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
     };
 
     entries = Object.freeze(
-      Array.from(objects).reduce<SceneObject[]>((result, object) => {
-        const entry = entryFor(object);
-        result.push(entry);
-        dependOn(object, entry);
+      orderedLayers.reduce<SceneObject[]>((result, layer) => {
+        for (const object of layer.objects) {
+          const entry = entryFor(layer, object);
+          result.push(entry);
+          dependOn(object, entry);
 
-        if (object.kind === 'point') {
-          return result;
-        }
+          if (object.kind === 'point') {
+            continue;
+          }
 
-        for (const point of object.points) {
-          dependOn(point, entry);
+          for (const point of object.points) {
+            dependOn(point, entry);
 
-          // Temporary: only routes have vertex symbols; materials will select appearances.
-          if (object.kind === 'route') {
-            const vertex = entryFor(point, object);
-            result.push(vertex);
-            dependOn(point, vertex);
+            // Temporary: only routes have vertex symbols; materials will select appearances.
+            if (object.kind === 'route') {
+              const vertex = entryFor(layer, point, object);
+              result.push(vertex);
+              dependOn(point, vertex);
+            }
           }
         }
 
@@ -130,7 +156,11 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
       }
     }
 
-    const sources = new Set<object>([objects, ...dependencies.keys()]);
+    const sources = new Set<object>([
+      objects,
+      ...orderedLayers.map(layer => layer.objectIds),
+      ...dependencies.keys(),
+    ]);
 
     for (const source of tracked) {
       if (!sources.has(source)) {
@@ -153,6 +183,7 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
   syncMembership();
 
   return Object.freeze({
+    layers: orderedLayers,
     get objects(): readonly SceneObject[] {
       syncMembership();
 
@@ -174,6 +205,11 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
       return affected;
     },
   });
+}
+
+/** Visibility is evaluated from live runtime state, including before the next paint. */
+export function isLayerEligible(layer: MapLayer): boolean {
+  return layer.visible;
 }
 
 function createGeometry(object: MapEntry): Geometry {

@@ -1,4 +1,5 @@
 import { Renderer } from '#renderers/renderer.js';
+import { isLayerEligible } from '#spatial/scene-geometry.js';
 
 import {
   applyGeometry,
@@ -7,9 +8,9 @@ import {
   prepareImage,
 } from './svg-renderer.utils.js';
 
-import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
+import type { MapLayer } from '#objects/map-layer.js';
 import type { PreparedScene } from '#renderers/renderer.js';
 import type { SceneGeometry, SceneObject } from '#spatial/scene-geometry.js';
 import type { SvgObject } from './svg-renderer.utils.js';
@@ -18,6 +19,8 @@ export class SvgRenderer extends Renderer {
   readonly #surface: SVGSVGElement;
   #objects: readonly SvgObject[] = [];
   #geometry: SceneGeometry | undefined;
+  #layers = new Map<MapLayer, SVGGElement>();
+  #visible = new Map<MapLayer, boolean>();
   #sources: readonly SceneObject[] = [];
   #bySource = new Map<SceneObject, SvgObject>();
   readonly #changed = new Set<SvgObject>();
@@ -33,18 +36,33 @@ export class SvgRenderer extends Renderer {
     this.#surface = surface;
   }
 
-  override async prepare(
-    background: BackgroundDescription,
-    geometry: SceneGeometry,
-  ): Promise<PreparedScene> {
-    const image = await prepareImage(background);
+  override async prepare(geometry: SceneGeometry): Promise<PreparedScene> {
+    const layers = await Promise.all(
+      geometry.layers.map(async layer => {
+        const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        element.setAttribute('data-layer-id', layer.id);
+
+        if (layer.background) {
+          element.append(await prepareImage(layer.background, layer.id));
+        }
+
+        return [layer, element] as const;
+      }),
+    );
+    const byLayer = new Map(layers);
     const sources = geometry.objects;
     const objects = sources.map(entry => createObject(entry, geometry.symbols));
+
+    for (const object of objects) {
+      byLayer.get(object.source.layer)!.append(object.element);
+    }
 
     return {
       show: (): void => {
         this.#objects = objects;
         this.#geometry = geometry;
+        this.#layers = byLayer;
+        this.#visible.clear();
         this.#sources = sources;
         this.#bySource = new Map(objects.map(object => [object.source, object]));
         this.#changed.clear();
@@ -56,7 +74,8 @@ export class SvgRenderer extends Renderer {
           this.#addObject(object);
         }
 
-        this.#surface.replaceChildren(image, ...objects.map(object => object.element));
+        this.#syncVisibility();
+        this.#surface.replaceChildren(...byLayer.values());
       },
     };
   }
@@ -73,6 +92,7 @@ export class SvgRenderer extends Renderer {
     }
 
     this.#syncObjects();
+    this.#syncVisibility();
 
     for (const source of this.#geometry?.takeChanges() ?? []) {
       const object = this.#bySource.get(source);
@@ -171,17 +191,38 @@ export class SvgRenderer extends Renderer {
 
     this.#bySource = new Map(this.#objects.map(object => [object.source, object]));
     this.#sources = sources;
-    let next: SVGGElement | null = null;
+    const nextByLayer = new Map<MapLayer, SVGGElement>();
 
     // Insert new objects and vertices in composition order, reusing old nodes.
     for (let index = this.#objects.length - 1; index >= 0; index--) {
       const object = this.#objects.at(index)!;
+      const layer = object.source.layer;
+      const parent = this.#layers.get(layer)!;
+      const next = nextByLayer.get(layer) ?? null;
 
-      if (object.element.nextSibling !== next || object.element.parentNode !== this.#surface) {
-        this.#surface.insertBefore(object.element, next);
+      if (object.element.nextSibling !== next || object.element.parentNode !== parent) {
+        parent.insertBefore(object.element, next);
       }
 
-      next = object.element;
+      nextByLayer.set(layer, object.element);
+    }
+  }
+
+  #syncVisibility(): void {
+    for (const [layer, element] of this.#layers) {
+      const visible = isLayerEligible(layer);
+
+      if (this.#visible.get(layer) === visible) {
+        continue;
+      }
+
+      if (visible) {
+        element.removeAttribute('display');
+      } else {
+        element.setAttribute('display', 'none');
+      }
+
+      this.#visible.set(layer, visible);
     }
   }
 }

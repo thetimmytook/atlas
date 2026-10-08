@@ -15,7 +15,7 @@ describe('root object membership', () => {
   it('copies definitions including owned points and leaves resolved load input unchanged by edits', () => {
     const input = { kind: 'point' as const, position: { x: 10, y: 20 } };
     const definition = {
-      background: { source: '/map.png', size: { width: 500, height: 300 } },
+      layers: [{ background: { source: '/map.png', size: { width: 500, height: 300 } } }],
       objects: [{ kind: 'route' as const, points: [input, input] }],
     };
     const resolved = resolveMapDefinition(definition);
@@ -23,10 +23,10 @@ describe('root object membership', () => {
     const second = new MapObjectCollection(resolved.objects);
     const firstRoute = Array.from(first)[0] as MapRoute;
     const secondRoute = Array.from(second)[0] as MapRoute;
-    definition.background.size.width = 999;
+    definition.layers[0]!.background.size.width = 999;
     input.position.x = 999;
 
-    expect(resolved.background.size).toEqual(new Size(500, 300));
+    expect(resolved.layers[0]!.background!.size).toEqual(new Size(500, 300));
     expect(firstRoute.points[0]!.position).toEqual(new Point(10, 20));
     expect(firstRoute.id).toBe(secondRoute.id);
     expect(firstRoute).not.toBe(secondRoute);

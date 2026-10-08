@@ -3,12 +3,10 @@ import { describe, expect, it, vi } from 'vitest';
 import { Camera } from '#camera/camera.js';
 import { Point } from '#math/point.js';
 import { Size } from '#math/size.js';
-import { MapModel } from '#objects/map-model.js';
 import { MapObjectCollection } from '#objects/map-object-collection.js';
-import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
-import { pointDefinition } from './fixtures.js';
+import { pointDefinition, objectScene, editableModel } from './fixtures.js';
 
 import type { MapEntry } from '#objects/map-object-collection.js';
 
@@ -19,7 +17,7 @@ describe('explicit scene invalidation', () => {
       kind: 'route',
       points: [pointDefinition(0), pointDefinition(200)],
     });
-    const scene = prepareSceneGeometry(objects);
+    const scene = objectScene(objects);
     const entries = scene.objects;
     const path = entries[0]!.geometry;
     expect(path.kind).toBe('polyline');
@@ -46,7 +44,7 @@ describe('explicit scene invalidation', () => {
       kind: 'route',
       points: [pointDefinition(0), pointDefinition(200)],
     });
-    const scene = prepareSceneGeometry(objects);
+    const scene = objectScene(objects);
     const original = scene.objects;
     const geometry = original[0]!.geometry;
     expect(geometry.kind).toBe('polyline');
@@ -75,7 +73,7 @@ describe('explicit scene invalidation', () => {
   });
 
   it('invalidates before earlier synchronous handlers and preserves edits across unobserve', () => {
-    const model = new MapModel();
+    const model = editableModel();
     const camera = new Camera();
     camera.resize(new Size(1000, 600));
     const route = model.objects.add({
@@ -108,7 +106,7 @@ describe('reattachment after synchronous membership reconciliation', () => {
     kind => {
       const objects = new MapObjectCollection();
       const root = createReattachmentRoot(objects, kind);
-      const scene = prepareSceneGeometry(objects);
+      const scene = objectScene(objects);
       const spatial = new Spatial(scene);
       const camera = new Camera();
       camera.resize(new Size(320, 240));
@@ -147,7 +145,7 @@ it('keeps detached route edits out of surviving scene membership', () => {
   const objects = new MapObjectCollection();
   const route = objects.add({ kind: 'route', points: [pointDefinition(0), pointDefinition(200)] });
   objects.add(pointDefinition(100, 100));
-  const scene = prepareSceneGeometry(objects);
+  const scene = objectScene(objects);
   objects.remove(route);
   const survivors = scene.objects;
   scene.takeChanges();

@@ -4,10 +4,9 @@ import { Camera } from '#camera/camera.js';
 import { Point } from '#math/point.js';
 import { Size } from '#math/size.js';
 import { MapObjectCollection } from '#objects/map-object-collection.js';
-import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
-import { pointDefinition } from './fixtures.js';
+import { pointDefinition, objectScene } from './fixtures.js';
 
 import type { SceneGeometry } from '#spatial/scene-geometry.js';
 
@@ -19,7 +18,7 @@ function createSpatial(objects: MapObjectCollection): {
   const camera = new Camera();
   camera.resize(new Size(1600, 1000));
   camera.center = new Point(300, 100);
-  const scene = prepareSceneGeometry(objects);
+  const scene = objectScene(objects);
 
   return { camera, scene, spatial: new Spatial(scene) };
 }

@@ -10,8 +10,10 @@ import type { Browser, Page } from 'playwright';
 const DIAGNOSTICS_DIR = 'node_modules/.cache/e2e';
 const DOM_TIMEOUT = 5_000;
 
-async function clickCheckpoint(page: Page): Promise<void> {
-  const checkpoint = page.locator('[data-object-id="route-checkpoint"] circle');
+async function clickCheckpoint(page: Page, layerId = 'second'): Promise<void> {
+  const checkpoint = page.locator(
+    `[data-layer-id="${layerId}"] [data-object-id="route-checkpoint"] circle`,
+  );
   const bounds = await checkpoint.boundingBox();
   expect(bounds).not.toBeNull();
 
@@ -53,8 +55,12 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
       await page.goto(`http://127.0.0.1:${address.port}/examples/`, { timeout: 10_000 });
       const status = page.locator('#status');
       const surface = page.locator('atlas-map svg');
-      const checkpoint = surface.locator('[data-object-id="route-checkpoint"]');
-      const route = surface.locator('[data-object-id="demo-route"] polyline');
+      const checkpoint = surface.locator(
+        '[data-layer-id="second"] [data-object-id="route-checkpoint"]',
+      );
+      const route = surface.locator(
+        '[data-layer-id="second"] [data-object-id="demo-route"] polyline',
+      );
       const details = page.locator('#object-details');
 
       // The loaded status follows background decoding; also wait for visible SVG output.
@@ -95,6 +101,7 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
         })
         .toMatchObject({
           id: 'route-checkpoint',
+          layerId: 'second',
           kind: 'point',
           routeId: 'demo-route',
           position: { x: 60, y: 90 },
@@ -114,9 +121,42 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
         })
         .toMatchObject({
           id: 'route-checkpoint',
+          layerId: 'second',
           kind: 'point',
           routeId: 'demo-route',
           position: { x: 45, y: 90 },
+        });
+      const lowerCheckpoint = surface.locator(
+        '[data-layer-id="first"] [data-object-id="route-checkpoint"]',
+      );
+      const lowerRoute = surface.locator(
+        '[data-layer-id="first"] [data-object-id="demo-route"] polyline',
+      );
+      await expect.poll(() => lowerCheckpoint.getAttribute('transform')).toBe('translate(45 90)');
+      await expect.poll(() => lowerRoute.getAttribute('points')).toBe('85,70 45,90 30,110');
+      const viewBeforeToggle = await surface.getAttribute('viewBox');
+      await page.getByRole('button', { name: 'Toggle second layer', exact: true }).click();
+      await expect
+        .poll(() => surface.locator('[data-layer-id="second"]').getAttribute('display'))
+        .toBe('none');
+      await clickCheckpoint(page, 'first');
+      await expect
+        .poll(async () => JSON.parse(await details.innerText()) as unknown)
+        .toMatchObject({
+          id: 'route-checkpoint',
+          layerId: 'first',
+          routeId: 'demo-route',
+        });
+      expect(await surface.getAttribute('viewBox')).toBe(viewBeforeToggle);
+      expect(await surface.locator('image').isVisible()).toBe(true);
+      await page.getByRole('button', { name: 'Toggle second layer', exact: true }).click();
+      await clickCheckpoint(page);
+      await expect
+        .poll(async () => JSON.parse(await details.innerText()) as unknown)
+        .toMatchObject({
+          id: 'route-checkpoint',
+          layerId: 'second',
+          routeId: 'demo-route',
         });
       expect(pageErrors).toEqual([]);
       expect(consoleErrors).toEqual([]);

@@ -6,8 +6,9 @@ import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { MapObjectCollection } from '#objects/map-object-collection.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
-import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
+
+import { objectScene } from '../fixtures.js';
 
 import {
   background,
@@ -54,7 +55,7 @@ async function prepareRenderer(objects: MapObjectCollection): Promise<{
 }> {
   const surface = createSurface();
   const renderer = new SvgRenderer(surface);
-  const prepared = await renderer.prepare(background, prepareSceneGeometry(objects));
+  const prepared = await renderer.prepare(objectScene(objects, background));
   prepared.show();
 
   return { surface, renderer, originalShapes: captureShapes(surface) };
@@ -91,14 +92,14 @@ describe('real SvgRenderer scene output', () => {
     const { objects } = mixedScene();
     const surface = createSurface();
     const renderer = new SvgRenderer(surface);
-    const prepared = await renderer.prepare(background, prepareSceneGeometry(objects));
+    const prepared = await renderer.prepare(objectScene(objects, background));
     expect(surface.children).toHaveLength(0);
 
     prepared.show();
     const originalShapes = captureShapes(surface);
     const image = surface.querySelector('image')!;
     const groups = svgGroups(surface);
-    expect(Array.from(surface.children, child => child.localName)).toEqual([
+    expect(Array.from(surface.firstElementChild!.children, child => child.localName)).toEqual([
       'image',
       'g',
       'g',
@@ -107,7 +108,7 @@ describe('real SvgRenderer scene output', () => {
       'g',
       'g',
     ]);
-    expect(surface.firstElementChild).toBe(image);
+    expect(surface.firstElementChild!.firstElementChild).toBe(image);
     expect(image.getAttribute('href')).toBe(BACKGROUND_SOURCE);
     expect(image.getAttribute('width')).toBe('320');
     expect(image.getAttribute('height')).toBe('240');
@@ -330,7 +331,7 @@ describe('real SvgRenderer scene output', () => {
     const { surface, renderer, originalShapes } = await prepareRenderer(objects);
     renderer.render(VIEWPORT, BOUNDS);
     expectSurvivingShapes(surface, originalShapes);
-    const image = surface.firstElementChild;
+    const image = surface.querySelector('image');
     const before = svgGroups(surface);
     const extra = objects.add({
       id: 'extra',
@@ -355,7 +356,7 @@ describe('real SvgRenderer scene output', () => {
     expectSurvivingShapes(surface, originalShapes);
     expectGroups(surface, before);
     added.forEach(node => expect(node.isConnected).toBe(false));
-    expect(surface.firstElementChild).toBe(image);
+    expect(surface.firstElementChild!.firstElementChild).toBe(image);
   });
 
   it('detects remove+add with the same root count and duplicate IDs before any render', async () => {
@@ -687,14 +688,14 @@ describe('reattachment before renderer synchronization', () => {
       const objects = new MapObjectCollection();
       const root = createReattachmentRoot(objects, kind);
       const untouched = objects.add(pointDefinition(280, 200, 'untouched'));
-      const geometry = prepareSceneGeometry(objects);
+      const geometry = objectScene(objects, background);
       const spatial = new Spatial(geometry);
       const camera = new Camera();
       camera.resize(VIEWPORT);
       camera.center = new Point(160, 120);
       const surface = createSurface();
       const renderer = new SvgRenderer(surface);
-      (await renderer.prepare(background, geometry)).show();
+      (await renderer.prepare(geometry)).show();
       renderer.render(VIEWPORT, BOUNDS);
       const before = svgGroups(surface);
       const primitives = captureShapes(surface);
@@ -751,14 +752,14 @@ it('updates shared root/vertex appearances when their route returns before rende
   const { objects, route } = mixedScene();
   const point = route.points[0]!;
   objects.add(point);
-  const geometry = prepareSceneGeometry(objects);
+  const geometry = objectScene(objects, background);
   const spatial = new Spatial(geometry);
   const camera = new Camera();
   camera.resize(VIEWPORT);
   camera.center = new Point(160, 120);
   const surface = createSurface();
   const renderer = new SvgRenderer(surface);
-  (await renderer.prepare(background, geometry)).show();
+  (await renderer.prepare(geometry)).show();
   renderer.render(VIEWPORT, BOUNDS);
   const before = svgGroups(surface);
   const primitives = captureShapes(surface);

@@ -7,7 +7,7 @@ import { Size } from '#math/size.js';
 import { MapModel } from '#objects/map-model.js';
 import { MapPoint } from '#objects/map-point.js';
 
-import { pointDefinition } from './fixtures.js';
+import { pointDefinition, editableModel, selectAddedRoots } from './fixtures.js';
 
 import type { MapRoute } from '#objects/map-route.js';
 
@@ -19,12 +19,21 @@ function camera(): Camera {
 }
 
 function createModel(): MapModel {
-  return new MapModel(
+  const model = new MapModel(
     resolveMapDefinition({
-      background: { source: '/map.png', size: new Size(1000, 600) },
+      layers: [
+        {
+          id: 'content',
+          objects: ['point'],
+          background: { source: '/map.png', size: new Size(1000, 600) },
+        },
+      ],
       objects: [pointDefinition(0, 0, 'point')],
     }),
   );
+  selectAddedRoots(model.objects, model.layers[0]!);
+
+  return model;
 }
 
 describe('internal DOM-independent scene model', () => {
@@ -39,7 +48,9 @@ describe('internal DOM-independent scene model', () => {
     expect(model.spatial.hitTest(new Point(0, 0), camera())).toBeUndefined();
     const point = objects.add(pointDefinition(0));
     expect(model.objects).toBe(objects);
-    expect(model.spatial.hitTest(new Point(0, 0), camera())?.object).toBe(point);
+    expect(model.spatial.hitTest(new Point(0, 0), camera())).toBeUndefined();
+    expect(model.layers).toEqual([]);
+    expect(objects.get(point.id)).toBe(point);
   });
 
   it('retains resolved input while querying current runtime state with each supplied camera', () => {
@@ -58,6 +69,7 @@ describe('internal DOM-independent scene model', () => {
 
   it('observes root, owned-point and collection changes without changing runtime identity', () => {
     const model = createModel();
+    model.layers[0]!.objectIds.add('route');
     const changed = vi.fn();
     model.addEventListener('change', changed);
     model.observeChanges();
@@ -65,6 +77,7 @@ describe('internal DOM-independent scene model', () => {
     point.position = new Point(100, 100);
     expect(changed).toHaveBeenCalledOnce();
     const route = model.objects.add({
+      id: 'route',
       kind: 'route',
       points: [pointDefinition(0), pointDefinition(200)],
     });
@@ -105,7 +118,7 @@ describe('internal DOM-independent scene model', () => {
   });
 
   it('keeps scene queries and surviving geometry views current during stopped observation', () => {
-    const model = new MapModel();
+    const model = editableModel();
     const route = model.objects.add({
       kind: 'route',
       points: [pointDefinition(-200), pointDefinition(0), pointDefinition(200)],
@@ -141,7 +154,7 @@ describe('internal DOM-independent scene model', () => {
   });
 
   it('does not subscribe to a root removed by an earlier addition handler', () => {
-    const model = new MapModel();
+    const model = editableModel();
     const point = new MapPoint(pointDefinition(0));
     const subscribe = vi.spyOn(point, 'addEventListener');
     model.objects.addEventListener('add', () => {
@@ -236,7 +249,7 @@ describe('internal DOM-independent scene model', () => {
   });
 
   it('releases the model listener from an externally retained route without disposing it', () => {
-    const model = new MapModel();
+    const model = editableModel();
     const route = model.objects.add({ kind: 'route', points: [pointDefinition(0)] });
     model.observeChanges();
     const release = vi.spyOn(route, 'removeEventListener');
@@ -252,7 +265,7 @@ describe('internal DOM-independent scene model', () => {
 
   it('keeps shared runtime instances and duplicate IDs with independent model observation', () => {
     const first = createModel();
-    const second = new MapModel();
+    const second = editableModel();
     const point = first.objects.get('point') as MapPoint;
     const duplicate = second.objects.add(pointDefinition(200, 100, point.id));
     expect(second.objects.add(point)).toBe(point);

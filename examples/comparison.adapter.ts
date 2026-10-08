@@ -80,7 +80,8 @@ export class AtlasAdapter implements BenchmarkAdapter {
 
       if (scenario.startsWith('add-')) {
         additions.forEach((definition, index) => {
-          this.host.objects.add(definition);
+          const added = this.host.objects.add(definition);
+          this.host.layers[0]!.objectIds.add(added.id);
 
           if ((index + 1) % 100 === 0) {
             checkpoint(index + 1);
@@ -109,7 +110,7 @@ export class AtlasAdapter implements BenchmarkAdapter {
       const svg = this.host.shadowRoot!.querySelector('svg')!;
       const image = svg.querySelector('image')!;
       assertComparison(
-        image.getAttribute('href') === scene.definition.background.source &&
+        image.getAttribute('href') === scene.definition.layers[0]!.background!.source &&
           Number(image.getAttribute('width')) === BACKGROUND_SIZE.width &&
           Number(image.getAttribute('height')) === BACKGROUND_SIZE.height,
         'Atlas background',

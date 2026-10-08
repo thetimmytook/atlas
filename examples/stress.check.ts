@@ -234,13 +234,13 @@ function checkShape(group: Element, expected: ExpectedObject, scale: number): vo
 
 function checkSvg(map: MapElement, expected: readonly ExpectedObject[]): void {
   const svg = map.shadowRoot!.querySelector('svg')!;
-  const children = Array.from(svg.children);
+  const children = Array.from(svg.querySelector('[data-layer-id]')!.children);
   assertMatch(
     children.length === expected.length + 1 && children[0]?.localName === 'image',
     'SVG composition',
   );
   assertMatch(
-    svg.querySelectorAll('*').length === 2 * expected.length + 1 &&
+    svg.querySelectorAll('*').length === 2 * expected.length + 2 &&
       !svg.querySelector('[visibility="hidden"]'),
     'SVG node count/visibility',
   );
@@ -323,7 +323,7 @@ export function prepareMutationCheck(
   const pickingOrder = expected.slice().reverse();
 
   // Retain the pre-operation spatial view so stale coordinate/membership caches fail.
-  const geometry = prepareSceneGeometry(map.objects);
+  const geometry = prepareSceneGeometry(map.objects, map.layers);
   const spatial = new Spatial(geometry);
   const focus = new Camera();
   focus.resize(map.camera.viewport);

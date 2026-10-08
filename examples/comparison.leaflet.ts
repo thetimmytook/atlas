@@ -79,7 +79,7 @@ export class LeafletAdapter implements BenchmarkAdapter {
     const camera = initialCamera(size.x, size.y);
     this.#map.setView(coordinate(camera), Math.log2(camera.scale), { animate: false });
     this.#background = L.imageOverlay(
-      scene.definition.background.source,
+      scene.definition.layers[0]!.background!.source,
       [
         [-BACKGROUND_SIZE.height, 0],
         [0, BACKGROUND_SIZE.width],
@@ -285,7 +285,7 @@ export class LeafletAdapter implements BenchmarkAdapter {
         this.#map.hasLayer(this.#background) &&
           image.complete &&
           image.naturalWidth > 0 &&
-          image.src === scene.definition.background.source,
+          image.src === scene.definition.layers[0]!.background!.source,
         'Leaflet loaded background',
       );
 

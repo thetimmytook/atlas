@@ -1,4 +1,3 @@
-import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
 import type { SceneGeometry } from '#spatial/scene-geometry.js';
@@ -9,9 +8,7 @@ export interface PreparedScene {
 }
 
 export abstract class Renderer {
-  abstract prepare(
-    background: BackgroundDescription,
-    geometry: SceneGeometry,
-  ): Promise<PreparedScene>;
+  // Provisional single-view contract; automatic clipped appearances will extend scene preparation.
+  abstract prepare(geometry: SceneGeometry): Promise<PreparedScene>;
   abstract render(viewport: Size, bounds: Rect): void;
 }

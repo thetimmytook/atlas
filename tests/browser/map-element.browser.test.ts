@@ -9,6 +9,8 @@ import { MapRoute } from '#objects/map-route.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
+import { selectAddedRoots } from '../fixtures.js';
+
 import {
   background,
   expectGroups,
@@ -61,6 +63,7 @@ async function createMap(definition: MapDefinition = mapDefinition()): Promise<{
   maps.push(map);
   const surface = map.shadowRoot!.querySelector('svg')!;
   await map.load(definition);
+  selectAddedRoots(map.objects, map.layers[0]!);
   await waitForDom(() => {
     expect(map.camera.viewport.width).toBe(320);
     expect(map.camera.viewport.height).toBe(240);
@@ -418,7 +421,7 @@ describe('real MapElement browser integration', () => {
       }
 
       const failedLoad = map.load({
-        background: { ...background, source: failedSource },
+        layers: [{ objects: ['point'], background: { ...background, source: failedSource } }],
         objects: [pointDefinition(220, 140, 'point')],
       });
       expect(surface.children).toHaveLength(nodes.length);
@@ -449,7 +452,7 @@ describe('real MapElement browser integration', () => {
           ),
       };
       await map.load({
-        background: replacementBackground,
+        layers: [{ objects: ['point'], background: replacementBackground }],
         objects: [pointDefinition(220, 140, 'point')],
       });
       await waitForDom(() => {
@@ -634,7 +637,7 @@ describe('membership picking before view updates', () => {
 
   it('queries disconnected edits without consuming the changes needed on reconnect', async () => {
     const { map, surface, point, route } = await createMixedMap();
-    const geometry = prepareSceneGeometry(map.objects);
+    const geometry = prepareSceneGeometry(map.objects, map.layers);
     const spatial = new Spatial(geometry);
     const before = svgGroups(surface);
     map.remove();

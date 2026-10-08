@@ -75,13 +75,11 @@ export function instrumentAtlas(): {
     },
   });
 
-  SvgRenderer.prototype.prepare = async function (
-    background,
-    geometry,
-  ): ReturnType<typeof prepare> {
+  SvgRenderer.prototype.prepare = async function (geometry): ReturnType<typeof prepare> {
     let previous: readonly SceneObject[] | undefined;
     const observed: SceneGeometry = {
       symbols: geometry.symbols,
+      layers: geometry.layers,
       takeChanges: () => geometry.takeChanges(),
       get objects(): readonly SceneObject[] {
         count('renderer_scene_reads');
@@ -97,7 +95,7 @@ export function instrumentAtlas(): {
       },
     };
     const start = performance.now();
-    const prepared = await prepare.call(this, background, observed);
+    const prepared = await prepare.call(this, observed);
     preparationDurations.push(performance.now() - start);
 
     return prepared;

@@ -1,3 +1,6 @@
+import type { MapLayerObjectIdCollection as RuntimeMapLayerObjectIdCollection } from '#objects/map-layer-object-id-collection.js';
+import type { MapLayer as RuntimeMapLayer } from '#objects/map-layer.js';
+
 export { MapElement } from './components/map-element/map-element.js';
 
 export type {
@@ -7,6 +10,14 @@ export type {
   MapEntryDefinition,
 } from './definitions/map-definition.js';
 export type { MapRouteDefinition } from './definitions/map-route-definition.js';
+export type {
+  MapLayerDefinition,
+  ResolvedMapLayerDefinition,
+} from './definitions/map-layer-definition.js';
+
+// Keep construction internal, including in the bundled declaration file.
+export type MapLayer = RuntimeMapLayer;
+export type MapLayerObjectIdCollection = RuntimeMapLayerObjectIdCollection;
 export type { MapPointDefinition } from './definitions/map-point-definition.js';
 export type { WithId } from './definitions/identity.js';
 
