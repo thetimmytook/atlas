@@ -55,7 +55,11 @@ export function createObject(source: SceneObject, symbols: SceneSymbols): SvgObj
 /** Write map-space coordinates; camera scale does not affect this step. */
 export function applyGeometry(element: SVGGElement, shape: SvgShape, geometry: Geometry): void {
   if (geometry.kind === 'point') {
-    element.setAttribute('transform', `translate(${geometry.position.x} ${geometry.position.y})`);
+    setChangedAttribute(
+      element,
+      'transform',
+      `translate(${geometry.position.x} ${geometry.position.y})`,
+    );
 
     return;
   }
@@ -66,15 +70,22 @@ export function applyGeometry(element: SVGGElement, shape: SvgShape, geometry: G
       geometry.points.length < 2
         ? ''
         : geometry.points.map(point => `${point.x},${point.y}`).join(' ');
-    shape.setAttribute('points', points);
+    setChangedAttribute(shape, 'points', points);
 
     return;
   }
 
-  shape.setAttribute('x1', String(geometry.start.x));
-  shape.setAttribute('y1', String(geometry.start.y));
-  shape.setAttribute('x2', String(geometry.end.x));
-  shape.setAttribute('y2', String(geometry.end.y));
+  setChangedAttribute(shape, 'x1', String(geometry.start.x));
+  setChangedAttribute(shape, 'y1', String(geometry.start.y));
+  setChangedAttribute(shape, 'x2', String(geometry.end.x));
+  setChangedAttribute(shape, 'y2', String(geometry.end.y));
+}
+
+/** Dirty entries can still contain unchanged endpoint values or no-op position assignments. */
+function setChangedAttribute(element: SVGElement, name: string, value: string): void {
+  if (element.getAttribute(name) !== value) {
+    element.setAttribute(name, value);
+  }
 }
 
 /** Compensate camera zoom on the point symbol, leaving map-space placement unchanged. */

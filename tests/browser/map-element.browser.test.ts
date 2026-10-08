@@ -6,6 +6,8 @@ import { Point } from '#math/point.js';
 import { MapLine } from '#objects/map-line.js';
 import { MapPoint } from '#objects/map-point.js';
 import { MapRoute } from '#objects/map-route.js';
+import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
+import { Spatial } from '#spatial/spatial.js';
 
 import {
   background,
@@ -592,5 +594,105 @@ describe('real MapElement browser integration', () => {
     await clickAt(surface, 200, 120);
     expect(events).toHaveLength(1);
     expect(events[0]!.detail.object).toBe(point);
+  });
+});
+
+describe('membership picking before view updates', () => {
+  it('picks added roots and ignores removed roots in the native pointer task before RAF', async () => {
+    const { map, surface } = await createMixedMap();
+    const before = svgGroups(surface);
+    const events = recordClicks(map);
+    map.clickTrigger = 'press';
+    let added: MapPoint | undefined;
+    const paintedCounts: number[] = [];
+    map.addEventListener('objectclick', () => paintedCounts.push(svgGroups(surface).length), {
+      signal: listeners.signal,
+    });
+    surface.addEventListener(
+      'pointerdown',
+      () => {
+        added = map.objects.add(pointDefinition(280, 220, 'new'));
+      },
+      { capture: true, once: true, signal: listeners.signal },
+    );
+    await clickAt(surface, 280, 220);
+    expect(events).toHaveLength(1);
+    expect(events[0]!.detail.object).toBe(added);
+    expect(paintedCounts).toEqual([before.length]);
+    await waitForDom(() => expectPoint(svgGroups(surface).at(-1)!, 280, 220));
+    surface.addEventListener(
+      'pointerdown',
+      () => {
+        map.objects.remove(added!);
+      },
+      { capture: true, once: true, signal: listeners.signal },
+    );
+    await clickAt(surface, 280, 220);
+    expect(events).toHaveLength(1);
+    await waitForDom(() => expectGroups(surface, before));
+  });
+
+  it('queries disconnected edits without consuming the changes needed on reconnect', async () => {
+    const { map, surface, point, route } = await createMixedMap();
+    const geometry = prepareSceneGeometry(map.objects);
+    const spatial = new Spatial(geometry);
+    const before = svgGroups(surface);
+    map.remove();
+    point.position = new Point(90, 40);
+    const inserted = route.insertPoint(1, pointDefinition(140, 200, 'middle'));
+    const added = map.objects.add(pointDefinition(280, 220, 'new'));
+    expect(spatial.hitTest(new Point(90, 40), map.camera)?.object).toBe(point);
+    expect(spatial.hitTest(new Point(140, 200), map.camera)?.object).toBe(inserted);
+    expect(spatial.hitTest(new Point(280, 220), map.camera)?.object).toBe(added);
+    route.removePoint(inserted);
+    expect(spatial.hitTest(new Point(140, 200), map.camera)).toBeUndefined();
+    expectPoint(before[0]!, 40, 30);
+    expectGroups(surface, before);
+    document.body.append(map);
+    await waitForDom(() => {
+      expectPoint(before[0]!, 90, 40);
+      expectPolyline(before[2]!, '50,150 250,150');
+      expectPoint(svgGroups(surface).at(-1)!, 280, 220);
+    });
+  });
+});
+
+describe('reentrant reattachment before browser RAF', () => {
+  it('refreshes a reused symbol after capture removal, internal picking and press reattachment', async () => {
+    const { map, surface, point } = await createMixedMap();
+    const before = svgGroups(surface);
+    const target = before[0]!;
+    const primitive = shape(target, 'circle');
+    const events = recordClicks(map);
+    const beforePaint: string[] = [];
+    map.clickTrigger = 'press';
+    surface.addEventListener(
+      'pointerdown',
+      () => {
+        map.objects.remove(point);
+        expectPoint(target, 40, 30);
+      },
+      { capture: true, once: true, signal: listeners.signal },
+    );
+    map.addEventListener(
+      'press',
+      () => {
+        point.position = new Point(90, 80);
+        map.objects.add(point);
+        beforePaint.push(target.getAttribute('transform')!);
+      },
+      { once: true, signal: listeners.signal },
+    );
+
+    await clickAt(surface, 40, 30);
+    expect(events).toHaveLength(0);
+    expect(beforePaint).toEqual(['translate(40 30)']);
+    await waitForDom(() => expectPoint(target, 90, 80));
+    expectGroups(surface, [...before.slice(1), target]);
+    expect(shape(target, 'circle')).toBe(primitive);
+    await clickAt(surface, 90, 80);
+    expect(events).toHaveLength(1);
+    expect(events[0]!.detail.object).toBe(point);
+    expectPoint(target, 90, 80);
   });
 });
