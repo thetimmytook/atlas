@@ -1,11 +1,13 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { Camera } from '#camera/camera.js';
 import { Point } from '#math/point.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { MapObjectCollection } from '#objects/map-object-collection.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
+import { Spatial } from '#spatial/spatial.js';
 
 import {
   background,
@@ -22,6 +24,7 @@ import {
 } from './fixtures.js';
 
 import type { MapLine } from '#objects/map-line.js';
+import type { MapEntry } from '#objects/map-object-collection.js';
 import type { MapPoint } from '#objects/map-point.js';
 import type { MapRoute } from '#objects/map-route.js';
 
@@ -550,3 +553,246 @@ describe('real SvgRenderer scene output', () => {
     expectPolyline(before[2]!, '70,130 260,110');
   });
 });
+
+/** Real DOM mutation records include same-value attribute writes, not just final state. */
+function mutations(surface: SVGSVGElement, action: () => void): MutationRecord[] {
+  const observer = new MutationObserver(() => undefined);
+  observer.observe(surface, { attributes: true, childList: true, subtree: true });
+  action();
+  const records = observer.takeRecords();
+  observer.disconnect();
+
+  return records;
+}
+
+describe('bounded SVG updates', () => {
+  it('pan writes only viewBox; zoom and resize separate geometry from screen scale', async () => {
+    const { objects } = mixedScene();
+    const { surface, renderer } = await prepareRenderer(objects);
+    renderer.render(VIEWPORT, BOUNDS);
+    const pan = mutations(surface, () => renderer.render(VIEWPORT, new Rect(10, 20, 320, 240)));
+    expect(pan).toHaveLength(1);
+    expect(pan[0]!.target).toBe(surface);
+    expect(pan[0]!.attributeName).toBe('viewBox');
+    const zoom = mutations(surface, () => renderer.render(VIEWPORT, new Rect(10, 20, 160, 120)));
+    expect(zoom).toHaveLength(5);
+    expect(zoom.filter(record => record.target !== surface).map(record => record.target)).toEqual(
+      Array.from(surface.querySelectorAll('circle')),
+    );
+    expect(
+      zoom.every(
+        record => record.attributeName === (record.target === surface ? 'viewBox' : 'transform'),
+      ),
+    ).toBe(true);
+    const resize = mutations(surface, () =>
+      renderer.render(new Size(480, 320), new Rect(0, 0, 240, 160)),
+    );
+    expect(resize.map(record => record.target)).toEqual([surface, surface, surface]);
+    expect(resize.map(record => record.attributeName)).toEqual(['width', 'height', 'viewBox']);
+    const scaleResize = mutations(surface, () =>
+      renderer.render(new Size(480, 320), new Rect(0, 0, 480, 320)),
+    );
+    expect(
+      scaleResize.filter(record => record.target !== surface).map(record => record.target),
+    ).toEqual(Array.from(surface.querySelectorAll('circle')));
+    expect(
+      mutations(surface, () => renderer.render(new Size(480, 320), new Rect(0, 0, 480, 320))),
+    ).toEqual([]);
+  });
+
+  it('moving one point writes only its placement and ignores unchanged values', async () => {
+    const { objects, point, line } = mixedScene();
+    const { surface, renderer } = await prepareRenderer(objects);
+    renderer.render(VIEWPORT, BOUNDS);
+    const groups = svgGroups(surface);
+    const moved = mutations(surface, () => {
+      point.position = new Point(90, 80);
+      renderer.render(VIEWPORT, BOUNDS);
+    });
+    expect(moved).toHaveLength(1);
+    expect(moved[0]!.target).toBe(groups[0]);
+    expect(moved[0]!.attributeName).toBe('transform');
+    expectPoint(groups[0]!, 90, 80);
+    expect(
+      mutations(surface, () => {
+        point.position = new Point(90, 80);
+        renderer.render(VIEWPORT, BOUNDS);
+      }),
+    ).toEqual([]);
+    const endpoint = mutations(surface, () => {
+      line.points[0].position = new Point(20, 90);
+      renderer.render(VIEWPORT, BOUNDS);
+    });
+    expect(endpoint).toHaveLength(1);
+    expect(endpoint[0]!.target).toBe(shape(groups[1]!, 'line'));
+    expect(endpoint[0]!.attributeName).toBe('y1');
+    expectLine(groups[1]!, [20, 90, 200, 60]);
+  });
+
+  it('updates every appearance and related path in separate maps without touching other vertices', async () => {
+    const { objects, route } = mixedScene();
+    const point = route.points[0]!;
+    objects.add(point);
+    const secondObjects = new MapObjectCollection();
+    secondObjects.add(route);
+    secondObjects.add(point);
+    const first = await prepareRenderer(objects);
+    const second = await prepareRenderer(secondObjects);
+    first.renderer.render(VIEWPORT, BOUNDS);
+    second.renderer.render(VIEWPORT, BOUNDS);
+    const groups = svgGroups(first.surface);
+    point.position = new Point(70, 130);
+    const writes = mutations(first.surface, () => first.renderer.render(VIEWPORT, BOUNDS));
+    expect(new Set(writes.map(record => record.target))).toEqual(
+      new Set([shape(groups[2]!, 'polyline'), groups[3]!, groups[6]!]),
+    );
+    expect(writes).toHaveLength(3);
+    expectPoint(groups[3]!, 70, 130);
+    expectPoint(groups[6]!, 70, 130);
+    expectPolyline(groups[2]!, '70,130 150,120 250,100');
+    const secondWrites = mutations(second.surface, () => second.renderer.render(VIEWPORT, BOUNDS));
+    expect(secondWrites).toHaveLength(3);
+    expectPoint(svgGroups(second.surface)[1]!, 70, 130);
+    expectPoint(svgGroups(second.surface)[4]!, 70, 130);
+  });
+
+  it('membership edits preserve survivors and do not rewrite their placement or scale', async () => {
+    const { objects, route } = mixedScene();
+    const { surface, renderer } = await prepareRenderer(objects);
+    renderer.render(VIEWPORT, BOUNDS);
+    const before = svgGroups(surface);
+    route.insertPoint(1, pointDefinition(100, 150, 'inserted'));
+    const records = mutations(surface, () => renderer.render(VIEWPORT, BOUNDS));
+    const inserted = svgGroups(surface)[4]!;
+    const attributes = records.filter(record => record.type === 'attributes');
+    expect(new Set(attributes.map(record => record.target))).toEqual(
+      new Set([shape(before[2]!, 'polyline'), inserted, shape(inserted, 'circle')]),
+    );
+    expectGroups(surface, [...before.slice(0, 4), inserted, ...before.slice(4)]);
+    expectPolyline(before[2]!, '50,100 100,150 150,120 250,100');
+    route.removePoint(route.points[1]!);
+    const removal = mutations(surface, () => renderer.render(VIEWPORT, BOUNDS));
+    expect(
+      removal.filter(record => record.type === 'attributes').map(record => record.target),
+    ).toEqual([shape(before[2]!, 'polyline')]);
+    expect(removal.some(record => Array.from(record.removedNodes).includes(inserted))).toBe(true);
+    expectGroups(surface, before);
+  });
+});
+
+describe('reattachment before renderer synchronization', () => {
+  it.each(['point', 'line', 'route'] as const)(
+    'refreshes a reused %s after removal, picking and detached coordinate edits',
+    async kind => {
+      const objects = new MapObjectCollection();
+      const root = createReattachmentRoot(objects, kind);
+      const untouched = objects.add(pointDefinition(280, 200, 'untouched'));
+      const geometry = prepareSceneGeometry(objects);
+      const spatial = new Spatial(geometry);
+      const camera = new Camera();
+      camera.resize(VIEWPORT);
+      camera.center = new Point(160, 120);
+      const surface = createSurface();
+      const renderer = new SvgRenderer(surface);
+      (await renderer.prepare(background, geometry)).show();
+      renderer.render(VIEWPORT, BOUNDS);
+      const before = svgGroups(surface);
+      const primitives = captureShapes(surface);
+      const originalEntries = geometry.objects;
+      objects.remove(root);
+      expect(spatial.hitTest(new Point(40, 30), camera)).toBeUndefined();
+      const point = root.kind === 'point' ? root : root.points[0];
+      point.position = new Point(90, 80);
+      objects.add(root);
+      expect(spatial.hitTest(new Point(90, 80), camera)?.object).toBe(
+        root.kind === 'route' ? point : root,
+      );
+      const writes = mutations(surface, () => renderer.render(VIEWPORT, BOUNDS));
+      const groups = svgGroups(surface);
+      expectGroups(surface, [before.at(-1)!, ...before.slice(0, -1)]);
+      expectSurvivingShapes(surface, primitives);
+      expect(geometry.objects.find(entry => entry.object === root)).toBe(originalEntries[0]);
+      expect(spatial.hitTest(new Point(280, 200), camera)?.object).toBe(untouched);
+      const target = before[0]!;
+      const expectedTargets: Element[] = [];
+
+      if (kind === 'point') {
+        expectedTargets.push(target);
+      } else if (kind === 'line') {
+        expectedTargets.push(shape(target, 'line'));
+      } else {
+        expectedTargets.push(shape(target, 'polyline'), before[1]!);
+      }
+
+      const attributes = writes.filter(record => record.type === 'attributes');
+      expect(new Set(attributes.map(record => record.target))).toEqual(new Set(expectedTargets));
+      expect(attributes).toHaveLength(kind === 'point' ? 1 : 2);
+
+      if (kind === 'point') {
+        expectPoint(target, 90, 80);
+      } else if (kind === 'line') {
+        expectLine(target, [90, 80, 200, 60]);
+      } else {
+        expectPolyline(target, '90,80 200,60');
+        expectPoint(before[1]!, 90, 80);
+        expectPoint(before[2]!, 200, 60);
+      }
+
+      expect(groups[0]).toBe(before.at(-1));
+      const pan = mutations(surface, () => renderer.render(VIEWPORT, new Rect(10, 10, 320, 240)));
+      expect(pan).toHaveLength(1);
+      expect(pan[0]!.target).toBe(surface);
+      expect(pan[0]!.attributeName).toBe('viewBox');
+    },
+  );
+});
+
+it('updates shared root/vertex appearances when their route returns before render', async () => {
+  const { objects, route } = mixedScene();
+  const point = route.points[0]!;
+  objects.add(point);
+  const geometry = prepareSceneGeometry(objects);
+  const spatial = new Spatial(geometry);
+  const camera = new Camera();
+  camera.resize(VIEWPORT);
+  camera.center = new Point(160, 120);
+  const surface = createSurface();
+  const renderer = new SvgRenderer(surface);
+  (await renderer.prepare(background, geometry)).show();
+  renderer.render(VIEWPORT, BOUNDS);
+  const before = svgGroups(surface);
+  const primitives = captureShapes(surface);
+  objects.remove(route);
+  expect(spatial.hitTest(new Point(50, 100), camera)?.object).toBe(point);
+  point.position = new Point(70, 130);
+  objects.add(route);
+  expect(spatial.hitTest(new Point(70, 130), camera)?.route).toBe(route);
+  const records = mutations(surface, () => renderer.render(VIEWPORT, BOUNDS));
+  const attributes = records.filter(record => record.type === 'attributes');
+  expect(attributes).toHaveLength(3);
+  expect(new Set(attributes.map(record => record.target))).toEqual(
+    new Set([shape(before[2]!, 'polyline'), before[3]!, before[6]!]),
+  );
+  expectGroups(surface, [before[0]!, before[1]!, before[6]!, ...before.slice(2, 6)]);
+  expectSurvivingShapes(surface, primitives);
+  expectPoint(before[3]!, 70, 130);
+  expectPoint(before[6]!, 70, 130);
+  expectPolyline(before[2]!, '70,130 150,120 250,100');
+});
+
+function createReattachmentRoot(
+  objects: MapObjectCollection,
+  kind: 'point' | 'line' | 'route',
+): MapEntry {
+  if (kind === 'point') {
+    return objects.add(pointDefinition(40, 30, 'returned'));
+  }
+
+  const points = [pointDefinition(40, 30, 'start'), pointDefinition(200, 60, 'end')] as const;
+
+  if (kind === 'line') {
+    return objects.add({ kind, id: 'returned', points });
+  }
+
+  return objects.add({ kind, id: 'returned', points });
+}

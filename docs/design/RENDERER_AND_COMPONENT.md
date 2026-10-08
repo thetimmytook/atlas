@@ -357,3 +357,61 @@ Runtime implementation and public contracts are unchanged by this test step.
 The tests protect the next explicit-invalidation step without imposing
 geometry-write counts or claiming mobile, performance, or complete prototype
 validation.
+
+## Explicit scene invalidation — implemented for review, 2026-10-07
+
+The user authorized this implementation on the merged model/browser-test/benchmark
+foundation. This is the internal mechanism selected for the current flat, single-view
+prototype; public object and renderer signatures, sharing, and appearance defaults
+remain unchanged.
+
+Runtime mutations call internal `invalidateScenes` after committing their state and
+before dispatching the existing public notification. Each prepared scene has a
+membership flag and a set of changed runtime sources. Weak scene links from root
+collections, routes, and points keep this state independent of view observation
+without making externally retained/shared objects retain their maps. Removed
+source links and pending sources are released when membership is reconciled.
+
+A collection add/remove or route point insertion/removal/replacement marks membership.
+The next scene read rebuilds the flat ordered entry array and its concrete source-to-entry
+links once, reusing surviving entries, geometry views, and owner/object caches.
+A route's retained polyline view has its own membership flag: repeated coordinate
+reads return its existing array without reading or checking the runtime point array.
+Position getters remain live. A point mutation marks all dependent entries: its
+symbols in every appearance and the related line or route paths, in each map.
+Membership uses instance and scene-entry identity; duplicate IDs remain accepted.
+When a source starts tracking again, its current dependent entries are queued for
+geometry refresh. An intervening query may have released tracking while the old SVG
+nodes still survive until RAF; reattachment therefore refreshes their current state
+without changing node identity or retaining tracking for detached sources.
+
+The existing component RAF coalescing still schedules connected display work.
+`SceneGeometry.takeChanges()` drains the pending display entries for its current
+single renderer. Spatial reads never drain that set. This internal queue is sufficient
+for the existing consumer and is not a public multi-view contract. No scheduler,
+public events, spatial index, or additional dependencies are introduced.
+
+SVG separately caches viewport dimensions, viewBox, and map-units-per-screen-pixel
+scale. Pan writes only a changed viewBox. Zoom visits point symbols for screen-scale
+compensation, preserving point placement and path coordinates; non-scaling strokes
+need no update. Resize changes dimensions/viewBox and touches scale only if the actual
+ratio changes. Geometry updates visit affected entries and write only changed
+attribute values. New nodes receive geometry, screen scale, and one visibility
+removal; surviving groups and primitives remain in place. A zero viewport still
+reconciles membership and retains pending geometry until recovery. Installing a
+successfully prepared scene resets the renderer's pending objects and scale.
+
+`MapModel.unobserveChanges` still stops view notifications, not invalidation.
+Picking therefore uses current membership and live coordinates before RAF, while
+disconnected, and inside earlier synchronous application handlers. Querying during
+disconnect does not consume the renderer's later updates. Reconnect renders the
+pending current state. Existing atomic load/failure behavior and stale-click checks
+are unchanged and covered by regression tests.
+
+The two substeps passed existing tests before proceeding: model/geometry invalidation,
+then affected SVG output. After the reattachment review correction, coverage is 110 Node and 40 real-browser tests; new
+MutationObserver assertions include same-value writes and distinguish attribute
+mutations from child-node removal. Reproducible before/after results, remaining full
+walks, and measurement limits are in [the invalidation measurements](../performance/INVALIDATION.md).
+Those full timing runs predate the correction; it has separate functional and SVG
+counter evidence, with the previous CSV/manifests preserved.

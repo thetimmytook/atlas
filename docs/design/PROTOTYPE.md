@@ -124,6 +124,23 @@ SVG performance work and later prototype features remain unimplemented. No bench
 or speed claim belongs to this substep; stress-baseline work is separate. Mini review
 and separate commit authorization are still required.
 
+## Explicit invalidation substep — implemented for review, 2026-10-07
+
+Step 4 is implemented on `origin/master` at `1c2e54b`, which already contains
+`MapModel`, the real-SVG browser regressions, and the Atlas benchmark. Internal
+mutation marks replace unchanged structural scans; the renderer updates affected
+entries and separates viewport/viewBox from screen-scale changes. See the
+[mechanism and lifecycle](RENDERER_AND_COMPONENT.md#explicit-scene-invalidation--implemented-for-review-2026-10-07).
+The work is prepared for PR after mini review. The original Node/browser tests passed
+on the combined base; after the reattachment review correction, 110 Node and 40 browser tests, check, and both builds passed.
+
+The same four Atlas scenes and full scenario suite were measured before and after,
+with separate timing and instrumentation before the reattachment correction. Its newer functional/counter checks are recorded separately; the old CSV/manifests remain unchanged. See [results and limits](../performance/INVALIDATION.md).
+Initial load, mass updates, and membership operations are assessed alongside camera
+and individual edits. Numerical targets remain unapproved; this does not complete
+the prototype load gate, actual mobile testing, or layers/z/clipping validation.
+Leaflet work is independent and unchanged.
+
 ## Contract and documentation follow-up
 
 - **Current contract summary (finding 7):** consolidate a short description of the

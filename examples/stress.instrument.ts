@@ -82,6 +82,7 @@ export function instrumentAtlas(): {
     let previous: readonly SceneObject[] | undefined;
     const observed: SceneGeometry = {
       symbols: geometry.symbols,
+      takeChanges: () => geometry.takeChanges(),
       get objects(): readonly SceneObject[] {
         count('renderer_scene_reads');
         const entries = geometry.objects;
