@@ -1,4 +1,5 @@
 import { resolveMapEntry } from '#definitions/map-definition.js';
+import { invalidateScenes } from '#spatial/scene-invalidation.js';
 
 import { MapLine } from './map-line.js';
 import { MapPoint } from './map-point.js';
@@ -48,6 +49,8 @@ export class MapObjectCollection extends EventTarget implements Iterable<MapEntr
 
     this.#objects = Object.freeze([...this.#objects, object]);
 
+    invalidateScenes(this, true);
+
     // Prototype membership notification; replace with the agreed collection event contract.
     this.dispatchEvent(new CustomEvent<MapEntry>('add', { detail: object }));
 
@@ -61,6 +64,8 @@ export class MapObjectCollection extends EventTarget implements Iterable<MapEntr
     }
 
     this.#objects = Object.freeze(this.#objects.filter(entry => entry !== object));
+
+    invalidateScenes(this, true);
 
     // Prototype membership notification; replace with the agreed collection event contract.
     this.dispatchEvent(new CustomEvent<MapEntry>('remove', { detail: object }));

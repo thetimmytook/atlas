@@ -1,8 +1,11 @@
+import { trackScene, untrackScene } from './scene-invalidation.js';
+
 import type { Point } from '#math/point.js';
 import type { MapEntry, MapObjectCollection } from '#objects/map-object-collection.js';
 import type { MapPoint } from '#objects/map-point.js';
 import type { MapRoute } from '#objects/map-route.js';
 import type { Geometry } from './geometry.js';
+import type { SceneInvalidation } from './scene-invalidation.js';
 
 /** Circle dimensions in viewport CSS pixels, shared by rendering and spatial queries. */
 export interface PointSymbol {
@@ -30,6 +33,9 @@ export interface SceneObject {
 export interface SceneGeometry {
   readonly objects: readonly SceneObject[];
   readonly symbols: SceneSymbols;
+
+  /** Drain display changes for the current single view; spatial reads never consume them. */
+  takeChanges(): ReadonlySet<SceneObject>;
 }
 
 // Temporary shared defaults; replace with per-object symbols derived from resolved materials.
@@ -38,11 +44,13 @@ const defaultSymbols: SceneSymbols = Object.freeze({
   line: Object.freeze({ strokeWidth: 4, lineCap: 'round' }),
 });
 
-/** Reuse live views; only membership changes replace the ordered scene-entry array. */
+/** Reuse live views; explicit membership invalidation replaces the ordered entries. */
 export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometry {
-  let roots = Array.from(objects);
-  let routes = roots.filter(object => object.kind === 'route');
-  const routePoints = new WeakMap<MapRoute, readonly MapPoint[]>();
+  const invalidation: SceneInvalidation = { membership: true, changed: new Set() };
+  const reference = new WeakRef(invalidation);
+  const tracked = new Set<object>();
+  let dependencies = new Map<object, SceneObject[]>();
+  let entries: readonly SceneObject[] = [];
 
   // A point may appear as a root and as a route vertex; each owner needs its own scene entry.
   const cache = new WeakMap<MapEntry, WeakMap<MapEntry, SceneObject>>();
@@ -71,50 +79,100 @@ export function prepareSceneGeometry(objects: MapObjectCollection): SceneGeometr
     return entry;
   };
 
-  const prepareEntries = (): readonly SceneObject[] =>
-    Object.freeze(
-      roots.reduce<SceneObject[]>((entries, object) => {
-        entries.push(entryFor(object));
+  const syncMembership = (): void => {
+    if (!invalidation.membership) {
+      return;
+    }
 
-        // Temporary: line endpoints only drive the stroke; endpoint symbols and
-        // interaction will follow their material/property configuration.
-        if (object.kind !== 'route') {
-          return entries;
+    invalidation.membership = false;
+    const nextDependencies = new Map<object, SceneObject[]>();
+
+    const dependOn = (source: object, entry: SceneObject): void => {
+      let affected = nextDependencies.get(source);
+
+      if (!affected) {
+        affected = [];
+        nextDependencies.set(source, affected);
+      }
+
+      affected.push(entry);
+    };
+
+    entries = Object.freeze(
+      Array.from(objects).reduce<SceneObject[]>((result, object) => {
+        const entry = entryFor(object);
+        result.push(entry);
+        dependOn(object, entry);
+
+        if (object.kind === 'point') {
+          return result;
         }
 
-        routePoints.set(object, object.points);
-
-        // Temporary point symbols at every route vertex; resolved point materials and
-        // interaction properties will select their presentation independently of IDs.
         for (const point of object.points) {
-          entries.push(entryFor(point, object));
+          dependOn(point, entry);
+
+          // Temporary: only routes have vertex symbols; materials will select appearances.
+          if (object.kind === 'route') {
+            const vertex = entryFor(point, object);
+            result.push(vertex);
+            dependOn(point, vertex);
+          }
         }
 
-        return entries;
+        return result;
       }, []),
     );
-  let entries = prepareEntries();
+    dependencies = nextDependencies;
+
+    for (const source of invalidation.changed) {
+      if (!dependencies.has(source)) {
+        invalidation.changed.delete(source);
+      }
+    }
+
+    const sources = new Set<object>([objects, ...dependencies.keys()]);
+
+    for (const source of tracked) {
+      if (!sources.has(source)) {
+        untrackScene(source, reference);
+        tracked.delete(source);
+      }
+    }
+
+    for (const source of sources) {
+      if (!tracked.has(source)) {
+        trackScene(source, reference);
+        tracked.add(source);
+
+        // Detached edits were not tracked; refresh every current appearance on reattachment.
+        invalidation.changed.add(source);
+      }
+    }
+  };
+
+  syncMembership();
 
   return Object.freeze({
     get objects(): readonly SceneObject[] {
-      // A removal followed by an addition can preserve size; compare the actual root instances.
-      const current = objects[Symbol.iterator]();
-
-      if (objects.size !== roots.length || roots.some(object => current.next().value !== object)) {
-        roots = Array.from(objects);
-        routes = roots.filter(object => object.kind === 'route');
-        entries = prepareEntries();
-
-        return entries;
-      }
-
-      if (routes.some(route => routePoints.get(route) !== route.points)) {
-        entries = prepareEntries();
-      }
+      syncMembership();
 
       return entries;
     },
     symbols: defaultSymbols,
+    takeChanges(): ReadonlySet<SceneObject> {
+      syncMembership();
+      const affected = new Set<SceneObject>();
+
+      for (const source of invalidation.changed) {
+        for (const entry of dependencies.get(source) ?? []) {
+          affected.add(entry);
+        }
+      }
+
+      invalidation.changed.clear();
+
+      return affected;
+    },
   });
 }
 
@@ -155,15 +213,17 @@ function createGeometry(object: MapEntry): Geometry {
     return position;
   };
 
-  let points = object.points;
-  let positions = Object.freeze(points.map(positionFor));
+  const invalidation: SceneInvalidation = { membership: false, changed: new Set() };
+  trackScene(object, new WeakRef(invalidation));
+  let positions = Object.freeze(object.points.map(positionFor));
 
   return Object.freeze({
     kind: 'polyline',
     get points(): readonly Point[] {
-      if (points !== object.points) {
+      if (invalidation.membership) {
         positions = Object.freeze(object.points.map(positionFor));
-        points = object.points;
+        invalidation.membership = false;
+        invalidation.changed.clear();
       }
 
       return positions;

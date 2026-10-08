@@ -1,4 +1,5 @@
 import { Point } from '#math/point.js';
+import { invalidateScenes } from '#spatial/scene-invalidation.js';
 import { validateMapPoint } from '#validators/map-point.validator.js';
 import { validatePoint } from '#validators/point.validator.js';
 
@@ -28,6 +29,7 @@ export class MapPoint extends MapObject {
   set position(value: Point) {
     validatePoint('position', value);
     this.#position = new Point(value.x, value.y);
+    invalidateScenes(this);
     this.dispatchEvent(new Event('change'));
   }
 }
