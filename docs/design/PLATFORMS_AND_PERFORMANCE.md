@@ -56,5 +56,7 @@ scenes, distinguishes semantic roots/owned points/visual primitives/DOM nodes, a
 uses production browser timing separately from local instrumentation. It measures
 the current flat scene and temporary symbols; the current Factory background is
 not the future heavy-background/layer/label gate. Actual phone performance remains
-unmeasured; instructions for a physical-device run are included. Leaflet comparison
-is the next separately approved review step. No FPS budget or thresholds are added.
+unmeasured; instructions for a physical-device run are included. The separately
+requested [Leaflet SVG/Canvas comparison](../performance/LEAFLET_COMPARISON.md)
+is implemented for mini review with fresh Atlas measurements, explicit metric
+boundaries and weaker Canvas correctness coverage. No FPS budget or thresholds are added.

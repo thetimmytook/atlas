@@ -86,7 +86,7 @@ existing toolchain versions, runtime dependencies, and package-root exports are
 unchanged. Both test configs avoid the declaration-build plugin.
 
 Discovery is separate: `vitest.config.mts` runs Node tests under `tests/` while
-excluding `tests/browser/`; `vitest.browser.config.mts` includes only
+excluding `tests/browser/` and `tests/e2e/`; `vitest.browser.config.mts` includes only
 `tests/browser/**/*.browser.test.ts`, using Playwright and headless Chromium.
 The shared test TypeScript project includes Playwright action types and the
 existing HTML-import declaration for the real component template.
@@ -135,10 +135,92 @@ A mismatch invalidates the run. Historical baseline files remain unchanged; new
 exports identify this harness revision through source hashes.
 See [baseline method and limitations](performance/BASELINE.md).
 
+## CI and built example smoke test
+
+Project-check CI is approved on 2026-10-07. `.github/workflows/checks.yml` runs
+on every pull request targeting `master` and every push to `master`, with no path
+filters. One `Atlas checks` job uses Ubuntu 24.04, Node 24 LTS, and headless
+Playwright Chromium, with a 20-minute timeout. Node 24 is a CI tooling choice,
+not a consumer requirement or a project-wide Node version pin. The locked Vite,
+Vitest, Playwright, ESLint, and lint-staged Node ranges all include Node 24.
+
+The workflow uses the current official
+[checkout v7](https://github.com/actions/checkout),
+[setup-node v7](https://github.com/actions/setup-node), and
+[upload-artifact v7](https://github.com/actions/upload-artifact) actions.
+setup-node caches npm downloads using `package-lock.json`; `npm ci` still installs
+from the lockfile. Permissions are `contents: read`; checkout does not persist
+credentials. New changes cancel older runs of the same PR. No test retries,
+continue-on-error, publishing, or deployment are configured.
+See the [Node release schedule](https://nodejs.org/en/about/previous-releases)
+for Node 24 LTS status and the [Playwright browser installation instructions](https://playwright.dev/docs/browsers)
+for the Linux dependency installation.
+
+To run the same checks locally, use Node 24 LTS and this order:
+
+```sh
+npm ci
+npm run check
+npm test
+npx --no-install playwright install --with-deps chromium
+npm run test:browser
+npm run build
+npm run bench:build
+npm run test:e2e
+```
+
+On macOS, use `npx --no-install playwright install chromium` instead of the
+Linux installation command. `bench:build` builds both benchmark pages; CI never
+runs performance measurements or enforces performance thresholds.
+
+`npm run test:e2e` builds the existing `examples/index.html` with the small
+`example.config.mts` into ignored `dist/example`, then runs one Node/Vitest test
+using the existing Playwright library. It adds no runner or dependency.
+`npm run build:example` is also available separately. Library build configuration
+is unchanged; build the library first because it clears `dist/`. The example
+build uses its source imports, bundles the real component and Factory background,
+and contains no Vite development client. This is page/component integration
+coverage; package-consumer and declaration coverage remain separate.
+
+The test uses Vite's HTTP production preview API on loopback with an OS-assigned
+port. It waits for the decoded-background loaded status and visible SVG objects,
+clicks Zoom in and checks the rendered viewBox, clicks the known route checkpoint
+and checks the external details panel, then clicks Move route point and checks
+both the moved SVG point/route and the newly picked position in the panel.
+Only DOM output and trusted mouse/button actions are used. Each wait has a bounded
+timeout; uncaught page errors and error-level console messages fail the test.
+Nested cleanup closes the browser and preview server on success and failure.
+Node test discovery explicitly excludes `tests/e2e/`; the e2e config includes only
+`tests/e2e/**/*.e2e.test.ts`. Run `npm run test:e2e` twice sequentially to verify
+repeatability without fixed ports or leftover processes.
+
+On browser-test failure, Vitest retains screenshots and Playwright traces under
+`node_modules/.cache/browser-tests/`, with attachments under
+`node_modules/.cache/vitest-attachments/`. On e2e failure after page setup, the test
+writes `page.png`, `trace.zip`, and `errors.json` under `node_modules/.cache/e2e/`;
+it clears old e2e diagnostics before each run. CI uploads `browser-diagnostics`
+for seven days only when browser/e2e fails and diagnostic files exist. Setup/build
+failures without these files are diagnosed through the job log. Open traces with
+`npx --no-install playwright show-trace <path-to-trace.zip>`.
+
+The workflow alone does not prevent merging. After the first GitHub run, configure
+branch protection for `master`: enable **Require status checks to pass before
+merging**, add the exact check **Atlas checks** (source: GitHub Actions), and enable
+**Require branches to be up to date before merging**. Require PRs and disallow
+bypassing these requirements if the gate must apply to administrators too. Bring
+PR branches up to date by merging `master`, preserving repository history.
+See [GitHub's protected-branch documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches).
+Repository settings are managed separately; this workflow does not change them.
+
+This checks one desktop Chromium environment on Linux. Firefox, WebKit,
+mobile/touch, accessibility, the full supported-browser matrix, and performance
+remain separate validation work. Local macOS results do not confirm a GitHub Linux
+run; action execution and Linux system dependencies need the first real CI run.
+
 ## Deferred
 
 Framework adapters, workspace splits, package distribution/exports,
-minification, publication, and CI remain outside the current scope. There is no
+minification, publication, deployment, and release automation remain outside the current scope. There is no
 `sideEffects: false` claim before actual registration behavior and consumption are
 validated. Runtime dependencies must be evaluated for concrete purpose and bundle cost.
 

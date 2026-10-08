@@ -111,9 +111,9 @@ Full contract consolidation is a separate future step, not performed automatical
 ## Where we stopped
 
 The solution review (findings 5–18) has revised the next-work plan:
-merged model/spatial/camera regression tests → Atlas baseline under mini review →
-Leaflet comparison after approval → DOM-independent
-scene ownership (merged) → explicit invalidation and affected SVG updates (implemented for review) → layers/z/clipping
+merged model/spatial/camera regression tests → Atlas baseline and Leaflet comparison
+under mini review → DOM-independent
+scene ownership (merged) → explicit invalidation and affected SVG updates (prepared for PR) → layers/z/clipping
 validation → remaining batch/material/label and platform work. See the
 [revised prototype plan](design/PROTOTYPE.md#revised-implementation-plan--solution-review-2026-10-06).
 Internal `MapModel` ownership and browser SVG regression tests are merged in PRs #23
@@ -130,8 +130,9 @@ results and agreed numerical targets. This plan does not authorize implementatio
 The reproducible browser stress example and Atlas SVG baseline are implemented for
 review: [method and results](performance/BASELINE.md). The benchmark step itself left
 runtime architecture unchanged.
-The next benchmark substep is Leaflet SVG/Canvas after user approval; mobile and full
-prototype scope remain unvalidated.
+The separately requested Leaflet SVG/Canvas comparison is implemented for mini review:
+[method, fresh Atlas/Leaflet results and limitations](performance/LEAFLET_COMPARISON.md).
+Mobile and full prototype scope remain unvalidated.
 
 The combined base passed 103 Node and 29 browser tests before invalidation changes;
 the corrected implementation passes 110 Node and 40 browser tests, including actual SVG
@@ -139,6 +140,9 @@ mutation boundaries and synchronous/disconnected picking. Full before/after meas
 run does not complete mobile/prototype validation.
 
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
+Project-check GitHub Actions and one smoke test of the built Factory example are
+implemented for review; the first GitHub Linux run remains unverified. See
+[CI and e2e](TOOLING.md#ci-and-built-example-smoke-test).
 The Web Component shell and Factory background with `MapDefinition` are merged.
 Camera center/zoom, fit, and example buttons are merged. Mouse/touch controls and
 map/client coordinate conversion are merged; see

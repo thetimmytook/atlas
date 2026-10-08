@@ -33,7 +33,8 @@ code from the design drafts until implementation is requested.
 - Node is used for development tools only. No project Node version is pinned;
   installed tools still have their own Node compatibility requirements.
 - Browser support, test runner, distribution, and framework adapters
-  remain separate decisions. Do not add publishing, minification, or CI now.
+  remain separate decisions. CI is limited to project checks. Do not add publishing
+  or minification now.
 - Keep browser source free of Node imports and development dependencies. Evaluate
   every runtime dependency against its concrete purpose and bundle cost.
 - Run checks appropriate to the change before committing. Do not add placeholder

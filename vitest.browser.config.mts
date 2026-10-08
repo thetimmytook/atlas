@@ -12,6 +12,8 @@ export default defineConfig({
       instances: [{ browser: 'chromium' }],
       viewport: { width: 900, height: 700 },
       screenshotDirectory: 'node_modules/.cache/browser-tests',
+      screenshotFailures: true,
+      trace: { mode: 'retain-on-failure', tracesDir: 'node_modules/.cache/browser-tests/traces' },
     },
   },
 });

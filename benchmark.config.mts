@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from 'vite';
@@ -10,6 +10,15 @@ import { defineConfig } from 'vite';
 const git = (...args: string[]): string => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const dirty = git('status', '--short', '--untracked-files=all');
 const inputs = [
+  'examples/comparison.html',
+  'examples/comparison.bench.ts',
+  'examples/comparison.adapter.ts',
+  'examples/comparison.leaflet.ts',
+  'examples/comparison.expected.ts',
+  'examples/comparison.instrument.ts',
+  'examples/comparison.canvas.ts',
+  'examples/comparison.canvas-fixtures.ts',
+  'examples/comparison.canvas-controls.ts',
   'examples/stress.html',
   'examples/stress.bench.ts',
   'examples/stress.check.ts',
@@ -19,6 +28,13 @@ const inputs = [
   'package.json',
   'package-lock.json',
   'examples/factory/Factory-ground-floor.svg',
+  'tsconfig.json',
+  'tsconfig.examples.json',
+  'node_modules/leaflet/dist/leaflet-src.js',
+  'node_modules/leaflet/dist/leaflet.css',
+  ...readdirSync('src', { recursive: true })
+    .filter((path): path is string => typeof path === 'string' && /\.(ts|html)$/.test(path))
+    .map(path => `src/${path}`),
 ];
 
 // Fixed allowlist of repository inputs above.
@@ -39,6 +55,11 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     outDir: 'dist/benchmark',
-    rolldownOptions: { input: fileURLToPath(new URL('./examples/stress.html', import.meta.url)) },
+    rolldownOptions: {
+      input: {
+        baseline: fileURLToPath(new URL('./examples/stress.html', import.meta.url)),
+        comparison: fileURLToPath(new URL('./examples/comparison.html', import.meta.url)),
+      },
+    },
   },
 });

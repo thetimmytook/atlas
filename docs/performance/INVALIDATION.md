@@ -301,3 +301,9 @@ full benchmark. PR preparation preserves all ten measurement files byte for byte
 the scoped `.gitattributes` rule prevents CSV line-ending normalization in Git.
 The incremental correction touches only scene geometry, the three regression-test
 files, current design/test status documentation, this report, and the new evidence JSON.
+
+PR preparation on 2026-10-08 integrated `master` at `9f4500a` with a merge commit.
+The corrected library sources and all ten stored measurement files remain byte-identical.
+The integrated tree passed check, 110 Node tests, 40 browser tests, both builds, and
+the newly merged built-example smoke test. The existing Leaflet lint warning and
+API Extractor TypeScript-version warning remain; neither fails the checks.
