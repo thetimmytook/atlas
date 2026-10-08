@@ -1,2 +1,5 @@
 * text=auto eol=lf
 *.pdf binary
+
+# Preserve invalidation benchmark exports and their recorded byte hashes.
+docs/performance/atlas-2026-10-07-invalidation-*.csv -text whitespace=cr-at-eol

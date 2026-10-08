@@ -76,9 +76,11 @@ continue between answers rather than relying on HTML anchors.
 - Runtime objects form the internal scene representation. Internal `MapModel` now owns
   the definition snapshot, runtime collection, shared geometry, spatial queries and
   scene observation; `MapElement` retains the camera and browser view. This ownership
-  extraction is implemented for review; see
+  extraction is merged in PR #23; see
   [the scene-model boundary](design/RENDERER_AND_COMPONENT.md#internal-scene-model--accepted-2026-10-06-implemented-for-review).
-  Public model lifecycle/core entry point and explicit invalidation remain unimplemented.
+  Explicit internal invalidation and affected SVG updates are now implemented for
+  review; see [the mechanism](design/RENDERER_AND_COMPONENT.md#explicit-scene-invalidation--implemented-for-review-2026-10-07).
+  Public model lifecycle/core entry point remains unimplemented.
 - Framework adapters are separate. The application stores user state.
 - Resources are described once in the map registry and referenced by ID;
   a pluggable application loader is provided for.
@@ -111,15 +113,15 @@ Full contract consolidation is a separate future step, not performed automatical
 The solution review (findings 5–18) has revised the next-work plan:
 merged model/spatial/camera regression tests → Atlas baseline under mini review →
 Leaflet comparison after approval → DOM-independent
-scene ownership (implemented for review) → explicit invalidation and affected SVG updates → layers/z/clipping
+scene ownership (merged) → explicit invalidation and affected SVG updates (implemented for review) → layers/z/clipping
 validation → remaining batch/material/label and platform work. See the
 [revised prototype plan](design/PROTOTYPE.md#revised-implementation-plan--solution-review-2026-10-06).
-The first bounded scene-ownership extraction is implemented for review as internal
-`MapModel`, with focused Node/Vitest model and component contract tests. Geometry
-synchronization and SVG updates retain their current behavior; no benchmark or
-performance claim is included. Public model lifecycle, a core entry point, explicit
-invalidation and affected SVG updates remain separate work. See the
-[scene-ownership status](design/PROTOTYPE.md#scene-ownership-substep--implemented-for-review-2026-10-06).
+Internal `MapModel` ownership and browser SVG regression tests are merged in PRs #23
+and #24. Explicit scene invalidation and affected SVG updates are prepared for PR
+in the primary repository, with public behavior preserved. See the
+[implementation status](design/PROTOTYPE.md#explicit-invalidation-substep--implemented-for-review-2026-10-07)
+and [comparable Atlas before/after measurements](performance/INVALIDATION.md).
+Public model lifecycle and a core entry point remain separate work.
 Further route-operation and ID-API expansion is paused. Existing accepted contracts
 remain in effect; ownership restrictions, constructor changes, browser-test environment
 and new public model/renderer signatures require separate review. Performance claims need measured
@@ -131,13 +133,10 @@ runtime architecture unchanged.
 The next benchmark substep is Leaflet SVG/Canvas after user approval; mobile and full
 prototype scope remain unvalidated.
 
-Focused real-SVG regression coverage is implemented for review: 16 direct renderer
-tests and 13 real-browser component integrations, alongside 103 merged Node tests.
-See [browser coverage](design/RENDERER_AND_COMPONENT.md#browser-svg-regression-coverage--implemented-for-review-2026-10-06).
-On 2026-10-07 the browser suite was rerun against master at a317f54, including the
-DOM-independent scene ownership merged in PR #23. Explicit invalidation and affected
-SVG updates remain future work; this desktop Chromium run does not complete
-mobile/prototype validation.
+The combined base passed 103 Node and 29 browser tests before invalidation changes;
+the corrected implementation passes 110 Node and 40 browser tests, including actual SVG
+mutation boundaries and synchronous/disconnected picking. Full before/after measurements predate the reattachment review correction, whose functional/counter evidence is separate. This desktop Chromium
+run does not complete mobile/prototype validation.
 
 A basic internal web-library setup has been prepared: [tooling](TOOLING.md).
 The Web Component shell and Factory background with `MapDefinition` are merged.

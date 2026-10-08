@@ -91,9 +91,9 @@ excluding `tests/browser/`; `vitest.browser.config.mts` includes only
 The shared test TypeScript project includes Playwright action types and the
 existing HTML-import declaration for the real component template.
 
-The 103 Node tests cover models, route editing, spatial queries, camera state,
+The 110 Node tests cover models, route editing, spatial queries, camera state,
 and component load/lifecycle contracts using browser stand-ins.
-The 29 browser tests add 16 direct `SvgRenderer` regressions and 13 focused
+The 40 browser tests add 24 direct `SvgRenderer` regressions and 16 focused
 `MapElement` integrations. They use native SVG, registered custom elements,
 Shadow DOM, ResizeObserver, image decoding, browser RAF, and provider clicks.
 Small inline SVG backgrounds and an intentionally revoked local Blob URL keep
@@ -111,8 +111,11 @@ attachments go into ignored `node_modules/.cache/`.
 
 This headless desktop Chromium regression run does not establish the supported
 browser matrix, mobile/touch behavior, accessibility, or performance targets.
-Scene invalidation and bounded geometry-write assertions remain the next
-optimization step; these tests currently protect results and surviving identity.
+Bounded SVG assertions now use real MutationObserver records to check pan, zoom,
+resize, individual edits, shared appearances, and route membership. They include
+same-value attribute writes and distinguish attributes from child-node removals.
+Additional picking checks cover root edits before RAF and disconnected queries. Reattachment regressions cover point/line/route removal, query, detached edit and return before RAF, including native MapElement handlers and shared appearances.
+See [the implementation measurements](performance/INVALIDATION.md).
 
 ## Browser benchmark
 

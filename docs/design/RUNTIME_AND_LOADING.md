@@ -355,6 +355,25 @@ The suite also passed against the `MapModel` ownership extraction merged in PR #
 on 2026-10-07. This is behavior protection on the current `master`, not implementation of dirty
 tracking, revisions, batch, new event payloads, or the planned invalidation step.
 
+## Mutation invalidation — implemented for review, 2026-10-07
+
+Root add/remove and route membership/order operations now mark internal scene membership;
+point coordinate setters mark their dependent display entries before existing events
+are dispatched. These marks persist independently of connected view subscriptions.
+Unchanged scene reads no longer scan root or route membership. Current picking still
+reads live coordinates and synchronizes explicitly invalidated membership immediately,
+including earlier synchronous handlers and disconnected queries. Separate maps and
+root/owned appearances retain independent entries keyed by identity.
+Reattachment marks newly tracked sources for geometry refresh, including when an
+intervening synchronous query detached them before RAF while their SVG nodes survived.
+Detached-source tracking is still released; current state refreshes on reattachment.
+
+Public notifications, definition snapshots, validation atomicity, sharing, and
+remove/reattach behavior are preserved. This step adds no public event payload,
+batch, ownership restriction, or load operation. See the
+[chosen internal mechanism](RENDERER_AND_COMPONENT.md#explicit-scene-invalidation--implemented-for-review-2026-10-07)
+and [before/after results](../performance/INVALIDATION.md).
+
 ## Object ID registry — superseded experiment, 2026-10-06
 
 Historical review variants below are superseded by the ID handling decision above.
