@@ -93,6 +93,11 @@
       point at its current position.
     </p>
     <p id="status" role="status">Loading map…</p>
+    <p>
+      The background has its own visible layer. First and second layers can be toggled
+      independently. Both display the same route: moving a route point changes both appearances. A
+      hidden layer does not intercept clicks; the details panel identifies the layer of each hit.
+    </p>
     <fieldset class="controls" aria-label="Map controls" disabled>
       <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
       <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
@@ -107,6 +112,8 @@
       <button type="button" id="insert-route-point">Insert route point</button>
       <button type="button" id="remove-route-point" disabled>Remove inserted point</button>
       <button type="button" id="replace-route-points">Replace route interior</button>
+      <button type="button" id="toggle-first" aria-pressed="true">Toggle first layer</button>
+      <button type="button" id="toggle-second" aria-pressed="true">Toggle second layer</button>
       <button type="button" id="add-point">Add point</button>
       <button type="button" id="move-added-point" disabled>Move added point</button>
       <button type="button" id="remove-added-point" disabled>Remove added point</button>
@@ -149,12 +156,13 @@
       map.addEventListener('press', showSurfaceEvent);
       map.addEventListener('release', showSurfaceEvent);
 
-      // Application UI: Atlas only supplies the object and interaction coordinates.
+      // Application UI: Atlas supplies the original object, hit layer and interaction coordinates.
       map.addEventListener('objectclick', event => {
-        const { object, route, mapPoint, clientPoint } = event.detail;
+        const { object, layer, route, mapPoint, clientPoint } = event.detail;
         document.querySelector('#object-details').textContent = JSON.stringify(
           {
             id: object.id,
+            layerId: layer.id,
             kind: object.kind,
             routeId: route?.id,
             ...(object.kind === 'point'
@@ -174,10 +182,25 @@
       });
 
       const definition = {
-        background: {
-          source: new URL('./factory/Factory-ground-floor.svg', import.meta.url).href,
-          size: { width: 130.81831, height: 141.23242 },
-        },
+        layers: [
+          {
+            id: 'background',
+            stackIndex: -1,
+            background: {
+              source: new URL('./factory/Factory-ground-floor.svg', import.meta.url).href,
+              size: { width: 130.81831, height: 141.23242 },
+            },
+          },
+          {
+            id: 'first',
+            objects: ['demo-marker-1', 'demo-marker-3', 'demo-line-1', 'demo-route'],
+          },
+          {
+            id: 'second',
+            stackIndex: 1,
+            objects: ['demo-marker-2', 'demo-route', 'second-route'],
+          },
+        ],
         objects: [
           {
             id: 'demo-line-1',
@@ -206,7 +229,15 @@
             kind: 'point',
             position: { x: 85, y: 70 },
           },
-          { kind: 'point', position: { x: 30, y: 110 } },
+          { id: 'demo-marker-3', kind: 'point', position: { x: 30, y: 110 } },
+          {
+            id: 'second-route',
+            kind: 'route',
+            points: [
+              { kind: 'point', position: { x: 100, y: 95 } },
+              { kind: 'point', position: { x: 110, y: 125 } },
+            ],
+          },
         ],
       };
 
@@ -278,9 +309,17 @@
         document.querySelector('#remove-route-point').disabled = true;
         status.textContent = `Replaced route interior with ${points.length} new points; endpoints ${start.id} and ${end.id} retained.`;
       };
+      for (const id of ['first', 'second']) {
+        document.querySelector(`#toggle-${id}`).onclick = event => {
+          const layer = map.layers.find(layer => layer.id === id);
+          layer.visible = !layer.visible;
+          event.currentTarget.setAttribute('aria-pressed', String(layer.visible));
+        };
+      }
       let addedPoint;
       document.querySelector('#add-point').onclick = () => {
         addedPoint = map.objects.add({ kind: 'point', position: map.camera.center });
+        map.layers.find(layer => layer.id === 'first').objectIds.add(addedPoint.id);
         document.querySelector('#move-added-point').disabled = false;
         document.querySelector('#remove-added-point').disabled = false;
         document.querySelector('#restore-added-point').disabled = true;

@@ -11,6 +11,7 @@ import { instrumentSvg } from './comparison.instrument.js';
 import { LeafletAdapter } from './comparison.leaflet.js';
 import { cameraAt, createStressScene, HIT_POSITION, MISS_POSITION, SEED } from './stress.scene.js';
 
+import type { MapEntryDefinition } from '#definitions/map-definition.js';
 import type { BenchmarkAdapter, CameraTarget, Variant } from './comparison.adapter.js';
 import type { CanvasControls } from './comparison.canvas-controls.js';
 import type { StressScene } from './stress.scene.js';
@@ -203,7 +204,7 @@ async function atlasDiagnostic(
     return;
   }
 
-  const spatial = new Spatial(prepareSceneGeometry(map.host.objects));
+  const spatial = new Spatial(prepareSceneGeometry(map.host.objects, map.host.layers));
   const point = scenario === 'hit' ? HIT_POSITION : MISS_POSITION;
   const position = new Point(point.x, point.y);
 
@@ -494,7 +495,7 @@ async function run(all: boolean, instrumented: boolean): Promise<void> {
   try {
     valid(devicePixelRatio);
     const image = new Image();
-    image.src = scenes[0]!.definition.background.source;
+    image.src = scenes[0]!.definition.layers[0]!.background!.source;
     await image.decode();
 
     const dpr = devicePixelRatio;
@@ -678,39 +679,44 @@ element('instrument').addEventListener('click', () => {
 
 function smokeScene(): StressScene {
   const scene = createStressScene(3000, 'mixed');
+  const objects: MapEntryDefinition[] = [
+    { id: 'smoke-point', kind: 'point', position: HIT_POSITION },
+    {
+      id: 'smoke-line',
+      kind: 'line',
+      points: [
+        { id: 'line-start', kind: 'point', position: { x: 40, y: 30 } },
+        { id: 'line-end', kind: 'point', position: { x: 90, y: 30 } },
+      ],
+    },
+    {
+      id: 'smoke-route',
+      kind: 'route',
+      points: [
+        { id: 'route-start', kind: 'point', position: { x: 45, y: 60 } },
+        { id: 'route-middle', kind: 'point', position: { x: 65, y: 90 } },
+        { id: 'route-end', kind: 'point', position: { x: 90, y: 60 } },
+      ],
+    },
+    {
+      id: 'smoke-top-line',
+      kind: 'line',
+      points: [
+        { id: 'top-start', kind: 'point', position: { x: 90, y: 60 } },
+        { id: 'top-end', kind: 'point', position: { x: 105, y: 80 } },
+      ],
+    },
+  ];
 
   return {
     ...scene,
     definition: {
       ...scene.definition,
-      objects: [
-        { id: 'smoke-point', kind: 'point', position: HIT_POSITION },
-        {
-          id: 'smoke-line',
-          kind: 'line',
-          points: [
-            { id: 'line-start', kind: 'point', position: { x: 40, y: 30 } },
-            { id: 'line-end', kind: 'point', position: { x: 90, y: 30 } },
-          ],
-        },
-        {
-          id: 'smoke-route',
-          kind: 'route',
-          points: [
-            { id: 'route-start', kind: 'point', position: { x: 45, y: 60 } },
-            { id: 'route-middle', kind: 'point', position: { x: 65, y: 90 } },
-            { id: 'route-end', kind: 'point', position: { x: 90, y: 60 } },
-          ],
-        },
-        {
-          id: 'smoke-top-line',
-          kind: 'line',
-          points: [
-            { id: 'top-start', kind: 'point', position: { x: 90, y: 60 } },
-            { id: 'top-end', kind: 'point', position: { x: 105, y: 80 } },
-          ],
-        },
-      ],
+      objects,
+      layers: scene.definition.layers.map(layer => ({
+        ...layer,
+        objects: objects.map(object => object.id!),
+      })),
     },
   };
 }

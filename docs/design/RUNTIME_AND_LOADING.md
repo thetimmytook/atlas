@@ -5,6 +5,78 @@
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
+## Layered map input — accepted 2026-10-08, first stage implemented for review
+
+The accepted [map structure](LAYERS_AND_INTERACTION.md#accepted-map-structure--2026-10-08)
+keeps object definitions in `MapDefinition.objects` and introduces
+`MapDefinition.layers`. A layer's `objects` is a list of object-ID references for
+direct full appearances; `background` belongs to that layer. Optional
+`intersectionBounds` lets the engine compute clipped appearances from common map
+geometry without another intersecting-object input list.
+Omitting `intersectionBounds` disables automatic intersection discovery and partial
+clipping; the layer's direct object appearances and background still work independently.
+
+An omitted `layer.objects` means an empty direct content list. Runtime layers start
+visible. An unknown object-ID reference rejects loading and preserves the active
+map under atomic replacement. A reference matching several root objects selects
+all matching runtime instances; `map.objects.get(id)` retains its existing first-match
+behavior. See the [accepted defaults](LAYERS_AND_INTERACTION.md#accepted-map-structure--2026-10-08).
+
+The [implemented first-stage contract](LAYERS_AND_INTERACTION.md#explicit-layers--accepted-and-implemented-for-review-2026-10-08)
+requires `layers` and rejects top-level backgrounds; no default layer is created.
+`intersectionBounds` is explicitly rejected until its later implementation.
+Serialized visibility and adding/removing/reordering runtime layers remain outside
+this stage.
+
+Validation, ID completion, root-reference validation and copying of every object,
+layer, reference list and background happen before asynchronous preparation. All
+layer backgrounds and SVG groups are prepared off-screen before active replacement.
+Any background failure preserves the old definition, roots/layers, camera, SVG and
+picking; failed candidates never start model observation. Overlap rejection is unchanged.
+
+`map.definition` contains resolved layer IDs, default stack indices and frozen copied
+reference lists. It remains the load snapshot, unchanged by runtime visibility,
+reference, root and coordinate edits. Shared objects retain one runtime instance
+and shared geometry views across layer appearances.
+
+`map.fit()` fits all layer background extents, including hidden layers. Current
+backgrounds start at `(0, 0)`, so the union uses maximum width and height. Without a
+background it does nothing; a background-free load preserves the camera. Applications
+can call `camera.fit(rect)` explicitly. Visibility changes never fit or reset it.
+
+Runtime root removal excludes that instance from every layer without deleting ID
+references. Detached objects remain editable. Reattachment or a new instance with
+the same ID automatically resumes membership in corresponding layers, using current
+state and root order. New unmatched IDs need explicit selection:
+`const point = map.objects.add(definition); layer.objectIds.add(point.id)`.
+
+## Shared generic collection storage — deferred exploration, 2026-10-08
+
+The user requested recording a possible shared generic collection for future work.
+Only the ID-collection rename to `MapLayerObjectIdCollection` is authorized now;
+generic storage is not implemented, and its API and representation are not approved.
+
+The two concrete consumers are `MapObjectCollection` and
+`MapLayerObjectIdCollection`. A possible approach is composition with a small
+internal `Collection<T>` for unique membership, insertion order, size and iteration.
+That name and API are illustrative. Runtime objects compare by instance identity;
+IDs compare by string value, so distinct roots with the same ID remain distinct.
+
+Domain wrappers would keep definition validation/copying and object construction,
+ID validation, `get(id)`, return types, scene invalidation and notifications.
+In particular, root `add` returns its runtime instance while ID `add` returns a
+boolean; a shared container must not force those public contracts to become alike.
+The generic container should not depend on renderers or scene tracking.
+
+Any later refactor must preserve retained root iterator snapshots, stable public
+collection identity, no-op behavior and mutation-before-notification ordering.
+The current ID iterator is live and follows `Set` insertion order; unifying that
+behavior with root snapshots would require a separate contract decision. Keep fast
+ID membership checks during root filtering rather than introducing a linear search
+for every root. Performance effects require measurements. Prefer a bounded storage
+refactor only if it simplifies both consumers; do not add configurable equality,
+storage policies or a general collection framework for speculative uses.
+
 ## Route model clarification — 2026-10-05
 
 The [polyline decision](GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05)

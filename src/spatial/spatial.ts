@@ -1,5 +1,7 @@
 import { squaredDistanceToSegment } from '#math/distance.js';
 
+import { isLayerEligible } from './scene-geometry.js';
+
 import type { Camera } from '#camera/camera.js';
 import type { Point } from '#math/point.js';
 import type { Geometry } from './geometry.js';
@@ -36,7 +38,7 @@ export class Spatial {
     for (let index = objects.length - 1; index >= 0; index--) {
       const entry = objects.at(index);
 
-      if (!entry) {
+      if (!entry || !isLayerEligible(entry.layer)) {
         continue;
       }
 

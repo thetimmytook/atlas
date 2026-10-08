@@ -2,6 +2,7 @@ import { expect } from 'vitest';
 
 import { Point } from '#math/point.js';
 import { Size } from '#math/size.js';
+import { createId } from '#objects/create-id.js';
 
 import type { BackgroundDescription, MapDefinition } from '#definitions/map-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
@@ -22,11 +23,18 @@ export function pointDefinition(x: number, y: number, id: string): MapPointDefin
 }
 
 export function mapDefinition(objects: NonNullable<MapDefinition['objects']> = []): MapDefinition {
-  return { background, objects };
+  const roots = objects.map(object => ({ ...object, id: object.id ?? createId() }));
+
+  return {
+    layers: [{ id: 'content', background, objects: roots.map(object => object.id) }],
+    objects: roots,
+  };
 }
 
 export function svgGroups(surface: SVGSVGElement): SVGGElement[] {
-  return Array.from(surface.querySelectorAll<SVGGElement>(':scope > g'));
+  return Array.from(
+    surface.querySelectorAll<SVGGElement>(':scope > g[data-layer-id] > g[data-object-id]'),
+  );
 }
 
 export function shape<T extends SVGElement>(group: SVGGElement, tag: string): T {

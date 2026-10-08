@@ -1,6 +1,7 @@
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
+import { MapLayer } from './map-layer.js';
 import { MapObjectCollection } from './map-object-collection.js';
 
 import type { ResolvedMapDefinition } from '#definitions/map-definition.js';
@@ -11,6 +12,7 @@ import type { MapEntry } from './map-object-collection.js';
 export class MapModel extends EventTarget {
   readonly definition: ResolvedMapDefinition | undefined;
   readonly objects: MapObjectCollection;
+  readonly layers: readonly MapLayer[];
   readonly geometry: SceneGeometry;
   readonly spatial: Spatial;
   readonly #observedObjects = new Set<MapEntry>();
@@ -21,7 +23,10 @@ export class MapModel extends EventTarget {
     super();
     this.definition = definition;
     this.objects = new MapObjectCollection(definition?.objects);
-    this.geometry = prepareSceneGeometry(this.objects);
+    this.layers = Object.freeze(
+      (definition?.layers ?? []).map(layer => new MapLayer(layer, this.objects)),
+    );
+    this.geometry = prepareSceneGeometry(this.objects, this.layers);
     this.spatial = new Spatial(this.geometry);
   }
 
@@ -35,6 +40,10 @@ export class MapModel extends EventTarget {
     this.objects.addEventListener('add', this.#objectAdded);
     this.objects.addEventListener('remove', this.#objectRemoved);
 
+    for (const layer of this.layers) {
+      layer.addEventListener('change', this.#changed);
+    }
+
     for (const object of this.objects) {
       this.#observeObject(object);
     }
@@ -44,6 +53,10 @@ export class MapModel extends EventTarget {
     this.#observing = false;
     this.objects.removeEventListener('add', this.#objectAdded);
     this.objects.removeEventListener('remove', this.#objectRemoved);
+
+    for (const layer of this.layers) {
+      layer.removeEventListener('change', this.#changed);
+    }
 
     // A removal listener may stop observation before the removed root is released.
     for (const object of this.#observedObjects) {

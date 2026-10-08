@@ -4,7 +4,7 @@ import { Point } from '#math/point.js';
 import { Size } from '#math/size.js';
 import { MapPoint } from '#objects/map-point.js';
 
-import { pointDefinition } from './fixtures.js';
+import { pointDefinition, selectAddedRoots } from './fixtures.js';
 
 import type { MapElement } from '#components/map-element/map-element.js';
 import type { MapDefinition } from '#definitions/map-definition.js';
@@ -104,6 +104,11 @@ function disconnect(element: MapElement): void {
   element.disconnectedCallback();
 }
 
+async function loadDefinition(element: MapElement): Promise<void> {
+  await element.load(definition());
+  selectAddedRoots(element.objects, element.layers[0]!);
+}
+
 function createElement(): MapElement {
   const element = new ElementClass();
   elements.push(element);
@@ -133,7 +138,13 @@ function click(element: MapElement, x: number, y: number): void {
 
 function definition(): MapDefinition {
   return {
-    background: { source: '/map.png', size: new Size(1000, 600) },
+    layers: [
+      {
+        id: 'content',
+        objects: ['point'],
+        background: { source: '/map.png', size: new Size(1000, 600) },
+      },
+    ],
     objects: [pointDefinition(100, 100, 'point')],
   };
 }
@@ -160,7 +171,7 @@ beforeEach(() => {
   renderer.show.mockClear();
   requestFrame.mockClear();
   cancelFrame.mockClear();
-  renderer.prepare.mockImplementation((_background, geometry) =>
+  renderer.prepare.mockImplementation(geometry =>
     Promise.resolve({
       show: (): void => {
         display = geometry;
@@ -195,7 +206,7 @@ describe('component scene replacement', () => {
     element.camera.center = new Point(500, 300);
     click(element, 100, 100);
     expect(clicked).not.toHaveBeenCalled();
-    await element.load(definition());
+    await loadDefinition(element);
     expect(element.objects).not.toBe(initial);
     expect(initial.get(point.id)).toBe(point);
     expect(element.camera.center).toEqual(new Point(500, 300));
@@ -208,16 +219,21 @@ describe('component scene replacement', () => {
     const element = createElement();
     const input = { kind: 'point' as const, id: 'point', position: { x: 100, y: 100 } };
     const data = {
-      background: { source: '/map.png', size: { width: 1000, height: 600 } },
+      layers: [
+        {
+          objects: ['point'],
+          background: { source: '/map.png', size: { width: 1000, height: 600 } },
+        },
+      ],
       objects: [input],
     };
     const loading = element.load(data);
     input.position.x = 999;
-    data.background.size.width = 999;
+    data.layers[0]!.background.size.width = 999;
     await loading;
     const point = element.objects.get('point') as MapPoint;
     expect(point.position).toEqual(new Point(100, 100));
-    expect(element.definition?.background.size).toEqual(new Size(1000, 600));
+    expect(element.definition?.layers[0]?.background?.size).toEqual(new Size(1000, 600));
     point.position = new Point(200, 200);
     expect(element.definition?.objects[0]).toMatchObject({ position: { x: 100, y: 100 } });
     expect(Object.isFrozen(element.definition)).toBe(true);
@@ -225,7 +241,7 @@ describe('component scene replacement', () => {
 
   it('keeps the old scene usable throughout preparation and after a failed load', async () => {
     const element = createElement();
-    await element.load(definition());
+    await loadDefinition(element);
     const objects = element.objects;
     const oldDefinition = element.definition;
     const oldDisplay = display;
@@ -265,6 +281,41 @@ describe('component scene replacement', () => {
     expect(requestFrame).toHaveBeenCalledOnce();
   });
 
+  it('copies all layers before preparation and validates every background before any preparation', async () => {
+    const element = createElement();
+    const references = ['point'];
+    const firstBackground = { source: '/first.svg', size: { width: 1000, height: 600 } };
+    const secondBackground = { source: '/second.svg', size: { width: 500, height: 300 } };
+    const input = {
+      objects: [pointDefinition(100, 100, 'point')],
+      layers: [
+        { id: 'first', objects: references, background: firstBackground },
+        { id: 'second', objects: ['point'], background: secondBackground },
+      ],
+    };
+    const loading = element.load(input);
+    references.push('missing');
+    firstBackground.source = '/changed.svg';
+    secondBackground.size.width = 999;
+    await loading;
+    expect(element.layers[0]!.background!.source).toBe('/first.svg');
+    expect(element.layers[1]!.background!.size.width).toBe(500);
+    expect([...element.layers[0]!.objectIds]).toEqual(['point']);
+    expect(element.layers[0]!.objects[0]).toBe(element.layers[1]!.objects[0]);
+    renderer.prepare.mockClear();
+    const oldLayers = element.layers;
+    await expect(
+      element.load({
+        layers: [
+          { background: firstBackground },
+          { background: { ...secondBackground, size: { width: 0, height: 300 } } },
+        ],
+      }),
+    ).rejects.toMatchObject({ code: 'INVALID_NUMBER' });
+    expect(renderer.prepare).not.toHaveBeenCalled();
+    expect(element.layers).toBe(oldLayers);
+  });
+
   it('rejects invalid input before preparation and overlapping loads while accepting the first', async () => {
     const element = createElement();
     const initial = element.objects;
@@ -288,17 +339,17 @@ describe('component scene replacement', () => {
     finish({ show: renderer.show });
     await loading;
     expect(element.objects).not.toBe(initial);
-    await element.load(definition());
+    await loadDefinition(element);
     expect(renderer.show).toHaveBeenCalledTimes(2);
   });
 
   it('releases old collection and object listeners after replacement', async () => {
     const element = createElement();
-    await element.load(definition());
+    await loadDefinition(element);
     const oldObjects = element.objects;
     const oldPoint = oldObjects.get('point') as MapPoint;
     const release = vi.spyOn(oldPoint, 'removeEventListener');
-    await element.load(definition());
+    await loadDefinition(element);
     expect(release).toHaveBeenCalledWith('change', expect.any(Function));
     flushFrame();
     requestFrame.mockClear();
@@ -312,11 +363,11 @@ describe('component scene replacement', () => {
 
   it('cancels a pending click when a successful load replaces the scene', async () => {
     const element = createElement();
-    await element.load(definition());
+    await loadDefinition(element);
     const clicked = vi.fn();
     element.addEventListener('objectclick', clicked);
     pointer(element, 'pointerdown', 100, 100);
-    await element.load(definition());
+    await loadDefinition(element);
     pointer(element, 'pointerup', 100, 100);
     expect(clicked).not.toHaveBeenCalled();
     click(element, 100, 100);
@@ -327,7 +378,7 @@ describe('component scene replacement', () => {
 describe('component observation and interaction', () => {
   it('cancels frames on disconnect and reconnects current objects and route membership once', async () => {
     const element = createElement();
-    await element.load(definition());
+    await loadDefinition(element);
     const route = element.objects.add({
       kind: 'route',
       id: 'route',
@@ -368,7 +419,7 @@ describe('component observation and interaction', () => {
     const element = createElement();
     disconnect(element);
     requestFrame.mockClear();
-    await element.load(definition());
+    await loadDefinition(element);
     const point = element.objects.get('point') as MapPoint;
     point.position = new Point(200, 200);
     expect(requestFrame).not.toHaveBeenCalled();
@@ -398,7 +449,7 @@ describe('component observation and interaction', () => {
 
   it('picks live positions and membership before the coalesced render', async () => {
     const element = createElement();
-    await element.load(definition());
+    await loadDefinition(element);
     flushFrame();
     renderer.render.mockClear();
     const point = element.objects.get('point') as MapPoint;
@@ -421,6 +472,7 @@ describe('component observation and interaction', () => {
       const element = createElement();
       await element.load({
         ...definition(),
+        layers: [{ ...definition().layers[0], objects: ['route'] }],
         objects: [{ kind: 'route', id: 'route', points: [pointDefinition(100, 100)] }],
       });
       const route = element.objects.get('route') as MapRoute;

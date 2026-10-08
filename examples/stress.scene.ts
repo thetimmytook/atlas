@@ -110,10 +110,16 @@ export function createStressScene(
     roots,
     composition,
     definition: {
-      background: {
-        source: new URL('./factory/Factory-ground-floor.svg', import.meta.url).href,
-        size: BACKGROUND_SIZE,
-      },
+      layers: [
+        {
+          id: 'content',
+          objects: objects.map(object => object.id!),
+          background: {
+            source: new URL('./factory/Factory-ground-floor.svg', import.meta.url).href,
+            size: BACKGROUND_SIZE,
+          },
+        },
+      ],
       objects,
     },
     additions: Array.from({ length: 1000 }, (_, index) => point(`added-${index}`)),

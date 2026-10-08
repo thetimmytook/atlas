@@ -1,5 +1,102 @@
 # Layers And Interaction
 
+## Explicit layers — accepted and implemented for review, 2026-10-08
+
+The first implementation supports direct full appearances, layer backgrounds,
+composition and independent visibility. `intersectionBounds` remains the accepted
+next direction; supplying that property currently rejects loading with
+`UNSUPPORTED_INTERSECTION_BOUNDS`, including an explicit `undefined` value. z,
+automatic intersections, clipping and volumetric zones are not implemented.
+
+`MapDefinition.layers` is required: no default layer or flat-input compatibility.
+`layers: []` is valid and displays nothing; a top-level `background` is rejected.
+Shared definitions stay in optional `MapDefinition.objects`.
+
+```ts
+interface MapLayerDefinition {
+  readonly id?: string;
+  readonly stackIndex?: number;
+  readonly objects?: readonly string[];
+  readonly background?: BackgroundDescription;
+}
+
+// MapElement
+get layers(): readonly MapLayer[];
+
+// MapLayer
+get id(): string;
+get stackIndex(): number;
+get background(): BackgroundDescription | undefined;
+get objects(): readonly MapEntry[];
+get objectIds(): MapLayerObjectIdCollection;
+get visible(): boolean;
+set visible(value: boolean);
+
+// Stable MapLayerObjectIdCollection; cannot be replaced or mutated as a raw Set
+add(id: string): boolean;
+remove(id: string): boolean;
+has(id: string): boolean;
+[Symbol.iterator](): Iterator<string>;
+```
+
+Layers start visible; their frozen array follows declaration order and is replaced
+only by successful loading. IDs are non-empty opaque strings, omitted IDs use
+`createId()`, and duplicate layer IDs reject loading. Layer and object ID namespaces
+are independent. Finite `stackIndex` defaults to zero and permits negative values.
+Composition uses ascending indices; later declarations are above earlier ones at
+equal indices. The background is below its layer's objects and passes clicks through.
+Root collection order determines object order; there is no object-level zIndex.
+`MapLayer` and `MapLayerObjectIdCollection` are exported as types; application code receives
+their instances from the loaded map. Adding/removing/reordering layers is deferred.
+
+`layer.background` reuses `{ source, size: { width, height } }` at map origin. This
+URL/explicit-size description remains provisional until the resource/background
+placement contract is implemented.
+
+Omitted `objects` and `[]` are equivalent. A reference selects every matching root
+instance without merging duplicate root IDs or changing `map.objects.get(id)`.
+Repeated references create no duplicate appearance in one layer. Owned point IDs
+are not root references unless those points are separately attached as roots.
+
+`objectIds.add/remove` validate non-empty strings, commit and invalidate membership
+before notification, and return whether references changed. Repeated addition and
+absent removal are no-ops. Removal excludes all matching roots from that layer,
+retaining them in `map.objects`. ID iteration follows insertion order, which does
+not determine rendering order. Missing runtime IDs are allowed; new matching
+instances automatically appear in all corresponding layers. Unknown load references
+reject the entire load.
+
+`layer.objects` means only current roots selected through direct `objectIds`.
+Its frozen arrays cannot be changed with `push/splice`; retained arrays preserve
+old membership and live references. Future automatic clipped appearances are prepared
+separately and will not change this getter's meaning. Root/reference edits reconcile
+synchronously on read before RAF, including disconnected state. Coordinate, camera
+and visibility changes retain current arrays and composition.
+
+```ts
+const layer = map.layers.find(layer => layer.id === 'first')!;
+const point = map.objects.add({ kind: 'point', position: { x: 40, y: 60 } });
+layer.objectIds.add(point.id);
+layer.visible = false;
+const ids = [...layer.objectIds];
+layer.objectIds.remove(point.id); // retains the root object
+```
+
+`press/release` describe the entire surface. Picking checks all visible layers from
+top to bottom. `objectclick.detail.layer` is the runtime layer of the hit;
+`detail.object` is the original shared object. A route path returns `MapRoute`;
+a vertex returns its `MapPoint` with owning `detail.route`. Editing the object needs
+no layer argument and updates every appearance. The event constructor is
+`ObjectClickEvent(object, mapPoint, clientPoint, layer, route?)`.
+A synchronous surface handler hiding the hit layer, removing its reference or
+detaching the hit suppresses the stale object click without a second hit test.
+
+SVG and picking share layer order and live eligibility. Hide/show preserves camera,
+background resources, geometry and SVG nodes. The Factory application has a
+background-only layer, two independent content layers sharing one runtime route,
+external toggle/edit buttons and hit-layer IDs in its panel. Temporary route vertex
+symbols remain unchanged until the separate appearance/interaction step.
+
 ## Clarifications after studying tarkov.dev
 
 - Both scenarios are useful: local building floor switching on the main map
@@ -7,9 +104,9 @@
   Back button, and restoration of the main view belong to the application.
 - Possible mechanisms for loading/switching multiple maps, multiple viewports of
   one map, and layer groups are decision points to discuss closer to implementation.
-- The default layer is chosen by stackIndex, not geometric height.
-  The proposed fallback is the lowest stackIndex; an explicit default in the map definition
-  should allow another layer. The exact contract and interaction with groups remain open.
+- The earlier default-layer proposal is superseded by the explicit first-stage
+  contract above: layers are required and no default is created. stackIndex controls
+  composition rather than geometric height.
 - Responsive appearance must be considered. Conditions based on component viewport
   dimensions have been proposed; syntax and supported parameters are not yet defined.
 - Vertical polygon extrusion with a height has been proposed for volumetric zones.
@@ -19,6 +116,126 @@
 
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
+
+## Layer contract clarification — 2026-10-08
+
+Accepted in the current contract discussion:
+
+- A background belongs to a layer as its property. A background shared across floor
+  views lives in a separate layer that the application keeps visible. This supersedes
+  the earlier proposal to register backgrounds in the shared map-object collection.
+  The background property's exact data/resource format remains open.
+- Runtime layers expose `visible`; the application controls each layer independently.
+  Layers are initially visible. The serialized form of visibility remains open.
+- Layers retain explicit object lists for their content. The user prefers this
+  familiar container model; the assistant's proposal to replace lists with automatic
+  spatial selection is superseded. Shared runtime objects still live in the map
+  collection. A layer's ordinary content list defines its full object appearances.
+  The accepted input structure uses `MapDefinition.objects` for object definitions,
+  `MapDefinition.layers` for layer definitions, and `layer.objects` for object-ID
+  references. An omitted list means an empty list; unknown references reject loading,
+  and a reference selects all root instances with the matching ID.
+- Automatic intersection display is a separate optional input: the author supplies
+  spatial bounds, and the engine finds and clips intersecting geometry itself.
+  The author supplies no additional intersecting-object list. The accepted field
+  name is `intersectionBounds`; `intersectingObjects` describes a
+  computed result, not another required input collection. Without intersection
+  bounds, this automatic mechanism is inactive; ordinary layer content still displays.
+
+`intersectionBounds` is optional. Omitting it leaves the layer's direct `objects`
+and background working independently, with no automatic intersection discovery or
+partial geometry clipping. Supplying it additionally enables automatic intersection
+display within those bounds. Within supplied bounds, an omitted axis constraint
+remains unbounded under the agreed min/max rules; omitting the entire property
+disables the automatic mechanism.
+
+After reviewing the floor-clipping illustration, the user accepted automatic
+geometric clipping: the author describes a whole route once, and each layer displays
+the portions within its bounds. Floor switching changes layer visibility; it does
+not change or split the runtime route. This confirms the earlier spatial-clipping
+decision. Author-prepared separate lines remain an available authoring choice;
+manual subdivision by floor is not required for displaying a shared route.
+
+Cut coordinates belong to derived display geometry. They create no runtime
+`MapPoint`, ID, marker, or separate point hit area. Rendering and picking use the
+same clipped portions; path interaction identifies the original route and the layer
+where it occurred. Source geometry and existing object/vertex identity are preserved.
+The author supplies spatial coordinates, including height for floor transitions,
+and the layer bounds. The internal clipping algorithm, precise event shape, and
+coordinate and detailed property schemas remain open; this is a design decision, not implemented
+layer behavior. The shared collection, current ordered-point route representation,
+and volumetric-zone prototype scope remain in effect.
+
+The separate `intersectingObjects` input-list proposal is superseded. Automatic
+intersection candidates come from the map's common object collection. Eligibility
+of objects explicitly displayed in other layers, and precedence when one instance
+is both direct content and an automatic intersection, remain open. Implicit
+default-layer behavior and runtime layer-management signatures also need separate decisions. This accepted
+input structure does not silently settle those rules or promise scanning performance.
+
+### Accepted map structure — 2026-10-08
+
+The user approved this outer structure and the field names shown below. Named
+values stand for serializable object/background definitions; their detailed formats
+are not defined by this structural example. Runtime layer objects and management
+methods remain a separate contract. This does not authorize engine implementation.
+
+Accepted content and visibility defaults:
+
+- Omitting `layer.objects` is equivalent to `objects: []`. A background-only layer
+  can omit both `objects` and `intersectionBounds`. Supplied intersection bounds
+  still enable automatic appearances independently of the direct content list.
+- Each runtime layer starts with `visible: true`; the application can then switch
+  layers independently.
+- An object-ID reference with no matching root object rejects map loading. Under
+  atomic replacement, a failed load preserves the currently active map.
+- When several root objects have the referenced ID, the layer selects all matching
+  runtime instances without merging them by ID or copying them. This does not change
+  `map.objects.get(id)`, which returns the first matching root object.
+
+```ts
+{
+  objects: [
+    routeDefinition,
+    firstFloorMarkerDefinition,
+    secondFloorMarkerDefinition,
+  ],
+
+  layers: [
+    {
+      id: 'common-background',
+      stackIndex: -1,
+      background: commonBackground,
+    },
+    {
+      id: 'floor-1',
+      stackIndex: 0,
+      background: firstFloorBackground,
+      objects: ['marker-1'],
+      intersectionBounds: {
+        min: { z: 0 },
+        max: { z: 3 },
+      },
+    },
+    {
+      id: 'floor-2',
+      stackIndex: 1,
+      background: secondFloorBackground,
+      objects: ['marker-2'],
+      intersectionBounds: {
+        min: { z: 3 },
+        max: { z: 6 },
+      },
+    },
+  ],
+}
+```
+
+`routeDefinition` is registered once in the map's object definitions. Each layer
+automatically derives its relevant route portions from `intersectionBounds`, without
+listing that route among its direct content. Each marker is selected explicitly
+through its layer's object-ID list. A common background can be declared on a separate
+layer with no direct objects and no automatic intersection bounds.
 
 ## Route point and path interaction — current clarification
 
@@ -36,7 +253,14 @@ union, allowing consumers to narrow the object by `kind` and access `position` o
 
 Point IDs do not control visibility. Layer visibility and clipping determine which
 spatial portion can participate; point materials and interaction properties will
-control vertex presentation. The current prototype draws all route vertices with
+control vertex presentation. The accepted [route-vertex separation](GEOMETRY_AND_ROUTES.md#route-vertex-geometry-symbol-and-picking--accepted-2026-10-08)
+keeps position, symbol appearance, and separate point picking independent. A bend
+with no symbol remains part of the route; when its point interaction is disabled,
+clicks on the eligible path return the route. Layer visibility constrains all its
+appearances; intersection bounds additionally constrain automatic appearances.
+Route vertices default to no symbol and no separate point picking; appearance and
+interaction are explicitly assigned for a point of interest and stay independent.
+The current prototype draws all route vertices with
 the temporary point symbol to exercise clicks, independent of supplied/generated
 IDs. It adds no visibility flag to route-point data. Surface press/release behavior
 is unchanged. Older line-identity wording below is historical.
@@ -48,14 +272,11 @@ is unchanged. Older line-identity wording below is historical.
   as a drawing order was not accepted. Drawing order, physical levels, and filtering
   groups must be distinguished; the exact contract remains open.
 - The proposal of one layer per object and multiple groups has not yet been accepted.
-- A layer is understood as a container of displayed content, not merely drawing order.
-  A default layer exists: a simple map need not select it explicitly.
-- A background is displayed layer content and follows layer visibility together
-  with other objects. A permanent background can live in a separate layer
-  that the application does not offer to switch.
-- This clarifies the assistant's proposal for a special optional background field:
-  neither that field nor a one-background-per-layer restriction is fixed.
-  The exact background object kind/contract remains open.
+- A layer is a container of displayed content. Under the later first-stage contract,
+  even a simple map declares its layer explicitly; no default is created.
+- A background follows its layer's visibility. The 2026-10-08 clarification above
+  makes it a layer property; a permanent background lives in a separate layer
+  that the application keeps visible. The exact property format remains open.
 - Layer order uses stackIndex (zIndex was rejected because it could be confused
   with the height coordinate z). Default 0; higher values appear above lower ones;
   negative values are allowed; for equal values the last layer in the data is on top.
@@ -96,11 +317,13 @@ is unchanged. Older line-identity wording below is historical.
 - Example future volumetric object: kind box with geometry.min/max containing x/y/z,
   describing a complete axis-aligned rectangular box. A layer displays its slice.
   The principle is accepted; the exact schema and inclusion of box in version one are not approved.
-- Independent map objects, including backgrounds, live in the shared objects collection;
-  layers do not duplicate geometry but define content selection, clipping, and stackIndex.
-- A layer may select all objects or an explicit set by ID, then apply clipping.
-  The source/objects field name and exact selection schema remain open;
-  selecting all objects by default was proposed but not separately approved.
+- Independent map objects live in the shared objects collection; layers define content
+  selection, clipping, and stackIndex. The earlier inclusion of backgrounds in that
+  collection is superseded by the 2026-10-08 layer-property clarification above.
+- The earlier combined object-selection/clipping proposal is superseded by the
+  2026-10-08 clarification: an explicit ordinary content list and separate optional
+  bounds for automatically computed intersections. The accepted map structure above
+  defines the object-ID list, its empty default, and reference resolution.
 - Nested lines stay inside the route: the shared collection of independent objects
   does not turn internal parts into independently reusable map objects.
 - Layer references do not introduce overrides for position, label (title), or other
@@ -114,12 +337,14 @@ is unchanged. Older line-identity wording below is historical.
   and display of its content. Possible layer-specific appearance rules are not defined yet.
 - Agreed slice-event data: the original object's ID and the ID of the layer where
   interaction occurred. The exact event shape remains open.
-- clip is an optional layer property. The layer selects objects and then displays
-  only geometry inside clip without changing the source objects. No clip means no clipping.
-- In version one, clip defines an axis-aligned region using min/max with optional
+- The earlier `clip` term now refers to the automatic-intersection mechanism,
+  with `intersectionBounds` as its accepted field name. It displays intersecting
+  geometry within the bounds without changing source objects; the ordinary layer
+  content list displays full appearances independently of those bounds.
+- In version one, intersection bounds define an axis-aligned region using min/max with optional
   x, y, and z limits. It may specify only a floor's z range or also x/y bounds;
   omitted constraints are unbounded.
-  Example: clip: { min: { z: 3 }, max: { z: 6 } }.
+  Example: intersectionBounds: { min: { z: 3 }, max: { z: 6 } }.
 - Arbitrary clipping shapes are deferred.
 - clip bounds are half-open: min is inclusive and max exclusive on the specified axes.
   For example, a marker at z = 3 belongs to [3, 6), not [0, 3).
@@ -138,7 +363,8 @@ is unchanged. Older line-identity wording below is historical.
 - Where objects overlap, the default click target is the topmost interactive object
   under the pointer, respecting layer and object order. Visibility and interaction
   participation are independent: a visible background/zone may pass clicks through.
-- Hidden objects and geometry outside clip do not participate in target identification.
+- Hidden appearances do not participate in target identification. Automatic
+  appearances only participate within their intersection bounds.
 - The behavior is agreed, but the name interactive, placing the setting in Meta,
   object overrides, and the exact API are not yet approved.
 - Thin lines need an expandable hit area independent of visible stroke width.

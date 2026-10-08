@@ -158,7 +158,7 @@ function checkScene(map: MapElement, scene: StressScene): void {
 
   if (
     map.objects.size !== scene.roots ||
-    svg.querySelectorAll('g').length !== scene.counts.visualPrimitives ||
+    svg.querySelectorAll('g[data-object-id]').length !== scene.counts.visualPrimitives ||
     svg.querySelector('[visibility="hidden"]') ||
     !svg.getAttribute('viewBox')
   ) {
@@ -210,7 +210,7 @@ type Emit = (metric: string, unit: string, index: number, value: number) => void
 
 function queries(map: MapElement, scene: StressScene, scenario: 'hit' | 'miss', emit: Emit): void {
   // Same root collection, separate internal spatial view; not DOM input latency.
-  const spatial = new Spatial(prepareSceneGeometry(map.objects));
+  const spatial = new Spatial(prepareSceneGeometry(map.objects, map.layers));
   const position = scenario === 'hit' ? HIT_POSITION : MISS_POSITION;
   const point = new Point(position.x, position.y);
 
@@ -264,7 +264,8 @@ function massChange(
 
   for (let index = 0; index < amount; index += 1) {
     if (adding) {
-      map.objects.add(scene.additions.at(index)!);
+      const added = map.objects.add(scene.additions.at(index)!);
+      map.layers[0]!.objectIds.add(added.id);
     } else if (!map.objects.remove(roots.at(index)!)) {
       throw new Error('Root removal failed.');
     }
@@ -553,7 +554,7 @@ async function run(all: boolean, instrumented: boolean): Promise<void> {
 
   try {
     const image = new Image();
-    image.src = scenes[0]!.definition.background.source;
+    image.src = scenes[0]!.definition.layers[0]!.background!.source;
     await image.decode();
     await executeSamples(runId, scenes, all ? SCENARIOS : [selection], instrumented);
 

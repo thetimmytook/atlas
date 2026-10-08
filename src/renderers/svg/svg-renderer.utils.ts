@@ -15,7 +15,10 @@ export interface SvgObject {
 }
 
 /** Browser resource preparation stays outside the renderer-independent runtime. */
-export async function prepareImage(background: BackgroundDescription): Promise<SVGImageElement> {
+export async function prepareImage(
+  background: BackgroundDescription,
+  layerId: string,
+): Promise<SVGImageElement> {
   const image = new Image();
   image.src = background.source;
 
@@ -24,7 +27,7 @@ export async function prepareImage(background: BackgroundDescription): Promise<S
   } catch (cause) {
     throw new AtlasError('Unable to load background.', {
       code: 'BACKGROUND_LOAD_FAILED',
-      details: { source: background.source },
+      details: { source: background.source, layerId },
       cause,
     });
   }

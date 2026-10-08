@@ -9,12 +9,14 @@ import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { MapModel } from '#objects/map-model.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
+import { isLayerEligible } from '#spatial/scene-geometry.js';
 
 import html from './map-element.html?raw';
 
 import type { MapDefinition, ResolvedMapDefinition } from '#definitions/map-definition.js';
 import type { SurfaceInputDetail } from '#interaction/camera-controls.js';
 import type { ClickTrigger } from '#interaction/map-surface-event.js';
+import type { MapLayer } from '#objects/map-layer.js';
 import type { MapObjectCollection } from '#objects/map-object-collection.js';
 import type { Renderer } from '#renderers/renderer.js';
 
@@ -74,16 +76,28 @@ export class MapElement extends HTMLElement {
   }
 
   fit(): void {
-    if (!this.#model.definition) {
+    const size = this.#model.layers.reduce(
+      (result, layer) => ({
+        width: Math.max(result.width, layer.background?.size.width ?? 0),
+        height: Math.max(result.height, layer.background?.size.height ?? 0),
+      }),
+      { width: 0, height: 0 },
+    );
+
+    if (size.width === 0 || size.height === 0) {
       return;
     }
 
-    const { width, height } = this.#model.definition.background.size;
+    const { width, height } = size;
     this.#camera.fit(new Rect(0, 0, width, height));
   }
 
   get objects(): MapObjectCollection {
     return this.#model.objects;
+  }
+
+  get layers(): readonly MapLayer[] {
+    return this.#model.layers;
   }
 
   get definition(): ResolvedMapDefinition | undefined {
@@ -102,7 +116,7 @@ export class MapElement extends HTMLElement {
     try {
       const resolvedDefinition = resolveMapDefinition(definition);
       const model = new MapModel(resolvedDefinition);
-      const scene = await this.#renderer.prepare(resolvedDefinition.background, model.geometry);
+      const scene = await this.#renderer.prepare(model.geometry);
       const previousModel = this.#model;
       scene.show();
       this.#model = model;
@@ -110,6 +124,7 @@ export class MapElement extends HTMLElement {
       this.#controls.cancelClick();
       this.#observeModel();
       this.fit();
+      this.#requestRender();
     } finally {
       this.#loading = false;
     }
@@ -184,6 +199,8 @@ export class MapElement extends HTMLElement {
       !hit ||
       !this.isConnected ||
       this.#model !== model ||
+      !isLayerEligible(hit.layer) ||
+      !hit.layer.objectIds.has((hit.route ?? hit.object).id) ||
       !this.#model.hasObject(hit.route ?? hit.object) ||
       (hit.route && hit.object.kind === 'point' && !hit.route.points.includes(hit.object))
     ) {
@@ -194,7 +211,9 @@ export class MapElement extends HTMLElement {
       this.#controls.consumeGesture();
     }
 
-    this.dispatchEvent(new ObjectClickEvent(hit.object, mapPoint, input.clientPoint, hit.route));
+    this.dispatchEvent(
+      new ObjectClickEvent(hit.object, mapPoint, input.clientPoint, hit.layer, hit.route),
+    );
   }
 
   #observeModel(): void {

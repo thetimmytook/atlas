@@ -26,6 +26,14 @@ rendering and queries, not a public `geometry` property on map objects. Earlier
 Material selection must account for the current object model when its earlier
 kind/type rules are revised.
 
+The accepted [route-vertex separation](GEOMETRY_AND_ROUTES.md#route-vertex-geometry-symbol-and-picking--accepted-2026-10-08)
+requires point appearance to support a vertex without a symbol while preserving
+its contribution to the route geometry. Separate point picking is another concern;
+a symbol does not by itself settle interaction participation. The material/property
+fields remain open. The accepted route-vertex default is no symbol and no separate
+point picking; the author explicitly assigns appearance and enables interaction
+for a point of interest. Defaults for independent point appearances are unchanged.
+
 The accepted [classification decision](GEOMETRY_AND_ROUTES.md#application-classification--accepted-2026-10-05)
 moves application `type` to `data.type`; objects have no separate semantic `type`
 field. References to semantic type in the earlier rules below mean this application
