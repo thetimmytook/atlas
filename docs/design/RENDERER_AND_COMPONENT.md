@@ -1,5 +1,45 @@
 # Renderer And Component
 
+## Layer display and invalidation — implemented for review, 2026-10-08
+
+Internal `MapModel` owns renderer-independent layers and shared roots. Direct
+membership is cached and invalidated by root or ID-list mutations before synchronous
+notifications. `layer.objects` and spatial queries reconcile on read, even while
+disconnected. Coordinate edits and camera changes do not resolve membership again.
+
+`prepareSceneGeometry(objects, layers)` supplies shared bottom-to-top layer order
+and ordered appearances retaining the layer, original object and optional owning
+route. Geometry views are shared across layers; appearance entries are cached by
+layer/owner/object identity. Hidden entries stay prepared and tracked while shared
+live eligibility excludes them from picking immediately. Position invalidation queues
+all dependent paths/vertices/symbols. Reattachment refreshes newly tracked sources
+after an intervening query, retaining SVG nodes surviving until RAF.
+
+The internal provisional single-view renderer signature is now
+`prepare(geometry: SceneGeometry): Promise<PreparedScene>`; backgrounds travel with
+scene layers. Future clipped appearances extend scene preparation. This is not a
+public standalone model or final multi-view renderer contract.
+
+SVG creates one permanent group per layer, with its optional image before objects.
+Visibility updates only its `display` attribute. Membership edits reuse surviving
+groups, primitives and geometry; coordinate writes remain limited to invalidated
+appearances and pan changes only viewBox. Reconnect paints pending disconnected edits.
+Model observation subscribes to layer changes once and releases subscriptions on
+disconnect/replacement. Layer `change` notifications are provisional until the public
+scene/change-event contract is agreed; invalidation does not depend on observation.
+
+Successful scene installation always requests a coalesced render frame, including
+background-free maps where `fit()` leaves camera center and zoom unchanged.
+
+Real-SVG/native-pointer regressions cover composition, shared identities, pre-RAF
+visibility, stale-click suppression, hidden edits, repeated toggles, reconnect,
+ID membership, reattachment, background-free replacement after pending frames finish,
+camera preservation and atomic multi-background failure. Small-scene
+MutationObserver checks reproduce two placement writes for a shared point, two path
+plus two vertex placement writes for a shared route-point edit, and one viewBox
+write for pan, with no unrelated geometry/node changes. These are invalidation
+boundaries, not speed measurements or mobile validation.
+
 [Navigation and current summary](../DESIGN_MAIN.md)
 
 Moved from the discussion log without losing context. Clarifications take precedence

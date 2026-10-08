@@ -27,11 +27,31 @@ continue between answers rather than relying on HTML anchors.
   identifiable points; consecutive points define connected segments without line objects.
   Owners keep behavior and validation. See
   [route polylines](design/GEOMETRY_AND_ROUTES.md#route-polylines-and-point-identity--accepted-2026-10-05).
+- Route vertices keep position, symbol appearance, and separate point picking independent.
+  They default to no symbol and no separate point picking; bends still shape the path.
+  Point-of-interest appearance and interaction are explicitly assigned; exact fields remain open.
+  See [the accepted separation](design/GEOMETRY_AND_ROUTES.md#route-vertex-geometry-symbol-and-picking--accepted-2026-10-08).
 - Application classification lives in `data.type`, with no separate object-level
   `type` field. `kind` remains structural. See
   [classification decision](design/GEOMETRY_AND_ROUTES.md#application-classification--accepted-2026-10-05).
 - Coordinates: x right, y down, z up. SVG first; real 3D is a future direction.
-- Shared objects; layers select objects and clip them using clip. No separate level concept.
+- `MapDefinition.objects` holds object definitions; required `MapDefinition.layers` declares layers.
+  Each layer's `objects` lists IDs for ordinary full content; optional `intersectionBounds`
+  lets the engine find and clip geometry from the common collection automatically.
+  Omitted lists are empty; unknown references reject loading, and duplicate root IDs
+  select all matching instances for layer content.
+  Direct content, backgrounds, order and visibility are now implemented for review;
+  no default layer or flat input is accepted. Runtime membership uses stable
+  `layer.objectIds.add/remove/has`; `layer.objects` exposes frozen current direct roots.
+  `intersectionBounds` is explicitly rejected until automatic clipping is implemented.
+  See [the implemented layer contract](design/LAYERS_AND_INTERACTION.md#explicit-layers--accepted-and-implemented-for-review-2026-10-08).
+  No additional intersecting-object input list or separate level concept. See the
+  [accepted map structure](design/LAYERS_AND_INTERACTION.md#accepted-map-structure--2026-10-08).
+- A background is a layer property; a shared background lives in a separate layer.
+  Runtime layers expose `visible` and start visible. A whole route is automatically clipped for each layer
+  that supplies `intersectionBounds`; omission leaves ordinary content without automatic clipping.
+  Derived cut coordinates create no runtime points or markers. See the
+  [layer contract clarification](design/LAYERS_AND_INTERACTION.md#layer-contract-clarification--2026-10-08).
 - stackIndex defines composition; it is neither height z nor a substitute for depth in 3D.
 - Line and route definitions expose `points` directly; point definitions group
   coordinates in `position`. IDs are optional in input and stable at runtime.
@@ -109,6 +129,17 @@ explicit later corrections take precedence over earlier wording.
 Full contract consolidation is a separate future step, not performed automatically.
 
 ## Where we stopped
+
+The first explicit-layer stage is implemented in the primary repository and
+prepared for PR: direct ID membership, layer backgrounds, composition,
+independent visibility, shared-object updates and hit-layer event context. See
+[scope and next step](design/PROTOTYPE.md#explicit-layer-first-stage--implemented-for-review-2026-10-08).
+Automatic intersections/z/clipping remain the next implementation stage; existing
+accepted design drafts and historical benchmark artifacts are preserved.
+
+Possible shared generic storage for the root and layer-ID collections is recorded
+as [deferred exploration](design/RUNTIME_AND_LOADING.md#shared-generic-collection-storage--deferred-exploration-2026-10-08).
+Its implementation and public contract remain undecided.
 
 The solution review (findings 5–18) has revised the next-work plan:
 merged model/spatial/camera regression tests → Atlas baseline and Leaflet comparison
@@ -221,7 +252,7 @@ The prototype load reference is 3000/5000 objects. All tarkov.dev map configurat
 data, and an overview of primary screens were studied; findings are stored separately.
 Both building-view scenarios are useful, but UI, Escape, and Back belong to the application.
 Multiple-map/viewport mechanisms and layer groups remain decision points.
-The default layer is tied to stackIndex; responsiveness and zone extrusion are noted
+Explicit layers use stackIndex for composition; no default is created. Responsiveness and zone extrusion are noted
 for subsequent design work.
 
 ## Major remaining blocks

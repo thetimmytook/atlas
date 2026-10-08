@@ -27,6 +27,43 @@ separate steps. Ordinary API names use no Atlas prefix; the error family retains
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
 
+## Route vertex geometry, symbol, and picking — accepted 2026-10-08
+
+Keep the common `MapPoint` representation for route vertices and distinguish three
+independent concerns:
+
+- Position determines the route's polyline geometry. Every vertex contributes to
+  the path, including an ordinary bend with no displayed symbol.
+- Appearance determines whether a point symbol is displayed and how it looks.
+  Removing the symbol does not remove the vertex or change the path.
+- Interaction participation determines whether the point can be picked separately.
+  This is independent of its geometric contribution and its appearance.
+
+A route can mix ordinary bends with points of interest. The ordinary-bend example
+has no symbol and no separate point hit area; its adjacent path remains pickable
+when route interaction is enabled. A symbol with point interaction enabled returns
+the original `MapPoint` and its owning route; picking the path returns `MapRoute`.
+Application point-of-interest semantics remain outside the engine.
+
+Accepted default for route vertices: no symbol and no separate point picking.
+To present a point of interest, the map author explicitly assigns a symbol and
+enables point interaction. These remain independent settings: assigning a symbol
+does not implicitly enable picking, and enabling picking does not assign a symbol.
+This default concerns the route-owned appearance; defaults for independent point
+appearances are not changed by this decision.
+
+This also permits author-provided route parts on separate floors to have endpoints
+without markers. The later [layer clarification](LAYERS_AND_INTERACTION.md#layer-contract-clarification--2026-10-08)
+accepts automatic display clipping of a whole route; cut coordinates do not create
+runtime points or markers. The [accepted map structure](LAYERS_AND_INTERACTION.md#accepted-map-structure--2026-10-08)
+uses a layer's object-ID list for direct content and optional intersection bounds
+for automatic geometry display. Unknown references reject loading; a repeated root
+ID selects all matching instances under the accepted layer-reference rules.
+Exact appearance/interaction fields, assignment through materials, and
+hit-area configuration remain open. The current implementation still displays and
+picks a temporary circle at every route vertex; this decision does not authorize
+implementation or change that behavior yet.
+
 ## Route point appending — accepted 2026-10-05, implemented for review
 
 `MapRoute.addPoint` accepts a `MapPointDefinition`, appends a new owned `MapPoint`,

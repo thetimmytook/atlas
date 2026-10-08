@@ -1,5 +1,48 @@
 # First Atlas prototype
 
+## Explicit-layer first stage — implemented for review, 2026-10-08
+
+The authorized stage implements direct ID-based content, backgrounds, composition,
+visibility and consistent picking on the existing invalidation foundation.
+`map.layers` exposes runtime layers; stable `layer.objectIds.add/remove/has` controls
+membership and `layer.objects` returns frozen current roots. Layers are mandatory,
+without a default or flat compatibility layer. See the
+[public contract](LAYERS_AND_INTERACTION.md#explicit-layers--accepted-and-implemented-for-review-2026-10-08)
+and [renderer boundary](RENDERER_AND_COMPONENT.md#layer-display-and-invalidation--implemented-for-review-2026-10-08).
+
+Factory now has a background-only layer and two independently toggled content layers
+sharing one runtime route. Editing its point updates both displays; click details
+identify the object, owning route when applicable, and hit layer. Existing dynamic
+add/remove/detached-edit/restore controls use explicit ID membership. The built-example
+e2e covers both appearances and picking after layer switches. Benchmark examples
+are migrated to explicit content layers and select added IDs; historical measurement
+artifacts remain unchanged. No new Atlas/Leaflet benchmark or speed claim is included.
+
+Next: implement the accepted automatic `intersectionBounds`/z/clipping stage while
+preserving direct-content meaning, source geometry and runtime/event identity.
+Bounds are currently rejected explicitly. Volumetric zones, materials, labels, batch,
+LOD, layer groups and public standalone model lifecycle remain later work. Physical
+mobile and full prototype/load validation remain outstanding.
+
+Validation on 2026-10-08: `npm run check`, `npm test` (130 Node tests),
+`npm run test:browser` (57 Chromium tests), `npm run build`, `npm run bench:build`
+and `npm run test:e2e` (one built-example smoke test) passed. Lint has no errors;
+non-blocking duplicate-string warnings remain. Library declarations were also
+inspected: runtime layer and ID-collection construction stays internal, with only
+their types exported. The background-free replacement regression verifies display
+after pending frames finish and unchanged camera center/zoom. Built stress Preview
+with 3000 points, a short `position-single` Run and Atlas SVG sparse smoke also pass.
+The implementation, including review corrections, is prepared for PR.
+
+### Files in this implementation review
+
+The PR also includes the current Geometry and routes and Materials decisions.
+
+- Runtime and loading: [src/components/map-element/map-element.ts](../../src/components/map-element/map-element.ts), [src/definitions/map-definition.ts](../../src/definitions/map-definition.ts), [src/definitions/map-layer-definition.ts](../../src/definitions/map-layer-definition.ts), [src/index.ts](../../src/index.ts), [src/interaction/object-click-event.ts](../../src/interaction/object-click-event.ts), [src/objects/map-layer-object-id-collection.ts](../../src/objects/map-layer-object-id-collection.ts), [src/objects/map-layer.ts](../../src/objects/map-layer.ts), [src/objects/map-model.ts](../../src/objects/map-model.ts), [src/renderers/renderer.ts](../../src/renderers/renderer.ts), [src/renderers/svg/svg-renderer.ts](../../src/renderers/svg/svg-renderer.ts), [src/renderers/svg/svg-renderer.utils.ts](../../src/renderers/svg/svg-renderer.utils.ts), [src/spatial/scene-geometry.ts](../../src/spatial/scene-geometry.ts), [src/spatial/spatial.ts](../../src/spatial/spatial.ts), [src/validators/layer-object-id.validator.ts](../../src/validators/layer-object-id.validator.ts).
+- Application and benchmark input migration: [examples/comparison.adapter.ts](../../examples/comparison.adapter.ts), [examples/comparison.bench.ts](../../examples/comparison.bench.ts), [examples/comparison.leaflet.ts](../../examples/comparison.leaflet.ts), [examples/index.html](../../examples/index.html), [examples/stress.bench.ts](../../examples/stress.bench.ts), [examples/stress.check.ts](../../examples/stress.check.ts), [examples/stress.instrument.ts](../../examples/stress.instrument.ts), [examples/stress.scene.ts](../../examples/stress.scene.ts).
+- Regressions and explicit-layer fixtures: [tests/browser/fixtures.ts](../../tests/browser/fixtures.ts), [tests/browser/layers.browser.test.ts](../../tests/browser/layers.browser.test.ts), [tests/browser/map-element.browser.test.ts](../../tests/browser/map-element.browser.test.ts), [tests/browser/svg-renderer.browser.test.ts](../../tests/browser/svg-renderer.browser.test.ts), [tests/e2e/example.e2e.test.ts](../../tests/e2e/example.e2e.test.ts), [tests/fixtures.ts](../../tests/fixtures.ts), [tests/layers.test.ts](../../tests/layers.test.ts), [tests/map-element.test.ts](../../tests/map-element.test.ts), [tests/map-model.test.ts](../../tests/map-model.test.ts), [tests/map-object-collection.test.ts](../../tests/map-object-collection.test.ts), [tests/scene-invalidation.test.ts](../../tests/scene-invalidation.test.ts), [tests/spatial.test.ts](../../tests/spatial.test.ts).
+- Current contract and status: [docs/DESIGN_MAIN.md](../../docs/DESIGN_MAIN.md), [docs/design/LAYERS_AND_INTERACTION.md](../../docs/design/LAYERS_AND_INTERACTION.md), [docs/design/PROTOTYPE.md](../../docs/design/PROTOTYPE.md), [docs/design/RENDERER_AND_COMPONENT.md](../../docs/design/RENDERER_AND_COMPONENT.md), [docs/design/RUNTIME_AND_LOADING.md](../../docs/design/RUNTIME_AND_LOADING.md).
+
 [Main navigation](../DESIGN_MAIN.md)
 
 ## Goal — agreed
@@ -82,12 +125,22 @@ remains recorded as implemented for review, not automatically approved by this p
    and layout reads using baseline evidence. Do not claim a Set alone fixes immutable
    array copying. Rerun the same load scenes and record before/after results.
 5. **Validate layers, z, and clipping as the next feature (findings 6, 11).** First
-   review the minimal scene/renderer contract with layer content, backgrounds,
+   review the minimal scene/renderer contract with explicit layer object lists,
+   optional bounds for automatic intersections, backgrounds,
    composition order, clipping, and picking eligibility together. Avoid cementing
    the current separate background argument or flat list as the final scene API.
+   The [outer map structure](LAYERS_AND_INTERACTION.md#accepted-map-structure--2026-10-08)
+   is accepted: common object definitions, a layers array, layer object-ID lists,
+   layer backgrounds, and optional `intersectionBounds`. Omitted object lists are
+   empty, layers start visible, unknown references reject loading, and references
+   select all matching root instances. The first stage above settles mandatory
+   explicit layers and direct runtime membership. Adding/removing/reordering layers
+   and direct/automatic appearance precedence remain outside that implemented stage.
    Build two buildings with independent floor selection, a connecting route, and
    a vertically extruded zone with slices. Validate that clipping retains original
-   object identity and source geometry. Repeat the load measurements with layers,
+   object identity and source geometry. The 2026-10-08 [layer clarification](LAYERS_AND_INTERACTION.md#layer-contract-clarification--2026-10-08)
+   accepts automatic display clipping of a whole route without manual floor subdivision
+   or new runtime points at cuts. Repeat the load measurements with layers,
    labels when available, and a heavy background. This is the central prototype
    validation gate; broader API work must not postpone it.
 6. **Complete the remaining agreed slice.** Add synchronous nested batch, minimal
