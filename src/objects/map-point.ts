@@ -1,4 +1,4 @@
-import { Point } from '#math/point.js';
+import { Point3 } from '#math/point3.js';
 import { invalidateScenes } from '#spatial/scene-invalidation.js';
 import { validateMapPoint } from '#validators/map-point.validator.js';
 import { validatePoint } from '#validators/point.validator.js';
@@ -7,28 +7,33 @@ import { MapObject } from './map-object.js';
 
 import type { MapLineDefinition } from '#definitions/map-line-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
+import type { Point2 } from '#math/point2.js';
 
 /** A point with the same identity and behavior independently or within a route. */
 export class MapPoint extends MapObject {
-  #position: Point;
+  #position: Point3;
 
   constructor(definition: MapPointDefinition) {
     validateMapPoint('point', definition);
     super(definition.id, 'point.id');
-    this.#position = new Point(definition.position.x, definition.position.y);
+    this.#position = new Point3(
+      definition.position.x,
+      definition.position.y,
+      'z' in definition.position ? definition.position.z : undefined,
+    );
   }
 
   override get kind(): 'point' {
     return 'point';
   }
 
-  get position(): Point {
+  get position(): Point3 {
     return this.#position;
   }
 
-  set position(value: Point) {
-    validatePoint('position', value);
-    this.#position = new Point(value.x, value.y);
+  set position(value: Point2 | Point3) {
+    validatePoint('position', value, { spatial: true });
+    this.#position = new Point3(value.x, value.y, 'z' in value ? value.z : undefined);
     invalidateScenes(this);
     this.dispatchEvent(new Event('change'));
   }

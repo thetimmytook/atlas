@@ -9,7 +9,6 @@ import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { MapModel } from '#objects/map-model.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
-import { isLayerEligible } from '#spatial/scene-geometry.js';
 
 import html from './map-element.html?raw';
 
@@ -199,10 +198,7 @@ export class MapElement extends HTMLElement {
       !hit ||
       !this.isConnected ||
       this.#model !== model ||
-      !isLayerEligible(hit.layer) ||
-      !hit.layer.objectIds.has((hit.route ?? hit.object).id) ||
-      !this.#model.hasObject(hit.route ?? hit.object) ||
-      (hit.route && hit.object.kind === 'point' && !hit.route.points.includes(hit.object))
+      !model.spatial.hasHit(hit, mapPoint, this.#camera)
     ) {
       return;
     }

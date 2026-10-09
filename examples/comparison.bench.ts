@@ -1,7 +1,7 @@
 import { version as leafletVersion } from 'leaflet';
 
 import { MapElement } from '#components/map-element/map-element.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
@@ -206,7 +206,7 @@ async function atlasDiagnostic(
 
   const spatial = new Spatial(prepareSceneGeometry(map.host.objects, map.host.layers));
   const point = scenario === 'hit' ? HIT_POSITION : MISS_POSITION;
-  const position = new Point(point.x, point.y);
+  const position = new Point2(point.x, point.y);
 
   for (let index = 0; index < 200; index += 1) {
     const start = performance.now();

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { Camera } from '#camera/camera.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { Size } from '#math/size.js';
 import { MapObjectCollection } from '#objects/map-object-collection.js';
 import { Spatial } from '#spatial/spatial.js';
@@ -29,7 +29,7 @@ describe('explicit scene invalidation', () => {
 
     for (let index = 0; index < 20; index++) {
       expect(scene.objects).toBe(entries);
-      expect(spatial.hitTest(new Point(100, 0), camera)?.object).toBe(route);
+      expect(spatial.hitTest(new Point2(100, 0), camera)?.object).toBe(route);
     }
 
     expect(roots).not.toHaveBeenCalled();
@@ -54,7 +54,7 @@ describe('explicit scene invalidation', () => {
     }
 
     const positions = geometry.points;
-    route.points[0]!.position = new Point(10, 20);
+    route.points[0]!.position = new Point2(10, 20);
     expect(scene.objects).toBe(original);
     expect(geometry.points).toBe(positions);
     expect(positions[0]).toMatchObject({ x: 10, y: 20 });
@@ -82,20 +82,20 @@ describe('explicit scene invalidation', () => {
     });
     let hit: object | undefined;
     route.addEventListener('change', () => {
-      hit = model.spatial.hitTest(new Point(100, 100), camera)?.object;
+      hit = model.spatial.hitTest(new Point2(100, 100), camera)?.object;
     });
     model.observeChanges();
     model.unobserveChanges();
     const inserted = route.insertPoint(1, pointDefinition(100, 100));
     expect(hit).toBe(inserted);
-    inserted.position = new Point(100, 150);
-    expect(model.spatial.hitTest(new Point(100, 150), camera)?.object).toBe(inserted);
+    inserted.position = new Point2(100, 150);
+    expect(model.spatial.hitTest(new Point2(100, 150), camera)?.object).toBe(inserted);
     model.objects.remove(route);
-    expect(model.spatial.hitTest(new Point(100, 150), camera)).toBeUndefined();
+    expect(model.spatial.hitTest(new Point2(100, 150), camera)).toBeUndefined();
     model.objects.add(route);
-    expect(model.spatial.hitTest(new Point(100, 150), camera)?.object).toBe(inserted);
+    expect(model.spatial.hitTest(new Point2(100, 150), camera)?.object).toBe(inserted);
     model.observeChanges();
-    expect(model.spatial.hitTest(new Point(100, 150), camera)?.object).toBe(inserted);
+    expect(model.spatial.hitTest(new Point2(100, 150), camera)?.object).toBe(inserted);
     model.unobserveChanges();
   });
 });
@@ -113,12 +113,12 @@ describe('reattachment after synchronous membership reconciliation', () => {
       const original = scene.objects;
       scene.takeChanges();
       objects.remove(root);
-      expect(spatial.hitTest(new Point(40, 30), camera)).toBeUndefined();
+      expect(spatial.hitTest(new Point2(40, 30), camera)).toBeUndefined();
       const point = root.kind === 'point' ? root : root.points[0];
-      point.position = new Point(90, 80);
+      point.position = new Point2(90, 80);
       expect(scene.takeChanges().size).toBe(0);
       objects.add(root);
-      expect(spatial.hitTest(new Point(90, 80), camera)?.object).toBe(
+      expect(spatial.hitTest(new Point2(90, 80), camera)?.object).toBe(
         root.kind === 'route' ? point : root,
       );
       const returned = scene.objects;
@@ -135,7 +135,7 @@ describe('reattachment after synchronous membership reconciliation', () => {
       objects.remove(root);
       expect(scene.objects).toEqual([]);
       scene.takeChanges();
-      point.position = new Point(100, 90);
+      point.position = new Point2(100, 90);
       expect(scene.takeChanges().size).toBe(0);
     },
   );

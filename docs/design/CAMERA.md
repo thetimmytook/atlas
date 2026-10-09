@@ -5,6 +5,19 @@
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
+## Planar coordinate contract — accepted and implemented for review, 2026-10-09
+
+`Camera.center` uses frozen `Point2` values. Assignment validates and copies x/y,
+including spatial values passed structurally; it does not retain a z coordinate.
+`MapCoordinates.mapToClient(point: Point2): Point2` can read x/y from `Point3`.
+`clientToMap(point: Point2): Point2` returns a planar location without inferring
+height. Surface/object events also carry `Point2` coordinates. Object positions and
+spatial clipping use `Point3`; see the [current coordinate contract](GEOMETRY_AND_ROUTES.md#planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09).
+
+The `Point` name in earlier implementation notes below is historical and is replaced
+by `Point2` for camera/input consumers. Math constructors still store/freeze values;
+finite-coordinate validation belongs at the consuming API boundary.
+
 ## 6. Camera — requirements identified while discussing layers
 
 - Agreed application-invoked operations: show the entire map (choose center and zoom),

@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { Size } from '#math/size.js';
 import { createId } from '#objects/create-id.js';
 
@@ -19,7 +19,7 @@ export const background: BackgroundDescription = {
 };
 
 export function pointDefinition(x: number, y: number, id: string): MapPointDefinition {
-  return { kind: 'point', id, position: new Point(x, y) };
+  return { kind: 'point', id, position: new Point2(x, y) };
 }
 
 export function mapDefinition(objects: NonNullable<MapDefinition['objects']> = []): MapDefinition {

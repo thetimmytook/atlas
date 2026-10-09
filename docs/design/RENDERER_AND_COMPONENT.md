@@ -1,5 +1,47 @@
 # Renderer And Component
 
+## Automatic spatial appearances — implemented for review, 2026-10-08
+
+Segment clipping and appearance preparation live in the spatial subsystem, with no
+SVG or DOM dependency. Each layer/root retains cached direct or derived scene entries;
+a route fragment is an ordinary polyline view. SVG and spatial picking consume the
+same ordered entries and derived coordinates. Since the 2026-10-09 migration,
+source and clipped geometry use `Point3`, while `Spatial` queries, distances and
+surface/client event coordinates use `Point2`. `resolveLayerEntries` resolves full,
+automatic clipped or absent entries for a root in each layer; direct membership
+still wins. Each entry retains the original source
+object and layer; vertex entries retain their owning route. No clipPath-only solution
+or independent renderer/picking intersection logic is used.
+
+Internal invalidation separates candidate dependencies from active entry dependencies.
+All root candidates and their owned points remain tracked while bounds are active,
+including currently excluded/hidden objects. Position edits prepare only dependent
+roots. Direct geometry/coordinate views retain the existing behavior. Automatic
+fragment entries and coordinate arrays remain stable while their composition/length
+stays unchanged; mutable internal fragment snapshots back readonly coordinate views.
+When cuts add/remove fragments or eligible symbols, composition reconciles while
+retaining surviving entries and SVG primitives. Fragment slots are reused in source
+order; they have no public identity or ID.
+
+Scene reads reconcile dirty preparation, while a separate pending-entry set survives
+spatial reads until `takeChanges()` drains it for the current renderer. Removed
+entries are pruned; newly tracked sources queue current geometry after reattachment.
+Pan and hide/show do not prepare cuts, scan roots, or write object coordinates.
+Membership changes still reconcile scene ordering/dependencies; a topology change
+can flatten the prepared entry list without reclipping unrelated roots on point edits.
+There is no spatial index, generic pipeline, scheduler, multi-view queue or geometry
+package. Initial/membership preparation traverses root candidates per layer; a changed
+route is clipped as a whole rather than incrementally by individual segment.
+
+Concrete regression counters: one edited route causes one `clipPolyline` call and
+zero root iterator creations; its two lower fragments retain entries/coordinate arrays.
+Ten subsequent pan/visibility/query cycles cause zero additional clipping and no
+pending geometry updates. In real SVG, a height change that splits the upper display
+causes four polyline coordinate writes (two lower, two upper), with no changes to an
+unrelated marker/background. Pan causes one viewBox mutation; hide then show causes
+two display mutations and preserves all prepared nodes. These are functional
+invalidation boundaries, not timings or a new Atlas/Leaflet performance measurement.
+
 ## Layer display and invalidation — implemented for review, 2026-10-08
 
 Internal `MapModel` owns renderer-independent layers and shared roots. Direct

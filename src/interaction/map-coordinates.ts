@@ -1,5 +1,5 @@
 import { AtlasError } from '#errors/atlas-error.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { validatePoint } from '#validators/point.validator.js';
 
 import type { Camera } from '#camera/camera.js';
@@ -26,23 +26,23 @@ export class MapCoordinates {
     );
   }
 
-  mapToClient(point: Point): Point {
+  mapToClient(point: Point2): Point2 {
     validatePoint('point', point);
     const rect = this.#getRect();
     const { center, zoom, viewport } = this.#camera;
 
-    return new Point(
+    return new Point2(
       rect.left + (((point.x - center.x) * zoom) / viewport.width + 0.5) * rect.width,
       rect.top + (((point.y - center.y) * zoom) / viewport.height + 0.5) * rect.height,
     );
   }
 
-  clientToMap(point: Point): Point {
+  clientToMap(point: Point2): Point2 {
     validatePoint('point', point);
     const rect = this.#getRect();
     const { center, zoom, viewport } = this.#camera;
 
-    return new Point(
+    return new Point2(
       center.x + (((point.x - rect.left) / rect.width - 0.5) * viewport.width) / zoom,
       center.y + (((point.y - rect.top) / rect.height - 0.5) * viewport.height) / zoom,
     );

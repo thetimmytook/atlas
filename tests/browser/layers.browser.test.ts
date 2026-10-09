@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 
 import { MapElement } from '#components/map-element/map-element.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { Rect } from '#math/rect.js';
 import { MapPoint } from '#objects/map-point.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
@@ -100,7 +100,7 @@ function mutations(surface: SVGSVGElement): () => MutationRecord[] {
 describe('layers in actual SVG and picking', () => {
   it('renders a background-free replacement after pending frames finish, preserving the camera', async () => {
     const { map, surface } = await createMap();
-    map.camera.center = new Point(150, 110);
+    map.camera.center = new Point2(150, 110);
     map.camera.zoom = 2;
     await paint();
     const center = map.camera.center;
@@ -150,14 +150,14 @@ describe('layers in actual SVG and picking', () => {
       ['zero', 'first'],
       ['negative', 'first'],
     ]) {
-      expect(spatial.hitTest(new Point(80, 60), map.camera)?.layer.id).toBe(id);
+      expect(spatial.hitTest(new Point2(80, 60), map.camera)?.layer.id).toBe(id);
       await click(surface, 80, 60);
       expect(events.at(-1)!.detail.layer.id).toBe(id);
       expect(events.at(-1)!.detail.object).toBe(map.objects.get(objectId!));
       map.layers.find(layer => layer.id === id)!.visible = false;
     }
 
-    expect(spatial.hitTest(new Point(80, 60), map.camera)).toBeUndefined();
+    expect(spatial.hitTest(new Point2(80, 60), map.camera)).toBeUndefined();
   });
 
   it('picks all visible layers before RAF and returns the same shared object', async () => {
@@ -214,7 +214,7 @@ describe('layers in actual SVG and picking', () => {
     expect(route).toBe(map.objects.get('route'));
     expect(events[0]!.detail.layer).toBe(map.layers[2]);
     expect(events[0]!.detail.route).toBeUndefined();
-    route.points[0]!.position = new Point(50, 170);
+    route.points[0]!.position = new Point2(50, 170);
     await paint();
 
     for (const layerId of ['lower', 'upper']) {
@@ -237,7 +237,7 @@ describe('layers in actual SVG and picking', () => {
     const nodes = svgGroups(surface);
     const shapes = nodes.map(node => node.firstElementChild);
     const collect = mutations(surface);
-    (map.objects.get('shared') as MapPoint).position = new Point(90, 80);
+    (map.objects.get('shared') as MapPoint).position = new Point2(90, 80);
     await paint();
     const records = collect();
     expect(records.filter(record => record.type === 'attributes')).toHaveLength(2);
@@ -250,7 +250,7 @@ describe('layers in actual SVG and picking', () => {
     ).toBe(true);
     expect(records.some(record => record.type === 'childList')).toBe(false);
     const routeCollect = mutations(surface);
-    (map.objects.get('route') as MapRoute).points[0]!.position = new Point(50, 170);
+    (map.objects.get('route') as MapRoute).points[0]!.position = new Point2(50, 170);
     await paint();
     const routeRecords = routeCollect();
     expect(routeRecords.filter(record => record.attributeName === 'points')).toHaveLength(2);
@@ -261,7 +261,7 @@ describe('layers in actual SVG and picking', () => {
       expect(node.firstElementChild).toBe(shapes.at(index));
     });
     const panCollect = mutations(surface);
-    map.camera.center = new Point(170, 120);
+    map.camera.center = new Point2(170, 120);
     await paint();
     const panRecords = panCollect();
     expect(panRecords).toHaveLength(1);
@@ -278,7 +278,7 @@ describe('layers in actual SVG and picking', () => {
     const point = map.objects.get('shared') as MapPoint;
     map.layers[1]!.visible = false;
     map.layers[2]!.visible = false;
-    point.position = new Point(90, 80);
+    point.position = new Point2(90, 80);
     expect(spatial.hitTest(point.position, map.camera)).toBeUndefined();
     await paint();
     expectPoint(group(surface, 'upper', 'shared'), 90, 80);
@@ -340,7 +340,7 @@ describe('layers in actual SVG and picking', () => {
         'pointerdown',
         () => {
           map.objects.remove(instance);
-          expect(spatial.hitTest(new Point(40, 30), map.camera)).toBeUndefined();
+          expect(spatial.hitTest(new Point2(40, 30), map.camera)).toBeUndefined();
           expect(map.layers[0]!.objects).toEqual([]);
         },
         { capture: true, once: true },
@@ -348,7 +348,7 @@ describe('layers in actual SVG and picking', () => {
       map.addEventListener(
         'press',
         () => {
-          point.position = new Point(90, 80);
+          point.position = new Point2(90, 80);
           map.objects.add(instance);
         },
         { once: true },
@@ -383,7 +383,7 @@ describe('layers in actual SVG and picking', () => {
     const unsubscribe = vi.spyOn(layer, 'removeEventListener');
     const events = clicks(map);
     map.remove();
-    point.position = new Point(90, 80);
+    point.position = new Point2(90, 80);
     layer.objectIds.remove('shared');
     expect(layer.objects).not.toContain(point);
     expect(spatial.hitTest(point.position, map.camera)?.layer).toBe(map.layers[1]);
@@ -431,7 +431,7 @@ describe('layers in actual SVG and picking', () => {
     'keeps the previous map, camera, SVG and clicks after %s',
     async failure => {
       const { map, surface } = await createMap();
-      map.camera.center = new Point(140, 100);
+      map.camera.center = new Point2(140, 100);
       map.camera.zoom = 2;
       await paint();
       const oldDefinition = map.definition;
@@ -457,10 +457,10 @@ describe('layers in actual SVG and picking', () => {
         code = 'UNKNOWN_LAYER_OBJECT';
         candidate = { layers: [{ objects: ['missing'] }] };
       } else {
-        code = 'UNSUPPORTED_INTERSECTION_BOUNDS';
+        code = 'INVALID_INTERSECTION_BOUNDS';
         candidate = {
-          layers: [{ intersectionBounds: { min: { z: 0 } } }],
-        } as unknown as MapDefinition;
+          layers: [{ intersectionBounds: { min: { z: 3 }, max: { z: 0 } } }],
+        };
       }
 
       const decode = vi.spyOn(HTMLImageElement.prototype, 'decode');
@@ -477,7 +477,7 @@ describe('layers in actual SVG and picking', () => {
       expect(map.camera.zoom).toBe(2);
       expect(Array.from(surface.querySelectorAll('*'))).toEqual(nodes);
       expect(surface.getAttribute('viewBox')).toBe(viewBox);
-      const client = map.coordinates.mapToClient(new Point(80, 60));
+      const client = map.coordinates.mapToClient(new Point2(80, 60));
       const bounds = surface.getBoundingClientRect();
       await click(surface, client.x - bounds.left, client.y - bounds.top);
       expect(events[0]!.detail.object).toBe(objects.get('shared'));
@@ -494,7 +494,7 @@ describe('layers in actual SVG and picking', () => {
     });
     map.layers[1]!.visible = false;
     map.fit();
-    expect(map.camera.center).toEqual(new Point(400, 300));
+    expect(map.camera.center).toEqual(new Point2(400, 300));
     expect(map.camera.zoom).toBeCloseTo(0.4);
     const center = map.camera.center;
     await map.load({ layers: [] });

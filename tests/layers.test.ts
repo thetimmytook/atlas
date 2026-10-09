@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { Camera } from '#camera/camera.js';
 import { resolveMapDefinition } from '#definitions/map-definition.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { Size } from '#math/size.js';
 import { MapModel } from '#objects/map-model.js';
 import { MapPoint } from '#objects/map-point.js';
@@ -27,7 +27,7 @@ function scene(): MapModel {
 function camera(): Camera {
   const view = new Camera();
   view.resize(new Size(320, 240));
-  view.center = new Point(160, 120);
+  view.center = new Point2(160, 120);
 
   return view;
 }
@@ -46,7 +46,7 @@ describe('explicit layer loading', () => {
     expect(model.layers).toEqual([]);
     expect(model.objects.size).toBe(1);
     expect(model.geometry.objects).toEqual([]);
-    expect(model.spatial.hitTest(new Point(40, 30), camera())).toBeUndefined();
+    expect(model.spatial.hitTest(new Point2(40, 30), camera())).toBeUndefined();
   });
 
   it('copies backgrounds and lists, completes layer IDs, and treats omitted content as empty', () => {
@@ -92,8 +92,8 @@ describe('explicit layer loading', () => {
       [{ objects: [''] }],
       [{ objects: [12] }],
       [{ objects: 'point' }],
-      [{ intersectionBounds: { min: { z: 0 } } }],
-      [{ intersectionBounds: undefined }],
+      [{ intersectionBounds: { min: { z: 3 }, max: { z: 0 } } }],
+      [{ intersectionBounds: {} }],
     ].map(layers => ({ layers })),
   )('rejects invalid or unsupported layer input before preparation: %j', ({ layers }) => {
     expect(() => resolveMapDefinition({ layers } as unknown as MapDefinition)).toThrow();
@@ -172,7 +172,7 @@ describe('live layer membership and eligibility', () => {
     expect(model.spatial.hitTest(root.position, camera())?.layer).toBe(lower);
     lower!.visible = false;
     expect(model.spatial.hitTest(root.position, camera())).toBeUndefined();
-    root.position = new Point(90, 80);
+    root.position = new Point2(90, 80);
     upper!.visible = true;
     expect(model.spatial.hitTest(root.position, camera())?.object).toBe(root);
     expect(() => {
@@ -200,7 +200,7 @@ describe('live layer membership and eligibility', () => {
     ]);
 
     for (const id of ['equal-last', 'equal-first', 'zero', 'negative']) {
-      expect(model.spatial.hitTest(new Point(40, 30), camera())?.layer.id).toBe(id);
+      expect(model.spatial.hitTest(new Point2(40, 30), camera())?.layer.id).toBe(id);
       model.layers.find(layer => layer.id === id)!.visible = false;
     }
   });
@@ -225,7 +225,7 @@ describe('live layer membership and eligibility', () => {
     model.objects.remove(point);
     expect(layer.objects).toEqual([]);
     expect(model.spatial.hitTest(point.position, camera())).toBeUndefined();
-    point.position = new Point(90, 80);
+    point.position = new Point2(90, 80);
     model.objects.add(point);
     layer.visible = true;
     expect(layer.objects[0]).toBe(point);
@@ -240,11 +240,11 @@ describe('live layer membership and eligibility', () => {
     const view = camera();
     const point = model.objects.get('shared') as MapPoint;
     model.geometry.takeChanges();
-    point.position = new Point(90, 80);
+    point.position = new Point2(90, 80);
     expect(model.geometry.takeChanges().size).toBe(2);
 
     for (let index = 0; index < 10; index++) {
-      view.center = new Point(160 + index, 120);
+      view.center = new Point2(160 + index, 120);
       model.layers[1]!.visible = index % 2 === 0;
       model.spatial.hitTest(point.position, view);
       expect(model.geometry.objects).toBe(entries);

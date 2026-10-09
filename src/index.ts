@@ -26,7 +26,9 @@ export type { AtlasErrorOptions } from './errors/atlas-error.js';
 
 export { Camera } from './camera/camera.js';
 
-export { Point } from './math/point.js';
+export { Point2 } from './math/point2.js';
+export { Point3 } from './math/point3.js';
+export type { IntersectionBounds } from './math/intersection-bounds.js';
 export { Rect } from './math/rect.js';
 export { Size } from './math/size.js';
 

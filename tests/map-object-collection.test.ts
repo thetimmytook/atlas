@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { resolveMapDefinition } from '#definitions/map-definition.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { Size } from '#math/size.js';
 import { MapObjectCollection } from '#objects/map-object-collection.js';
 import { MapPoint } from '#objects/map-point.js';
@@ -27,15 +28,15 @@ describe('root object membership', () => {
     input.position.x = 999;
 
     expect(resolved.layers[0]!.background!.size).toEqual(new Size(500, 300));
-    expect(firstRoute.points[0]!.position).toEqual(new Point(10, 20));
+    expect(firstRoute.points[0]!.position).toEqual(new Point3(10, 20, 0));
     expect(firstRoute.id).toBe(secondRoute.id);
     expect(firstRoute).not.toBe(secondRoute);
     expect(firstRoute.points[0]).not.toBe(secondRoute.points[0]);
     expect(firstRoute.points[0]).not.toBe(firstRoute.points[1]);
     const id = firstRoute.points[0]!.id;
-    firstRoute.points[0]!.position = new Point(30, 40);
+    firstRoute.points[0]!.position = new Point2(30, 40);
     expect(firstRoute.points[0]!.id).toBe(id);
-    expect(secondRoute.points[0]!.position).toEqual(new Point(10, 20));
+    expect(secondRoute.points[0]!.position).toEqual(new Point3(10, 20, 0));
     expect(resolved.objects[0]?.kind).toBe('route');
 
     const resolvedRoute = resolved.objects[0];
@@ -44,7 +45,7 @@ describe('root object membership', () => {
       throw new Error('Expected a resolved route fixture.');
     }
 
-    expect(resolvedRoute.points[0]!.position).toEqual(new Point(10, 20));
+    expect(resolvedRoute.points[0]!.position).toEqual(new Point3(10, 20, 0));
     expect(resolvedRoute.points[0]!.id).toBe(id);
   });
 
@@ -56,7 +57,7 @@ describe('root object membership', () => {
     const added = objects.add(definition);
     definition.position.x = 999;
 
-    expect(added.position).toEqual(new Point(10, 20));
+    expect(added.position).toEqual(new Point3(10, 20, 0));
     expect(objects.size).toBe(2);
     expect(Array.from(iterator)).toHaveLength(1);
     expect(Array.from(objects)[0]).toBe(original);
@@ -85,7 +86,7 @@ describe('root object membership', () => {
 
     const changed = vi.fn();
     first.addEventListener('change', changed);
-    first.position = new Point(50, 60);
+    first.position = new Point2(50, 60);
     expect(first.id).toBe('same');
     expect(changed).toHaveBeenCalledOnce();
   });
@@ -96,7 +97,7 @@ describe('root object membership', () => {
     const first = route.points[0]!;
     objects.add(route);
     objects.remove(route);
-    first.position = new Point(10, 20);
+    first.position = new Point2(10, 20);
     const appended = route.addPoint(pointDefinition(100, 0, 'end'));
     const added = vi.fn();
     objects.addEventListener('add', added);

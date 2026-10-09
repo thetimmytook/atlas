@@ -76,7 +76,12 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
         .toBe('translate(60 90)');
       await expect
         .poll(() => route.getAttribute('points'), { timeout: DOM_TIMEOUT })
-        .toBe('85,70 60,90 30,110');
+        .toBe('72.5,80 60,90 45,100');
+      expect(
+        await surface
+          .locator('[data-layer-id="first"] [data-object-id="demo-line-1"] line')
+          .evaluate(node => ['x1', 'y1', 'x2', 'y2'].map(name => Number(node.getAttribute(name)))),
+      ).toEqual([40, 45, 85, 70]);
       const initialViewBox = await surface.getAttribute('viewBox');
       expect(initialViewBox).not.toBeNull();
       const initialWidth = Number(initialViewBox!.split(' ')[2]);
@@ -104,7 +109,7 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
           layerId: 'second',
           kind: 'point',
           routeId: 'demo-route',
-          position: { x: 60, y: 90 },
+          position: { x: 60, y: 90, z: 5 },
         });
 
       await page.getByRole('button', { name: 'Move route point', exact: true }).click();
@@ -113,7 +118,7 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
         .toBe('translate(45 90)');
       await expect
         .poll(() => route.getAttribute('points'), { timeout: DOM_TIMEOUT })
-        .toBe('85,70 45,90 30,110');
+        .toBe('65,80 45,90 37.5,100');
       await clickCheckpoint(page);
       await expect
         .poll(async () => JSON.parse(await details.innerText()) as unknown, {
@@ -124,8 +129,21 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
           layerId: 'second',
           kind: 'point',
           routeId: 'demo-route',
-          position: { x: 45, y: 90 },
+          position: { x: 45, y: 90, z: 5 },
         });
+      await expect
+        .poll(() =>
+          surface
+            .locator('[data-layer-id="first"] [data-object-id="demo-route"] polyline')
+            .evaluateAll(nodes => nodes.map(node => node.getAttribute('points'))),
+        )
+        .toEqual(['85,70 65,80', '37.5,100 30,110']);
+      await page.getByRole('button', { name: 'Change route height', exact: true }).click();
+      await expect
+        .poll(() =>
+          surface.locator('[data-layer-id="second"] [data-object-id="route-checkpoint"]').count(),
+        )
+        .toBe(0);
       const lowerCheckpoint = surface.locator(
         '[data-layer-id="first"] [data-object-id="route-checkpoint"]',
       );
@@ -150,6 +168,8 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
       expect(await surface.getAttribute('viewBox')).toBe(viewBeforeToggle);
       expect(await surface.locator('image').isVisible()).toBe(true);
       await page.getByRole('button', { name: 'Toggle second layer', exact: true }).click();
+      await page.getByRole('button', { name: 'Change route height', exact: true }).click();
+      await expect.poll(() => checkpoint.isVisible()).toBe(true);
       await clickCheckpoint(page);
       await expect
         .poll(async () => JSON.parse(await details.innerText()) as unknown)

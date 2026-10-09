@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { Camera } from '#camera/camera.js';
 import { resolveMapDefinition } from '#definitions/map-definition.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { Size } from '#math/size.js';
 import { MapModel } from '#objects/map-model.js';
 import { MapPoint } from '#objects/map-point.js';
@@ -45,10 +46,10 @@ describe('internal DOM-independent scene model', () => {
     const objects = model.objects;
     expect(model.definition).toBeUndefined();
     expect(model.geometry.objects).toEqual([]);
-    expect(model.spatial.hitTest(new Point(0, 0), camera())).toBeUndefined();
+    expect(model.spatial.hitTest(new Point2(0, 0), camera())).toBeUndefined();
     const point = objects.add(pointDefinition(0));
     expect(model.objects).toBe(objects);
-    expect(model.spatial.hitTest(new Point(0, 0), camera())).toBeUndefined();
+    expect(model.spatial.hitTest(new Point2(0, 0), camera())).toBeUndefined();
     expect(model.layers).toEqual([]);
     expect(objects.get(point.id)).toBe(point);
   });
@@ -59,11 +60,11 @@ describe('internal DOM-independent scene model', () => {
     const firstView = camera();
     const secondView = camera();
     secondView.zoom = 2;
-    expect(model.spatial.hitTest(new Point(10, 0), firstView)?.object).toBe(point);
-    expect(model.spatial.hitTest(new Point(10, 0), secondView)).toBeUndefined();
-    point.position = new Point(100, 100);
-    expect(model.spatial.hitTest(new Point(100, 100), firstView)?.object).toBe(point);
-    expect(model.spatial.hitTest(new Point(0, 0), firstView)).toBeUndefined();
+    expect(model.spatial.hitTest(new Point2(10, 0), firstView)?.object).toBe(point);
+    expect(model.spatial.hitTest(new Point2(10, 0), secondView)).toBeUndefined();
+    point.position = new Point2(100, 100);
+    expect(model.spatial.hitTest(new Point2(100, 100), firstView)?.object).toBe(point);
+    expect(model.spatial.hitTest(new Point2(0, 0), firstView)).toBeUndefined();
     expect(model.definition?.objects[0]).toMatchObject({ position: { x: 0, y: 0 } });
   });
 
@@ -74,7 +75,7 @@ describe('internal DOM-independent scene model', () => {
     model.addEventListener('change', changed);
     model.observeChanges();
     const point = model.objects.get('point') as MapPoint;
-    point.position = new Point(100, 100);
+    point.position = new Point2(100, 100);
     expect(changed).toHaveBeenCalledOnce();
     const route = model.objects.add({
       id: 'route',
@@ -82,13 +83,13 @@ describe('internal DOM-independent scene model', () => {
       points: [pointDefinition(0), pointDefinition(200)],
     });
     expect(changed).toHaveBeenCalledTimes(2);
-    route.points[0]!.position = new Point(0, 100);
+    route.points[0]!.position = new Point2(0, 100);
     route.insertPoint(1, pointDefinition(100, 100));
     expect(changed).toHaveBeenCalledTimes(4);
-    expect(model.spatial.hitTest(new Point(100, 100), camera())?.object).toBe(route.points[1]);
+    expect(model.spatial.hitTest(new Point2(100, 100), camera())?.object).toBe(route.points[1]);
     model.objects.remove(point);
     expect(changed).toHaveBeenCalledTimes(5);
-    point.position = new Point(300, 100);
+    point.position = new Point2(300, 100);
     expect(changed).toHaveBeenCalledTimes(5);
   });
 
@@ -102,16 +103,16 @@ describe('internal DOM-independent scene model', () => {
     model.observeChanges();
     model.unobserveChanges();
     model.unobserveChanges();
-    point.position = new Point(100, 100);
+    point.position = new Point2(100, 100);
     const added = model.objects.add(pointDefinition(200, 100));
     expect(changed).not.toHaveBeenCalled();
     expect(runtimeChanged).toHaveBeenCalledOnce();
-    expect(model.spatial.hitTest(new Point(100, 100), camera())?.object).toBe(point);
+    expect(model.spatial.hitTest(new Point2(100, 100), camera())?.object).toBe(point);
     model.objects.remove(point);
     model.observeChanges();
     model.observeChanges();
-    added.position = new Point(250, 100);
-    point.position = new Point(150, 100);
+    added.position = new Point2(250, 100);
+    point.position = new Point2(150, 100);
     expect(changed).toHaveBeenCalledOnce();
     model.objects.add(added);
     expect(changed).toHaveBeenCalledOnce();
@@ -134,23 +135,23 @@ describe('internal DOM-independent scene model', () => {
     const coordinates = path.geometry.points;
     model.observeChanges();
     model.unobserveChanges();
-    route.points[0]!.position = new Point(-200, 100);
+    route.points[0]!.position = new Point2(-200, 100);
     const [replacement] = route.replacePoints(1, 2, [pointDefinition(0, 100)]);
     model.objects.remove(original);
     const added = model.objects.add(pointDefinition(300, 200));
     const view = camera();
-    expect(model.spatial.hitTest(new Point(0, 100), view)?.object).toBe(replacement);
-    expect(model.spatial.hitTest(new Point(-100, 100), view)?.object).toBe(route);
-    expect(model.spatial.hitTest(new Point(0, 0), view)).toBeUndefined();
-    expect(model.spatial.hitTest(new Point(300, 100), view)).toBeUndefined();
-    expect(model.spatial.hitTest(new Point(300, 200), view)?.object).toBe(added);
+    expect(model.spatial.hitTest(new Point2(0, 100), view)?.object).toBe(replacement);
+    expect(model.spatial.hitTest(new Point2(-100, 100), view)?.object).toBe(route);
+    expect(model.spatial.hitTest(new Point2(0, 0), view)).toBeUndefined();
+    expect(model.spatial.hitTest(new Point2(300, 100), view)).toBeUndefined();
+    expect(model.spatial.hitTest(new Point2(300, 200), view)?.object).toBe(added);
     expect(model.geometry.objects[0]).toBe(path);
     expect(model.geometry.objects[1]).toBe(entries[1]);
     expect(path.geometry.points[0]).toBe(coordinates[0]);
     expect(path.geometry.points[2]).toBe(coordinates[2]);
-    expect(coordinates[0]).toEqual(new Point(-200, 100));
+    expect(coordinates[0]).toEqual(new Point3(-200, 100, 0));
     model.observeChanges();
-    expect(model.spatial.hitTest(new Point(0, 100), view)?.object).toBe(replacement);
+    expect(model.spatial.hitTest(new Point2(0, 100), view)?.object).toBe(replacement);
   });
 
   it('does not subscribe to a root removed by an earlier addition handler', () => {
@@ -167,7 +168,7 @@ describe('internal DOM-independent scene model', () => {
     expect(model.objects.size).toBe(0);
     expect(subscribe).not.toHaveBeenCalled();
     changed.mockClear();
-    point.position = new Point(100, 100);
+    point.position = new Point2(100, 100);
     expect(changed).not.toHaveBeenCalled();
   });
 
@@ -198,11 +199,11 @@ describe('internal DOM-independent scene model', () => {
       changed.mockClear();
       model.observeChanges();
       model.objects.add(point);
-      point.position = new Point(100, 100);
+      point.position = new Point2(100, 100);
       expect(changed).toHaveBeenCalledOnce();
       model.unobserveChanges();
       changed.mockClear();
-      point.position = new Point(200, 100);
+      point.position = new Point2(200, 100);
       expect(changed).not.toHaveBeenCalled();
     },
   );
@@ -219,12 +220,12 @@ describe('internal DOM-independent scene model', () => {
     model.addEventListener('change', changed);
     model.objects.remove(point);
     expect(release).toHaveBeenCalledWith('change', expect.any(Function));
-    point.position = new Point(100, 100);
+    point.position = new Point2(100, 100);
     expect(changed).not.toHaveBeenCalled();
     model.observeChanges();
     model.objects.add(point);
     changed.mockClear();
-    point.position = new Point(200, 100);
+    point.position = new Point2(200, 100);
     expect(changed).toHaveBeenCalledOnce();
   });
 
@@ -240,11 +241,11 @@ describe('internal DOM-independent scene model', () => {
     model.objects.remove(point);
     const changed = vi.fn();
     model.addEventListener('change', changed);
-    point.position = new Point(100, 100);
+    point.position = new Point2(100, 100);
     expect(changed).toHaveBeenCalledOnce();
     model.unobserveChanges();
     changed.mockClear();
-    point.position = new Point(200, 100);
+    point.position = new Point2(200, 100);
     expect(changed).not.toHaveBeenCalled();
   });
 
@@ -257,10 +258,10 @@ describe('internal DOM-independent scene model', () => {
     model.addEventListener('change', changed);
     model.unobserveChanges();
     expect(release).toHaveBeenCalledWith('change', expect.any(Function));
-    route.points[0]!.position = new Point(100, 100);
+    route.points[0]!.position = new Point2(100, 100);
     route.addPoint(pointDefinition(200, 100));
     expect(changed).not.toHaveBeenCalled();
-    expect(model.spatial.hitTest(new Point(150, 100), camera())?.object).toBe(route);
+    expect(model.spatial.hitTest(new Point2(150, 100), camera())?.object).toBe(route);
   });
 
   it('keeps shared runtime instances and duplicate IDs with independent model observation', () => {
@@ -280,11 +281,11 @@ describe('internal DOM-independent scene model', () => {
     first.addEventListener('change', firstChanged);
     second.addEventListener('change', secondChanged);
     first.unobserveChanges();
-    point.position = new Point(100, 100);
-    route.points[0]!.position = new Point(300, 100);
+    point.position = new Point2(100, 100);
+    route.points[0]!.position = new Point2(300, 100);
     expect(firstChanged).not.toHaveBeenCalled();
     expect(secondChanged).toHaveBeenCalledTimes(2);
-    expect(first.spatial.hitTest(new Point(300, 100), camera())?.object).toBe(route.points[0]);
-    expect(second.spatial.hitTest(new Point(300, 100), camera())?.object).toBe(route.points[0]);
+    expect(first.spatial.hitTest(new Point2(300, 100), camera())?.object).toBe(route.points[0]);
+    expect(second.spatial.hitTest(new Point2(300, 100), camera())?.object).toBe(route.points[0]);
   });
 });

@@ -27,6 +27,67 @@ separate steps. Ordinary API names use no Atlas prefix; the error family retains
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
 
+## Planar and spatial coordinates — accepted and implemented for review, 2026-10-09
+
+The current contract replaces the 2026-10-08 optional-height `Point` decision with
+two immutable, frozen mathematical coordinate values. `Point` is removed without a
+compatibility alias. No inheritance, universal coordinate type, further dimensions,
+`PointPosition`, or separate normalized-position type is introduced.
+
+```ts
+export declare class Point2 {
+  readonly x: number;
+  readonly y: number;
+  constructor(x: number, y: number);
+}
+
+export declare class Point3 {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+  constructor(x: number, y: number, z?: number); // implementation default: z = 0
+}
+
+// MapPointDefinition
+readonly position: Point2 | Point3;
+
+// MapPoint
+get position(): Point3;
+set position(value: Point2 | Point3);
+```
+
+`Point2` serves camera centers, screen/client coordinates, surface/object event
+coordinates, coordinate-conversion results, screen distances and planar picking
+queries. `Point3` serves runtime independent/owned positions, source spatial geometry
+and clipped segment/fragment coordinates. The name and identity of `MapPoint` stay
+unchanged. Frozen live geometry views continue reading current source coordinates.
+
+Plain `{ x, y }`, `{ x, y, z }`, `Point2` and `Point3` values remain valid position
+input. Construction, loading, assignment and owned-point editing validate finite
+coordinates before mutation and copy input into a new `Point3`; its constructor
+default supplies omitted z = 0. Finite negative heights are valid. Runtime positions
+and load snapshots remain frozen. Guaranteed spatial values read z directly;
+partial input is normalized only at input boundaries.
+
+Camera and client/surface coordinates use x/y. `mapToClient` accepts a spatial
+position structurally through x/y and returns `Point2`; `clientToMap` returns
+`Point2` without inferring click height. Height remains available from the object's
+spatial geometry. This adds no 3D camera or runtime object identity change.
+
+The internal segment clipper narrows the source parameter interval over the bounded
+axes, preserving inclusive/exclusive endpoint flags. Parallel or repeated endpoints
+are tested without division; vertical transitions remain ordinary segments in 3D
+whose SVG projection can have zero length. Cut coordinates stay finite and retain
+exact active plane coordinates. Extreme finite endpoint differences use a scaled
+parameter/distance calculation to avoid overflow in intermediate arithmetic.
+
+Routes produce separate sequential polyline fragments. Adjacent eligible segments
+join only through an included original vertex; an excursion or excluded max vertex
+separates fragments even when cut coordinates happen to coincide. Each fragment
+retains the source route and direction. Original route vertices use the existing
+temporary symbols only in eligible automatic appearances; cuts have no symbol,
+point identity or independent point hit area. No material or POI API is introduced.
+
 ## Route vertex geometry, symbol, and picking — accepted 2026-10-08
 
 Keep the common `MapPoint` representation for route vertices and distinguish three

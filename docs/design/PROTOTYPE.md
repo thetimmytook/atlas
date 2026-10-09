@@ -1,6 +1,123 @@
 # First Atlas prototype
 
+## Coordinate migration — implemented for review, 2026-10-09
+
+The z/intersection implementation now separates frozen `Point2(x, y)` and
+`Point3(x, y, z = 0)`. The former `Point` export/file is removed, without an alias.
+Runtime `MapPoint.position` returns `Point3`; definitions and assignment accept
+`Point2 | Point3` and plain x/y input. Construction, loading and owned-point editing
+copy into `Point3`. Camera, events, conversions and planar queries use `Point2`.
+See the [public signatures](GEOMETRY_AND_ROUTES.md#planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09).
+
+Bounds use `Partial<Point3>`, preserving absent axes. The optional definition field
+has no explicit undefined union; typed callers omit it, while an untyped JavaScript
+regression retains explicit undefined support. The runtime getter still returns
+`IntersectionBounds | undefined` without a setter. `resolveLayerEntries` replaces
+the internal `resolveAppearance` name. Clipping, picking, direct-content priority,
+invalidation, source identity, live coordinate views and unaffected SVG nodes retain
+the automatic-stage behavior described below.
+
+Implementation covers `src/math/point2.ts`, `src/math/point3.ts`, math/bounds exports,
+point definitions/validation/runtime positions, camera and interaction consumers,
+spatial geometry/queries, executable examples/benchmarks and existing regression
+suites. Current design summaries record the new decision; archived documents and
+saved timing results remain unchanged. The initial review preserved existing staged
+contents and kept this migration unstaged. The user authorized commits, push and PR
+preparation on 2026-10-09.
+
+Validation on 2026-10-09: `npm run check`, `npm test` (178 Node tests),
+`npm run test:browser` (68 Chromium tests), `npm run build`, `npm run bench:build`
+and `npm run test:e2e` (one built Factory test) passed. Lint retains the eight
+pre-existing duplicate-string warnings with zero errors. Bundled declarations
+confirm mandatory `Point3.z`, distinct position getter/setter types, planar
+conversions, the optional bounds input and getter without a setter or `Point` alias.
+
+Existing boundary regressions still pass: a four-pixel stroke at zoom 1 hits the
+included min tangent and points near excluded max when eligible interior positions
+are within the hit disk; an excluded max-only tangent misses. Adjacent floor strokes
+and vertical transitions remain pickable, with visible overlap resolved by composition.
+Live views, source objects, surviving SVG nodes and invalidation counters retain their
+existing checks. No full timing benchmark rerun or new timing artifacts were required.
+The initial review confirmed an identical staged manifest before/after implementation.
+
+## Automatic height and intersection stage — implemented for review, 2026-10-08
+
+The user authorized implementation in the primary repository, with no worktree,
+commit, push or PR. This stage preserves the merged explicit-layer/review base and
+existing local merge/contract notes. The original 2026-10-08 version added optional
+`Point.z`, normalized copied map-object positions and validated, frozen
+`IntersectionBounds`. That version did not add a second public coordinate type or a
+runtime bounds setter. The coordinate-type
+decision is superseded by the 2026-10-09 migration above; the behavior below remains.
+
+Every layer with bounds prepares automatic appearances of current roots, while
+directly selected roots appear whole once. Bounds do not change `layer.objects` or
+`objectIds`. Shared segment clipping retains original runtime identity and ordered
+route fragments; SVG/picking share these entries. Cut coordinates create no runtime
+points, symbols or separate point hit areas. See the [contract, example boundary
+results and click rules](LAYERS_AND_INTERACTION.md#intersection-bounds-contract--accepted-and-implemented-for-review-2026-10-08)
+and [preparation/invalidation counters](RENDERER_AND_COMPONENT.md#automatic-spatial-appearances--implemented-for-review-2026-10-08).
+
+```ts
+{
+  objects: [{
+    id: 'route', kind: 'route', points: [
+      { kind: 'point', position: { x: 20, y: 100, z: 1 } },
+      { kind: 'point', position: { x: 120, y: 100, z: 5 } },
+      { kind: 'point', position: { x: 220, y: 100, z: 1 } },
+    ],
+  }],
+  layers: [
+    { id: 'lower', intersectionBounds: { min: { z: 0 }, max: { z: 3 } } },
+    { id: 'upper', stackIndex: 1, intersectionBounds: { min: { z: 3 }, max: { z: 6 } } },
+    { id: 'overview', objects: ['route'] }, // full direct appearance
+  ],
+}
+```
+
+Factory uses a common background, two independent z floor layers and one whole
+route that rises and returns. It is not added to each floor's ID list. Original
+vertices carry heights; an external button changes checkpoint height. The explicit
+independent line remains whole in the first layer despite its bounds. Existing
+camera, route/root editing and detached-edit controls remain in the application.
+Click details include original object/route/layer IDs and x/y surface coordinates.
+
+Validation: `npm run check`, `npm test` (176 Node tests),
+`npm run test:browser` (68 Chromium tests), `npm run build`, `npm run bench:build`
+and `npm run test:e2e` (one built Factory smoke test) passed on 2026-10-08.
+Lint has zero errors and the eight pre-existing duplicate-string warnings. Bundled
+public declarations were checked: the existing `Point` position type remains and
+`MapLayer` exposes a getter for `IntersectionBounds` without a setter. Old 2D snapshot assertions now
+explicitly check normalized z = 0; existing SVG primitive/coordinate/identity
+assertions are retained. The previous unsupported-bounds regression now uses
+invalid bounds and still checks atomic failure preservation.
+
+Built benchmark functional checks also passed: all four stress Preview scenes
+(3000/5000 roots, points/mixed), dense 3000/mixed Preview and sparse smoke for
+Atlas SVG, Leaflet SVG and Leaflet Canvas. These use the existing SVG/picking/adapter
+checks. No timing suite or new CSV/manifest exports ran; historical artifacts remain
+unchanged. Library, benchmark and example builds were run in order because the
+library build clears the common `dist` directory.
+
+Limits: point/line/route geometry and axis-aligned bounds only; current vertex
+symbols and four-pixel strokes remain temporary until materials/point interaction.
+The SVG projection and camera remain 2D. Clipping traverses all segments of each
+changed route; membership changes still reconcile layer/root candidates. Physical
+mobile validation, volumetric zones, polygons, materials, labels, batch, LOD,
+layer groups, editor, 3D and new performance measurements are outside this request.
+Floating-point calculations use finite double-precision coordinates; this is not an
+arbitrary-precision geometry engine.
+
+### Files changed in the automatic stage
+
+- Engine: [src/components/map-element/map-element.ts](../../src/components/map-element/map-element.ts), [src/definitions/map-definition.ts](../../src/definitions/map-definition.ts), [src/definitions/map-layer-definition.ts](../../src/definitions/map-layer-definition.ts), [src/index.ts](../../src/index.ts), [src/math/distance.ts](../../src/math/distance.ts), [src/math/intersection-bounds.ts](../../src/math/intersection-bounds.ts), `src/math/point.ts` (replaced by `point2.ts`/`point3.ts` in the migration), [src/objects/map-layer.ts](../../src/objects/map-layer.ts), [src/objects/map-point.ts](../../src/objects/map-point.ts), [src/spatial/clipped-appearance.ts](../../src/spatial/clipped-appearance.ts), [src/spatial/geometry.ts](../../src/spatial/geometry.ts), [src/spatial/intersection.ts](../../src/spatial/intersection.ts), [src/spatial/scene-geometry.ts](../../src/spatial/scene-geometry.ts), [src/spatial/spatial.ts](../../src/spatial/spatial.ts), [src/validators/intersection-bounds.validator.ts](../../src/validators/intersection-bounds.validator.ts), [src/validators/map-point.validator.ts](../../src/validators/map-point.validator.ts), [src/validators/point.validator.ts](../../src/validators/point.validator.ts).
+- Application: [examples/index.html](../../examples/index.html).
+- Regressions: [tests/automatic-layers.test.ts](../../tests/automatic-layers.test.ts), [tests/browser/intersection.browser.test.ts](../../tests/browser/intersection.browser.test.ts), [tests/browser/layers.browser.test.ts](../../tests/browser/layers.browser.test.ts), [tests/e2e/example.e2e.test.ts](../../tests/e2e/example.e2e.test.ts), [tests/intersection.test.ts](../../tests/intersection.test.ts), [tests/layers.test.ts](../../tests/layers.test.ts), [tests/map-element.test.ts](../../tests/map-element.test.ts), [tests/map-model.test.ts](../../tests/map-model.test.ts), [tests/map-object-collection.test.ts](../../tests/map-object-collection.test.ts), [tests/map-point.test.ts](../../tests/map-point.test.ts), [tests/map-route.test.ts](../../tests/map-route.test.ts), [tests/spatial.test.ts](../../tests/spatial.test.ts), [tests/z.test.ts](../../tests/z.test.ts).
+- Contract and status: [docs/DESIGN_MAIN.md](../../docs/DESIGN_MAIN.md), [docs/design/GEOMETRY_AND_ROUTES.md](../../docs/design/GEOMETRY_AND_ROUTES.md), [docs/design/LAYERS_AND_INTERACTION.md](../../docs/design/LAYERS_AND_INTERACTION.md), [docs/design/PROTOTYPE.md](../../docs/design/PROTOTYPE.md), [docs/design/RENDERER_AND_COMPONENT.md](../../docs/design/RENDERER_AND_COMPONENT.md), [docs/design/RUNTIME_AND_LOADING.md](../../docs/design/RUNTIME_AND_LOADING.md).
+
 ## Explicit-layer first stage — implemented for review, 2026-10-08
+
+Current status: merged, confirmed by the user on 2026-10-08 after the review fixes.
 
 The authorized stage implements direct ID-based content, backgrounds, composition,
 visibility and consistent picking on the existing invalidation foundation.
@@ -18,9 +135,9 @@ e2e covers both appearances and picking after layer switches. Benchmark examples
 are migrated to explicit content layers and select added IDs; historical measurement
 artifacts remain unchanged. No new Atlas/Leaflet benchmark or speed claim is included.
 
-Next: implement the accepted automatic `intersectionBounds`/z/clipping stage while
-preserving direct-content meaning, source geometry and runtime/event identity.
-Bounds are currently rejected explicitly. Volumetric zones, materials, labels, batch,
+The next automatic `intersectionBounds`/z/clipping stage is now implemented for
+review above, preserving direct-content meaning, source geometry and runtime/event
+identity. Bounds rejection was the first-stage boundary and is superseded. Volumetric zones, materials, labels, batch,
 LOD, layer groups and public standalone model lifecycle remain later work. Physical
 mobile and full prototype/load validation remain outstanding.
 
@@ -32,7 +149,9 @@ inspected: runtime layer and ID-collection construction stays internal, with onl
 their types exported. The background-free replacement regression verifies display
 after pending frames finish and unchanged camera center/zoom. Built stress Preview
 with 3000 points, a short `position-single` Run and Atlas SVG sparse smoke also pass.
-The implementation, including review corrections, is prepared for PR.
+Post-review functional checks also cover sparse smoke for all three comparison
+variants and all four stress Preview scenes. These are functional checks, not new
+performance measurements.
 
 ### Files in this implementation review
 

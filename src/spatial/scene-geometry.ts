@@ -1,6 +1,7 @@
+import { createClippedAppearance } from './clipped-appearance.js';
 import { trackScene, untrackScene } from './scene-invalidation.js';
 
-import type { Point } from '#math/point.js';
+import type { Point3 } from '#math/point3.js';
 import type { MapLayer } from '#objects/map-layer.js';
 import type { MapEntry, MapObjectCollection } from '#objects/map-object-collection.js';
 import type { MapPoint } from '#objects/map-point.js';
@@ -48,7 +49,7 @@ const defaultSymbols: SceneSymbols = Object.freeze({
   line: Object.freeze({ strokeWidth: 4, lineCap: 'round' }),
 });
 
-/** Reuse live views; explicit membership invalidation replaces the ordered entries. */
+/** Shared direct views and cached derived appearances, reconciled before queries or painting. */
 export function prepareSceneGeometry(
   objects: MapObjectCollection,
   layers: readonly MapLayer[],
@@ -57,10 +58,15 @@ export function prepareSceneGeometry(
   const invalidation: SceneInvalidation = { membership: true, changed: new Set() };
   const reference = new WeakRef(invalidation);
   const tracked = new Set<object>();
-  let dependencies = new Map<object, SceneObject[]>();
+  const pending = new Set<SceneObject>();
+  let roots: readonly MapEntry[] = [];
   let entries: readonly SceneObject[] = [];
-
-  // A point may appear as a root and as a route vertex; each owner needs its own scene entry.
+  let entryDependencies = new Map<object, SceneObject[]>();
+  let rootDependencies = new Map<object, Set<MapEntry>>();
+  const appearances = new Map<MapLayer, Map<MapEntry, readonly SceneObject[]>>(
+    orderedLayers.map(layer => [layer, new Map()]),
+  );
+  const automatic = new WeakMap<MapLayer, WeakMap<MapEntry, () => readonly SceneObject[]>>();
   const cache = new WeakMap<MapLayer, WeakMap<MapEntry, WeakMap<MapEntry, SceneObject>>>();
   const geometries = new WeakMap<MapEntry, Geometry>();
 
@@ -81,7 +87,7 @@ export function prepareSceneGeometry(
     }
 
     if (!ownerEntries) {
-      ownerEntries = new WeakMap<MapEntry, SceneObject>();
+      ownerEntries = new WeakMap();
       layerEntries.set(owner, ownerEntries);
     }
 
@@ -103,63 +109,191 @@ export function prepareSceneGeometry(
     return entry;
   };
 
-  const syncMembership = (): void => {
-    if (!invalidation.membership) {
-      return;
+  const resolveLayerEntries = (
+    layer: MapLayer,
+    root: MapEntry,
+    membership: boolean,
+  ): readonly SceneObject[] => {
+    if (layer.objectIds.has(root.id)) {
+      const previous = appearances.get(layer)!.get(root);
+
+      // Coordinate edits do not read owned membership or rebuild direct geometry.
+      if (!membership && previous) {
+        return previous;
+      }
+
+      const result = [entryFor(layer, root)];
+
+      if (root.kind === 'route') {
+        result.push(...root.points.map(point => entryFor(layer, point, root)));
+      }
+
+      return result;
     }
 
-    invalidation.membership = false;
-    const nextDependencies = new Map<object, SceneObject[]>();
+    if (!layer.intersectionBounds) {
+      return [];
+    }
+
+    let byRoot = automatic.get(layer);
+
+    if (!byRoot) {
+      byRoot = new WeakMap();
+      automatic.set(layer, byRoot);
+    }
+
+    let prepare = byRoot.get(root);
+
+    if (!prepare) {
+      prepare = createClippedAppearance(layer, root, entryFor);
+      byRoot.set(root, prepare);
+    }
+
+    return prepare();
+  };
+
+  const updateAppearance = (layer: MapLayer, root: MapEntry, membership: boolean): boolean => {
+    const byRoot = appearances.get(layer)!;
+    const previous = byRoot.get(root) ?? [];
+    const next = resolveLayerEntries(layer, root, membership);
+    const same =
+      previous.length === next.length && previous.every((entry, index) => entry === next.at(index));
+
+    if (!same) {
+      byRoot.set(root, next);
+      next.forEach(entry => pending.add(entry));
+    }
+
+    if (layer.intersectionBounds && !layer.objectIds.has(root.id)) {
+      // Cut positions can move without changing the number/identity of fragments.
+      for (const entry of next) {
+        if (entry.object === root) {
+          pending.add(entry);
+        }
+      }
+    }
+
+    return !same;
+  };
+
+  const reconcileEntries = (): void => {
+    const next = orderedLayers.reduce<SceneObject[]>((result, layer) => {
+      for (const root of roots) {
+        result.push(...(appearances.get(layer)!.get(root) ?? []));
+      }
+
+      return result;
+    }, []);
+
+    if (
+      next.length !== entries.length ||
+      next.some((entry, index) => entry !== entries.at(index))
+    ) {
+      entries = Object.freeze(next);
+    }
+
+    const current = new Set(entries);
+
+    for (const entry of pending) {
+      if (!current.has(entry)) {
+        pending.delete(entry);
+      }
+    }
+
+    entryDependencies = new Map();
 
     const dependOn = (source: object, entry: SceneObject): void => {
-      let affected = nextDependencies.get(source);
-
-      if (!affected) {
-        affected = [];
-        nextDependencies.set(source, affected);
-      }
-
+      const affected = entryDependencies.get(source) ?? [];
       affected.push(entry);
+      entryDependencies.set(source, affected);
     };
 
-    entries = Object.freeze(
-      orderedLayers.reduce<SceneObject[]>((result, layer) => {
-        for (const object of layer.objects) {
-          const entry = entryFor(layer, object);
-          result.push(entry);
-          dependOn(object, entry);
+    for (const entry of entries) {
+      dependOn(entry.object, entry);
 
-          if (object.kind === 'point') {
-            continue;
-          }
-
-          for (const point of object.points) {
-            dependOn(point, entry);
-
-            // Temporary: only routes have vertex symbols; materials will select appearances.
-            if (object.kind === 'route') {
-              const vertex = entryFor(layer, point, object);
-              result.push(vertex);
-              dependOn(point, vertex);
-            }
-          }
+      if (entry.object.kind !== 'point') {
+        for (const point of entry.object.points) {
+          dependOn(point, entry);
         }
+      }
+    }
+  };
 
-        return result;
-      }, []),
-    );
-    dependencies = nextDependencies;
+  const reconcileRoots = (): void => {
+    roots = Array.from(objects);
+    const currentRoots = new Set(roots);
 
-    for (const source of invalidation.changed) {
-      if (!dependencies.has(source)) {
-        invalidation.changed.delete(source);
+    for (const [layer, byRoot] of appearances) {
+      for (const root of byRoot.keys()) {
+        if (!currentRoots.has(root)) {
+          byRoot.delete(root);
+        }
+      }
+
+      for (const root of roots) {
+        updateAppearance(layer, root, true);
+      }
+    }
+  };
+
+  const reconcileRootDependencies = (): void => {
+    rootDependencies = new Map();
+
+    const dependOn = (source: object, root: MapEntry): void => {
+      const affected = rootDependencies.get(source) ?? new Set<MapEntry>();
+      affected.add(root);
+      rootDependencies.set(source, affected);
+    };
+
+    for (const root of roots) {
+      if (!orderedLayers.some(layer => layer.intersectionBounds || layer.objectIds.has(root.id))) {
+        continue;
+      }
+
+      dependOn(root, root);
+
+      if (root.kind !== 'point') {
+        for (const point of root.points) {
+          dependOn(point, root);
+        }
+      }
+    }
+  };
+
+  const queueChanges = (changed: ReadonlySet<object>): void => {
+    for (const source of changed) {
+      for (const entry of entryDependencies.get(source) ?? []) {
+        pending.add(entry);
+      }
+    }
+  };
+
+  const syncChanges = (changed: ReadonlySet<object>): boolean => {
+    queueChanges(changed);
+    const affectedRoots = new Set<MapEntry>();
+
+    for (const source of changed) {
+      for (const root of rootDependencies.get(source) ?? []) {
+        affectedRoots.add(root);
       }
     }
 
+    let compositionChanged = false;
+
+    for (const root of affectedRoots) {
+      for (const layer of orderedLayers) {
+        compositionChanged = updateAppearance(layer, root, false) || compositionChanged;
+      }
+    }
+
+    return compositionChanged;
+  };
+
+  const syncTracking = (): void => {
     const sources = new Set<object>([
       objects,
       ...orderedLayers.map(layer => layer.objectIds),
-      ...dependencies.keys(),
+      ...rootDependencies.keys(),
     ]);
 
     for (const source of tracked) {
@@ -170,41 +304,66 @@ export function prepareSceneGeometry(
     }
 
     for (const source of sources) {
-      if (!tracked.has(source)) {
-        trackScene(source, reference);
-        tracked.add(source);
-
-        // Detached edits were not tracked; refresh every current appearance on reattachment.
-        invalidation.changed.add(source);
+      if (tracked.has(source)) {
+        continue;
       }
+
+      trackScene(source, reference);
+      tracked.add(source);
+
+      // Includes reattachment after a synchronous query released detached tracking.
+      queueChanges(new Set([source]));
     }
   };
 
-  syncMembership();
+  const sync = (): void => {
+    if (!invalidation.membership && invalidation.changed.size === 0) {
+      return;
+    }
+
+    const membership = invalidation.membership;
+    const changed = new Set(invalidation.changed);
+    invalidation.changed.clear();
+    invalidation.membership = false;
+
+    if (membership) {
+      reconcileRoots();
+      reconcileRootDependencies();
+    }
+
+    if (membership || syncChanges(changed)) {
+      reconcileEntries();
+    }
+
+    if (membership) {
+      syncTracking();
+      queueChanges(changed);
+    }
+  };
+
+  sync();
 
   return Object.freeze({
     layers: orderedLayers,
     get objects(): readonly SceneObject[] {
-      syncMembership();
+      sync();
 
       return entries;
     },
     symbols: defaultSymbols,
     takeChanges(): ReadonlySet<SceneObject> {
-      syncMembership();
-      const affected = new Set<SceneObject>();
-
-      for (const source of invalidation.changed) {
-        for (const entry of dependencies.get(source) ?? []) {
-          affected.add(entry);
-        }
-      }
-
-      invalidation.changed.clear();
+      sync();
+      const affected = new Set(pending);
+      pending.clear();
 
       return affected;
     },
   });
+}
+
+/** Revalidate the captured appearance itself after synchronous application handlers. */
+export function isSceneObjectEligible(scene: SceneGeometry, entry: SceneObject): boolean {
+  return isLayerEligible(entry.layer) && scene.objects.includes(entry);
 }
 
 /** Visibility is evaluated from live runtime state, including before the next paint. */
@@ -216,7 +375,7 @@ function createGeometry(object: MapEntry): Geometry {
   if (object.kind === 'point') {
     return Object.freeze({
       kind: 'point',
-      get position(): Point {
+      get position(): Point3 {
         return object.position;
       },
     });
@@ -225,18 +384,18 @@ function createGeometry(object: MapEntry): Geometry {
   if (object.kind === 'line') {
     return Object.freeze({
       kind: 'line',
-      get start(): Point {
+      get start(): Point3 {
         return object.points[0].position;
       },
-      get end(): Point {
+      get end(): Point3 {
         return object.points[1].position;
       },
     });
   }
 
-  const cache = new WeakMap<MapPoint, Point>();
+  const cache = new WeakMap<MapPoint, Point3>();
 
-  const positionFor = (point: MapPoint): Point => {
+  const positionFor = (point: MapPoint): Point3 => {
     const cached = cache.get(point);
 
     if (cached) {
@@ -255,7 +414,7 @@ function createGeometry(object: MapEntry): Geometry {
 
   return Object.freeze({
     kind: 'polyline',
-    get points(): readonly Point[] {
+    get points(): readonly Point3[] {
       if (invalidation.membership) {
         positions = Object.freeze(object.points.map(positionFor));
         invalidation.membership = false;
@@ -268,13 +427,16 @@ function createGeometry(object: MapEntry): Geometry {
 }
 
 /** Stable coordinate views keep the route array live without copying it on edits or reads. */
-function createPositionView(point: MapPoint): Point {
+function createPositionView(point: MapPoint): Point3 {
   return Object.freeze({
     get x(): number {
       return point.position.x;
     },
     get y(): number {
       return point.position.y;
+    },
+    get z(): number {
+      return point.position.z;
     },
   });
 }

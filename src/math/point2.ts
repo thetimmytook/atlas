@@ -1,5 +1,5 @@
-/** An immutable point in two-dimensional space. */
-export class Point {
+/** Immutable 2D coordinates. */
+export class Point2 {
   readonly x: number;
   readonly y: number;
 

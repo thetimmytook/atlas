@@ -24,7 +24,8 @@ behavior. See the [accepted defaults](LAYERS_AND_INTERACTION.md#accepted-map-str
 
 The [implemented first-stage contract](LAYERS_AND_INTERACTION.md#explicit-layers--accepted-and-implemented-for-review-2026-10-08)
 requires `layers` and rejects top-level backgrounds; no default layer is created.
-`intersectionBounds` is explicitly rejected until its later implementation.
+`intersectionBounds` is now supported by the automatic stage implemented for review;
+see [the current bounds contract](LAYERS_AND_INTERACTION.md#intersection-bounds-contract--accepted-and-implemented-for-review-2026-10-08).
 Serialized visibility and adding/removing/reordering runtime layers remain outside
 this stage.
 
@@ -49,6 +50,31 @@ references. Detached objects remain editable. Reattachment or a new instance wit
 the same ID automatically resumes membership in corresponding layers, using current
 state and root order. New unmatched IDs need explicit selection:
 `const point = map.objects.add(definition); layer.objectIds.add(point.id)`.
+
+## Height and automatic display updates — implemented for review, 2026-10-08
+
+The 2026-10-09 coordinate migration makes runtime point positions `Point3` while
+position definitions/setters accept `Point2 | Point3`, including plain x/y input.
+All point input boundaries validate supplied finite z and copy coordinates into
+a new `Point3`, using its default z = 0 for omitted height. This covers load resolution, constructors, root additions,
+route add/insert/replace and runtime position assignment. Mutation and invalidation
+precede notifications. Invalid coordinates or bounds preserve prior working state;
+loaded bounds are copied/frozen deeply before asynchronous preparation, and the
+load snapshot does not follow runtime edits.
+
+A position edit requires no layer argument. It invalidates direct displays and the
+automatic preparations of its dependent roots in every layer, including candidates
+whose current display is empty. Owned point height changes affect their line/route.
+The next scene read prepares current cuts before picking, independently of connected
+view observation. Spatial reads retain pending renderer changes. Hidden edits and
+disconnected edits are displayed after show/reconnect; visibility itself preserves
+prepared geometry, background and camera.
+
+Removal releases candidate tracking on reconciliation. Reattachment prepares current
+geometry and queues it again even after remove → synchronous query → detached edit
+→ reattach before RAF; surviving cached scene entries and SVG nodes can be reused.
+Root/layer-ID/route membership changes reconcile composition; no runtime bounds
+setter, generic storage, live serialization or new public event schema is added.
 
 ## Shared generic collection storage — deferred exploration, 2026-10-08
 
@@ -90,7 +116,7 @@ no longer apply. Point/path editing will be reviewed against this model; earlier
 historical, not implemented contracts.
 
 The current `route.points` array is read-only, but each owned `MapPoint` accepts
-position updates through `point.position = new Point(x, y)`. `MapRoute` forwards
+position updates through `point.position = new Point3(x, y)`. `MapRoute` forwards
 the point's `change` event without rebuilding geometry. ID lookup in `map.objects`
 still returns the route instance; owned points are available through that route.
 Independent points and line endpoints use the same `MapPoint` class, and `MapLine`

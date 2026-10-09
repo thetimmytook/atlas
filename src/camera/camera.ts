@@ -1,4 +1,4 @@
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { validateNumber } from '#validators/number.validator.js';
@@ -7,18 +7,18 @@ import { validateSize } from '#validators/size.validator.js';
 
 /** A 2D camera; zoom is CSS pixels per map unit. */
 export class Camera extends EventTarget {
-  #center: Point = new Point(0, 0);
+  #center: Point2 = new Point2(0, 0);
   #zoom = 1;
   #viewport: Size = new Size(0, 0);
   #pendingFit: Rect | undefined;
 
-  get center(): Point {
+  get center(): Point2 {
     return this.#center;
   }
 
-  set center(value: Point) {
+  set center(value: Point2) {
     validatePoint('center', value);
-    this.#center = new Point(value.x, value.y);
+    this.#center = new Point2(value.x, value.y);
     this.#pendingFit = undefined;
     this.#notify();
   }
@@ -61,7 +61,7 @@ export class Camera extends EventTarget {
   fit(bounds: Rect): void {
     validatePoint('bounds', bounds);
     validateSize('bounds', bounds, { positive: true });
-    this.#center = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+    this.#center = new Point2(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
 
     if (this.#viewport.width > 0 && this.#viewport.height > 0) {
       this.#zoom = Math.min(

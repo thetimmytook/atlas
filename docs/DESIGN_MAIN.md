@@ -35,15 +35,20 @@ continue between answers rather than relying on HTML anchors.
   `type` field. `kind` remains structural. See
   [classification decision](design/GEOMETRY_AND_ROUTES.md#application-classification--accepted-2026-10-05).
 - Coordinates: x right, y down, z up. SVG first; real 3D is a future direction.
+  The automatic-intersection stage now uses frozen `Point2` for camera/input/query
+  coordinates and `Point3` for runtime spatial positions and clipped geometry.
+  Position input accepts either type; omitted height becomes zero. The former
+  `Point` export is removed. See [the accepted coordinate migration](design/GEOMETRY_AND_ROUTES.md#planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09).
 - `MapDefinition.objects` holds object definitions; required `MapDefinition.layers` declares layers.
   Each layer's `objects` lists IDs for ordinary full content; optional `intersectionBounds`
   lets the engine find and clip geometry from the common collection automatically.
   Omitted lists are empty; unknown references reject loading, and duplicate root IDs
   select all matching instances for layer content.
-  Direct content, backgrounds, order and visibility are now implemented for review;
+  Direct content, backgrounds, order and visibility are now merged;
   no default layer or flat input is accepted. Runtime membership uses stable
   `layer.objectIds.add/remove/has`; `layer.objects` exposes frozen current direct roots.
-  `intersectionBounds` is explicitly rejected until automatic clipping is implemented.
+  `intersectionBounds` is now implemented for review with shared clipped display/picking geometry;
+  direct content remains whole and has priority within its layer.
   See [the implemented layer contract](design/LAYERS_AND_INTERACTION.md#explicit-layers--accepted-and-implemented-for-review-2026-10-08).
   No additional intersecting-object input list or separate level concept. See the
   [accepted map structure](design/LAYERS_AND_INTERACTION.md#accepted-map-structure--2026-10-08).
@@ -52,6 +57,10 @@ continue between answers rather than relying on HTML anchors.
   that supplies `intersectionBounds`; omission leaves ordinary content without automatic clipping.
   Derived cut coordinates create no runtime points or markers. See the
   [layer contract clarification](design/LAYERS_AND_INTERACTION.md#layer-contract-clarification--2026-10-08).
+  Supplied bounds must contain at least one coordinate constraint; empty bounds
+  are rejected. Boundary picking accounts for the eligible centerline and screen stroke
+  thickness, with concrete Node/native Chromium regressions for mini review. See
+  [the bounds contract](design/LAYERS_AND_INTERACTION.md#intersection-bounds-contract--accepted-and-implemented-for-review-2026-10-08).
 - stackIndex defines composition; it is neither height z nor a substitute for depth in 3D.
 - Line and route definitions expose `points` directly; point definitions group
   coordinates in `position`. IDs are optional in input and stable at runtime.
@@ -130,12 +139,16 @@ Full contract consolidation is a separate future step, not performed automatical
 
 ## Where we stopped
 
-The first explicit-layer stage is implemented in the primary repository and
-prepared for PR: direct ID membership, layer backgrounds, composition,
+The first explicit-layer stage is merged, as confirmed by the user on 2026-10-08:
+direct ID membership, layer backgrounds, composition,
 independent visibility, shared-object updates and hit-layer event context. See
 [scope and next step](design/PROTOTYPE.md#explicit-layer-first-stage--implemented-for-review-2026-10-08).
-Automatic intersections/z/clipping remain the next implementation stage; existing
-accepted design drafts and historical benchmark artifacts are preserved.
+Automatic intersections/z/clipping are now implemented for mini review in the primary
+repository, with the 2026-10-09 `Point2`/`Point3` migration applied. See
+[the current stage, checks and changed files](design/PROTOTYPE.md#coordinate-migration--implemented-for-review-2026-10-09).
+The source route/points, merged layer behavior, local decision edits and historical
+benchmark artifacts are preserved. Volumetric zones and the other prototype blocks
+remain separate future work.
 
 Possible shared generic storage for the root and layer-ID collections is recorded
 as [deferred exploration](design/RUNTIME_AND_LOADING.md#shared-generic-collection-storage--deferred-exploration-2026-10-08).
