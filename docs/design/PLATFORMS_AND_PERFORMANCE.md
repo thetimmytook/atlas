@@ -18,6 +18,16 @@ load gate and physical mobile validation remain outstanding.
   specific keys, registration/interception API, focus, and the division of
   responsibility between Atlas and the application are not yet approved.
 
+## Platform acceptance plan — proposed, 2026-10-09
+
+The [platform acceptance plan](../validation/PLATFORM_ACCEPTANCE_PLAN.md) proposes
+a compact first-wave matrix, reproducible scenarios, evidence protocol and open
+decisions. It separates merged Chromium coverage, proposed additional browser checks
+and physical-device work, with engine/application responsibilities and accessibility
+gaps explicit. It is a plan, not a new run or support guarantee;
+the representative benchmark and separate before/after comparison retain their own
+performance scope and still need agreed gate criteria.
+
 ## Measuring the tarkov.dev reference
 
 Checked on 2026-09-25. Source: https://json.tarkov.dev/regular/maps
