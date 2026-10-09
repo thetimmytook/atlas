@@ -24,6 +24,8 @@ export class MapElement extends HTMLElement {
   readonly #controls: CameraControls;
   readonly #camera = new Camera();
   #renderFrame: number | undefined;
+  #batchDepth = 0;
+  #renderPending = false;
   readonly #renderer: Renderer;
   #model = new MapModel();
   #clickTrigger: ClickTrigger = 'release';
@@ -101,6 +103,41 @@ export class MapElement extends HTMLElement {
 
   get definition(): ResolvedMapDefinition | undefined {
     return this.#model.definition;
+  }
+
+  /**
+   * Group synchronous edits while deferring only this map's rendering.
+   * Returned thenables are rejected after invocation; successful edits are not rolled back.
+   */
+  batch(callback: () => void): void {
+    if (typeof callback !== 'function') {
+      throw new AtlasError('Batch callback must be a function.', {
+        code: 'INVALID_BATCH_CALLBACK',
+        details: { receivedType: typeof callback },
+      });
+    }
+
+    this.#batchDepth++;
+
+    try {
+      const result: unknown = callback();
+
+      if (
+        result !== null &&
+        (typeof result === 'object' || typeof result === 'function') &&
+        typeof (result as { then?: unknown }).then === 'function'
+      ) {
+        throw new AtlasError('Batch callback must be synchronous.', {
+          code: 'ASYNC_BATCH_CALLBACK',
+        });
+      }
+    } finally {
+      this.#batchDepth--;
+
+      if (this.#batchDepth === 0 && this.#renderPending) {
+        this.#requestRender();
+      }
+    }
   }
 
   async load(definition: MapDefinition): Promise<void> {
@@ -231,7 +268,19 @@ export class MapElement extends HTMLElement {
   }
 
   readonly #requestRender = (): void => {
-    if (!this.isConnected || this.#renderFrame !== undefined) {
+    if (!this.isConnected) {
+      return;
+    }
+
+    if (this.#batchDepth > 0) {
+      this.#renderPending = true;
+
+      return;
+    }
+
+    this.#renderPending = false;
+
+    if (this.#renderFrame !== undefined) {
       return;
     }
 

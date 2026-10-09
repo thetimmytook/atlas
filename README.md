@@ -16,8 +16,10 @@ Available now:
 
 This is a prototype, with provisional built-in appearance and URL/size backgrounds.
 SVG displays an x/y projection, including extruded polygons; it is not a 3D view.
-Materials, labels, batch updates, a resource registry and current-state export are
-not implemented. Framework adapters and an editor are future consumers. Browser,
+Materials, labels, a resource registry and current-state export are not implemented.
+Synchronous `map.batch()` is implemented for review and not yet merged; see the
+[batch contract](docs/design/RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09).
+Framework adapters and an editor are future consumers. Browser,
 mobile and performance validation remain incomplete. See the
 [current contract](docs/design/CURRENT_CONTRACT.md) and the
 [integration guide's follow-up status](docs/INTEGRATION.md#object-events-and-the-external-panel).

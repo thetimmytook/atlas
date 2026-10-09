@@ -1,22 +1,25 @@
 # Current Atlas contract
 
-[Main navigation](../DESIGN_MAIN.md) · [Current work](PROTOTYPE.md#repeat-review-follow-up--accepted-2026-10-09)
+[Main navigation](../DESIGN_MAIN.md) · [Current work](PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09)
 
-Verified on 2026-10-09 against merged commit `bc87449`, including polygon PR #30.
+Verified on 2026-10-09 against merged commit `a5be046`, including polygons,
+route-local topology invalidation and second-pointer protection (PRs #30, #33–34).
 The authority for available names is [src/index.ts](../../src/index.ts); behavior
 was checked in the runtime, validators, scene preparation and SVG renderer at that
-commit. Parallel runtime fixes under review are excluded from this baseline.
+commit. Synchronous nested batch is implemented for review, not merged;
+its status is separate from the merged baseline.
 This summary takes precedence over older implementation notes and design examples;
 topic documents retain decisions and their history.
 
 ## Status key
 
-| Status                         | Meaning and current examples                                                                                                                                                                                                                                |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Implemented and merged         | Available in the checked baseline: four object kinds, explicit layers, spatial clipping, camera/input, load snapshots and runtime editing.                                                                                                                  |
-| Temporary implemented contract | Available, but provisional: URL/size backgrounds, built-in appearance, payload-free `change` and collection `add`/`remove` notifications, internal single-consumer scene changes.                                                                           |
-| Accepted, not implemented      | Route geometry/symbol/picking separation and its no-symbol/no-point-picking default; batch; minimal materials and labels/property registration; resource registry, schemaVersion, homeView and camera constraints. Exact unfinished APIs remain unfinished. |
-| Open or deferred               | Public core/model lifecycle, multiple viewports, runtime export, material/interaction field schemas, polygon outlines/holes/nonhorizontal geometry, broader browser/mobile validation and numerical load targets.                                           |
+| Status                             | Meaning and current examples                                                                                                                                                                                                                         |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Implemented and merged             | Available in the checked baseline: four object kinds, explicit layers, spatial clipping, camera/input, load snapshots and runtime editing.                                                                                                           |
+| Implemented for review, not merged | Synchronous nested `map.batch(callback): void`; only the chosen map's rendering is deferred.                                                                                                                                                         |
+| Temporary implemented contract     | Available, but provisional: URL/size backgrounds, built-in appearance, payload-free `change` and collection `add`/`remove` notifications, internal single-consumer scene changes.                                                                    |
+| Accepted, not implemented          | Route geometry/symbol/picking separation and its no-symbol/no-point-picking default; minimal materials and labels/property registration; resource registry, schemaVersion, homeView and camera constraints. Exact unfinished APIs remain unfinished. |
+| Open or deferred                   | Public core/model lifecycle, multiple viewports, runtime export, material/interaction field schemas, polygon outlines/holes/nonhorizontal geometry, broader browser/mobile validation and numerical load targets.                                    |
 
 ## Public entry and map input
 
@@ -135,12 +138,28 @@ Empty-space presses permit panning. A surface handler runs before object deliver
 the captured hit is revalidated against current geometry/membership/visibility,
 without selecting an underlying replacement hit.
 
-**Pending fixes, excluded from this baseline:** route-owned membership edits still
-cause global reconciliation; a second pointer can incorrectly trigger press-mode
-picking and consume a valid pinch. The accepted correction preserves first-hit
-press consumption and surface events. Its implementation/signatures and new gesture
-coverage remain under review. A public cancellation notification is still open.
-See [accepted follow-up](PROTOTYPE.md#repeat-review-follow-up--accepted-2026-10-09).
+Merged corrections limit route-owned membership invalidation to the changed route.
+A second pointer cannot trigger press-mode picking and consume an active pinch;
+press eligibility is checked again after synchronous surface handlers. First-hit
+press consumption and surface events are preserved. A public cancellation
+notification remains open. See [accepted follow-up](PROTOTYPE.md#repeat-review-follow-up--accepted-2026-10-09).
+
+## Synchronous batch — implemented for review, not merged
+
+`map.batch(callback: () => void): void` invokes the callback synchronously once.
+Nested batches defer only this component's rendering until the outermost exit;
+data, events and picking remain immediate, including nested handlers. Successful
+edits survive errors, and nesting is restored through `finally`. An empty batch
+requests no new RAF; existing pending work retains normal RAF coalescing.
+Disconnect/reconnect and other maps retain their existing behavior.
+
+A non-function callback raises `INVALID_BATCH_CALLBACK`; a returned object or
+function with callable `then` raises `ASYNC_BATCH_CALLBACK`. Thenable detection
+is misuse diagnostics: it does not cancel an async continuation or handle its
+later failures. Callback and `then` getter failures propagate unchanged.
+Batch makes no performance or geometry-traversal reduction promise.
+See the [full contract](RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09)
+and [review status and validation](PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09).
 
 ## Temporary implemented contracts
 
@@ -150,15 +169,15 @@ See [accepted follow-up](PROTOTYPE.md#repeat-review-follow-up--accepted-2026-10-
 | Line/route stroke: 4 CSS px, orange `#d95012`, round caps/joins. Polygon fill: `#f59e0b`, opacity 0.3, no outline.                                                                                                                        | Material-derived appearance; polygon outlines additionally need external contours.                                                                                                                             |
 | Background `{ source, size: { width, height } }` at map origin; decoded as an image.                                                                                                                                                      | Accepted resource/background-placement design, without a current registry or pluggable loader.                                                                                                                 |
 | Payload-free synchronous object/layer `change`; root-collection synchronous `add`/`remove` with the runtime object as detail after mutation.                                                                                              | Future agreed collection/change-event contract; property/old/new-value payloads are not implemented.                                                                                                           |
-| Internal `MapModel` owns snapshot, roots/layers, geometry, spatial queries and observation. Internal `SceneGeometry.takeChanges()` drains one renderer's pending set; picking does not drain it. Component RAF coalesces display updates. | Provisional single-consumer mechanism, not public lifecycle, `map.batch` or multi-viewport support.                                                                                                            |
+| Internal `MapModel` owns snapshot, roots/layers, geometry, spatial queries and observation. Internal `SceneGeometry.takeChanges()` drains one renderer's pending set; picking does not drain it. Component RAF coalesces display updates. | Provisional single-consumer mechanism, without public lifecycle or multi-viewport support.                                                                                                                     |
 
 ## Accepted future work and open decisions
 
-Batch, minimal materials, label/property registration and resource/schemaVersion
+Minimal materials, label/property registration and resource/schemaVersion
 design remain accepted future work; their illustrative APIs are not available now.
 Home view, camera constraints and animation also remain unimplemented.
 Public model lifecycle, multiple viewports, current-state export, exact material and
 interaction schemas, cancellation notification, broader browser/mobile validation
 and numerical performance targets remain open/deferred. Historical counts and
 measurements belong to their dated stages in [Prototype](PROTOTYPE.md) and
-[Tooling](../TOOLING.md); they do not certify this whole prototype or pending fixes.
+[Tooling](../TOOLING.md); they do not certify this whole prototype or pending work.

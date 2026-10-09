@@ -1,9 +1,78 @@
 # First Atlas prototype
 
 Current public baseline: [Current contract](CURRENT_CONTRACT.md), checked against
-merged `bc87449` on 2026-10-09. Polygon PR #30 is merged. Parallel route-membership
-and gesture fixes remain under review and are not part of that baseline. Older
+merged `a5be046` on 2026-10-09. Polygon PR #30 and the route-membership/gesture fixes
+(PRs #33–34) are merged. Batch is implemented for review, not merged. Older
 review-stage sections below retain dated implementation/validation history.
+
+## Synchronous nested batch — implemented for review, 2026-10-09
+
+The user confirmed the preceding measurements complete and accepted, then requested
+implementation of the [agreed batch contract](RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09).
+`MapElement.batch(callback: () => void): void` now defers only this component's
+render scheduling. The outermost `finally` resumes existing RAF coalescing only
+for accumulated work. Data, events and picking remain immediate, including nested
+handlers; successful edits survive exceptions. Callback and returned-thenable
+diagnostics use `INVALID_BATCH_CALLBACK` and `ASYNC_BATCH_CALLBACK`. Async continuations
+cannot be cancelled or have their later errors intercepted by this diagnostic.
+
+Implementation changes are limited to `MapElement`, a dedicated native Chromium
+regression suite, native pointer/touch E2E checks, the Buildings example and its
+built E2E scenario, plus these contract/status documents. Buildings has a combined action to edit the shared
+zone's contour, base and height through batch. Application UI remains outside the engine.
+
+The focused browser suite checks RAF scheduling inside
+callbacks and on outer exit, actual SVG output, surviving nodes and exactly one
+final point-transform write with no unrelated attribute writes. It also covers
+nested change handlers, component picking before paint in a native pointer task,
+exception identity/recovery, thenable/getter failures, async continuation limits,
+empty/no-change batches, already scheduled work, disconnect/reconnect, shared
+objects across two maps, root/layer membership, route topology, camera and polygon
+shape/vertical changes. Loading and ResizeObserver settle before counting requests;
+test waits bypass the component RAF counter.
+
+### Validation on updated master
+
+The branch was fast-forwarded from `bc87449` to `a5be046` (`origin/master`) before
+reapplying only batch changes. PR #31 contract consolidation, PR #35 integration
+guidance and the merged route-topology/pointer corrections (PRs #33–34) are retained.
+The following commands passed sequentially on the updated base on 2026-10-09:
+
+1. `npm run check`: type checking and formatting passed; zero lint errors and 34
+   advisory warnings in existing benchmark/test files.
+2. `npm test`: 230 Node tests across 16 files.
+3. `npm run test:browser`: 106 Chromium tests across seven files, including 26 batch
+   regressions. The added integration case checks route-local topology invalidation
+   with immediate picking, deferred painting and no unrelated geometry reads or SVG writes.
+4. `npm run build`: library and bundled declarations built successfully. API Extractor
+   retains its bundled-TypeScript 5.9.3/project-TypeScript 6.0.3 advisory.
+5. `npm run test:e2e`: 23 tests across two files, including the built Factory/Buildings
+   scenario and native pointer/touch checks. Two new cases verify second-pointer
+   protection with a batched press handler and press eligibility rechecking after
+   a synchronous handler changes `clickTrigger` through batch.
+
+The fresh public declaration contains `batch(callback: () => void): void`; a separate
+TypeScript consumer verifies required function input, nested calls and the void result.
+The platform acceptance plan and performance comparison already belong to the updated
+master and are unchanged by the batch diff. No new performance measurements were run.
+
+### Earlier validation on bc87449 — historical
+
+Validation on the original base on 2026-10-09: `npm run check` (zero errors; nine advisory duplicate-string
+warnings), `npm test` (223 Node tests), `npm run test:browser` (100 Chromium tests,
+including the 25 new batch regressions), `npm run build`, `npm run bench:build` and
+`npm run test:e2e` (one combined built Factory/Buildings scenario, including the
+batch action and a 390 CSS-pixel viewport) passed. Library, benchmark and example
+builds ran sequentially. The bundled public declaration contains exactly
+`batch(callback: () => void): void`; a separate TypeScript consumer verifies the
+callback input, nested calls and void result. API Extractor retains its existing
+bundled-TypeScript version advisory; declaration generation and consumer checking pass.
+
+These earlier results do not replace validation on the updated base. They are
+separate from the historical polygon acceptance below. No new
+timing measurements or speedup claim belong to this task. Existing saved benchmark
+evidence remains unchanged.
+The implementation is ready for pull-request review and is not yet merged.
 
 ## Repeat-review follow-up — accepted, 2026-10-09
 
@@ -12,7 +81,10 @@ following triage of the [repeat solution review, findings 19–33](../archive/SO
 The original report remains unchanged historical evidence; its proposed remedies
 are not automatically accepted architecture or implementation requirements.
 
-The next implementation sequence is:
+The sequence below records the accepted plan. The preceding measurements are now
+complete and accepted; batch implementation proceeds after the merged corrections.
+
+The original implementation sequence was:
 
 1. **Prepare a representative scene and freeze its baseline (19, 30).** Extend load
    validation to deterministic 3000/5000-root workloads with several buildings,

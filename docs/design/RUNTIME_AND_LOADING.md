@@ -2,13 +2,85 @@
 
 Current baseline: [Current contract](CURRENT_CONTRACT.md). Layers/intersections,
 polygons, root collection operations and route editing are merged. Notifications
-remain provisional. Batch, schemaVersion, resources and live export below are
-future design, not available APIs; pending runtime fixes are recorded separately.
+remain provisional. Synchronous nested batch is implemented for review, not merged.
+SchemaVersion, resources and live export below remain future design, not available APIs.
 
 [Navigation and current summary](../DESIGN_MAIN.md)
 
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
+
+## Synchronous nested batch — accepted contract, 2026-10-09
+
+The user approved this `MapElement` method, including its signature and misuse
+diagnostics, and confirmed the preceding measurements complete and accepted.
+It is now **implemented for review**, not yet merged. See the
+[implementation and separate validation report](PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09).
+
+```ts
+batch(callback: () => void): void;
+```
+
+`void` is sufficient: no current consumer needs the callback's return value.
+An ordinary non-thenable return value is ignored. The callback executes synchronously
+and exactly once after input validation.
+
+### Immediate state and deferred display
+
+- Data changes immediately. Successful changes emit their existing events immediately
+  and in their current order. Synchronous handlers may read current data, change
+  related objects and invoke nested batches.
+- Geometry and picking observe current state inside the callback and its handlers,
+  before RAF. Spatial queries retain pending renderer invalidation.
+- Only rendering of this map instance is suspended. Object, collection, layer and
+  camera behavior continues. A batch on one map does not suspend another map,
+  including when both maps share runtime objects.
+- Rendering resumes after the outermost batch exits, through the existing coalesced
+  RAF mechanism. There is no synchronous render on exit. Schedule an update only
+  when render work has accumulated; at most one frame remains scheduled.
+- An empty batch or a batch with no changes requests no new RAF. A previously
+  scheduled frame and accumulated invalidation are preserved.
+- A disconnected component schedules no RAF. Reconnect displays its current state,
+  including changes made during a disconnected batch.
+
+### Exceptions and async misuse
+
+Batch is not a transaction. Earlier successful changes remain when the callback
+throws, and the original thrown value propagates without replacement. Nesting is
+restored through `finally`, including failures and misuse diagnostics. If an inner
+batch throws and the outer callback catches it, the outer batch continues to hold
+rendering. Later ordinary changes must continue to display normally after an error.
+
+Before invocation, validate `typeof callback === 'function'`. Otherwise throw
+`AtlasError` with code `INVALID_BATCH_CALLBACK`, constant message
+`Batch callback must be a function.`, and the received type in structured `details`.
+
+After the callback returns, treat a non-null object or function with a callable
+`then` property as a Promise/thenable and throw `AtlasError` with code
+`ASYNC_BATCH_CALLBACK` and constant message `Batch callback must be synchronous.`.
+Do not invoke or await the returned thenable. Errors thrown by the callback or
+while reading its result's `then` property propagate unchanged.
+
+TypeScript permits async functions in some `() => void` contexts; the signature
+does not statically enforce synchronous execution. The runtime check diagnoses a
+returned thenable only, without inspecting callback source text. It does not cancel
+an already started async function, await its continuation or catch later async
+errors. Its continuation may execute later outside batch. Async work whose Promise
+is not returned cannot be detected by this check. Applications obtain async data
+before entering batch and then apply changes synchronously.
+
+### Implementation boundary and performance
+
+Use the existing component render-scheduling boundary and explicit invalidation.
+Runtime and spatial remain independent of DOM. Do not defer events, suppress object
+behavior or consume renderer dirty state during picking. Async loading is separate;
+this contract adds no rollback, async batch, global transaction manager or public
+standalone `MapModel`.
+
+Existing RAF already coalesces many synchronous edits. Batch itself does not reduce
+geometry traversals, and no speedup is claimed without measurements. Batch validation
+is recorded separately from polygon acceptance and earlier baseline measurements;
+historical measurement artifacts are unchanged.
 
 <a id="layered-map-input--accepted-2026-10-08-first-stage-implemented-for-review"></a>
 
@@ -585,8 +657,9 @@ TypeScript pre-transform that was needed to execute modern decorator syntax.
 ## Updates and runtime objects — discussion ongoing
 
 Mixed decision history: plain `change` and provisional root `add`/`remove`
-notifications are implemented; property/previous/new payloads, batch, schemaVersion
-and resource loading beyond image backgrounds are accepted future design. Live
+notifications are implemented; synchronous nested batch is implemented for review.
+Property/previous/new payloads, schemaVersion and resource loading beyond image
+backgrounds are accepted future design. Live
 export and unfinished operation signatures remain open. See the
 [current notification limits](CURRENT_CONTRACT.md#temporary-implemented-contracts).
 
@@ -635,7 +708,7 @@ collection infrastructure only when concrete consumers need it.
   try/catch; logging does not replace an exception.
 - An operation rejected by validation does not change object state. This guarantee
   applies to an individual operation, not to batch as a transaction; earlier
-  successful batch changes remain in the accepted future batch design. `AtlasError`
+  successful batch changes remain under the accepted batch contract. `AtlasError`
   is implemented with codes/details/cause; the complete future code list is undefined.
 
 - Removing an independent object from a map detaches it and removes its display,
@@ -654,16 +727,9 @@ collection infrastructure only when concrete consumers need it.
 
 - Adding, modifying, and removing objects must update the map incrementally.
   This is a runtime/renderer mechanism, independent of Shadow DOM isolation.
-- batch is accepted but not implemented: several changes may be grouped while display updates are deferred.
-  Data changes immediately during the callback while display updates are suspended;
-  after the callback, Atlas updates affected display content. This is not a transaction:
-  earlier successful changes are not rolled back on failure. Events fire immediately
-  after each successful change; handlers see current data and may make related changes.
-  batch suspends only rendering, not object behavior or events. Nested batches are
-  supported: rendering resumes only after leaving the outermost batch. The callback
-  is synchronous; async batch is unsupported. The application obtains asynchronous
-  data before batch, then applies changes synchronously. The exact signature and
-  diagnostics for an incorrect async callback remain open.
+- Synchronous nested batch is implemented for review. Its signature, immediate
+  state/events/picking, deferred rendering and callback/thenable diagnostics follow
+  the [accepted contract](#synchronous-nested-batch--accepted-contract-2026-10-09).
 - The user chooses runtime instances with behavior: registration must return an
   instance reference the application can retain and modify. Lookup by ID must
   provide that instance, not merely plain JSON.

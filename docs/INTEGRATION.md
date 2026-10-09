@@ -359,14 +359,13 @@ end, and release produces no second object click. Pressing empty space allows pa
 Surface handlers run before object delivery; the captured hit is revalidated after
 them rather than replaced by an underlying hit.
 
-The current-contract baseline (`bc87449`, checked on 2026-10-09) records a
-press-mode defect where a second pointer can pick and consume a valid pinch.
-The [second-pointer correction](https://github.com/thetimmytook/atlas/pull/34)
-and the separate
+The current-contract baseline (`a5be046`, checked on 2026-10-09) includes the
+[second-pointer correction](https://github.com/thetimmytook/atlas/pull/34): a second
+pointer cannot pick and consume an active pinch, and press eligibility is rechecked
+after synchronous handlers, including those applying a batch. The separate
 [bounded route-membership invalidation fix](https://github.com/thetimmytook/atlas/pull/33)
-have since merged. First-hit press consumption is preserved; a public cancellation
+is also merged. First-hit press consumption is preserved; a public cancellation
 notification and broader physical mobile/input validation remain open.
-Parallel checkout changes alone do not establish merged behavior.
 The complete example uses the default release mode. See the
 [baseline input contract](design/CURRENT_CONTRACT.md#input-and-events).
 
@@ -423,7 +422,16 @@ Successful `load()` creates new roots/layers, so reacquire references after it.
 filled in. Runtime positions, additions/removals, layer membership and visibility
 never update it. Do not use it as an export/save of the current edited state.
 Maintain application state separately when persistence is required. Current-state
-export and batch updates are not implemented.
+export is not implemented.
+
+Synchronous `map.batch(callback: () => void): void` is implemented for review and
+not yet merged. It can group related runtime edits while holding only this map's
+rendering until the outermost batch exits. Data, events and picking stay immediate;
+errors preserve earlier successful changes. Empty/no-change batches add no frame.
+The callback must be synchronous: returned Promises/thenables produce a diagnostic
+after invocation, which cannot cancel later continuations or catch their async errors.
+See the [accepted contract and error codes](design/RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09)
+and the combined zone action in the [Buildings example](../examples/buildings.ts).
 
 ## Failed replacement loads keep the previous map
 

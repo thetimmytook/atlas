@@ -56,7 +56,7 @@ async function checkBuildings(page: Page, origin: string): Promise<void> {
   expect(await zone('a-0').getAttribute('d')).toBe(lowerPath);
   await page.getByRole('button', { name: 'Change zone height' }).click();
   await expect.poll(() => zone('a-1').isVisible()).toBe(true);
-  await page.getByRole('button', { name: 'Raise zone' }).click();
+  await page.getByRole('button', { name: 'Raise zone', exact: true }).click();
   await expect.poll(() => zone('b-0').count()).toBe(0);
   await page.locator('#floor-b').selectOption('1');
   await expect.poll(() => zone('b-1').isVisible()).toBe(true);
@@ -73,6 +73,17 @@ async function checkBuildings(page: Page, origin: string): Promise<void> {
     layerId: 'a-1',
     routeId: 'journey',
   });
+  await page.getByRole('button', { name: 'Reshape and raise zone' }).click();
+  await expect
+    .poll(() => page.locator('#status').textContent())
+    .toBe('Buildings loaded. Zone: base 1, height 1.');
+  await expect.poll(() => zone('a-1').count()).toBe(0);
+  expect(await zone('b-1').count()).toBe(0);
+  expect(await zone('a-0').getAttribute('d')).toBe(lowerPath);
+
+  // Restore the volume through the same batched action before mobile layout checks.
+  await page.getByRole('button', { name: 'Reshape and raise zone' }).click();
+  await expect.poll(() => zone('b-1').isVisible()).toBe(true);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(
     await page.evaluate(

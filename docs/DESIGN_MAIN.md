@@ -13,7 +13,8 @@ continue between answers rather than relying on HTML anchors.
 ## Current foundation
 
 Read [Current contract](design/CURRENT_CONTRACT.md) for the short public-contract
-baseline, checked on 2026-10-09 against merged `bc87449`. It distinguishes
+baseline, checked on 2026-10-09 against merged `a5be046`, with batch separately marked
+as implemented for review, not merged. It distinguishes
 implemented/merged behavior, temporary implemented contracts, accepted future work
 and open/deferred decisions. The topic documents below retain decision history;
 illustrative future APIs do not extend the available exports.
@@ -33,13 +34,16 @@ illustrative future APIs do not extend the available exports.
 - Runtime additions/attachments/removals and route point editing are merged.
   `map.definition` remains an immutable resolved load snapshot, not live export.
 - `press`, `release`, `objectclick` and the JavaScript `clickTrigger` property are
-  implemented. A first-hit press consumes the gesture; the second-pointer defect
-  and bounded route-membership invalidation fixes remain under review.
+  implemented. A first-hit press consumes the gesture; the second-pointer protection
+  and bounded route-membership invalidation fixes are merged in PRs #33–34.
 - Internal `MapModel` ownership and explicit scene invalidation are merged.
   Scene changes still have one consumer. Temporary background, appearance and
   notification contracts are listed separately in [Current contract](design/CURRENT_CONTRACT.md#temporary-implemented-contracts).
+- Synchronous nested batch is implemented for review, not merged: state, events
+  and picking remain immediate; only this map's rendering is deferred. See the
+  [accepted signature and diagnostics](design/RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09).
 - Accepted but unimplemented: route geometry/symbol/picking separation (including
-  no-symbol/no-point-picking defaults), batch, minimal materials, labels/property
+  no-symbol/no-point-picking defaults), minimal materials, labels/property
   registration, resource registry, schemaVersion, homeView and camera constraints.
   Current route vertices still display/pick temporary symbols when eligible.
 - Public core/model lifecycle, multiple viewports, live export and unfinished API
@@ -75,13 +79,13 @@ Updating this baseline does not approve pending runtime work or unfinished API e
 
 ## Where we stopped
 
-Polygon/extrusion PR #30 is merged. The current work is the
-[Repeat-review follow-up](design/PROTOTYPE.md#repeat-review-follow-up--accepted-2026-10-09):
-representative baseline, two bounded runtime fixes under review, identical measurements
-after integration, then the remaining agreed prototype slice. Current-contract
-consolidation is documented here and in [Current contract](design/CURRENT_CONTRACT.md).
-Performance documents belong to that separate measurement work; no new load-gate
-result or merged status for pending runtime changes is implied.
+The user confirmed the preceding measurements complete and accepted. The current
+batch work is based on `a5be046`, including contract consolidation (PR #31), bounded
+route-topology invalidation (PR #33), second-pointer protection (PR #34) and the
+integration guide (PR #35). Synchronous nested `map.batch()` is implemented for
+review, not merged; see the [current status and fresh validation](design/PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09).
+Historical measurement results and the platform acceptance plan remain separate
+documents; this task adds no performance measurements or platform acceptance claim.
 
 ## Implementation history — original review stages
 
