@@ -3,14 +3,16 @@ import { invalidateScenes } from '#spatial/scene-invalidation.js';
 
 import { MapLine } from './map-line.js';
 import { MapPoint } from './map-point.js';
+import { MapPolygon } from './map-polygon.js';
 import { MapRoute } from './map-route.js';
 
 import type { MapEntryDefinition, ResolvedMapEntry } from '#definitions/map-definition.js';
 import type { MapLineDefinition } from '#definitions/map-line-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
+import type { MapPolygonDefinition } from '#definitions/map-polygon-definition.js';
 import type { MapRouteDefinition } from '#definitions/map-route-definition.js';
 
-export type MapEntry = MapLine | MapPoint | MapRoute;
+export type MapEntry = MapLine | MapPoint | MapPolygon | MapRoute;
 
 /** Ordered runtime objects with definition copying and instance attachment/removal. */
 export class MapObjectCollection extends EventTarget implements Iterable<MapEntry> {
@@ -34,12 +36,16 @@ export class MapObjectCollection extends EventTarget implements Iterable<MapEntr
   add(definition: MapPointDefinition): MapPoint;
   add(definition: MapLineDefinition): MapLine;
   add(definition: MapRouteDefinition): MapRoute;
+  add(definition: MapPolygonDefinition): MapPolygon;
   add(input: MapEntryDefinition | MapEntry): MapEntry;
 
   /** Copy definitions or attach instances; repeated instance attachment changes no membership. */
   add(input: MapEntryDefinition | MapEntry): MapEntry {
     const object =
-      input instanceof MapPoint || input instanceof MapLine || input instanceof MapRoute
+      input instanceof MapPoint ||
+      input instanceof MapLine ||
+      input instanceof MapRoute ||
+      input instanceof MapPolygon
         ? input
         : createMapObject(resolveMapEntry(input));
 
@@ -86,5 +92,7 @@ function createMapObject(definition: ResolvedMapEntry): MapEntry {
       return new MapLine(definition.id, definition.points);
     case 'route':
       return new MapRoute(definition.id, definition.points);
+    case 'polygon':
+      return new MapPolygon(definition);
   }
 }

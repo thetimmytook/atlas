@@ -1,5 +1,62 @@
 # First Atlas prototype
 
+## Polygon and extrusion contract — accepted, 2026-10-09
+
+The user confirmed that automatic intersections/z/clipping and the `Point2`/`Point3`
+migration are merged. The next accepted design is a horizontal `MapPolygon` with a
+frozen x/y `Point2` contour and independent `baseZ`/`height` getter/setter pairs. All
+vertex inputs reject the presence of z, including explicit undefined. Each vertical
+setter validates the complete resulting state before mutation, including finite
+`baseZ + height`. See the
+[full accepted contract](GEOMETRY_AND_ROUTES.md#horizontal-polygons-and-vertical-extrusion--accepted-contract-2026-10-09).
+
+Clipping drops every cell without positive x/y area. An appearance with no remaining
+positive-area cells is absent from both display and picking. A temporary fill without
+an outline is sufficient for this stage; obtaining external contours is required
+geometry work before future outline support, independently of materials.
+
+The implementation in the primary repository is ready for PR review in three parts:
+
+1. Flat polygon input/loading, frozen coordinate snapshots, atomic contour edits,
+   SVG fill and picking of the original object/runtime layer.
+2. Vertical extrusion and layer clipping: cached O(n²) ear clipping, convex-cell
+   rectangle clipping, positive z overlap, half-open ownership and positive-area
+   filtering. Disconnected regions share one appearance/path. Height-only edits
+   reuse planar cells; unchanged SVG projection does not rewrite the path.
+3. `examples/buildings.html`: two buildings with independent floor selection, one
+   shared concave volume and a connecting spatial route. The application can move
+   a corner or change base/height and inspect hit context. The existing Factory
+   example and benchmark workloads remain intact.
+
+No runtime package was added. Temporary translucent SVG fill names its intended
+material replacement at the implementation site; external contours and outlines,
+holes, nonhorizontal polygons and real 3D rendering remain outside this step.
+
+Implementation files include `map-polygon-definition.ts`, `map-polygon.ts`,
+`map-polygon.validator.ts`, `math/polygon.ts`, `polygon-clipping.ts` and
+`polygon-geometry.ts`, plus explicit loading/collection, scene, SVG and spatial
+dispatch. Existing benchmark types explicitly retain their point/line/route workload;
+saved measurements are unchanged. The definition-only contract decision did not
+itself authorize these changes; the later user instruction did.
+
+Regressions cover invalid input and z properties, winding/collinear source vertices,
+triangulation area, disconnected U cuts, zero-area cells beside valid cells, fill
+boundaries, adjacent floors, original identity, live invalidation, atomic load,
+captured-hit revalidation, hidden/disconnected/detached edits and unchanged SVG nodes.
+Validation on 2026-10-09: `npm run check` (no errors; advisory duplicate-string
+warnings remain), `npm test` (214 Node tests), `npm run test:browser` (75 Chromium
+tests), `npm run build`, `npm run bench:build`, and `npm run test:e2e` (one combined
+built Factory/Buildings scenario, including a 390 CSS-pixel viewport). Public bundled
+declarations include the accepted `MapPolygonDefinition` and `MapPolygon` signatures.
+The orientation fallback uses a power-of-two scale to preserve exact collinearity
+without a snapping tolerance. Regressions reject the zero-area contour
+`(0,0), (1,33), (6,198)` and pick `(1,11)` on the allowed edge of
+`(0,0), (7,77), (-11,1)` in both winding directions, alongside extreme finite
+coordinate cases.
+
+No new performance measurements were produced. The user authorized commits, push
+and PR preparation on 2026-10-09.
+
 ## Coordinate migration — implemented for review, 2026-10-09
 
 The z/intersection implementation now separates frozen `Point2(x, y)` and
@@ -315,6 +372,12 @@ Leaflet work is independent and unchanged.
 
 ## Contract and documentation follow-up
 
+- **First commit of the next PR — requested 2026-10-09:** correct the polygon-stage
+  validation report from 214 to 223 Node tests, the total independently verified
+  during acceptance. Include this documentation-only correction as the first
+  separate commit in the next task prompt, before its implementation changes.
+  This deferral concerns the report; the polygon orientation fix and its regression
+  tests belong to the current polygon change.
 - **Current contract summary (finding 7):** consolidate a short description of the
   implemented public contract, distinguishing merged behavior, work under review,
   temporary contracts, and future design. Move superseded history to linked archives

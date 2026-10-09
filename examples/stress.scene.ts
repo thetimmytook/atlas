@@ -8,12 +8,15 @@ export const ROUTE_LENGTHS = [3, 6, 12] as const;
 export const HIT_POSITION = { x: 20, y: 70 };
 export const MISS_POSITION = { x: -30, y: 70 };
 
+// The comparison benchmark deliberately keeps its original point/line/route workload.
+export type StressEntryDefinition = Exclude<MapEntryDefinition, { kind: 'polygon' }>;
+
 export interface StressScene {
   id: string;
   roots: 3000 | 5000;
   composition: 'points' | 'mixed';
-  definition: MapDefinition;
-  additions: readonly MapEntryDefinition[];
+  definition: Omit<MapDefinition, 'objects'> & { objects: readonly StressEntryDefinition[] };
+  additions: readonly StressEntryDefinition[];
   counts: {
     points: number;
     lines: number;
@@ -46,7 +49,7 @@ export function createStressScene(
       y: 8 + random() * (BACKGROUND_SIZE.height - 16),
     },
   });
-  const objects = Array.from({ length: roots }, (_, index): MapEntryDefinition => {
+  const objects = Array.from({ length: roots }, (_, index): StressEntryDefinition => {
     const id = `root-${index}`;
     const slot = index % 10;
 

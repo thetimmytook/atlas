@@ -1,3 +1,4 @@
+import type { IntersectionBounds } from '#math/intersection-bounds.js';
 import type { Point3 } from '#math/point3.js';
 import type { ClippedSegment } from './intersection.js';
 
@@ -22,4 +23,13 @@ export interface PolylineGeometry {
   readonly segments?: readonly ClippedSegment[];
 }
 
-export type Geometry = PointGeometry | LineGeometry | PolylineGeometry;
+/** Union of positive-area convex cells; internal decomposition has no object identity. */
+export interface PolygonGeometry {
+  readonly kind: 'polygon';
+  readonly cells: readonly (readonly Point3[])[];
+  readonly baseZ: number;
+  readonly height: number;
+  readonly bounds?: IntersectionBounds;
+}
+
+export type Geometry = PointGeometry | LineGeometry | PolylineGeometry | PolygonGeometry;

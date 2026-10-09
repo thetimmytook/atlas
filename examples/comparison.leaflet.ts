@@ -6,14 +6,13 @@ import { prepareCanvasPixels } from './comparison.canvas.js';
 import { expectedDefinitions } from './comparison.expected.js';
 import { BACKGROUND_SIZE, HIT_POSITION } from './stress.scene.js';
 
-import type { MapEntryDefinition } from '#definitions/map-definition.js';
 import type { BenchmarkAdapter, CameraTarget, Operation } from './comparison.adapter.js';
 import type { CanvasPixels } from './comparison.canvas.js';
-import type { StressScene } from './stress.scene.js';
+import type { StressEntryDefinition, StressScene } from './stress.scene.js';
 
 interface RootLayers {
   id: string;
-  kind: MapEntryDefinition['kind'];
+  kind: StressEntryDefinition['kind'];
   path: L.CircleMarker | L.Polyline;
   vertices: { id: string; layer: L.CircleMarker }[];
 }
@@ -91,7 +90,7 @@ export class LeafletAdapter implements BenchmarkAdapter {
       this.#background.once('error', () => reject(new Error('Leaflet background load failed.')));
     });
     this.#background.addTo(this.#map);
-    this.#roots = scene.definition.objects!.map(definition => this.#addRoot(definition));
+    this.#roots = scene.definition.objects.map(definition => this.#addRoot(definition));
     await ready;
     await this.#background.getElement()!.decode();
   }
@@ -104,7 +103,7 @@ export class LeafletAdapter implements BenchmarkAdapter {
     }).addTo(this.#map);
   }
 
-  #addRoot(definition: MapEntryDefinition): RootLayers {
+  #addRoot(definition: StressEntryDefinition): RootLayers {
     const id = definition.id!;
 
     if (definition.kind === 'point') {

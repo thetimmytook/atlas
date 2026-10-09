@@ -1,5 +1,7 @@
 import { squaredDistanceToSegment } from '#math/distance.js';
+import { containsConvexPolygon } from '#math/polygon.js';
 
+import { containsPolygonXY } from './polygon-clipping.js';
 import { isLayerEligible, isSceneObjectEligible } from './scene-geometry.js';
 
 import type { Camera } from '#camera/camera.js';
@@ -66,6 +68,13 @@ function hitTestGeometry(
   symbols: SceneSymbols,
   zoom: number,
 ): boolean {
+  if (geometry.kind === 'polygon') {
+    return (
+      (!geometry.bounds || containsPolygonXY(geometry.bounds, point)) &&
+      geometry.cells.some(cell => containsConvexPolygon(cell, point))
+    );
+  }
+
   if (geometry.kind === 'point') {
     const { position } = geometry;
     const { radius, strokeWidth } = symbols.point;

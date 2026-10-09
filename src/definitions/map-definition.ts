@@ -9,6 +9,7 @@ import {
   validateLinePoints,
   validateMapPoints,
 } from '#validators/map-points.validator.js';
+import { resolveMapPolygon } from '#validators/map-polygon.validator.js';
 import { validateNumber } from '#validators/number.validator.js';
 import { validateObjectId } from '#validators/object-id.validator.js';
 import { validateSize } from '#validators/size.validator.js';
@@ -17,11 +18,19 @@ import type { WithId } from './identity.js';
 import type { MapLayerDefinition, ResolvedMapLayerDefinition } from './map-layer-definition.js';
 import type { MapLineDefinition, ResolvedMapLineDefinition } from './map-line-definition.js';
 import type { MapPointDefinition } from './map-point-definition.js';
+import type {
+  MapPolygonDefinition,
+  ResolvedMapPolygonDefinition,
+} from './map-polygon-definition.js';
 import type { MapRouteDefinition, ResolvedMapRouteDefinition } from './map-route-definition.js';
 
-export type MapEntryDefinition = MapLineDefinition | MapPointDefinition | MapRouteDefinition;
+export type MapEntryDefinition =
+  MapLineDefinition | MapPointDefinition | MapPolygonDefinition | MapRouteDefinition;
 export type ResolvedMapEntry =
-  ResolvedMapLineDefinition | WithId<MapPointDefinition> | ResolvedMapRouteDefinition;
+  | ResolvedMapLineDefinition
+  | WithId<MapPointDefinition>
+  | ResolvedMapPolygonDefinition
+  | ResolvedMapRouteDefinition;
 
 /** Provisional URL/size input; replace with the agreed resource/background-placement contract. */
 export interface BackgroundDescription {
@@ -40,7 +49,7 @@ export interface ResolvedMapDefinition extends MapDefinition {
   readonly objects: readonly ResolvedMapEntry[];
 }
 
-const objectKinds: readonly MapEntryDefinition['kind'][] = ['line', 'route', 'point'];
+const objectKinds: readonly MapEntryDefinition['kind'][] = ['line', 'route', 'point', 'polygon'];
 
 /** Validate and copy input before asynchronous preparation starts. */
 export function resolveMapDefinition(definition: MapDefinition): ResolvedMapDefinition {
@@ -187,6 +196,10 @@ export function resolveMapEntry(object: MapEntryDefinition, field = 'object'): R
   }
 
   validateObjectId(`${field}.id`, object.id);
+
+  if (object.kind === 'polygon') {
+    return resolveMapPolygon(object, field);
+  }
 
   if (object.kind === 'point') {
     validateMapPoint(field, object);

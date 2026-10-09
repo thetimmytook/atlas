@@ -8,9 +8,8 @@ import { Spatial } from '#spatial/spatial.js';
 import { HIT_POSITION, MISS_POSITION } from './stress.scene.js';
 
 import type { MapElement } from '#components/map-element/map-element.js';
-import type { MapEntryDefinition } from '#definitions/map-definition.js';
 import type { Geometry } from '#spatial/geometry.js';
-import type { StressScene } from './stress.scene.js';
+import type { StressEntryDefinition, StressScene } from './stress.scene.js';
 
 interface ExpectedPoint {
   id: string;
@@ -18,7 +17,7 @@ interface ExpectedPoint {
 }
 interface ExpectedObject {
   id: string;
-  kind: MapEntryDefinition['kind'];
+  kind: StressEntryDefinition['kind'];
   points: ExpectedPoint[];
   routeId?: string;
 }
@@ -30,13 +29,13 @@ const LINE_STROKE = 4;
 const PROBE_ZOOM = 10000;
 const ROUTE_SCENARIO = 'route-update';
 
-function assertMatch(condition: boolean, check: string, id?: string): void {
+function assertMatch(condition: boolean, check: string, id?: string): asserts condition {
   if (!condition) {
     throw new Error('Post-operation scene mismatch.', { cause: { check, id } });
   }
 }
 
-function expectedObject(definition: MapEntryDefinition): ExpectedObject {
+function expectedObject(definition: StressEntryDefinition): ExpectedObject {
   const points = definition.kind === 'point' ? [definition] : definition.points;
 
   return {
@@ -80,7 +79,7 @@ function expectedMutation(
   roots: ExpectedObject[];
   probes: Point2[];
 } {
-  const roots = scene.definition.objects!.map(expectedObject);
+  const roots = scene.definition.objects.map(expectedObject);
   const amount = Number(scenario.split('-').at(1));
   let affected: ExpectedObject[];
   let after = roots;
@@ -161,6 +160,8 @@ function checkRoots(map: MapElement, expected: readonly ExpectedObject[]): void 
 }
 
 function geometryPositions(geometry: Geometry): readonly Point3[] {
+  assertMatch(geometry.kind !== 'polygon', 'benchmark geometry kind');
+
   if (geometry.kind === 'point') {
     return [geometry.position];
   }

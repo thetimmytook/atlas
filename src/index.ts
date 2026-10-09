@@ -10,6 +10,7 @@ export type {
   MapEntryDefinition,
 } from './definitions/map-definition.js';
 export type { MapRouteDefinition } from './definitions/map-route-definition.js';
+export type { MapPolygonDefinition } from './definitions/map-polygon-definition.js';
 export type {
   MapLayerDefinition,
   ResolvedMapLayerDefinition,
@@ -40,6 +41,7 @@ export { MapLine } from '#objects/map-line.js';
 export type { MapObjectCollection, MapEntry } from '#objects/map-object-collection.js';
 export { MapRoute } from '#objects/map-route.js';
 export { MapPoint } from '#objects/map-point.js';
+export { MapPolygon } from '#objects/map-polygon.js';
 export type { MapObjectDefinition } from '#definitions/map-object-definition.js';
 export type { MapLineDefinition } from '#definitions/map-line-definition.js';
 

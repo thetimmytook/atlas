@@ -6,7 +6,7 @@ import type { SceneObject, SceneSymbols } from '#spatial/scene-geometry.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
-type SvgShape = SVGCircleElement | SVGLineElement | SVGPolylineElement;
+type SvgShape = SVGCircleElement | SVGLineElement | SVGPolylineElement | SVGPathElement;
 
 export interface SvgObject {
   readonly source: SceneObject;
@@ -57,6 +57,19 @@ export function createObject(source: SceneObject, symbols: SceneSymbols): SvgObj
 
 /** Write map-space coordinates; camera scale does not affect this step. */
 export function applyGeometry(element: SVGGElement, shape: SvgShape, geometry: Geometry): void {
+  if (geometry.kind === 'polygon') {
+    const path = geometry.cells
+      .map(cell => {
+        const points = cell.map(point => `${point.x},${point.y}`).join('L');
+
+        return `M${points}Z`;
+      })
+      .join('');
+    setChangedAttribute(shape, 'd', path);
+
+    return;
+  }
+
   if (geometry.kind === 'point') {
     setChangedAttribute(
       element,
@@ -101,6 +114,19 @@ export function applyScreenScale(shape: SvgShape, kind: Geometry['kind'], scale:
 }
 
 function createShape(kind: Geometry['kind'], symbols: SceneSymbols): SvgShape {
+  if (kind === 'polygon') {
+    const path = document.createElementNS(SVG_NAMESPACE, 'path');
+
+    // Temporary prototype fill; replace with resolved polygon materials. External contours are
+    // required before outline support: stroking these cell subpaths would expose internal edges.
+    path.setAttribute('fill', '#f59e0b');
+    path.setAttribute('fill-opacity', '0.3');
+    path.setAttribute('fill-rule', 'nonzero');
+    path.setAttribute('stroke', 'none');
+
+    return path;
+  }
+
   if (kind !== 'point') {
     const line = document.createElementNS(SVG_NAMESPACE, kind);
     line.setAttribute('stroke-width', String(symbols.line.strokeWidth));

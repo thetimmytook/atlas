@@ -1,6 +1,6 @@
 import { assertComparison } from './comparison.adapter.js';
 
-import type { MapEntryDefinition } from '#definitions/map-definition.js';
+import type { StressEntryDefinition } from './stress.scene.js';
 
 // Offsets are bounded numeric pixel indices; record keys are the closed CanvasChange union.
 /* eslint-disable security/detect-object-injection */
@@ -36,7 +36,7 @@ function reference(
   height: number,
   scaleX: number,
   scaleY: number,
-  definitions: readonly MapEntryDefinition[],
+  definitions: readonly StressEntryDefinition[],
   project: (position: Position) => Position,
 ): Uint8ClampedArray {
   const canvas = document.createElement('canvas');
@@ -199,8 +199,8 @@ function changedColors(oldColor: number, newColor: number): CanvasChange[] {
 /** Reference work is prepared before mutation; readback is after RAF, untimed. */
 export function prepareCanvasPixels(
   host: HTMLElement,
-  before: readonly MapEntryDefinition[],
-  after: readonly MapEntryDefinition[],
+  before: readonly StressEntryDefinition[],
+  after: readonly StressEntryDefinition[],
   project: (position: Position) => Position,
 ): () => CanvasPixels {
   const canvas = host.querySelector('canvas')!;
