@@ -157,9 +157,13 @@ describe('polygon cells and shared appearances', () => {
     const other = model.geometry.objects[1]!;
     const otherCells = geometry(model, 1).cells;
     model.geometry.takeChanges();
+    let changeCalled = false;
     root.addEventListener(
       'change',
-      () => expect(model.spatial.hasHit(entry, new Point2(25, 25), camera())).toBe(false),
+      () => {
+        changeCalled = true;
+        expect(model.spatial.hasHit(entry, new Point2(25, 25), camera())).toBe(false);
+      },
       { once: true },
     );
     root.setContour([
@@ -168,6 +172,7 @@ describe('polygon cells and shared appearances', () => {
       { x: 80, y: 80 },
       { x: 40, y: 80 },
     ]);
+    expect(changeCalled).toBe(true);
     expect(model.geometry.objects[0]).toBe(entry);
     expect(model.geometry.objects[1]).toBe(other);
     expect(geometry(model, 1).cells).toBe(otherCells);

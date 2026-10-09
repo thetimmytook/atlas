@@ -1,5 +1,5 @@
 import { AtlasError } from '#errors/atlas-error.js';
-import { invalidateScenes } from '#spatial/scene-invalidation.js';
+import { invalidateRouteTopology } from '#spatial/scene-invalidation.js';
 import { validateMapPoints } from '#validators/map-points.validator.js';
 
 import { MapObject } from './map-object.js';
@@ -51,7 +51,7 @@ export class MapRoute extends MapObject {
       point,
       ...this.#points.slice(index),
     ]);
-    invalidateScenes(this, true);
+    invalidateRouteTopology(this);
     this.dispatchEvent(new Event('change'));
 
     return point;
@@ -65,7 +65,7 @@ export class MapRoute extends MapObject {
 
     this.#points = Object.freeze(this.#points.filter(entry => entry !== point));
     point.removeEventListener('change', this.#pointChange);
-    invalidateScenes(this, true);
+    invalidateRouteTopology(this);
     this.dispatchEvent(new Event('change'));
 
     return true;
@@ -112,7 +112,7 @@ export class MapRoute extends MapObject {
       point.addEventListener('change', this.#pointChange);
     }
 
-    invalidateScenes(this, true);
+    invalidateRouteTopology(this);
     this.dispatchEvent(new Event('change'));
 
     return points;

@@ -14,7 +14,11 @@ export class MapLayer extends EventTarget {
   readonly #definition: ResolvedMapLayerDefinition;
   readonly #objectIds: MapLayerObjectIdCollection;
   readonly #roots: MapObjectCollection;
-  readonly #invalidation: SceneInvalidation = { membership: true, changed: new Set() };
+  readonly #invalidation: SceneInvalidation = {
+    membership: true,
+    changed: new Set(),
+    topology: new Set(),
+  };
   #objects: readonly MapEntry[] = Object.freeze([]);
   #visible = true;
 
