@@ -17,12 +17,19 @@ continue between answers rather than relying on HTML anchors.
 - One `MapDefinition` may be reused to initialize multiple map instances. See
   [definition reuse](design/RUNTIME_AND_LOADING.md#map-definition-reuse--accepted-2026-10-06).
 - Every object shares `MapObjectDefinition` (`id?`, `kind`) and the runtime `MapObject`
-  base (identity and events). `MapPoint`, `MapLine`, and
+  base (identity and events). `MapPoint`, `MapLine`, `MapPolygon`, and
   `MapRoute` specialize this foundation. Independent, line-owned, and route-owned points use
   the same `MapPointDefinition` / `MapPoint` pair. Materials and other common properties will
   extend it when their contracts are implemented.
 - Atlas objects contain geometry; marker/zone semantics belong to the application.
-- Internal `Geometry` views cover point, line, and polyline forms. Compound geometry is deferred
+- The implemented polygon contract uses an x/y `Point2` contour with independent
+  `baseZ` and `height`, rather than repeating z in vertices. Degenerate clipped cells
+  do not render or pick; outlines require external result contours before support.
+  It is available for mini review. See
+  [horizontal polygons and extrusion](design/GEOMETRY_AND_ROUTES.md#horizontal-polygons-and-vertical-extrusion--accepted-contract-2026-10-09).
+- Internal `Geometry` views cover point, line, polyline and polygon forms. Polygon
+  views retain positive-area convex cells of a horizontal contour/extrusion; the
+  decomposition is internal. Compound geometry is deferred
   until a concrete use case needs it. Routes use `polyline` with ordered,
   identifiable points; consecutive points define connected segments without line objects.
   Owners keep behavior and validation. See
@@ -47,7 +54,7 @@ continue between answers rather than relying on HTML anchors.
   Direct content, backgrounds, order and visibility are now merged;
   no default layer or flat input is accepted. Runtime membership uses stable
   `layer.objectIds.add/remove/has`; `layer.objects` exposes frozen current direct roots.
-  `intersectionBounds` is now implemented for review with shared clipped display/picking geometry;
+  `intersectionBounds` is merged with shared clipped display/picking geometry;
   direct content remains whole and has priority within its layer.
   See [the implemented layer contract](design/LAYERS_AND_INTERACTION.md#explicit-layers--accepted-and-implemented-for-review-2026-10-08).
   No additional intersecting-object input list or separate level concept. See the
@@ -143,12 +150,16 @@ The first explicit-layer stage is merged, as confirmed by the user on 2026-10-08
 direct ID membership, layer backgrounds, composition,
 independent visibility, shared-object updates and hit-layer event context. See
 [scope and next step](design/PROTOTYPE.md#explicit-layer-first-stage--implemented-for-review-2026-10-08).
-Automatic intersections/z/clipping are now implemented for mini review in the primary
-repository, with the 2026-10-09 `Point2`/`Point3` migration applied. See
+Automatic intersections/z/clipping and the `Point2`/`Point3` migration are merged,
+as confirmed by the user on 2026-10-09. See
 [the current stage, checks and changed files](design/PROTOTYPE.md#coordinate-migration--implemented-for-review-2026-10-09).
 The source route/points, merged layer behavior, local decision edits and historical
-benchmark artifacts are preserved. Volumetric zones and the other prototype blocks
-remain separate future work.
+benchmark artifacts are preserved. The accepted polygon/extrusion contract is now
+implemented for mini review, including strict x/y contour input, atomic vertical
+setters, positive-area clipped appearances and the combined two-building example. See
+[the contract and next steps](design/PROTOTYPE.md#polygon-and-extrusion-contract--accepted-2026-10-09).
+Polygon changes are prepared for PR review. Materials and the other prototype
+blocks remain separate future work.
 
 Possible shared generic storage for the root and layer-ID collections is recorded
 as [deferred exploration](design/RUNTIME_AND_LOADING.md#shared-generic-collection-storage--deferred-exploration-2026-10-08).

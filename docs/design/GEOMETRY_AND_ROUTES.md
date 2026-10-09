@@ -11,9 +11,10 @@ Atlas owns generic objects, geometric primitives, materials, and shared runtime
 mechanisms. Markers, loot, quest zones, and other application concepts are defined
 outside Atlas. This replaces the earlier built-in `kind: marker` object model below.
 `geometry.kind` describes a geometric form, not application meaning.
-The merged implementation supports point and straight line geometry.
-Polygons and circles remain subsequent primitives. This does not
-add an arbitrary geometry plugin API.
+The merged implementation supports point, straight line and polyline geometry.
+Horizontal polygons and vertical extrusion are implemented for PR review under the
+accepted contract below. Circles remain a subsequent primitive. This does not add
+an arbitrary geometry plugin API.
 
 The current review uses `MapPointDefinition` (`id?`, `kind: 'point'`, `position: { x, y }`)
 and `MapPoint` for independent and route-owned points. Independent straight lines
@@ -26,6 +27,120 @@ separate steps. Ordinary API names use no Atlas prefix; the error family retains
 
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
+
+## Horizontal polygons and vertical extrusion — accepted contract, 2026-10-09
+
+Use one `MapPolygon` for a horizontal filled polygon and its optional vertical
+extrusion. Application-specific zone meaning remains outside the engine. This
+records the agreed contract; it does not itself authorize implementation. The later
+user instruction authorized the implementation now available for mini review; see
+[status and checks](PROTOTYPE.md#polygon-and-extrusion-contract--accepted-2026-10-09).
+
+```ts
+export interface MapPolygonDefinition extends MapObjectDefinition {
+  readonly kind: 'polygon';
+  readonly contour: readonly Point2[];
+  readonly baseZ?: number;
+  readonly height?: number;
+}
+
+export declare class MapPolygon extends MapObject {
+  constructor(definition: MapPolygonDefinition);
+
+  get kind(): 'polygon';
+  get contour(): readonly Point2[];
+
+  get baseZ(): number;
+  set baseZ(value: number);
+
+  get height(): number;
+  set height(value: number);
+
+  setVertex(index: number, position: Point2): void;
+  setContour(contour: readonly Point2[]): void;
+}
+```
+
+### Contour and editing
+
+The contour is an ordered list of x/y coordinates; the last vertex connects to the
+first automatically. It has no owned `MapPoint` instances, vertex IDs, separate
+vertex symbols or vertex picking. `setVertex` changes one current index;
+`setContour` replaces the shape, including application-managed insertion/removal.
+
+Construction, loading, `setVertex` and `setContour` accept plain x/y coordinates or
+`Point2` values. Any supplied vertex with a `z` property is rejected, including
+`z: undefined` and `Point3` values; height is never silently discarded. TypeScript's
+structural assignability alone does not enforce this runtime rule. Finite x/y
+coordinates are copied into frozen `Point2` values. The getter returns a frozen
+readonly array; retained arrays remain snapshots. `setVertex` may reuse unchanged
+immutable coordinate values, while `setContour` copies the new contour.
+
+A valid contour has at least three vertices and positive absolute area. Simple
+convex and concave contours are supported in either traversal direction, preserving
+the supplied order. Repeated x/y vertices (including a repeated closing vertex),
+self-intersections, self-touches, overlapping/backtracking edges, holes and multiple
+input contours are rejected. Consecutive collinear vertices without backtracking
+are permitted; only an internal working copy may be simplified.
+
+### Vertical state and atomic validation
+
+`baseZ` is the sole source of the base height; contour vertices contain no z.
+Omitted `baseZ` and `height` default to zero. A finite negative base is valid;
+height must be finite and nonnegative. Zero height is a plane at `baseZ`.
+Positive height describes a constant-section vertical extrusion over
+`[baseZ, baseZ + height)`. The upper value must be finite and, for positive height,
+strictly greater than the base.
+
+The runtime exposes independent getter/setter pairs for `baseZ` and `height`.
+Each setter validates the complete resulting vertical state, including the sum,
+before mutation. Contour edits validate the whole candidate contour before mutation.
+Rejected operations preserve all state and appearances and emit no `change` event;
+domain failures use `AtlasError` with stable messages/codes and structured details.
+Successful edits invalidate the affected appearances before notifying observers,
+so picking sees the new state before the next animation frame.
+
+### Clipping, display and picking
+
+Existing layer rules apply: direct membership displays the whole object and wins
+over automatic clipping within that layer; `layer.objects` remains direct roots
+only. Derived geometry retains the original polygon identity and does not create
+runtime objects or IDs at cuts. Rendering and picking consume the same derived view.
+
+A plane is eligible when its base height is within the layer's half-open z bounds.
+A volume requires a vertical overlap of positive length, so its top merely touching
+the next floor does not create an appearance there. SVG displays the x/y projection
+of the eligible part, without side walls or perspective.
+
+After x/y clipping, discard **every** cell without positive area, even when other
+positive-area cells remain. Discarded lines/points neither render nor participate
+in picking. If no positive-area cells remain, the appearance is absent from both
+SVG and picking. This does not exclude a zero-height polygon with positive x/y area.
+Disconnected positive-area results remain parts of one polygon appearance, without
+bridges across excluded regions. Picking returns the original polygon and hit layer
+for the eligible fill or boundary, respecting half-open bounds; there is no screen
+expansion or separate vertex hit area in this step.
+
+The implementation uses cached O(n²) ear clipping followed by rectangle clipping of
+convex cells. Collinear vertices are simplified only in the triangulation working
+copy; the original contour is retained. Cells use spatial `Point3` values at the
+clipped base and carry the intersected height. The decomposition remains internal,
+not a public multi-polygon/cell contract.
+The temporary appearance is a translucent fill without an outline. Before outline
+support, obtain the external contours of the clipped result: drawing each cell's
+outline would expose internal edges. This is separate geometry work; materials do
+not replace it. Temporary fill code must name its intended material replacement.
+
+Height-only edits do not require retriangulation; an unchanged projection does not
+require an SVG path rewrite. A contour edit can change the internal triangulation,
+including cell boundaries in another clipped appearance of the same polygon;
+retaining its SVG node does not imply an identical `d` string for such an edit.
+Preserve unaffected scene views and SVG nodes. Existing
+hidden/disconnected editing, detach/reattach and captured-hit revalidation rules apply.
+Required regressions include explicit `z: undefined` rejection, frozen snapshots,
+atomic vertical overflow rejection, removal of degenerate cells beside valid cells,
+an entirely degenerate clipped result, and a concave contour clipped into disjoint
+areas with no hit in the gap. Existing point/line/route behavior must remain intact.
 
 ## Planar and spatial coordinates — accepted and implemented for review, 2026-10-09
 

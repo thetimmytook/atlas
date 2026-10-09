@@ -10,7 +10,9 @@ The first implementation supports direct full appearances, layer backgrounds,
 composition and independent visibility. `intersectionBounds` remains the accepted
 next direction. The merged first stage rejected it with
 `UNSUPPORTED_INTERSECTION_BOUNDS`, including an explicit `undefined` value.
-The next stage below supersedes that rejection; volumetric zones remain deferred.
+The automatic stage below supersedes that rejection. Horizontal polygons and their
+vertical extrusion are now implemented for mini review under the
+[accepted polygon contract](GEOMETRY_AND_ROUTES.md#horizontal-polygons-and-vertical-extrusion--accepted-contract-2026-10-09).
 
 `MapDefinition.layers` is required: no default layer or flat-input compatibility.
 `layers: []` is valid and displays nothing; a top-level `background` is rejected.
@@ -200,8 +202,12 @@ automatic hit. The source route and points remain unchanged by clipping.
   composition rather than geometric height.
 - Responsive appearance must be considered. Conditions based on component viewport
   dimensions have been proposed; syntax and supported parameters are not yet defined.
-- Vertical polygon extrusion with a height has been proposed for volumetric zones.
-  The exact geometry schema remains open.
+- Vertical polygon extrusion now has an
+  [accepted contract](GEOMETRY_AND_ROUTES.md#horizontal-polygons-and-vertical-extrusion--accepted-contract-2026-10-09)
+  with an x/y contour and independent `baseZ`/`height`; implementation is available
+  for mini review in the [prototype status](PROTOTYPE.md#polygon-and-extrusion-contract--accepted-2026-10-09). All clipped cells without positive x/y area are discarded for both display
+  and picking, including degenerate cells beside valid ones. External result
+  contours must be obtained before outlines are supported.
 
 [Navigation and current summary](../DESIGN_MAIN.md)
 
