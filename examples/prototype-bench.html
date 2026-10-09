@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Atlas prototype baseline</title>
+    <style>
+      body {
+        margin: 16px;
+        font: 14px system-ui;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      #stage,
+      atlas-prototype-bench {
+        display: block;
+        width: 960px;
+        height: 640px;
+      }
+      #stage {
+        border: 1px solid #94a3b8;
+      }
+      pre {
+        max-width: 960px;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Prototype multi-building baseline</h1>
+    <p>
+      Controlled capture:
+      <code
+        >node examples/prototype-bench.run.mjs --output
+        docs/performance/prototype-YYYY-MM-DD-before</code
+      >
+    </p>
+    <p>Timing, counters and correctness run separately. RAF measures callback cadence.</p>
+    <div id="stage"></div>
+    <pre id="status">Ready. The runner creates the generated SVG fixture and starts capture.</pre>
+    <script type="module" src="./prototype-bench.ts"></script>
+  </body>
+</html>
