@@ -44,7 +44,7 @@ triangulation area, disconnected U cuts, zero-area cells beside valid cells, fil
 boundaries, adjacent floors, original identity, live invalidation, atomic load,
 captured-hit revalidation, hidden/disconnected/detached edits and unchanged SVG nodes.
 Validation on 2026-10-09: `npm run check` (no errors; advisory duplicate-string
-warnings remain), `npm test` (214 Node tests), `npm run test:browser` (75 Chromium
+warnings remain), `npm test` (223 Node tests), `npm run test:browser` (75 Chromium
 tests), `npm run build`, `npm run bench:build`, and `npm run test:e2e` (one combined
 built Factory/Buildings scenario, including a 390 CSS-pixel viewport). Public bundled
 declarations include the accepted `MapPolygonDefinition` and `MapPolygon` signatures.
@@ -372,12 +372,12 @@ Leaflet work is independent and unchanged.
 
 ## Contract and documentation follow-up
 
-- **First commit of the next PR — requested 2026-10-09:** correct the polygon-stage
-  validation report from 214 to 223 Node tests, the total independently verified
-  during acceptance. Include this documentation-only correction as the first
-  separate commit in the next task prompt, before its implementation changes.
-  This deferral concerns the report; the polygon orientation fix and its regression
-  tests belong to the current polygon change.
+- **Polygon validation report — completed 2026-10-09:** corrected the historical
+  polygon-stage report from 214 to 223 Node tests, the total independently verified
+  during acceptance. The 75 Chromium tests and one combined E2E scenario are unchanged.
+  This documentation-only correction is the first separate commit of the batch task;
+  the polygon orientation fix and its regression tests are already in the preceding
+  polygon change. Batch validation results will be recorded separately.
 - **Current contract summary (finding 7):** consolidate a short description of the
   implemented public contract, distinguishing merged behavior, work under review,
   temporary contracts, and future design. Move superseded history to linked archives
