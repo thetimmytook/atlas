@@ -126,6 +126,20 @@ document.querySelector('#height')!.addEventListener('click', () => {
     updateStatus();
   }
 });
+document.querySelector('#reshape')!.addEventListener('click', () => {
+  const zone = map.objects.get(ZONE_ID);
+
+  if (zone?.kind !== 'polygon') {
+    return;
+  }
+
+  map.batch(() => {
+    zone.setVertex(0, new Point2(zone.contour[0]!.x === 30 ? 50 : 30, 70));
+    zone.baseZ = zone.baseZ === 1 ? 3 : 1;
+    zone.height = zone.height === 4 ? 1 : 4;
+  });
+  updateStatus();
+});
 map.addEventListener('objectclick', event => {
   const { object, layer, route } = (event as ObjectClickEvent).detail;
   details.textContent = JSON.stringify(

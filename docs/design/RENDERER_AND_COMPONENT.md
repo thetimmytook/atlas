@@ -5,6 +5,22 @@ browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #
 and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
 and single-consumer; they are not public core lifecycle or multiple viewport support.
 
+## Batch rendering boundary — implemented for review, 2026-10-09
+
+The [accepted synchronous nested batch contract](RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09)
+is implemented in `MapElement` at its existing RAF-scheduling boundary. A per-instance
+nesting counter holds new render requests; a pending flag retains them until the
+outermost `finally`. An existing scheduled frame is preserved. Exit requests work
+only when accumulated, through normal RAF coalescing; empty/no-change batches
+request no new frame. There is no synchronous render on exit.
+
+Data, events, geometry and picking remain immediate, including nested synchronous
+handlers. Spatial reads retain pending display invalidation. Disconnect schedules
+no RAF; reconnect renders current state. Other maps keep their independent scheduling
+even when sharing objects. Runtime, spatial and SVG invalidation remain unchanged.
+Existing RAF already coalesces synchronous changes; no reduction in geometry
+traversals or speedup is claimed. See the [separate batch validation report](PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09).
+
 <a id="automatic-spatial-appearances--implemented-for-review-2026-10-08"></a>
 
 ## Automatic spatial appearances — merged in PR #29
@@ -117,7 +133,8 @@ Accepted direction:
   (SVG elements in the first implementation) and updates affected output with
   minimal redundant work. Its contract must not own hit testing or collision queries.
 - Runtime retains behavior, validation, layer configuration, normalized events and
-  change tracking; material resolution and batch remain accepted future work. Geometric preparation and querying
+  change tracking. Batch is implemented for review; material resolution remains
+  accepted future work. Geometric preparation and querying
   share this state with rendering rather than reconstructing it from rendered DOM.
 - Application UI and the response to events remain outside these subsystems.
 

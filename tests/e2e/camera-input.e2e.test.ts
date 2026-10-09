@@ -287,6 +287,40 @@ describe('camera/input through real browser input', () => {
     },
   );
 
+  test('batch in press handlers preserves second-pointer protection and pinch', async () => {
+    await trigger('press');
+    await page.evaluate(() => {
+      const { map } = window.cameraInput;
+      map.addEventListener('press', () => {
+        map.batch(() => {
+          const point = map.objects.get('target')!;
+
+          if (point.kind === 'point') {
+            point.position = { x: 440, y: 240, z: 0 };
+          }
+        });
+      });
+    });
+    const first = await client(empty);
+    const second = await client(target);
+    await touch('touchStart', [{ id: 1, ...first }]);
+    await touch('touchMove', [
+      { id: 1, ...first },
+      { id: 2, ...second },
+    ]);
+    expect((await state()).events.filter(event => event.type === 'press')).toHaveLength(2);
+    expect((await state()).clicks).toHaveLength(0);
+    await touch('touchMove', [
+      { id: 1, x: first.x - 40, y: first.y + 30 },
+      { id: 2, x: second.x + 80, y: second.y + 30 },
+    ]);
+    expectView(await state(), 320 - 20 / 1.5, 240 - 30 / 1.5, 1.5);
+    await touch('touchEnd', []);
+    const view = await state();
+    expect(view.clicks).toHaveLength(0);
+    expectTouchInput(view, 2);
+  });
+
   test('first object press consumes pan, pinch and wheel until every finger ends', async () => {
     await trigger('press');
     const first = await client(target);
@@ -427,6 +461,27 @@ describe('camera/input through real browser input', () => {
     expect((await state()).clicks).toHaveLength(1);
     await clickTarget();
     expect((await state()).clicks).toHaveLength(2);
+  });
+
+  test('rechecks press eligibility after a batched synchronous handler', async () => {
+    await page.evaluate(() => {
+      const { map } = window.cameraInput;
+      map.clickTrigger = 'press';
+      map.addEventListener(
+        'press',
+        () => {
+          map.batch(() => {
+            map.clickTrigger = 'release';
+            map.clickTrigger = 'press';
+          });
+        },
+        { once: true },
+      );
+    });
+    await clickTarget();
+    expect((await state()).clicks).toHaveLength(0);
+    await clickTarget();
+    expect((await state()).clicks).toHaveLength(1);
   });
 
   test.each(['press', 'release'] as const)(
