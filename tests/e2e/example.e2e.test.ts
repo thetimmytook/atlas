@@ -5,10 +5,83 @@ import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { expect, test } from 'vitest';
 
-import type { Browser, Page } from 'playwright';
+import type { Browser, Locator, Page } from 'playwright';
 
 const DIAGNOSTICS_DIR = 'node_modules/.cache/e2e';
 const DOM_TIMEOUT = 5_000;
+
+async function checkBuildings(page: Page, origin: string): Promise<void> {
+  await page.goto(`${origin}/examples/buildings.html`);
+  const surface = page.locator('atlas-buildings svg');
+  const zone = (layer: string): Locator =>
+    surface.locator(`[data-layer-id="${layer}"] [data-object-id="shared-zone"] path`);
+  const details = page.locator('#object-details');
+
+  const clickZone = async (layer: string): Promise<void> => {
+    const position = await zone(layer).evaluate(node => {
+      const point = new DOMPoint(60, 90).matrixTransform((node as SVGPathElement).getScreenCTM()!);
+
+      return { x: point.x, y: point.y };
+    });
+    await page.mouse.click(position.x, position.y);
+  };
+
+  await expect
+    .poll(() => page.locator('#status').textContent())
+    .toBe('Buildings loaded. Zone: base 1, height 4.');
+  await expect.poll(() => zone('a-0').isVisible()).toBe(true);
+  expect(await zone('b-0').isVisible()).toBe(true);
+  expect(await zone('a-1').isVisible()).toBe(false);
+  const lowerPath = await zone('a-0').getAttribute('d');
+  await clickZone('a-0');
+  expect(JSON.parse(await details.innerText())).toMatchObject({
+    id: 'shared-zone',
+    kind: 'polygon',
+    layerId: 'a-0',
+    baseZ: 1,
+    height: 4,
+  });
+  await page.locator('#floor-a').selectOption('1');
+  await expect.poll(() => zone('a-1').isVisible()).toBe(true);
+  expect(await zone('b-0').isVisible()).toBe(true);
+  expect(await zone('a-0').isVisible()).toBe(false);
+  await clickZone('a-1');
+  expect(JSON.parse(await details.innerText())).toMatchObject({
+    id: 'shared-zone',
+    layerId: 'a-1',
+  });
+  await page.getByRole('button', { name: 'Change zone height' }).click();
+  await expect.poll(() => zone('a-1').count()).toBe(0);
+  expect(await zone('b-0').isVisible()).toBe(true);
+  expect(await zone('a-0').getAttribute('d')).toBe(lowerPath);
+  await page.getByRole('button', { name: 'Change zone height' }).click();
+  await expect.poll(() => zone('a-1').isVisible()).toBe(true);
+  await page.getByRole('button', { name: 'Raise zone' }).click();
+  await expect.poll(() => zone('b-0').count()).toBe(0);
+  await page.locator('#floor-b').selectOption('1');
+  await expect.poll(() => zone('b-1').isVisible()).toBe(true);
+  const upperPath = await zone('a-1').getAttribute('d');
+  const otherShape = await zone('b-1').elementHandle();
+  await page.getByRole('button', { name: 'Move zone corner' }).click();
+  await expect.poll(() => zone('a-1').getAttribute('d')).not.toBe(upperPath);
+  expect(await zone('b-1').evaluate((node, previous) => node === previous, otherShape)).toBe(true);
+  const routePoint = surface.locator('[data-layer-id="a-1"] [data-object-id="a-stairs"] circle');
+  const bounds = (await routePoint.boundingBox())!;
+  await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+  expect(JSON.parse(await details.innerText())).toMatchObject({
+    id: 'a-stairs',
+    layerId: 'a-1',
+    routeId: 'journey',
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
+  await page.locator('#floor-a').selectOption('0');
+  expect(await zone('b-1').isVisible()).toBe(true);
+}
 
 async function clickCheckpoint(page: Page, layerId = 'second'): Promise<void> {
   const checkpoint = page.locator(
@@ -21,7 +94,7 @@ async function clickCheckpoint(page: Page, layerId = 'second'): Promise<void> {
   await page.mouse.click(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
 }
 
-test('built Factory example loads, zooms, picks and redraws a moved route point', async () => {
+test('built Factory and Buildings examples load, pick and update across independent floors', async () => {
   await rm(DIAGNOSTICS_DIR, { recursive: true, force: true });
   await mkdir(DIAGNOSTICS_DIR, { recursive: true });
   const server = await preview({
@@ -178,6 +251,7 @@ test('built Factory example loads, zooms, picks and redraws a moved route point'
           layerId: 'second',
           routeId: 'demo-route',
         });
+      await checkBuildings(page, `http://127.0.0.1:${address.port}`);
       expect(pageErrors).toEqual([]);
       expect(consoleErrors).toEqual([]);
       await context.tracing.stop();

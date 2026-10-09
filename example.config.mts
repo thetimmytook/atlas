@@ -9,7 +9,10 @@ export default defineConfig({
     sourcemap: true,
     outDir: 'dist/example',
     rolldownOptions: {
-      input: fileURLToPath(new URL('./examples/index.html', import.meta.url)),
+      input: {
+        factory: fileURLToPath(new URL('./examples/index.html', import.meta.url)),
+        buildings: fileURLToPath(new URL('./examples/buildings.html', import.meta.url)),
+      },
     },
   },
 });

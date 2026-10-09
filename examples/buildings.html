@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas buildings and volume</title>
+    <style>
+      body {
+        margin: 24px;
+        font-family: system-ui, sans-serif;
+        color: #233044;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      button,
+      select {
+        min-height: 44px;
+        min-width: 44px;
+      }
+      atlas-buildings {
+        display: block;
+        width: min(960px, 100%);
+        height: 480px;
+        border: 1px solid #9aadc4;
+        background: #edf2f8;
+      }
+      pre {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      @media (max-width: 600px) {
+        body {
+          margin: 12px;
+        }
+        atlas-buildings {
+          height: 360px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Two buildings, independent floors</h1>
+    <p>
+      Choose a floor in each building. The same route and orange volume are clipped into each
+      visible floor. Drag to pan; wheel or pinch to zoom. Click or tap the fill to inspect its
+      original object and hit layer.
+    </p>
+    <div class="controls">
+      <label
+        >Building A
+        <select id="floor-a">
+          <option value="0">Ground · z [0, 3)</option>
+          <option value="1">First · z [3, 6)</option>
+        </select></label
+      >
+      <label
+        >Building B
+        <select id="floor-b">
+          <option value="0">Ground · z [0, 3)</option>
+          <option value="1">First · z [3, 6)</option>
+        </select></label
+      >
+      <button id="fit" type="button">Fit map</button>
+      <button id="move" type="button">Move zone corner</button>
+      <button id="raise" type="button">Raise zone</button>
+      <button id="height" type="button">Change zone height</button>
+    </div>
+    <atlas-buildings></atlas-buildings>
+    <p id="status" role="status">Loading buildings…</p>
+    <p>
+      Orange fill is temporary prototype styling. Materials will replace it; outlines require
+      external clipped contours first. Floor switching and this inspection panel belong to the
+      application.
+    </p>
+    <pre id="object-details">Click a zone, route or point.</pre>
+    <p><a href="./">Factory example</a></p>
+    <script type="module" src="./buildings.ts"></script>
+  </body>
+</html>
