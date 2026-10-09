@@ -66,6 +66,9 @@ illustrative future APIs do not extend the available exports.
 | Distant future of the appearance system                 | [Exploration](MATERIAL_SYSTEM_EXPLORATION.md)                        |
 | Research into all tarkov.dev maps, not new requirements | [Map audit](TARKOV_MAP_AUDIT.md)                                     |
 
+For the proposed platform matrix, reproducible scenarios and evidence protocol,
+see the [Platform acceptance plan](validation/PLATFORM_ACCEPTANCE_PLAN.md).
+
 Topic files retain clarification history. [Current contract](design/CURRENT_CONTRACT.md)
 and explicit later accepted corrections take precedence over superseded wording.
 Updating this baseline does not approve pending runtime work or unfinished API examples.
