@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { resolveMapDefinition } from '#definitions/map-definition.js';
 import { AtlasError } from '#errors/atlas-error.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { MapLine } from '#objects/map-line.js';
 import { MapPoint } from '#objects/map-point.js';
 import { MapRoute } from '#objects/map-route.js';
@@ -11,30 +12,44 @@ import type { MapDefinition } from '#definitions/map-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
 
 function point(z?: number): MapPointDefinition {
-  return { kind: 'point', position: new Point(10, 20, z) };
+  return { kind: 'point', position: new Point3(10, 20, z) };
 }
 
 describe('object position z', () => {
-  it('keeps ordinary Point two dimensional and normalizes copied runtime positions and snapshots', () => {
-    expect(new Point(10, 20).z).toBeUndefined();
+  it('freezes Point2 with only x/y and Point3 with a numeric default z', () => {
+    const planar = new Point2(10, 20);
+    const spatial = new Point3(10, 20);
+    expect(planar).toEqual({ x: 10, y: 20 });
+    expect(spatial).toEqual({ x: 10, y: 20, z: 0 });
+    expect(Object.isFrozen(planar)).toBe(true);
+    expect(Object.isFrozen(spatial)).toBe(true);
+  });
+
+  it('normalizes copied runtime positions and snapshots to Point3', () => {
     const position = { x: 10, y: 20, z: -5 };
     const input = { kind: 'point' as const, position };
     const resolved = resolveMapDefinition({ layers: [], objects: [input, point()] });
     const runtime = new MapPoint(input);
     position.z = 999;
     expect(runtime.position.z).toBe(-5);
+    expect(runtime.position).toBeInstanceOf(Point3);
     expect(resolved.objects[0]).toMatchObject({ position: { z: -5 } });
     expect(resolved.objects[1]).toMatchObject({ position: { z: 0 } });
     expect(Object.isFrozen(runtime.position)).toBe(true);
     expect(Object.isFrozen((resolved.objects[0] as MapPointDefinition).position)).toBe(true);
-    runtime.position = new Point(30, 40);
-    expect(runtime.position).toEqual(new Point(30, 40, 0));
+    expect((resolved.objects[0] as MapPointDefinition).position).toBeInstanceOf(Point3);
+    runtime.position = { x: 30, y: 40 };
+    expect(runtime.position).toEqual(new Point3(30, 40));
+    runtime.position = new Point2(30, 40);
+    expect(runtime.position).toBeInstanceOf(Point3);
+    expect(runtime.position).toEqual(new Point3(30, 40));
   });
 
   it('retains copied z through line ownership and every route point operation', () => {
     const route = new MapRoute('route', [point(-1)]);
     const line = new MapLine('line', [point(-2), point(4)]);
     expect(line.points.map(vertex => vertex.position.z)).toEqual([-2, 4]);
+    expect(line.points.every(vertex => vertex.position instanceof Point3)).toBe(true);
     const added = route.addPoint(point(5));
     const inserted = route.insertPoint(1, point(3));
     const [replacement] = route.replacePoints(1, 2, [point(-6)]);
@@ -107,10 +122,10 @@ describe('intersection bounds load contract', () => {
     },
   );
 
-  it('copies/freeze bounds deeply and accepts one-sided limits and undefined', () => {
+  it('copies/freezes partial bounds without adding missing axes and accepts omitted bounds', () => {
     const bounds = { min: { z: -3 }, max: { x: 100 } };
     const resolved = resolveMapDefinition({
-      layers: [{ intersectionBounds: bounds }, { intersectionBounds: undefined }],
+      layers: [{ intersectionBounds: bounds }, {}],
     });
     bounds.min.z = 99;
     expect(resolved.layers[0]!.intersectionBounds).toEqual({ min: { z: -3 }, max: { x: 100 } });
@@ -118,6 +133,11 @@ describe('intersection bounds load contract', () => {
     expect(Object.isFrozen(resolved.layers[0]!.intersectionBounds!.min)).toBe(true);
     expect(Object.isFrozen(resolved.layers[0]!.intersectionBounds!.max)).toBe(true);
     expect(resolved.layers[1]!.intersectionBounds).toBeUndefined();
+  });
+
+  it('accepts explicit undefined bounds from untyped JavaScript input', () => {
+    const input = { layers: [{ intersectionBounds: undefined }] } as unknown as MapDefinition;
+    expect(resolveMapDefinition(input).layers[0]!.intersectionBounds).toBeUndefined();
   });
 });
 

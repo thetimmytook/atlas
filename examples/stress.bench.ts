@@ -1,5 +1,6 @@
 import { MapElement } from '#components/map-element/map-element.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
@@ -185,7 +186,7 @@ async function motion(
     const operationStart = performance.now();
 
     if (scenario === 'pan') {
-      map.camera.center = new Point(target.x, target.y);
+      map.camera.center = new Point2(target.x, target.y);
     } else {
       map.camera.zoom = target.scale;
     }
@@ -212,7 +213,7 @@ function queries(map: MapElement, scene: StressScene, scenario: 'hit' | 'miss', 
   // Same root collection, separate internal spatial view; not DOM input latency.
   const spatial = new Spatial(prepareSceneGeometry(map.objects, map.layers));
   const position = scenario === 'hit' ? HIT_POSITION : MISS_POSITION;
-  const point = new Point(position.x, position.y);
+  const point = new Point2(position.x, position.y);
 
   for (let index = 0; index < QUERY_SAMPLES; index += 1) {
     const start = performance.now();
@@ -230,7 +231,7 @@ function editPositions(roots: readonly MapEntry[], amount: number): void {
     const point = object.kind === 'point' ? object : object.points[0];
 
     if (point) {
-      point.position = new Point(point.position.x + 1, point.position.y + 1);
+      point.position = new Point3(point.position.x + 1, point.position.y + 1, point.position.z);
     }
   }
 }
@@ -441,7 +442,7 @@ async function sample(
       trace.reset();
 
       if (retained?.kind === 'point') {
-        retained.position = new Point(0, 0);
+        retained.position = new Point3(0, 0);
       }
 
       await opportunities();

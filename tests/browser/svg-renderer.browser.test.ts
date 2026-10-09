@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { Camera } from '#camera/camera.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { MapObjectCollection } from '#objects/map-object-collection.js';
@@ -152,9 +152,9 @@ describe('real SvgRenderer scene output', () => {
     const groups = svgGroups(surface);
     const shapes = groups.map(group => group.firstElementChild);
 
-    point.position = new Point(80, 45);
-    line.points[0].position = new Point(30, 70);
-    line.points[1].position = new Point(220, 90);
+    point.position = new Point2(80, 45);
+    line.points[0].position = new Point2(30, 70);
+    line.points[1].position = new Point2(220, 90);
     renderer.render(VIEWPORT, BOUNDS);
     expectSurvivingShapes(surface, originalShapes);
 
@@ -173,7 +173,7 @@ describe('real SvgRenderer scene output', () => {
     const polyline = shape<SVGPolylineElement>(groups[2]!, 'polyline');
     const circle = shape<SVGCircleElement>(groups[4]!, 'circle');
 
-    route.points[1]!.position = new Point(170, 140);
+    route.points[1]!.position = new Point2(170, 140);
     renderer.render(VIEWPORT, BOUNDS);
     expectSurvivingShapes(surface, originalShapes);
 
@@ -232,7 +232,7 @@ describe('real SvgRenderer scene output', () => {
     expectGroups(surface, [before[0]!, before[1]!, before[2]!, before[3]!, before[5]!]);
     expect(before[4]!.isConnected).toBe(false);
     expectPolyline(before[2]!, '50,100 250,100');
-    removed.position = new Point(999, 999);
+    removed.position = new Point2(999, 999);
     renderer.render(VIEWPORT, BOUNDS);
     expectSurvivingShapes(surface, originalShapes);
     expectPolyline(before[2]!, '50,100 250,100');
@@ -382,9 +382,9 @@ describe('real SvgRenderer scene output', () => {
       'same',
       'same',
     ]);
-    old.position = new Point(999, 999);
-    survivor.position = new Point(95, 45);
-    replacement.position = new Point(180, 85);
+    old.position = new Point2(999, 999);
+    survivor.position = new Point2(95, 45);
+    replacement.position = new Point2(180, 85);
     renderer.render(VIEWPORT, BOUNDS);
     expectSurvivingShapes(surface, originalShapes);
     expectPoint(survivorNode!, 95, 45);
@@ -411,7 +411,7 @@ describe('real SvgRenderer scene output', () => {
         root!.getAttribute(OBJECT_ID_ATTRIBUTE),
       );
 
-      shared.position = new Point(50, 100);
+      shared.position = new Point2(50, 100);
       renderer.render(VIEWPORT, BOUNDS);
       expectSurvivingShapes(surface, originalShapes);
       expectPoint(root!, 50, 100);
@@ -435,7 +435,7 @@ describe('real SvgRenderer scene output', () => {
         ...(appearance === 'vertex' ? [root!] : []),
       ]);
       expect(removed.isConnected).toBe(false);
-      shared.position = new Point(70, 110);
+      shared.position = new Point2(70, 110);
       renderer.render(VIEWPORT, BOUNDS);
       expectSurvivingShapes(surface, originalShapes);
       expectPoint(surviving, 70, 110);
@@ -528,7 +528,7 @@ describe('real SvgRenderer scene output', () => {
     expect(surface.getAttribute('height')).toBe('0');
 
     objects.remove(point);
-    route.points[0]!.position = new Point(70, 130);
+    route.points[0]!.position = new Point2(70, 130);
     route.removePoint(route.points[1]!);
     objects.add(pointDefinition(100, 200, 'new'));
     renderer.render(new Size(0, 0), new Rect(0, 0, 0, 0));
@@ -547,7 +547,7 @@ describe('real SvgRenderer scene output', () => {
 
     renderer.render(new Size(320, 0), new Rect(0, 0, 320, 0));
     expectSurvivingShapes(surface, originalShapes);
-    route.points[1]!.position = new Point(260, 110);
+    route.points[1]!.position = new Point2(260, 110);
     renderer.render(VIEWPORT, BOUNDS);
     expectSurvivingShapes(surface, originalShapes);
     expectPoint(before[5]!, 260, 110);
@@ -607,7 +607,7 @@ describe('bounded SVG updates', () => {
     renderer.render(VIEWPORT, BOUNDS);
     const groups = svgGroups(surface);
     const moved = mutations(surface, () => {
-      point.position = new Point(90, 80);
+      point.position = new Point2(90, 80);
       renderer.render(VIEWPORT, BOUNDS);
     });
     expect(moved).toHaveLength(1);
@@ -616,12 +616,12 @@ describe('bounded SVG updates', () => {
     expectPoint(groups[0]!, 90, 80);
     expect(
       mutations(surface, () => {
-        point.position = new Point(90, 80);
+        point.position = new Point2(90, 80);
         renderer.render(VIEWPORT, BOUNDS);
       }),
     ).toEqual([]);
     const endpoint = mutations(surface, () => {
-      line.points[0].position = new Point(20, 90);
+      line.points[0].position = new Point2(20, 90);
       renderer.render(VIEWPORT, BOUNDS);
     });
     expect(endpoint).toHaveLength(1);
@@ -642,7 +642,7 @@ describe('bounded SVG updates', () => {
     first.renderer.render(VIEWPORT, BOUNDS);
     second.renderer.render(VIEWPORT, BOUNDS);
     const groups = svgGroups(first.surface);
-    point.position = new Point(70, 130);
+    point.position = new Point2(70, 130);
     const writes = mutations(first.surface, () => first.renderer.render(VIEWPORT, BOUNDS));
     expect(new Set(writes.map(record => record.target))).toEqual(
       new Set([shape(groups[2]!, 'polyline'), groups[3]!, groups[6]!]),
@@ -692,7 +692,7 @@ describe('reattachment before renderer synchronization', () => {
       const spatial = new Spatial(geometry);
       const camera = new Camera();
       camera.resize(VIEWPORT);
-      camera.center = new Point(160, 120);
+      camera.center = new Point2(160, 120);
       const surface = createSurface();
       const renderer = new SvgRenderer(surface);
       (await renderer.prepare(geometry)).show();
@@ -701,11 +701,11 @@ describe('reattachment before renderer synchronization', () => {
       const primitives = captureShapes(surface);
       const originalEntries = geometry.objects;
       objects.remove(root);
-      expect(spatial.hitTest(new Point(40, 30), camera)).toBeUndefined();
+      expect(spatial.hitTest(new Point2(40, 30), camera)).toBeUndefined();
       const point = root.kind === 'point' ? root : root.points[0];
-      point.position = new Point(90, 80);
+      point.position = new Point2(90, 80);
       objects.add(root);
-      expect(spatial.hitTest(new Point(90, 80), camera)?.object).toBe(
+      expect(spatial.hitTest(new Point2(90, 80), camera)?.object).toBe(
         root.kind === 'route' ? point : root,
       );
       const writes = mutations(surface, () => renderer.render(VIEWPORT, BOUNDS));
@@ -713,7 +713,7 @@ describe('reattachment before renderer synchronization', () => {
       expectGroups(surface, [before.at(-1)!, ...before.slice(0, -1)]);
       expectSurvivingShapes(surface, primitives);
       expect(geometry.objects.find(entry => entry.object === root)).toBe(originalEntries[0]);
-      expect(spatial.hitTest(new Point(280, 200), camera)?.object).toBe(untouched);
+      expect(spatial.hitTest(new Point2(280, 200), camera)?.object).toBe(untouched);
       const target = before[0]!;
       const expectedTargets: Element[] = [];
 
@@ -756,7 +756,7 @@ it('updates shared root/vertex appearances when their route returns before rende
   const spatial = new Spatial(geometry);
   const camera = new Camera();
   camera.resize(VIEWPORT);
-  camera.center = new Point(160, 120);
+  camera.center = new Point2(160, 120);
   const surface = createSurface();
   const renderer = new SvgRenderer(surface);
   (await renderer.prepare(geometry)).show();
@@ -764,10 +764,10 @@ it('updates shared root/vertex appearances when their route returns before rende
   const before = svgGroups(surface);
   const primitives = captureShapes(surface);
   objects.remove(route);
-  expect(spatial.hitTest(new Point(50, 100), camera)?.object).toBe(point);
-  point.position = new Point(70, 130);
+  expect(spatial.hitTest(new Point2(50, 100), camera)?.object).toBe(point);
+  point.position = new Point2(70, 130);
   objects.add(route);
-  expect(spatial.hitTest(new Point(70, 130), camera)?.route).toBe(route);
+  expect(spatial.hitTest(new Point2(70, 130), camera)?.route).toBe(route);
   const records = mutations(surface, () => renderer.render(VIEWPORT, BOUNDS));
   const attributes = records.filter(record => record.type === 'attributes');
   expect(attributes).toHaveLength(3);

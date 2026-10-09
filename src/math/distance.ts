@@ -1,7 +1,7 @@
-import type { Point } from './point.js';
+import type { Point2 } from './point2.js';
 
 /** Squared distance to the nearest point on a segment, including its endpoints. */
-export function squaredDistanceToSegment(point: Point, start: Point, end: Point): number {
+export function squaredDistanceToSegment(point: Point2, start: Point2, end: Point2): number {
   const dx = end.x - start.x;
   const dy = end.y - start.y;
   const px = point.x - start.x;
@@ -21,7 +21,7 @@ export function squaredDistanceToSegment(point: Point, start: Point, end: Point)
 }
 
 /** Avoid overflow in intermediate differences/products for extreme finite coordinates. */
-function scaledDistanceToSegment(point: Point, start: Point, end: Point): number {
+function scaledDistanceToSegment(point: Point2, start: Point2, end: Point2): number {
   const scale = Math.max(
     Math.abs(point.x),
     Math.abs(point.y),

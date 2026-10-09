@@ -5,7 +5,11 @@
 Segment clipping and appearance preparation live in the spatial subsystem, with no
 SVG or DOM dependency. Each layer/root retains cached direct or derived scene entries;
 a route fragment is an ordinary polyline view. SVG and spatial picking consume the
-same ordered entries and derived coordinates. Each entry retains the original source
+same ordered entries and derived coordinates. Since the 2026-10-09 migration,
+source and clipped geometry use `Point3`, while `Spatial` queries, distances and
+surface/client event coordinates use `Point2`. `resolveLayerEntries` resolves full,
+automatic clipped or absent entries for a root in each layer; direct membership
+still wins. Each entry retains the original source
 object and layer; vertex entries retain their owning route. No clipPath-only solution
 or independent renderer/picking intersection logic is used.
 

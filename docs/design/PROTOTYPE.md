@@ -1,12 +1,54 @@
 # First Atlas prototype
 
+## Coordinate migration — implemented for review, 2026-10-09
+
+The z/intersection implementation now separates frozen `Point2(x, y)` and
+`Point3(x, y, z = 0)`. The former `Point` export/file is removed, without an alias.
+Runtime `MapPoint.position` returns `Point3`; definitions and assignment accept
+`Point2 | Point3` and plain x/y input. Construction, loading and owned-point editing
+copy into `Point3`. Camera, events, conversions and planar queries use `Point2`.
+See the [public signatures](GEOMETRY_AND_ROUTES.md#planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09).
+
+Bounds use `Partial<Point3>`, preserving absent axes. The optional definition field
+has no explicit undefined union; typed callers omit it, while an untyped JavaScript
+regression retains explicit undefined support. The runtime getter still returns
+`IntersectionBounds | undefined` without a setter. `resolveLayerEntries` replaces
+the internal `resolveAppearance` name. Clipping, picking, direct-content priority,
+invalidation, source identity, live coordinate views and unaffected SVG nodes retain
+the automatic-stage behavior described below.
+
+Implementation covers `src/math/point2.ts`, `src/math/point3.ts`, math/bounds exports,
+point definitions/validation/runtime positions, camera and interaction consumers,
+spatial geometry/queries, executable examples/benchmarks and existing regression
+suites. Current design summaries record the new decision; archived documents and
+saved timing results remain unchanged. The initial review preserved existing staged
+contents and kept this migration unstaged. The user authorized commits, push and PR
+preparation on 2026-10-09.
+
+Validation on 2026-10-09: `npm run check`, `npm test` (178 Node tests),
+`npm run test:browser` (68 Chromium tests), `npm run build`, `npm run bench:build`
+and `npm run test:e2e` (one built Factory test) passed. Lint retains the eight
+pre-existing duplicate-string warnings with zero errors. Bundled declarations
+confirm mandatory `Point3.z`, distinct position getter/setter types, planar
+conversions, the optional bounds input and getter without a setter or `Point` alias.
+
+Existing boundary regressions still pass: a four-pixel stroke at zoom 1 hits the
+included min tangent and points near excluded max when eligible interior positions
+are within the hit disk; an excluded max-only tangent misses. Adjacent floor strokes
+and vertical transitions remain pickable, with visible overlap resolved by composition.
+Live views, source objects, surviving SVG nodes and invalidation counters retain their
+existing checks. No full timing benchmark rerun or new timing artifacts were required.
+The initial review confirmed an identical staged manifest before/after implementation.
+
 ## Automatic height and intersection stage — implemented for review, 2026-10-08
 
 The user authorized implementation in the primary repository, with no worktree,
 commit, push or PR. This stage preserves the merged explicit-layer/review base and
-existing local merge/contract notes. It adds optional `Point.z`, normalized copied
-map-object positions and validated, frozen `IntersectionBounds`. It does not add a
-second public coordinate type or a runtime bounds setter.
+existing local merge/contract notes. The original 2026-10-08 version added optional
+`Point.z`, normalized copied map-object positions and validated, frozen
+`IntersectionBounds`. That version did not add a second public coordinate type or a
+runtime bounds setter. The coordinate-type
+decision is superseded by the 2026-10-09 migration above; the behavior below remains.
 
 Every layer with bounds prepares automatic appearances of current roots, while
 directly selected roots appear whole once. Bounds do not change `layer.objects` or
@@ -68,7 +110,7 @@ arbitrary-precision geometry engine.
 
 ### Files changed in the automatic stage
 
-- Engine: [src/components/map-element/map-element.ts](../../src/components/map-element/map-element.ts), [src/definitions/map-definition.ts](../../src/definitions/map-definition.ts), [src/definitions/map-layer-definition.ts](../../src/definitions/map-layer-definition.ts), [src/index.ts](../../src/index.ts), [src/math/distance.ts](../../src/math/distance.ts), [src/math/intersection-bounds.ts](../../src/math/intersection-bounds.ts), [src/math/point.ts](../../src/math/point.ts), [src/objects/map-layer.ts](../../src/objects/map-layer.ts), [src/objects/map-point.ts](../../src/objects/map-point.ts), [src/spatial/clipped-appearance.ts](../../src/spatial/clipped-appearance.ts), [src/spatial/geometry.ts](../../src/spatial/geometry.ts), [src/spatial/intersection.ts](../../src/spatial/intersection.ts), [src/spatial/scene-geometry.ts](../../src/spatial/scene-geometry.ts), [src/spatial/spatial.ts](../../src/spatial/spatial.ts), [src/validators/intersection-bounds.validator.ts](../../src/validators/intersection-bounds.validator.ts), [src/validators/map-point.validator.ts](../../src/validators/map-point.validator.ts), [src/validators/point.validator.ts](../../src/validators/point.validator.ts).
+- Engine: [src/components/map-element/map-element.ts](../../src/components/map-element/map-element.ts), [src/definitions/map-definition.ts](../../src/definitions/map-definition.ts), [src/definitions/map-layer-definition.ts](../../src/definitions/map-layer-definition.ts), [src/index.ts](../../src/index.ts), [src/math/distance.ts](../../src/math/distance.ts), [src/math/intersection-bounds.ts](../../src/math/intersection-bounds.ts), `src/math/point.ts` (replaced by `point2.ts`/`point3.ts` in the migration), [src/objects/map-layer.ts](../../src/objects/map-layer.ts), [src/objects/map-point.ts](../../src/objects/map-point.ts), [src/spatial/clipped-appearance.ts](../../src/spatial/clipped-appearance.ts), [src/spatial/geometry.ts](../../src/spatial/geometry.ts), [src/spatial/intersection.ts](../../src/spatial/intersection.ts), [src/spatial/scene-geometry.ts](../../src/spatial/scene-geometry.ts), [src/spatial/spatial.ts](../../src/spatial/spatial.ts), [src/validators/intersection-bounds.validator.ts](../../src/validators/intersection-bounds.validator.ts), [src/validators/map-point.validator.ts](../../src/validators/map-point.validator.ts), [src/validators/point.validator.ts](../../src/validators/point.validator.ts).
 - Application: [examples/index.html](../../examples/index.html).
 - Regressions: [tests/automatic-layers.test.ts](../../tests/automatic-layers.test.ts), [tests/browser/intersection.browser.test.ts](../../tests/browser/intersection.browser.test.ts), [tests/browser/layers.browser.test.ts](../../tests/browser/layers.browser.test.ts), [tests/e2e/example.e2e.test.ts](../../tests/e2e/example.e2e.test.ts), [tests/intersection.test.ts](../../tests/intersection.test.ts), [tests/layers.test.ts](../../tests/layers.test.ts), [tests/map-element.test.ts](../../tests/map-element.test.ts), [tests/map-model.test.ts](../../tests/map-model.test.ts), [tests/map-object-collection.test.ts](../../tests/map-object-collection.test.ts), [tests/map-point.test.ts](../../tests/map-point.test.ts), [tests/map-route.test.ts](../../tests/map-route.test.ts), [tests/spatial.test.ts](../../tests/spatial.test.ts), [tests/z.test.ts](../../tests/z.test.ts).
 - Contract and status: [docs/DESIGN_MAIN.md](../../docs/DESIGN_MAIN.md), [docs/design/GEOMETRY_AND_ROUTES.md](../../docs/design/GEOMETRY_AND_ROUTES.md), [docs/design/LAYERS_AND_INTERACTION.md](../../docs/design/LAYERS_AND_INTERACTION.md), [docs/design/PROTOTYPE.md](../../docs/design/PROTOTYPE.md), [docs/design/RENDERER_AND_COMPONENT.md](../../docs/design/RENDERER_AND_COMPONENT.md), [docs/design/RUNTIME_AND_LOADING.md](../../docs/design/RUNTIME_AND_LOADING.md).

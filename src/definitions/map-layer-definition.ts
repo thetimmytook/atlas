@@ -7,7 +7,7 @@ export interface MapLayerDefinition {
   readonly stackIndex?: number;
   readonly objects?: readonly string[];
   readonly background?: BackgroundDescription;
-  readonly intersectionBounds?: IntersectionBounds | undefined;
+  readonly intersectionBounds?: IntersectionBounds;
 }
 
 export interface ResolvedMapLayerDefinition extends MapLayerDefinition {

@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Camera } from '#camera/camera.js';
 import { resolveMapDefinition } from '#definitions/map-definition.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { Size } from '#math/size.js';
 import { MapModel } from '#objects/map-model.js';
 import { MapPoint } from '#objects/map-point.js';
@@ -18,13 +19,13 @@ const EXPECTED_LINE = 'Expected line.';
 const FLOOR = { min: { z: 0 }, max: { z: 3 } };
 
 function vertex(x: number, y: number, z: number, id?: string): MapPointDefinition {
-  return { kind: 'point', ...(id === undefined ? {} : { id }), position: new Point(x, y, z) };
+  return { kind: 'point', ...(id === undefined ? {} : { id }), position: new Point3(x, y, z) };
 }
 
 function camera(): Camera {
   const result = new Camera();
   result.resize(new Size(320, 240));
-  result.center = new Point(160, 120);
+  result.center = new Point2(160, 120);
 
   return result;
 }
@@ -38,7 +39,7 @@ function model(
   );
 }
 
-function pathPoints(entry: SceneObject): readonly Point[] {
+function pathPoints(entry: SceneObject): readonly Point2[] {
   if (entry.geometry.kind !== 'polyline') {
     throw new Error('Expected polyline.');
   }
@@ -56,7 +57,7 @@ describe('automatic appearances', () => {
         layers: [
           { id: 'direct', objects: ['shared'] },
           { id: 'auto', intersectionBounds: FLOOR },
-          { id: 'off', intersectionBounds: undefined },
+          { id: 'off' },
         ],
       }),
     );
@@ -84,19 +85,19 @@ describe('automatic appearances', () => {
     const point = scene.objects.get('marker') as MapPoint;
     expect(scene.geometry.objects.map(entry => entry.layer.id)).toEqual(['upper']);
     expect(scene.spatial.hitTest(point.position, camera())?.layer.id).toBe('upper');
-    point.position = new Point(80, 60, -1);
+    point.position = new Point3(80, 60, -1);
     expect(scene.spatial.hitTest(point.position, camera())).toBeUndefined();
-    point.position = new Point(80, 60);
+    point.position = new Point2(80, 60);
     expect(scene.spatial.hitTest(point.position, camera())?.layer.id).toBe('lower');
   });
 
   it.each([
-    [{ min: { x: 50 }, max: { x: 150 } }, new Point(50, 100, -2), new Point(150, 100, 2)],
-    [{ min: { z: -1 }, max: { z: 1 } }, new Point(75, 100, -1), new Point(125, 100, 1)],
+    [{ min: { x: 50 }, max: { x: 150 } }, new Point3(50, 100, -2), new Point3(150, 100, 2)],
+    [{ min: { z: -1 }, max: { z: 1 } }, new Point3(75, 100, -1), new Point3(125, 100, 1)],
     [
       { min: { x: 50, z: -1 }, max: { y: 110, z: 1 } },
-      new Point(75, 100, -1),
-      new Point(125, 100, 1),
+      new Point3(75, 100, -1),
+      new Point3(125, 100, 1),
     ],
   ] as const)('shares exact line cuts with queries for bounds %j', (bounds, start, end) => {
     const scene = model(
@@ -112,10 +113,10 @@ describe('automatic appearances', () => {
 
     expect(geometry.start).toEqual(start);
     expect(geometry.end).toEqual(end);
-    expect(scene.spatial.hitTest(new Point(100, 100), camera())?.object).toBe(
+    expect(scene.spatial.hitTest(new Point2(100, 100), camera())?.object).toBe(
       scene.objects.get('line'),
     );
-    expect(scene.spatial.hitTest(new Point(10, 100), camera())).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(10, 100), camera())).toBeUndefined();
   });
 
   it('keeps separate path fragments, original vertices and identities without points at cuts', () => {
@@ -130,19 +131,19 @@ describe('automatic appearances', () => {
     const points = route.points;
     const entries = scene.geometry.objects;
     expect(entries.map(entry => entry.object.id)).toEqual(['route', 'route', 'a', 'c']);
-    expect(pathPoints(entries[0]!)).toEqual([new Point(20, 100, 1), new Point(70, 100, 3)]);
-    expect(pathPoints(entries[1]!)).toEqual([new Point(170, 100, 3), new Point(220, 100, 1)]);
+    expect(pathPoints(entries[0]!)).toEqual([new Point3(20, 100, 1), new Point3(70, 100, 3)]);
+    expect(pathPoints(entries[1]!)).toEqual([new Point3(170, 100, 3), new Point3(220, 100, 1)]);
     expect(scene.objects.size).toBe(1);
     expect(route.points).toBe(points);
     expect(route.points).toHaveLength(3);
-    expect(scene.spatial.hitTest(new Point(120, 100), camera())).toBeUndefined();
-    expect(scene.spatial.hitTest(new Point(70, 100), camera())?.object).toBe(route);
-    expect(scene.spatial.hitTest(new Point(20, 100), camera())).toMatchObject({
+    expect(scene.spatial.hitTest(new Point2(120, 100), camera())).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(70, 100), camera())?.object).toBe(route);
+    expect(scene.spatial.hitTest(new Point2(20, 100), camera())).toMatchObject({
       object: points[0],
       route,
       layer: scene.layers[0],
     });
-    expect(scene.spatial.hitTest(new Point(120, 100), camera())).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(120, 100), camera())).toBeUndefined();
   });
 
   it('preserves root order and separate instances with duplicate IDs, and direct selection wins', () => {
@@ -156,7 +157,7 @@ describe('automatic appearances', () => {
     scene.layers[0]!.objectIds.add('same');
     expect(scene.geometry.objects.map(entry => entry.object)).toEqual(roots);
     expect(scene.layers[0]!.objects).toEqual(roots.slice(0, 2));
-    expect(scene.spatial.hitTest(new Point(80, 60), camera())?.object).toBe(roots[2]);
+    expect(scene.spatial.hitTest(new Point2(80, 60), camera())?.object).toBe(roots[2]);
     scene.layers[0]!.objectIds.remove('same');
     expect(scene.geometry.objects.map(entry => entry.object)).toEqual([roots[0], roots[2]]);
     expect(scene.objects.get('same')).toBe(roots[0]);
@@ -176,7 +177,7 @@ describe('automatic appearances', () => {
     expect(entries.map(entry => entry.object.id)).toEqual(['route', 'a', 'b', 'c']);
     expect(pathPoints(entries[0]!)).toHaveLength(3);
     expect(clipping).not.toHaveBeenCalled();
-    expect(scene.spatial.hitTest(new Point(120, 100), camera())?.object.id).toBe('b');
+    expect(scene.spatial.hitTest(new Point2(120, 100), camera())?.object.id).toBe('b');
   });
 
   it('limits clipping to the affected root and preserves entries/views when composition stays the same', () => {
@@ -195,7 +196,7 @@ describe('automatic appearances', () => {
     scene.geometry.takeChanges();
     const clipping = vi.spyOn(intersection, 'clipPolyline');
     const roots = vi.spyOn(scene.objects, Symbol.iterator);
-    route.points[1]!.position = new Point(120, 100, 9);
+    route.points[1]!.position = new Point3(120, 100, 9);
     expect(scene.geometry.objects).toBe(entries);
     expect(entries[0]!.geometry).toBe(geometry);
     expect(pathPoints(entries[0]!)).toBe(positions);
@@ -209,9 +210,9 @@ describe('automatic appearances', () => {
     const view = camera();
 
     for (let i = 0; i < 10; i++) {
-      view.center = new Point(160 + i, 120);
+      view.center = new Point2(160 + i, 120);
       scene.layers[0]!.visible = i % 2 === 0;
-      scene.spatial.hitTest(new Point(45, 100), view);
+      scene.spatial.hitTest(new Point2(45, 100), view);
     }
 
     expect(clipping).toHaveBeenCalledTimes(1);
@@ -226,20 +227,20 @@ describe('automatic appearances', () => {
     expect(scene.geometry.objects).toEqual([]);
     scene.layers[0]!.visible = false;
     scene.unobserveChanges();
-    route.points[0]!.position = new Point(20, 100, 1);
+    route.points[0]!.position = new Point3(20, 100, 1);
     expect(scene.geometry.objects).toHaveLength(2);
     const entries = scene.geometry.objects;
-    expect(scene.spatial.hitTest(new Point(50, 100), camera())).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(50, 100), camera())).toBeUndefined();
     scene.layers[0]!.visible = true;
-    expect(scene.spatial.hitTest(new Point(50, 100), camera())?.object).toBe(route);
+    expect(scene.spatial.hitTest(new Point2(50, 100), camera())?.object).toBe(route);
     scene.geometry.takeChanges();
     scene.objects.remove(route);
-    expect(scene.spatial.hitTest(new Point(50, 100), camera())).toBeUndefined();
-    route.points[0]!.position = new Point(20, 100, 2);
+    expect(scene.spatial.hitTest(new Point2(50, 100), camera())).toBeUndefined();
+    route.points[0]!.position = new Point3(20, 100, 2);
     expect(scene.geometry.takeChanges().size).toBe(0);
     scene.objects.add(route);
     expect(scene.geometry.objects[0]).toBe(entries[0]);
-    expect(scene.spatial.hitTest(new Point(40, 100), camera())?.object).toBe(route);
+    expect(scene.spatial.hitTest(new Point2(40, 100), camera())?.object).toBe(route);
     expect(scene.geometry.takeChanges().has(entries[0]!)).toBe(true);
   });
 
@@ -248,15 +249,15 @@ describe('automatic appearances', () => {
       { id: 'line', kind: 'line', points: [vertex(20, 100, 1), vertex(220, 100, 5)] },
     ]);
     const view = camera();
-    const hit = scene.spatial.hitTest(new Point(80, 100), view)!;
+    const hit = scene.spatial.hitTest(new Point2(80, 100), view)!;
     const line = scene.objects.get('line')!;
 
     if (line.kind !== 'line') {
       throw new Error(EXPECTED_LINE);
     }
 
-    line.points[1].position = new Point(220, 100, 21);
-    expect(scene.spatial.hasHit(hit, new Point(80, 100), view)).toBe(false);
+    line.points[1].position = new Point3(220, 100, 21);
+    expect(scene.spatial.hasHit(hit, new Point2(80, 100), view)).toBe(false);
     expect(scene.geometry.objects[0]).toBe(hit);
   });
 });
@@ -270,17 +271,17 @@ describe('screen stroke hits at half-open boundaries', () => {
     const view = camera();
 
     for (const x of [48, 49, 50, 150, 151]) {
-      expect(scene.spatial.hitTest(new Point(x, 100), view)?.object.id).toBe('line');
+      expect(scene.spatial.hitTest(new Point2(x, 100), view)?.object.id).toBe('line');
     }
 
-    expect(scene.spatial.hitTest(new Point(152, 100), view)).toBeUndefined();
-    expect(scene.spatial.hitTest(new Point(47.9, 100), view)).toBeUndefined();
-    expect(scene.spatial.hitTest(new Point(150, 101.9), view)?.object.id).toBe('line');
-    expect(scene.spatial.hitTest(new Point(150, 102), view)).toBeUndefined();
-    expect(scene.spatial.hitTest(new Point(50, 102), view)?.object.id).toBe('line');
+    expect(scene.spatial.hitTest(new Point2(152, 100), view)).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(47.9, 100), view)).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(150, 101.9), view)?.object.id).toBe('line');
+    expect(scene.spatial.hitTest(new Point2(150, 102), view)).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(50, 102), view)?.object.id).toBe('line');
     view.zoom = 2;
-    expect(scene.spatial.hitTest(new Point(150.5, 100), view)?.object.id).toBe('line');
-    expect(scene.spatial.hitTest(new Point(151, 100), view)).toBeUndefined();
+    expect(scene.spatial.hitTest(new Point2(150.5, 100), view)?.object.id).toBe('line');
+    expect(scene.spatial.hitTest(new Point2(151, 100), view)).toBeUndefined();
   });
 
   it('uses composition for overlapping floor stroke regions, including a vertical transition', () => {
@@ -293,10 +294,10 @@ describe('screen stroke hits at half-open boundaries', () => {
     };
     const scene = new MapModel(resolveMapDefinition(data));
     const view = camera();
-    expect(scene.spatial.hitTest(new Point(120, 100), view)?.layer.id).toBe('upper');
-    expect(scene.spatial.hitTest(new Point(119, 100), view)?.layer.id).toBe('upper');
+    expect(scene.spatial.hitTest(new Point2(120, 100), view)?.layer.id).toBe('upper');
+    expect(scene.spatial.hitTest(new Point2(119, 100), view)?.layer.id).toBe('upper');
     scene.layers[1]!.visible = false;
-    expect(scene.spatial.hitTest(new Point(120, 100), view)?.layer.id).toBe('lower');
+    expect(scene.spatial.hitTest(new Point2(120, 100), view)?.layer.id).toBe('lower');
     scene.layers[1]!.visible = true;
     const line = scene.objects.get('line')!;
 
@@ -304,9 +305,9 @@ describe('screen stroke hits at half-open boundaries', () => {
       throw new Error(EXPECTED_LINE);
     }
 
-    line.points[1].position = new Point(20, 100, 6);
-    expect(scene.spatial.hitTest(new Point(20, 102), view)?.layer.id).toBe('upper');
+    line.points[1].position = new Point3(20, 100, 6);
+    expect(scene.spatial.hitTest(new Point2(20, 102), view)?.layer.id).toBe('upper');
     scene.layers[1]!.visible = false;
-    expect(scene.spatial.hitTest(new Point(20, 102), view)?.layer.id).toBe('lower');
+    expect(scene.spatial.hitTest(new Point2(20, 102), view)?.layer.id).toBe('lower');
   });
 });

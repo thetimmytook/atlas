@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { userEvent } from 'vitest/browser';
 
 import { MapElement } from '#components/map-element/map-element.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { Rect } from '#math/rect.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
@@ -11,6 +12,7 @@ import { background, expectLine, expectPoint, expectPolyline, svgGroups } from '
 
 import type { MapDefinition } from '#definitions/map-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
+import type { MapSurfaceEvent } from '#interaction/map-surface-event.js';
 import type { ObjectClickEvent } from '#interaction/object-click-event.js';
 import type { MapPoint } from '#objects/map-point.js';
 import type { MapRoute } from '#objects/map-route.js';
@@ -25,7 +27,7 @@ afterEach(() => {
 });
 
 function point(x: number, y: number, z: number, id: string): MapPointDefinition {
-  return { kind: 'point', id, position: new Point(x, y, z) };
+  return { kind: 'point', id, position: new Point3(x, y, z) };
 }
 
 async function paint(): Promise<void> {
@@ -118,11 +120,11 @@ describe('automatic fragments in real SVG and native picking', () => {
       throw new Error('Expected line.');
     }
 
-    rootPoint.position = new Point(80, 60, 1);
-    line.points[0].position = new Point(20, 150, 1);
-    route.points[0]!.position = new Point(20, 200, 1);
+    rootPoint.position = new Point3(80, 60, 1);
+    line.points[0].position = new Point3(20, 150, 1);
+    route.points[0]!.position = new Point3(20, 200, 1);
     expect(spatial.hitTest(rootPoint.position, map.camera)?.object).toBe(rootPoint);
-    expect(spatial.hitTest(new Point(40, 150), map.camera)?.object).toBe(line);
+    expect(spatial.hitTest(new Point2(40, 150), map.camera)?.object).toBe(line);
     await paint();
     expect(svgGroups(surface)).toHaveLength(4);
     expectLine(groups(surface, 'lower', 'line')[0]!, [20, 150, 70, 150]);
@@ -130,10 +132,10 @@ describe('automatic fragments in real SVG and native picking', () => {
     await click(surface, 80, 60);
     expect(hits.at(-1)!.detail.object).toBe(rootPoint);
     map.layers[0]!.visible = false;
-    rootPoint.position = new Point(80, 60, 9);
-    line.points[0].position = new Point(20, 150, 9);
-    route.points[0]!.position = new Point(20, 200, 9);
-    expect(spatial.hitTest(new Point(40, 150), map.camera)).toBeUndefined();
+    rootPoint.position = new Point3(80, 60, 9);
+    line.points[0].position = new Point3(20, 150, 9);
+    route.points[0]!.position = new Point3(20, 200, 9);
+    expect(spatial.hitTest(new Point2(40, 150), map.camera)).toBeUndefined();
     await paint();
     map.layers[0]!.visible = true;
     await paint();
@@ -157,6 +159,9 @@ describe('automatic fragments in real SVG and native picking', () => {
     expect(map.layers[1]!.objects).toEqual([]);
     expect(map.layers[2]!.objects).toEqual([]);
     const hits = events(map);
+    const surfaceEvents: MapSurfaceEvent[] = [];
+    map.addEventListener('press', event => surfaceEvents.push(event as MapSurfaceEvent));
+    map.addEventListener('release', event => surfaceEvents.push(event as MapSurfaceEvent));
     await click(surface, 70, 100);
     expect(hits.at(-1)!.detail).toMatchObject({ object: route, layer: map.layers[2] });
     map.layers[2]!.visible = false;
@@ -171,9 +176,27 @@ describe('automatic fragments in real SVG and native picking', () => {
       route,
       layer: map.layers[2],
     });
-    expect(hits.at(-1)!.detail.mapPoint.z).toBeUndefined();
-    expect(hits.at(-1)!.detail.clientPoint.z).toBeUndefined();
-    expect(spatial.hitTest(new Point(45, 100), map.camera)?.object).toBe(route);
+    expect(hits.at(-1)!.detail.mapPoint).toBeInstanceOf(Point2);
+    expect(hits.at(-1)!.detail.clientPoint).toBeInstanceOf(Point2);
+    expect(Object.hasOwn(hits.at(-1)!.detail.mapPoint, 'z')).toBe(false);
+    expect(Object.hasOwn(hits.at(-1)!.detail.clientPoint, 'z')).toBe(false);
+    expect(surfaceEvents.map(event => event.type)).toContain('press');
+    expect(surfaceEvents.map(event => event.type)).toContain('release');
+
+    for (const event of surfaceEvents) {
+      expect(event.detail.mapPoint).toBeInstanceOf(Point2);
+      expect(event.detail.clientPoint).toBeInstanceOf(Point2);
+    }
+
+    const client = map.coordinates.mapToClient(route.points[1]!.position);
+    expect(client).toBeInstanceOf(Point2);
+    expect(Object.hasOwn(client, 'z')).toBe(false);
+    const planar = map.coordinates.clientToMap(client);
+    expect(planar).toBeInstanceOf(Point2);
+    expect(planar.x).toBeCloseTo(120);
+    expect(planar.y).toBeCloseTo(100);
+    expect(Object.hasOwn(planar, 'z')).toBe(false);
+    expect(spatial.hitTest(new Point2(45, 100), map.camera)?.object).toBe(route);
     await click(surface, 280, 200);
     expect(hits.at(-1)!.detail).toMatchObject({
       object: map.objects.get('boundary'),
@@ -196,7 +219,7 @@ describe('automatic fragments in real SVG and native picking', () => {
     for (const x of [48, 49, 50, 150, 151]) {
       await click(surface, x, 100);
       expect(hits.at(-1)!.detail.object.id).toBe('line');
-      expect(spatial.hitTest(new Point(x, 100), map.camera)?.object.id).toBe('line');
+      expect(spatial.hitTest(new Point2(x, 100), map.camera)?.object.id).toBe('line');
     }
 
     const count = hits.length;
@@ -239,7 +262,7 @@ describe('automatic fragments in real SVG and native picking', () => {
       'same',
       'last',
     ]);
-    expect(spatial.hitTest(new Point(80, 60), map.camera)?.object).toBe(roots[2]);
+    expect(spatial.hitTest(new Point2(80, 60), map.camera)?.object).toBe(roots[2]);
     map.objects.remove(roots[2]!);
     const hits = events(map);
     await click(surface, 80, 60);
@@ -260,9 +283,9 @@ describe('automatic fragments in real SVG and native picking', () => {
     const boundary = groups(surface, 'upper', 'boundary')[0]!;
     const image = surface.querySelector('image');
     const finish = mutations(surface);
-    route.points[1]!.position = new Point(120, 100, 9);
-    expect(spatial.hitTest(new Point(80, 100), map.camera)?.object).toBe(route);
-    expect(spatial.hitTest(new Point(120, 100), map.camera)).toBeUndefined();
+    route.points[1]!.position = new Point3(120, 100, 9);
+    expect(spatial.hitTest(new Point2(80, 100), map.camera)?.object).toBe(route);
+    expect(spatial.hitTest(new Point2(120, 100), map.camera)).toBeUndefined();
     await paint();
     expect(groups(surface, 'lower', 'route')).toEqual(lower);
     expect(groups(surface, 'upper', 'route')[0]).toBe(upper);
@@ -285,7 +308,7 @@ describe('automatic fragments in real SVG and native picking', () => {
     const { map, surface } = await createMap();
     const nodes = Array.from(surface.querySelectorAll('*'));
     const finishPan = mutations(surface);
-    map.camera.center = new Point(170, 120);
+    map.camera.center = new Point2(170, 120);
     await paint();
     const pan = finishPan();
     expect(pan).toHaveLength(1);
@@ -310,17 +333,17 @@ describe('automatic fragments in real SVG and native picking', () => {
     const lower = groups(surface, 'lower', 'route')[0]!;
     map.layers[1]!.visible = false;
     map.remove();
-    route.points[1]!.position = new Point(120, 100, 9);
-    expect(spatial.hitTest(new Point(120, 100), map.camera)).toBeUndefined();
+    route.points[1]!.position = new Point3(120, 100, 9);
+    expect(spatial.hitTest(new Point2(120, 100), map.camera)).toBeUndefined();
     document.body.append(map);
     map.layers[1]!.visible = true;
     await paint();
     expectPolyline(lower, '20,100 45,100');
     map.objects.remove(route);
-    expect(spatial.hitTest(new Point(30, 100), map.camera)).toBeUndefined();
-    route.points[1]!.position = new Point(120, 100, 5);
+    expect(spatial.hitTest(new Point2(30, 100), map.camera)).toBeUndefined();
+    route.points[1]!.position = new Point3(120, 100, 5);
     map.objects.add(route);
-    expect(spatial.hitTest(new Point(45, 100), map.camera)?.object).toBe(route);
+    expect(spatial.hitTest(new Point2(45, 100), map.camera)?.object).toBe(route);
     await paint();
     expect(groups(surface, 'lower', 'route')[0]).toBe(lower);
     expectPolyline(lower, '20,100 70,100');
@@ -338,7 +361,7 @@ describe('automatic fragments in real SVG and native picking', () => {
         trigger,
         () => {
           route.points.forEach(vertex => {
-            vertex.position = new Point(vertex.position.x, vertex.position.y, 9);
+            vertex.position = new Point3(vertex.position.x, vertex.position.y, 9);
           });
         },
         { once: true },
@@ -346,7 +369,7 @@ describe('automatic fragments in real SVG and native picking', () => {
       await click(surface, 120, 100);
       expect(hits).toHaveLength(0);
       const spatial = new Spatial(prepareSceneGeometry(map.objects, map.layers));
-      expect(spatial.hitTest(new Point(120, 100), map.camera)?.object).toBe(underneath);
+      expect(spatial.hitTest(new Point2(120, 100), map.camera)?.object).toBe(underneath);
       expect(surface.querySelector('image')).not.toBeNull();
     },
   );
@@ -359,7 +382,7 @@ describe('automatic fragments in real SVG and native picking', () => {
     map.addEventListener(
       'release',
       () => {
-        route.points[1]!.position = new Point(120, 100, 21);
+        route.points[1]!.position = new Point3(120, 100, 21);
       },
       { once: true },
     );
@@ -397,7 +420,9 @@ describe('automatic fragments in real SVG and native picking', () => {
     expect(map.layers[0]!.intersectionBounds!.max!.z).toBe(3);
     expectPoint(svgGroups(surface)[0]!, 80, 60);
     const root = map.objects.get('point') as MapPoint;
-    root.position = new Point(80, 60, 2);
-    expect((map.definition!.objects[0] as MapPointDefinition).position.z).toBe(1);
+    root.position = new Point3(80, 60, 2);
+    expect((map.definition!.objects[0] as MapPointDefinition).position).toEqual(
+      new Point3(80, 60, 1),
+    );
   });
 });

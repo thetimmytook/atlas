@@ -35,9 +35,10 @@ continue between answers rather than relying on HTML anchors.
   `type` field. `kind` remains structural. See
   [classification decision](design/GEOMETRY_AND_ROUTES.md#application-classification--accepted-2026-10-05).
 - Coordinates: x right, y down, z up. SVG first; real 3D is a future direction.
-  The automatic-intersection stage is implemented for review with optional `Point.z`, retaining one
-  public position type and normalizing missing map-object height to zero. See
-  [the accepted coordinate correction](design/GEOMETRY_AND_ROUTES.md#optional-height-on-point--accepted-and-implemented-for-review-2026-10-08).
+  The automatic-intersection stage now uses frozen `Point2` for camera/input/query
+  coordinates and `Point3` for runtime spatial positions and clipped geometry.
+  Position input accepts either type; omitted height becomes zero. The former
+  `Point` export is removed. See [the accepted coordinate migration](design/GEOMETRY_AND_ROUTES.md#planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09).
 - `MapDefinition.objects` holds object definitions; required `MapDefinition.layers` declares layers.
   Each layer's `objects` lists IDs for ordinary full content; optional `intersectionBounds`
   lets the engine find and clip geometry from the common collection automatically.
@@ -143,7 +144,8 @@ direct ID membership, layer backgrounds, composition,
 independent visibility, shared-object updates and hit-layer event context. See
 [scope and next step](design/PROTOTYPE.md#explicit-layer-first-stage--implemented-for-review-2026-10-08).
 Automatic intersections/z/clipping are now implemented for mini review in the primary
-repository. See [the current stage, checks and changed files](design/PROTOTYPE.md#automatic-height-and-intersection-stage--implemented-for-review-2026-10-08).
+repository, with the 2026-10-09 `Point2`/`Point3` migration applied. See
+[the current stage, checks and changed files](design/PROTOTYPE.md#coordinate-migration--implemented-for-review-2026-10-09).
 The source route/points, merged layer behavior, local decision edits and historical
 benchmark artifacts are preserved. Volumetric zones and the other prototype blocks
 remain separate future work.

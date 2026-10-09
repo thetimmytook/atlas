@@ -1,5 +1,5 @@
 import { AtlasError } from '#errors/atlas-error.js';
-import { Point } from '#math/point.js';
+import { Point3 } from '#math/point3.js';
 import { createId } from '#objects/create-id.js';
 
 import { validateObjectId } from './object-id.validator.js';
@@ -25,6 +25,10 @@ export function resolveMapPoint(point: MapPointDefinition): WithId<MapPointDefin
   return Object.freeze({
     id: point.id ?? createId(),
     kind: 'point',
-    position: new Point(point.position.x, point.position.y, point.position.z ?? 0),
+    position: new Point3(
+      point.position.x,
+      point.position.y,
+      'z' in point.position ? point.position.z : undefined,
+    ),
   });
 }

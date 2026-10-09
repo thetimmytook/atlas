@@ -53,8 +53,10 @@ state and root order. New unmatched IDs need explicit selection:
 
 ## Height and automatic display updates — implemented for review, 2026-10-08
 
-All point input boundaries validate optional finite z and copy it, normalizing an
-omitted height to zero. This covers load resolution, constructors, root additions,
+The 2026-10-09 coordinate migration makes runtime point positions `Point3` while
+position definitions/setters accept `Point2 | Point3`, including plain x/y input.
+All point input boundaries validate supplied finite z and copy coordinates into
+a new `Point3`, using its default z = 0 for omitted height. This covers load resolution, constructors, root additions,
 route add/insert/replace and runtime position assignment. Mutation and invalidation
 precede notifications. Invalid coordinates or bounds preserve prior working state;
 loaded bounds are copied/frozen deeply before asynchronous preparation, and the
@@ -114,7 +116,7 @@ no longer apply. Point/path editing will be reviewed against this model; earlier
 historical, not implemented contracts.
 
 The current `route.points` array is read-only, but each owned `MapPoint` accepts
-position updates through `point.position = new Point(x, y)`. `MapRoute` forwards
+position updates through `point.position = new Point3(x, y)`. `MapRoute` forwards
 the point's `change` event without rebuilding geometry. ID lookup in `map.objects`
 still returns the route instance; owned points are available through that route.
 Independent points and line endpoints use the same `MapPoint` class, and `MapLine`

@@ -107,23 +107,27 @@ The user approved the coordinate and bounds corrections; they are now implemente
 for mini review. The picking rule below is the tested implementation proposed for
 review, including screen stroke thickness.
 
-Use the existing [Point with optional height](GEOMETRY_AND_ROUTES.md#optional-height-on-point--accepted-and-implemented-for-review-2026-10-08):
+The 2026-10-09 coordinate migration uses [Point3 for partial spatial limits](GEOMETRY_AND_ROUTES.md#planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09):
 
 ```ts
 export interface IntersectionBounds {
-  readonly min?: Partial<Point>;
-  readonly max?: Partial<Point>;
+  readonly min?: Partial<Point3>;
+  readonly max?: Partial<Point3>;
 }
 
 // MapLayerDefinition
-readonly intersectionBounds?: IntersectionBounds | undefined;
+readonly intersectionBounds?: IntersectionBounds;
 
 // MapLayer
 get intersectionBounds(): IntersectionBounds | undefined;
 ```
 
-`Partial<Point>` retains the readonly coordinate fields; an additional `Readonly`
-wrapper is unnecessary. Omitted bounds or `undefined` disable automatic display.
+`Partial<Point3>` retains the readonly coordinate fields; an additional `Readonly`
+wrapper is unnecessary. Typed callers disable automatic display by omitting the
+property, consistent with `exactOptionalPropertyTypes`. Runtime JavaScript input
+may still supply explicit `undefined`, which also disables automatic display.
+Partial limits preserve absent axes when copied; they are not constructed as
+`Point3`, whose z default would accidentally introduce a constraint.
 Supplied bounds require at least one finite coordinate constraint. Reject `{}`,
 `{ min: {} }`, `{ max: {} }`, and other forms without an effective constraint;
 they do not implicitly enable an automatic display of every root object.
@@ -151,7 +155,8 @@ only direct roots. Mixed direct/automatic appearances retain root collection ord
 Spatial membership of centerline positions and marker centers is `[min, max)`.
 SVG strokes reach the cut plane, including a visually closed round cap. Picking
 asks whether **any eligible centerline position** is within the existing stroke
-radius (`strokeWidth / (2 * zoom)`) of the 2D query. The camera does not infer a click z.
+radius (`strokeWidth / (2 * zoom)`) of the `Point2` query. Surface and object events
+return `Point2` for `mapPoint`/`clientPoint`; the camera does not infer a click z.
 This retains hits near an excluded endpoint when eligible interior positions fall
 inside the hit disk. At exactly the outer tangent, an excluded endpoint alone does
 not qualify; an included endpoint or an eligible interior position does. There is

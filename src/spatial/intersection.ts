@@ -1,13 +1,13 @@
 /* eslint-disable security/detect-object-injection -- Coordinate keys come only from AXES; array indices are bounded by internal loops. */
-import { Point } from '#math/point.js';
+import { Point3 } from '#math/point3.js';
 
 import type { IntersectionBounds } from '#math/intersection-bounds.js';
 
 const AXES = ['x', 'y', 'z'] as const;
 
 export interface ClippedSegment {
-  readonly start: Point;
-  readonly end: Point;
+  readonly start: Point3;
+  readonly end: Point3;
   readonly startIncluded: boolean;
   readonly endIncluded: boolean;
   readonly startsAtVertex: boolean;
@@ -15,13 +15,13 @@ export interface ClippedSegment {
 }
 
 export interface ClippedFragment {
-  readonly points: readonly Point[];
+  readonly points: readonly Point3[];
   readonly segments: readonly ClippedSegment[];
 }
 
-export function containsPosition(bounds: IntersectionBounds, point: Point): boolean {
+export function containsPosition(bounds: IntersectionBounds, point: Point3): boolean {
   return AXES.every(axis => {
-    const value = point[axis] ?? 0;
+    const value = point[axis];
     const min = bounds.min?.[axis];
     const max = bounds.max?.[axis];
 
@@ -42,8 +42,8 @@ interface ClipInterval {
 
 /** Slab clipping of the source parameter interval, retaining open endpoint ownership. */
 export function clipSegment(
-  start: Point,
-  end: Point,
+  start: Point3,
+  end: Point3,
   bounds: IntersectionBounds,
 ): ClippedSegment | undefined {
   const interval: ClipInterval = {
@@ -56,7 +56,7 @@ export function clipSegment(
   };
 
   for (const axis of AXES) {
-    if (!clipAxis(start[axis] ?? 0, end[axis] ?? 0, bounds, axis, interval)) {
+    if (!clipAxis(start[axis], end[axis], bounds, axis, interval)) {
       return undefined;
     }
   }
@@ -150,12 +150,12 @@ function restrictInterval(
 }
 
 function positionAt(
-  start: Point,
-  end: Point,
+  start: Point3,
+  end: Point3,
   t: number,
-  planes: Partial<Point>,
+  planes: Partial<Point3>,
   bounds: IntersectionBounds,
-): Point {
+): Point3 {
   if (t === 0) {
     return start;
   }
@@ -169,7 +169,7 @@ function positionAt(
       return planes[axis];
     }
 
-    const value = (1 - t) * (start[axis] ?? 0) + t * (end[axis] ?? 0);
+    const value = (1 - t) * start[axis] + t * end[axis];
 
     // Exact plane coordinates avoid interpolation roundoff beyond the visual boundary.
     return Math.max(
@@ -178,19 +178,19 @@ function positionAt(
     );
   };
 
-  return new Point(coordinate('x'), coordinate('y'), coordinate('z'));
+  return new Point3(coordinate('x'), coordinate('y'), coordinate('z'));
 }
 
 /** Join only consecutive eligible source segments, never an excursion outside the bounds. */
 export function clipPolyline(
-  points: readonly Point[],
+  points: readonly Point3[],
   bounds: IntersectionBounds,
 ): readonly ClippedFragment[] {
   if (points.length === 1 && containsPosition(bounds, points[0]!)) {
     return [{ points, segments: [] }];
   }
 
-  const fragments: { points: Point[]; segments: ClippedSegment[] }[] = [];
+  const fragments: { points: Point3[]; segments: ClippedSegment[] }[] = [];
   let previous: ClippedSegment | undefined;
 
   for (let index = 1; index < points.length; index++) {

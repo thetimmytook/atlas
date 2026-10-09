@@ -1,6 +1,7 @@
 import { Camera } from '#camera/camera.js';
 import { squaredDistanceToSegment } from '#math/distance.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
@@ -13,7 +14,7 @@ import type { StressScene } from './stress.scene.js';
 
 interface ExpectedPoint {
   id: string;
-  position: Point;
+  position: Point3;
 }
 interface ExpectedObject {
   id: string;
@@ -43,7 +44,11 @@ function expectedObject(definition: MapEntryDefinition): ExpectedObject {
     kind: definition.kind,
     points: points.map(point => ({
       id: point.id!,
-      position: new Point(point.position.x, point.position.y),
+      position: new Point3(
+        point.position.x,
+        point.position.y,
+        'z' in point.position ? point.position.z : undefined,
+      ),
     })),
   };
 }
@@ -73,7 +78,7 @@ function expectedMutation(
   scenario: string,
 ): {
   roots: ExpectedObject[];
-  probes: Point[];
+  probes: Point2[];
 } {
   const roots = scene.definition.objects!.map(expectedObject);
   const amount = Number(scenario.split('-').at(1));
@@ -104,13 +109,13 @@ function expectedMutation(
   for (const root of affected) {
     if (scenario.startsWith('position-')) {
       const point = root.points[0]!;
-      point.position = new Point(point.position.x + 1, point.position.y + 1);
+      point.position = new Point3(point.position.x + 1, point.position.y + 1, point.position.z);
     } else if (scenario === ROUTE_SCENARIO) {
       root.points.splice(
         1,
         root.points.length - 2,
-        { id: 'replacement-0', position: new Point(60, 65) },
-        { id: 'replacement-1', position: new Point(62, 67) },
+        { id: 'replacement-0', position: new Point3(60, 65) },
+        { id: 'replacement-1', position: new Point3(62, 67) },
       );
     }
   }
@@ -120,14 +125,14 @@ function expectedMutation(
   return { roots: after, probes };
 }
 
-function probePositions(object: ExpectedObject): Point[] {
-  const positions = object.points.map(point => point.position);
+function probePositions(object: ExpectedObject): Point2[] {
+  const positions = object.points.map(point => new Point2(point.position.x, point.position.y));
 
   return positions.concat(
     positions.slice(1).map((end, index) => {
       const start = positions.at(index)!;
 
-      return new Point((start.x + end.x) / 2, (start.y + end.y) / 2);
+      return new Point2((start.x + end.x) / 2, (start.y + end.y) / 2);
     }),
   );
 }
@@ -146,7 +151,8 @@ function checkRoots(map: MapElement, expected: readonly ExpectedObject[]): void 
       assertMatch(
         current.id === point.id &&
           current.position.x === point.position.x &&
-          current.position.y === point.position.y,
+          current.position.y === point.position.y &&
+          current.position.z === point.position.z,
         'point membership/position',
         point.id,
       );
@@ -154,7 +160,7 @@ function checkRoots(map: MapElement, expected: readonly ExpectedObject[]): void 
   });
 }
 
-function geometryPositions(geometry: Geometry): readonly Point[] {
+function geometryPositions(geometry: Geometry): readonly Point3[] {
   if (geometry.kind === 'point') {
     return [geometry.position];
   }
@@ -173,7 +179,9 @@ function checkGeometry(geometry: Geometry, expected: ExpectedObject): void {
   expected.points.forEach((point, index) => {
     const actual = points.at(index)!;
     assertMatch(
-      actual.x === point.position.x && actual.y === point.position.y,
+      actual.x === point.position.x &&
+        actual.y === point.position.y &&
+        actual.z === point.position.z,
       'spatial coordinates',
       expected.id,
     );
@@ -261,7 +269,7 @@ function checkSvg(map: MapElement, expected: readonly ExpectedObject[]): void {
   });
 }
 
-function covers(object: ExpectedObject, point: Point, zoom: number): boolean {
+function covers(object: ExpectedObject, point: Point2, zoom: number): boolean {
   if (object.kind === 'point') {
     const position = object.points[0]!.position;
 
@@ -283,7 +291,7 @@ function covers(object: ExpectedObject, point: Point, zoom: number): boolean {
 function checkPicking(
   spatial: Spatial,
   objects: readonly ExpectedObject[],
-  point: Point,
+  point: Point2,
   camera: Camera,
 ): void {
   const { center, viewport, zoom } = camera;

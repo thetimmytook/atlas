@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { Camera } from '#camera/camera.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 
@@ -9,9 +10,11 @@ describe('camera state, bounds and fitting', () => {
   it('resizes the viewport while preserving center and zoom and previously retained values', () => {
     const camera = new Camera();
     camera.resize(new Size(800, 600));
-    camera.center = new Point(100, 200);
+    camera.center = new Point3(100, 200, 6);
     camera.zoom = 2;
     const center = camera.center;
+    expect(center).toBeInstanceOf(Point2);
+    expect(center).toEqual({ x: 100, y: 200 });
     const viewport = camera.viewport;
     const bounds = camera.bounds;
     const changed = vi.fn(() => camera.bounds);
@@ -36,7 +39,7 @@ describe('camera state, bounds and fitting', () => {
     camera.resize(viewport);
     camera.fit(bounds);
     expect(camera.center).toEqual(
-      new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2),
+      new Point2(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2),
     );
     expect(camera.zoom).toBe(zoom);
     const fitted = camera.bounds;
@@ -50,7 +53,7 @@ describe('camera state, bounds and fitting', () => {
     const camera = new Camera();
     camera.zoom = 3;
     camera.fit(new Rect(10, 20, 200, 100));
-    expect(camera.center).toEqual(new Point(110, 70));
+    expect(camera.center).toEqual(new Point2(110, 70));
     expect(camera.zoom).toBe(3);
     camera.resize(new Size(400, 0));
     expect(camera.zoom).toBe(3);
@@ -58,7 +61,7 @@ describe('camera state, bounds and fitting', () => {
     expect(camera.zoom).toBe(2);
     camera.resize(new Size(800, 600));
     expect(camera.zoom).toBe(2);
-    expect(camera.center).toEqual(new Point(110, 70));
+    expect(camera.center).toEqual(new Point2(110, 70));
   });
 
   it.each(['center', 'zoom'] as const)('an explicit %s change cancels the deferred fit', field => {
@@ -66,7 +69,7 @@ describe('camera state, bounds and fitting', () => {
     camera.fit(new Rect(10, 20, 200, 100));
 
     if (field === 'center') {
-      camera.center = new Point(30, 40);
+      camera.center = new Point2(30, 40);
     } else {
       camera.zoom = 3;
     }
@@ -80,7 +83,7 @@ describe('camera state, bounds and fitting', () => {
 
   it.each([0, -1, NaN, Infinity])('rejects zoom %s without changing state or dispatching', zoom => {
     const camera = new Camera();
-    camera.center = new Point(30, 40);
+    camera.center = new Point2(30, 40);
     camera.zoom = 2;
     const center = camera.center;
     const changed = vi.fn();
@@ -97,7 +100,7 @@ describe('camera state, bounds and fitting', () => {
     {
       name: 'center',
       apply: (camera: Camera): void => {
-        camera.center = new Point(10, NaN);
+        camera.center = new Point2(10, NaN);
       },
     },
     {
@@ -131,7 +134,7 @@ describe('camera state, bounds and fitting', () => {
     expect(camera.zoom).toBe(1);
     expect(changed).not.toHaveBeenCalled();
     camera.resize(new Size(400, 300));
-    expect(camera.center).toEqual(new Point(110, 70));
+    expect(camera.center).toEqual(new Point2(110, 70));
     expect(camera.zoom).toBe(2);
   });
 });

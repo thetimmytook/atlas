@@ -3,7 +3,7 @@ import { squaredDistanceToSegment } from '#math/distance.js';
 import { isLayerEligible, isSceneObjectEligible } from './scene-geometry.js';
 
 import type { Camera } from '#camera/camera.js';
-import type { Point } from '#math/point.js';
+import type { Point2 } from '#math/point2.js';
 import type { Geometry } from './geometry.js';
 import type { ClippedSegment } from './intersection.js';
 import type { SceneGeometry, SceneObject, SceneSymbols } from './scene-geometry.js';
@@ -17,7 +17,7 @@ export class Spatial {
   }
 
   /** Check only the captured display, without picking an object underneath it. */
-  hasHit(entry: SceneObject, point: Point, camera: Camera): boolean {
+  hasHit(entry: SceneObject, point: Point2, camera: Camera): boolean {
     return (
       isSceneObjectEligible(this.#geometry, entry) &&
       hitTestGeometry(point, entry.geometry, this.#geometry.symbols, camera.zoom)
@@ -25,7 +25,7 @@ export class Spatial {
   }
 
   /** Flat-view picking, equivalent to a perpendicular ray with 2D composition order. */
-  hitTest(point: Point, camera: Camera): SceneObject | undefined {
+  hitTest(point: Point2, camera: Camera): SceneObject | undefined {
     const { center, zoom, viewport } = camera;
     const x = (point.x - center.x) * zoom;
     const y = (point.y - center.y) * zoom;
@@ -61,7 +61,7 @@ export class Spatial {
 }
 
 function hitTestGeometry(
-  point: Point,
+  point: Point2,
   geometry: Geometry,
   symbols: SceneSymbols,
   zoom: number,
@@ -101,7 +101,7 @@ function hitTestGeometry(
 
 /** A hit exists when an eligible centerline position lies within the screen-sized stroke. */
 function hitTestClippedSegment(
-  point: Point,
+  point: Point2,
   segment: ClippedSegment,
   radiusSquared: number,
 ): boolean {

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { userEvent } from 'vitest/browser';
 
 import { MapElement } from '#components/map-element/map-element.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
 import { MapLine } from '#objects/map-line.js';
 import { MapPoint } from '#objects/map-point.js';
 import { MapRoute } from '#objects/map-route.js';
@@ -136,10 +136,10 @@ describe('real MapElement browser integration', () => {
       .map(group => shape(group, 'circle'));
     const definition = map.definition;
 
-    point.position = new Point(80, 40);
-    line.points[0].position = new Point(30, 70);
-    line.points[1].position = new Point(210, 90);
-    route.points[0]!.position = new Point(60, 170);
+    point.position = new Point2(80, 40);
+    line.points[0].position = new Point2(30, 70);
+    line.points[1].position = new Point2(210, 90);
+    route.points[0]!.position = new Point2(60, 170);
     const inserted = route.insertPoint(1, pointDefinition(140, 180, 'middle'));
     await waitForDom(() => {
       expectPoint(groups[0]!, 80, 40);
@@ -173,7 +173,7 @@ describe('real MapElement browser integration', () => {
     surface.addEventListener(
       'pointerdown',
       () => {
-        point.position = new Point(120, 40);
+        point.position = new Point2(120, 40);
         expectPoint(group, 40, 30);
       },
       { capture: true, once: true, signal: listeners.signal },
@@ -210,8 +210,8 @@ describe('real MapElement browser integration', () => {
     surface.addEventListener(
       'pointerdown',
       () => {
-        line.points[0].position = new Point(100, 80);
-        line.points[1].position = new Point(200, 80);
+        line.points[0].position = new Point2(100, 80);
+        line.points[1].position = new Point2(200, 80);
       },
       { capture: true, once: true, signal: listeners.signal },
     );
@@ -287,7 +287,7 @@ describe('real MapElement browser integration', () => {
     expect(events[0]!.detail.route).toBeUndefined();
     expect(events[1]!.detail.object).toBe(route.points[0]);
     expect(events[1]!.detail.route).toBe(route);
-    expect(events[1]!.detail.mapPoint).toEqual(new Point(50, 150));
+    expect(events[1]!.detail.mapPoint).toEqual(new Point2(50, 150));
   });
 
   it.each(['root', 'vertex', 'disconnect'] as const)(
@@ -342,8 +342,8 @@ describe('real MapElement browser integration', () => {
     map.addEventListener('release', () => releases++, { signal: listeners.signal });
 
     map.remove();
-    point.position = new Point(90, 40);
-    route.points[1]!.position = new Point(260, 170);
+    point.position = new Point2(90, 40);
+    route.points[1]!.position = new Point2(260, 170);
     route.replacePoints(0, 1, [pointDefinition(70, 170, 'a')]);
     const added = map.objects.add(pointDefinition(280, 200, 'added'));
     expectGroups(surface, before);
@@ -370,7 +370,7 @@ describe('real MapElement browser integration', () => {
 
     for (const x of [95, 100, 105]) {
       map.remove();
-      point.position = new Point(x, 40);
+      point.position = new Point2(x, 40);
       document.body.append(map);
       await waitForDom(() => expectPoint(before[0]!, x, 40));
       await clickAt(surface, x, 40);
@@ -403,7 +403,7 @@ describe('real MapElement browser integration', () => {
       const oldObjects = map.objects;
       const oldPoint = oldObjects.get('point') as MapPoint;
       const oldRoute = oldObjects.get('route') as MapRoute;
-      map.camera.center = new Point(100, 80);
+      map.camera.center = new Point2(100, 80);
       map.camera.zoom = 2;
       await waitForDom(() => expect(surface.getAttribute('viewBox')).toBe('20 20 160 120'));
       const nodes = Array.from(surface.children);
@@ -436,7 +436,7 @@ describe('real MapElement browser integration', () => {
       nodes.forEach((node, index) => expect(surface.children.item(index)).toBe(node));
       expect(map.definition).toBe(definition);
       expect(map.objects).toBe(oldObjects);
-      expect(map.camera.center).toEqual(new Point(100, 80));
+      expect(map.camera.center).toEqual(new Point2(100, 80));
       expect(map.camera.zoom).toBe(2);
       expect(map.camera.viewport).toEqual({ width: 320, height: 240 });
       expect(surface.getAttribute('viewBox')).toBe('20 20 160 120');
@@ -471,10 +471,10 @@ describe('real MapElement browser integration', () => {
       nodes.forEach(node => expect(node.isConnected).toBe(false));
 
       // Force a real component frame while changing retained objects from the retired scene.
-      oldPoint.position = new Point(225, 145);
+      oldPoint.position = new Point2(225, 145);
       oldRoute.addPoint(pointDefinition(225, 145, 'retired-vertex'));
       oldObjects.add(pointDefinition(225, 145, 'retired-root'));
-      newPoint.position = new Point(225, 145);
+      newPoint.position = new Point2(225, 145);
       await waitForDom(() => expectPoint(svgGroups(surface)[0]!, 225, 145));
       newNodes.forEach((node, index) => expect(surface.children.item(index)).toBe(node));
       expect(svgGroups(surface)).toHaveLength(1);
@@ -507,7 +507,7 @@ describe('real MapElement browser integration', () => {
     expect(firstNodes[0]).not.toBe(secondNodes[0]);
     const events = recordClicks(second.map);
 
-    point.position = new Point(70, 180);
+    point.position = new Point2(70, 180);
     await waitForDom(() => {
       expectPoint(firstNodes[1]!, 70, 180);
       expectPoint(firstNodes[3]!, 70, 180);
@@ -518,7 +518,7 @@ describe('real MapElement browser integration', () => {
     });
 
     first.map.remove();
-    point.position = new Point(90, 180);
+    point.position = new Point2(90, 180);
     route.insertPoint(1, pointDefinition(150, 200, 'middle'));
     await waitForDom(() => {
       expectPoint(secondNodes[1]!, 90, 180);
@@ -533,8 +533,8 @@ describe('real MapElement browser integration', () => {
     first.map.objects.remove(point);
     await waitForDom(() => expect(svgGroups(first.surface)).toHaveLength(0));
 
-    point.position = new Point(100, 180);
-    route.points[2]!.position = new Point(260, 170);
+    point.position = new Point2(100, 180);
+    route.points[2]!.position = new Point2(260, 170);
     await waitForDom(() => {
       expectPoint(secondNodes[1]!, 100, 180);
       expectPoint(secondNodes[3]!, 100, 180);
@@ -560,7 +560,7 @@ describe('real MapElement browser integration', () => {
   it('uses real ResizeObserver through zero-size collapse and recovery without refitting the camera', async () => {
     const { map, surface, point, route } = await createMixedMap();
     const before = svgGroups(surface);
-    map.camera.center = new Point(120, 100);
+    map.camera.center = new Point2(120, 100);
     map.camera.zoom = 2;
     await waitForDom(() => expect(surface.getAttribute('viewBox')).toBe('40 40 160 120'));
 
@@ -572,7 +572,7 @@ describe('real MapElement browser integration', () => {
       expect(surface.getAttribute('width')).toBe('0');
       expect(surface.getAttribute('height')).toBe('0');
     });
-    point.position = new Point(100, 80);
+    point.position = new Point2(100, 80);
     route.replacePoints(0, 1, [pointDefinition(80, 160, 'a')]);
     map.style.width = '480px';
     map.style.height = '320px';
@@ -583,7 +583,7 @@ describe('real MapElement browser integration', () => {
       expectPoint(before[0]!, 100, 80);
       expectPolyline(before[2]!, '80,160 250,150');
     });
-    expect(map.camera.center).toEqual(new Point(120, 100));
+    expect(map.camera.center).toEqual(new Point2(120, 100));
     expect(map.camera.zoom).toBe(2);
     const current = svgGroups(surface);
     expectGroups(surface, [before[0]!, before[1]!, before[2]!, current[3]!, before[4]!]);
@@ -641,14 +641,14 @@ describe('membership picking before view updates', () => {
     const spatial = new Spatial(geometry);
     const before = svgGroups(surface);
     map.remove();
-    point.position = new Point(90, 40);
+    point.position = new Point2(90, 40);
     const inserted = route.insertPoint(1, pointDefinition(140, 200, 'middle'));
     const added = map.objects.add(pointDefinition(280, 220, 'new'));
-    expect(spatial.hitTest(new Point(90, 40), map.camera)?.object).toBe(point);
-    expect(spatial.hitTest(new Point(140, 200), map.camera)?.object).toBe(inserted);
-    expect(spatial.hitTest(new Point(280, 220), map.camera)?.object).toBe(added);
+    expect(spatial.hitTest(new Point2(90, 40), map.camera)?.object).toBe(point);
+    expect(spatial.hitTest(new Point2(140, 200), map.camera)?.object).toBe(inserted);
+    expect(spatial.hitTest(new Point2(280, 220), map.camera)?.object).toBe(added);
     route.removePoint(inserted);
-    expect(spatial.hitTest(new Point(140, 200), map.camera)).toBeUndefined();
+    expect(spatial.hitTest(new Point2(140, 200), map.camera)).toBeUndefined();
     expectPoint(before[0]!, 40, 30);
     expectGroups(surface, before);
     document.body.append(map);
@@ -680,7 +680,7 @@ describe('reentrant reattachment before browser RAF', () => {
     map.addEventListener(
       'press',
       () => {
-        point.position = new Point(90, 80);
+        point.position = new Point2(90, 80);
         map.objects.add(point);
         beforePaint.push(target.getAttribute('transform')!);
       },

@@ -2,7 +2,7 @@
 import { AtlasError } from '#errors/atlas-error.js';
 
 import type { IntersectionBounds } from '#math/intersection-bounds.js';
-import type { Point } from '#math/point.js';
+import type { Point3 } from '#math/point3.js';
 
 const AXES = ['x', 'y', 'z'] as const;
 
@@ -24,7 +24,7 @@ export function resolveIntersectionBounds(
 
   let count = 0;
 
-  const copy = (side: 'min' | 'max'): Partial<Point> | undefined => {
+  const copy = (side: 'min' | 'max'): Partial<Point3> | undefined => {
     const limit = value[side];
 
     if (limit === undefined) {

@@ -27,26 +27,52 @@ separate steps. Ordinary API names use no Atlas prefix; the error family retains
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
 
-## Optional height on Point — accepted and implemented for review, 2026-10-08
+## Planar and spatial coordinates — accepted and implemented for review, 2026-10-09
 
-The z/intersection stage extends the existing immutable mathematical
-`Point` with `readonly z?: number` and an optional third constructor argument.
-`Point` remains the position type in `MapPointDefinition` and both runtime
-`MapPoint.position` accessors. Do not introduce `PointPosition`, `Point3D`, or a
-separate public normalized-position type. Plain `{ x, y }` values and
-`new Point(x, y)` remain valid input.
+The current contract replaces the 2026-10-08 optional-height `Point` decision with
+two immutable, frozen mathematical coordinate values. `Point` is removed without a
+compatibility alias. No inheritance, universal coordinate type, further dimensions,
+`PointPosition`, or separate normalized-position type is introduced.
 
-Creating or assigning a map-object position validates and copies the coordinates,
-normalizing an omitted z to zero. This also applies to owned points, definition
-resolution and route editing. Finite negative heights are valid. Runtime map-object
-positions and copied definition snapshots remain frozen. The public optional
-property still has type `number | undefined`; geometry code can use `z ?? 0`
-without introducing another coordinate type merely to express normalization.
+```ts
+export declare class Point2 {
+  readonly x: number;
+  readonly y: number;
+  constructor(x: number, y: number);
+}
 
-Camera and client/surface coordinates continue using x/y. A screen-to-map
-conversion does not infer height from a screen position; ordinary two-argument
-`Point` values may omit z. This extends the earlier 2D coordinate contract below
-without adding a 3D camera or changing runtime object identity.
+export declare class Point3 {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+  constructor(x: number, y: number, z?: number); // implementation default: z = 0
+}
+
+// MapPointDefinition
+readonly position: Point2 | Point3;
+
+// MapPoint
+get position(): Point3;
+set position(value: Point2 | Point3);
+```
+
+`Point2` serves camera centers, screen/client coordinates, surface/object event
+coordinates, coordinate-conversion results, screen distances and planar picking
+queries. `Point3` serves runtime independent/owned positions, source spatial geometry
+and clipped segment/fragment coordinates. The name and identity of `MapPoint` stay
+unchanged. Frozen live geometry views continue reading current source coordinates.
+
+Plain `{ x, y }`, `{ x, y, z }`, `Point2` and `Point3` values remain valid position
+input. Construction, loading, assignment and owned-point editing validate finite
+coordinates before mutation and copy input into a new `Point3`; its constructor
+default supplies omitted z = 0. Finite negative heights are valid. Runtime positions
+and load snapshots remain frozen. Guaranteed spatial values read z directly;
+partial input is normalized only at input boundaries.
+
+Camera and client/surface coordinates use x/y. `mapToClient` accepts a spatial
+position structurally through x/y and returns `Point2`; `clientToMap` returns
+`Point2` without inferring click height. Height remains available from the object's
+spatial geometry. This adds no 3D camera or runtime object identity change.
 
 The internal segment clipper narrows the source parameter interval over the bounded
 axes, preserving inclusive/exclusive endpoint flags. Parallel or repeated endpoints

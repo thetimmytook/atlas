@@ -1,7 +1,7 @@
 import { createClippedAppearance } from './clipped-appearance.js';
 import { trackScene, untrackScene } from './scene-invalidation.js';
 
-import type { Point } from '#math/point.js';
+import type { Point3 } from '#math/point3.js';
 import type { MapLayer } from '#objects/map-layer.js';
 import type { MapEntry, MapObjectCollection } from '#objects/map-object-collection.js';
 import type { MapPoint } from '#objects/map-point.js';
@@ -109,7 +109,7 @@ export function prepareSceneGeometry(
     return entry;
   };
 
-  const resolveAppearance = (
+  const resolveLayerEntries = (
     layer: MapLayer,
     root: MapEntry,
     membership: boolean,
@@ -155,7 +155,7 @@ export function prepareSceneGeometry(
   const updateAppearance = (layer: MapLayer, root: MapEntry, membership: boolean): boolean => {
     const byRoot = appearances.get(layer)!;
     const previous = byRoot.get(root) ?? [];
-    const next = resolveAppearance(layer, root, membership);
+    const next = resolveLayerEntries(layer, root, membership);
     const same =
       previous.length === next.length && previous.every((entry, index) => entry === next.at(index));
 
@@ -375,7 +375,7 @@ function createGeometry(object: MapEntry): Geometry {
   if (object.kind === 'point') {
     return Object.freeze({
       kind: 'point',
-      get position(): Point {
+      get position(): Point3 {
         return object.position;
       },
     });
@@ -384,18 +384,18 @@ function createGeometry(object: MapEntry): Geometry {
   if (object.kind === 'line') {
     return Object.freeze({
       kind: 'line',
-      get start(): Point {
+      get start(): Point3 {
         return object.points[0].position;
       },
-      get end(): Point {
+      get end(): Point3 {
         return object.points[1].position;
       },
     });
   }
 
-  const cache = new WeakMap<MapPoint, Point>();
+  const cache = new WeakMap<MapPoint, Point3>();
 
-  const positionFor = (point: MapPoint): Point => {
+  const positionFor = (point: MapPoint): Point3 => {
     const cached = cache.get(point);
 
     if (cached) {
@@ -414,7 +414,7 @@ function createGeometry(object: MapEntry): Geometry {
 
   return Object.freeze({
     kind: 'polyline',
-    get points(): readonly Point[] {
+    get points(): readonly Point3[] {
       if (invalidation.membership) {
         positions = Object.freeze(object.points.map(positionFor));
         invalidation.membership = false;
@@ -427,7 +427,7 @@ function createGeometry(object: MapEntry): Geometry {
 }
 
 /** Stable coordinate views keep the route array live without copying it on edits or reads. */
-function createPositionView(point: MapPoint): Point {
+function createPositionView(point: MapPoint): Point3 {
   return Object.freeze({
     get x(): number {
       return point.position.x;
@@ -436,7 +436,7 @@ function createPositionView(point: MapPoint): Point {
       return point.position.y;
     },
     get z(): number {
-      return point.position.z ?? 0;
+      return point.position.z;
     },
   });
 }

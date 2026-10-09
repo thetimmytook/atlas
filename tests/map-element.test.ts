@@ -1,6 +1,7 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { Size } from '#math/size.js';
 import { MapPoint } from '#objects/map-point.js';
 
@@ -203,13 +204,13 @@ describe('component scene replacement', () => {
     element.addEventListener('objectclick', clicked);
     expect(element.objects).toBe(initial);
     expect(element.definition).toBeUndefined();
-    element.camera.center = new Point(500, 300);
+    element.camera.center = new Point2(500, 300);
     click(element, 100, 100);
     expect(clicked).not.toHaveBeenCalled();
     await loadDefinition(element);
     expect(element.objects).not.toBe(initial);
     expect(initial.get(point.id)).toBe(point);
-    expect(element.camera.center).toEqual(new Point(500, 300));
+    expect(element.camera.center).toEqual(new Point2(500, 300));
     expect(element.camera.zoom).toBe(1);
     click(element, 100, 100);
     expect(clicked).toHaveBeenCalledOnce();
@@ -232,9 +233,9 @@ describe('component scene replacement', () => {
     data.layers[0]!.background.size.width = 999;
     await loading;
     const point = element.objects.get('point') as MapPoint;
-    expect(point.position).toEqual(new Point(100, 100, 0));
+    expect(point.position).toEqual(new Point3(100, 100, 0));
     expect(element.definition?.layers[0]?.background?.size).toEqual(new Size(1000, 600));
-    point.position = new Point(200, 200);
+    point.position = new Point2(200, 200);
     expect(element.definition?.objects[0]).toMatchObject({ position: { x: 100, y: 100 } });
     expect(Object.isFrozen(element.definition)).toBe(true);
   });
@@ -246,7 +247,7 @@ describe('component scene replacement', () => {
     const oldDefinition = element.definition;
     const oldDisplay = display;
     const point = objects.get('point') as MapPoint;
-    element.camera.center = new Point(450, 250);
+    element.camera.center = new Point2(450, 250);
     element.camera.zoom = 2;
     const center = element.camera.center;
     let rejectPreparation!: (reason: Error) => void;
@@ -260,7 +261,7 @@ describe('component scene replacement', () => {
     const failure = expect(loading).rejects.toThrow('Image failed');
     expect(element.objects).toBe(objects);
     expect(display).toBe(oldDisplay);
-    point.position = new Point(200, 200);
+    point.position = new Point2(200, 200);
     const clicked = vi.fn();
     element.addEventListener('objectclick', clicked);
     const client = element.coordinates.mapToClient(point.position);
@@ -277,7 +278,7 @@ describe('component scene replacement', () => {
     expect(renderer.show).toHaveBeenCalledOnce();
     flushFrame();
     requestFrame.mockClear();
-    point.position = new Point(300, 200);
+    point.position = new Point2(300, 200);
     expect(requestFrame).toHaveBeenCalledOnce();
   });
 
@@ -353,11 +354,11 @@ describe('component scene replacement', () => {
     expect(release).toHaveBeenCalledWith('change', expect.any(Function));
     flushFrame();
     requestFrame.mockClear();
-    oldPoint.position = new Point(300, 300);
+    oldPoint.position = new Point2(300, 300);
     oldObjects.add(pointDefinition(400));
     oldObjects.remove(oldPoint);
     expect(requestFrame).not.toHaveBeenCalled();
-    (element.objects.get('point') as MapPoint).position = new Point(200, 200);
+    (element.objects.get('point') as MapPoint).position = new Point2(200, 200);
     expect(requestFrame).toHaveBeenCalledOnce();
   });
 
@@ -388,7 +389,7 @@ describe('component observation and interaction', () => {
     disconnect(element);
     expect(frames.size).toBe(0);
     requestFrame.mockClear();
-    oldPoint.position = new Point(150, 150);
+    oldPoint.position = new Point2(150, 150);
     element.objects.remove(oldPoint);
     const added = element.objects.add(pointDefinition(200, 200));
     const inserted = route.insertPoint(1, pointDefinition(500, 200));
@@ -406,12 +407,12 @@ describe('component observation and interaction', () => {
       route,
     });
     requestFrame.mockClear();
-    added.position = new Point(250, 250);
-    route.points[0]!.position = new Point(450, 100);
+    added.position = new Point2(250, 250);
+    route.points[0]!.position = new Point2(450, 100);
     expect(requestFrame).toHaveBeenCalledOnce();
     flushFrame();
     requestFrame.mockClear();
-    oldPoint.position = new Point(350, 350);
+    oldPoint.position = new Point2(350, 350);
     expect(requestFrame).not.toHaveBeenCalled();
   });
 
@@ -421,7 +422,7 @@ describe('component observation and interaction', () => {
     requestFrame.mockClear();
     await loadDefinition(element);
     const point = element.objects.get('point') as MapPoint;
-    point.position = new Point(200, 200);
+    point.position = new Point2(200, 200);
     expect(requestFrame).not.toHaveBeenCalled();
     connect(element);
     flushFrame();
@@ -443,7 +444,7 @@ describe('component observation and interaction', () => {
     element.objects.remove(point);
     expect(release).toHaveBeenCalledWith('change', expect.any(Function));
     requestFrame.mockClear();
-    point.position = new Point(200, 200);
+    point.position = new Point2(200, 200);
     expect(requestFrame).not.toHaveBeenCalled();
   });
 
@@ -453,7 +454,7 @@ describe('component observation and interaction', () => {
     flushFrame();
     renderer.render.mockClear();
     const point = element.objects.get('point') as MapPoint;
-    point.position = new Point(200, 200);
+    point.position = new Point2(200, 200);
     const clicked = vi.fn();
     element.addEventListener('objectclick', clicked);
     click(element, 100, 100);

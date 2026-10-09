@@ -1,6 +1,6 @@
 import { clipPolyline, clipSegment, containsPosition } from './intersection.js';
 
-import type { Point } from '#math/point.js';
+import type { Point3 } from '#math/point3.js';
 import type { MapLayer } from '#objects/map-layer.js';
 import type { MapEntry } from '#objects/map-object-collection.js';
 import type { MapPoint } from '#objects/map-point.js';
@@ -29,10 +29,10 @@ export function createClippedAppearance(
       object,
       geometry: Object.freeze({
         kind: 'line' as const,
-        get start(): Point {
+        get start(): Point3 {
           return segment!.start;
         },
-        get end(): Point {
+        get end(): Point3 {
           return segment!.end;
         },
         get segment(): ClippedSegment {
@@ -89,7 +89,7 @@ function createFragmentEntry(
   update(fragment: ClippedFragment): void;
 } {
   let fragment = initial;
-  const positionsFor = (): readonly Point[] =>
+  const positionsFor = (): readonly Point3[] =>
     Object.freeze(
       fragment.points.map((_, index) =>
         Object.freeze({
@@ -100,7 +100,7 @@ function createFragmentEntry(
             return fragment.points.at(index)!.y;
           },
           get z(): number {
-            return fragment.points.at(index)!.z ?? 0;
+            return fragment.points.at(index)!.z;
           },
         }),
       ),
@@ -111,7 +111,7 @@ function createFragmentEntry(
     object,
     geometry: Object.freeze({
       kind: 'polyline' as const,
-      get points(): readonly Point[] {
+      get points(): readonly Point3[] {
         return positions;
       },
       get segments(): readonly ClippedSegment[] {

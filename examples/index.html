@@ -140,7 +140,7 @@
       </aside>
     </div>
     <script type="module">
-      import { MapElement, Point } from '../src/index.ts';
+      import { MapElement, Point2, Point3 } from '../src/index.ts';
 
       customElements.define('atlas-map', MapElement);
 
@@ -248,7 +248,7 @@
 
       const move = (x, y) => {
         const { center, zoom } = map.camera;
-        map.camera.center = new Point(center.x + x / zoom, center.y + y / zoom);
+        map.camera.center = new Point2(center.x + x / zoom, center.y + y / zoom);
       };
       document.querySelector('#zoom-in').onclick = () => {
         map.camera.zoom *= 1.25;
@@ -263,18 +263,18 @@
         const line = map.objects.get('demo-line-1');
         const end = line.points[1];
         const { x, y, z } = end.position;
-        end.position = new Point(x, y === 70 ? 90 : 70, z);
+        end.position = new Point3(x, y === 70 ? 90 : 70, z);
       };
       document.querySelector('#move-route-point').onclick = () => {
         const route = map.objects.get('demo-route');
         const point = route.points[1];
         const { x, y, z } = point.position;
-        point.position = new Point(x === 60 ? 45 : 60, y, z);
+        point.position = new Point3(x === 60 ? 45 : 60, y, z);
       };
       document.querySelector('#change-route-height').onclick = () => {
         const point = map.objects.get('demo-route').points[1];
         const { x, y, z } = point.position;
-        point.position = new Point(x, y, z === 5 ? 1 : 5);
+        point.position = new Point3(x, y, z === 5 ? 1 : 5);
         status.textContent = `Checkpoint ${point.id} is at z = ${point.position.z}.`;
       };
       document.querySelector('#add-route-point').onclick = () => {
@@ -282,7 +282,7 @@
         const last = route.points.at(-1);
         const point = route.addPoint({
           kind: 'point',
-          position: new Point(
+          position: new Point3(
             last.position.x === 30 ? 50 : 30,
             last.position.y === 110 ? 125 : 110,
             last.position.z,
@@ -296,10 +296,10 @@
         const [start, end] = route.points;
         insertedRoutePoint = route.insertPoint(1, {
           kind: 'point',
-          position: new Point(
+          position: new Point3(
             (start.position.x + end.position.x) / 2,
             (start.position.y + end.position.y) / 2,
-            ((start.position.z ?? 0) + (end.position.z ?? 0)) / 2,
+            (start.position.z + end.position.z) / 2,
           ),
         });
         document.querySelector('#remove-route-point').disabled = false;
@@ -316,8 +316,8 @@
         const start = route.points[0];
         const end = route.points.at(-1);
         const points = route.replacePoints(1, route.points.length - 1, [
-          { kind: 'point', position: new Point(start.position.x, end.position.y, 5) },
-          { kind: 'point', position: new Point(end.position.x, start.position.y, 1) },
+          { kind: 'point', position: new Point3(start.position.x, end.position.y, 5) },
+          { kind: 'point', position: new Point3(end.position.x, start.position.y, 1) },
         ]);
         document.querySelector('#remove-route-point').disabled = true;
         status.textContent = `Replaced route interior with ${points.length} new points; endpoints ${start.id} and ${end.id} retained.`;
@@ -339,8 +339,8 @@
         status.textContent = `Added point ${addedPoint.id}; map has ${map.objects.size} objects.`;
       };
       document.querySelector('#move-added-point').onclick = () => {
-        const { x, y } = addedPoint.position;
-        addedPoint.position = new Point(x + 10, y);
+        const { x, y, z } = addedPoint.position;
+        addedPoint.position = new Point3(x + 10, y, z);
         status.textContent = `Moved point ${addedPoint.id} to (${addedPoint.position.x}, ${addedPoint.position.y}).`;
       };
       document.querySelector('#remove-added-point').onclick = () => {

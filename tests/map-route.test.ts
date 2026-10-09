@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 import { MapPoint } from '#objects/map-point.js';
 import { MapRoute } from '#objects/map-route.js';
 
@@ -35,13 +36,13 @@ describe('route membership and surviving identity', () => {
       expect(point.id).toBe(['a', 'b', 'c', 'd'].at(index));
     });
     expect(route.points[4]).toBe(appended);
-    expect(appended.position).toEqual(new Point(400, 0, 0));
+    expect(appended.position).toEqual(new Point3(400, 0, 0));
     expect(appended.id.length).toBeGreaterThan(0);
     expect(changed).toHaveBeenCalledOnce();
     expect(changed).toHaveReturnedWith(route.points);
 
-    before[0]!.position = new Point(5, 6);
-    appended.position = new Point(405, 6);
+    before[0]!.position = new Point2(5, 6);
+    appended.position = new Point2(405, 6);
     expect(changed).toHaveBeenCalledTimes(3);
   });
 
@@ -62,7 +63,7 @@ describe('route membership and surviving identity', () => {
     });
     expect(route.points.at(index)).toBe(inserted);
     expect(changed).toHaveBeenCalledOnce();
-    inserted.position = new Point(70, 80);
+    inserted.position = new Point2(70, 80);
     expect(changed).toHaveBeenCalledTimes(2);
   });
 
@@ -87,11 +88,11 @@ describe('route membership and surviving identity', () => {
       expect(before.at(index)).toBe(removed);
       expect(changed).toHaveBeenCalledOnce();
 
-      removed.position = new Point(900, 900);
+      removed.position = new Point2(900, 900);
       expect(removed.id).toBe(before.at(index)!.id);
       expect(pointChanged).toHaveBeenCalledOnce();
       expect(changed).toHaveBeenCalledOnce();
-      route.points[0]!.position = new Point(10, 10);
+      route.points[0]!.position = new Point2(10, 10);
       expect(changed).toHaveBeenCalledTimes(2);
     },
   );
@@ -126,7 +127,7 @@ describe('route membership and surviving identity', () => {
     expect(route.points[2]).toBe(replacements[1]);
     expect(replacements[0]).not.toBe(before[1]);
     expect(replacements[0]!.id).toBe('b');
-    expect(replacements[0]!.position).toEqual(new Point(50, 100, 0));
+    expect(replacements[0]!.position).toEqual(new Point3(50, 100, 0));
     expect(replacements[1]!.id.length).toBeGreaterThan(0);
     expect(Object.isFrozen(replacements)).toBe(true);
     expect(Object.isFrozen(route.points)).toBe(true);
@@ -134,12 +135,12 @@ describe('route membership and surviving identity', () => {
     expect(changed).toHaveBeenCalledOnce();
     expect(changed).toHaveReturnedWith(route.points);
 
-    before[1]!.position = new Point(1000, 1000);
-    before[2]!.position = new Point(2000, 2000);
+    before[1]!.position = new Point2(1000, 1000);
+    before[2]!.position = new Point2(2000, 2000);
     expect(removedChanged).toHaveBeenCalledOnce();
     expect(changed).toHaveBeenCalledOnce();
-    before[0]!.position = new Point(10, 20);
-    replacements[0]!.position = new Point(60, 100);
+    before[0]!.position = new Point2(10, 20);
+    replacements[0]!.position = new Point2(60, 100);
     expect(changed).toHaveBeenCalledTimes(3);
   });
 
@@ -252,8 +253,8 @@ describe('atomic rejection of route edits', () => {
       expect(before.map(point => point.id)).toEqual(['a', 'b', 'c', 'd']);
       expect(changed).not.toHaveBeenCalled();
 
-      before[1]!.position = new Point(101, 10);
-      before[2]!.position = new Point(201, 10);
+      before[1]!.position = new Point2(101, 10);
+      before[2]!.position = new Point2(201, 10);
       expect(changed).toHaveBeenCalledTimes(2);
     },
   );

@@ -1,5 +1,6 @@
 import { MapElement } from '#components/map-element/map-element.js';
-import { Point } from '#math/point.js';
+import { Point2 } from '#math/point2.js';
+import { Point3 } from '#math/point3.js';
 
 import { prepareMutationCheck } from './stress.check.js';
 import { BACKGROUND_SIZE, cameraAt, initialScale } from './stress.scene.js';
@@ -44,7 +45,7 @@ export class AtlasAdapter implements BenchmarkAdapter {
 
   setCamera(target: CameraTarget, motion: 'pan' | 'zoom'): void {
     if (motion === 'pan') {
-      this.host.camera.center = new Point(target.x, target.y);
+      this.host.camera.center = new Point2(target.x, target.y);
     } else {
       this.host.camera.zoom = target.scale;
     }
@@ -66,7 +67,7 @@ export class AtlasAdapter implements BenchmarkAdapter {
       if (scenario.startsWith('position-')) {
         for (const root of selected) {
           const point = root.kind === 'point' ? root : root.points[0];
-          point.position = new Point(point.position.x + 1, point.position.y + 1);
+          point.position = new Point3(point.position.x + 1, point.position.y + 1, point.position.z);
         }
 
         return;
