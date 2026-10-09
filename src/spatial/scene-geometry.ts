@@ -56,7 +56,11 @@ export function prepareSceneGeometry(
   layers: readonly MapLayer[],
 ): SceneGeometry {
   const orderedLayers = Object.freeze([...layers].sort((a, b) => a.stackIndex - b.stackIndex));
-  const invalidation: SceneInvalidation = { membership: true, changed: new Set() };
+  const invalidation: SceneInvalidation = {
+    membership: true,
+    changed: new Set(),
+    topology: new Set(),
+  };
   const reference = new WeakRef(invalidation);
   const tracked = new Set<object>();
   const pending = new Set<SceneObject>();
@@ -269,7 +273,7 @@ export function prepareSceneGeometry(
     }
   };
 
-  const syncChanges = (changed: ReadonlySet<object>): boolean => {
+  const syncChanges = (changed: ReadonlySet<object>, topology: ReadonlySet<MapRoute>): boolean => {
     queueChanges(changed);
     const affectedRoots = new Set<MapEntry>();
 
@@ -283,7 +287,9 @@ export function prepareSceneGeometry(
 
     for (const root of affectedRoots) {
       for (const layer of orderedLayers) {
-        compositionChanged = updateAppearance(layer, root, false) || compositionChanged;
+        compositionChanged =
+          updateAppearance(layer, root, root.kind === 'route' && topology.has(root)) ||
+          compositionChanged;
       }
     }
 
@@ -318,25 +324,35 @@ export function prepareSceneGeometry(
   };
 
   const sync = (): void => {
-    if (!invalidation.membership && invalidation.changed.size === 0) {
+    if (
+      !invalidation.membership &&
+      invalidation.changed.size === 0 &&
+      invalidation.topology.size === 0
+    ) {
       return;
     }
 
     const membership = invalidation.membership;
     const changed = new Set(invalidation.changed);
+    const topology = new Set(invalidation.topology);
     invalidation.changed.clear();
+    invalidation.topology.clear();
     invalidation.membership = false;
 
     if (membership) {
       reconcileRoots();
+    }
+
+    if (membership || topology.size > 0) {
       reconcileRootDependencies();
     }
 
-    if (membership || syncChanges(changed)) {
+    if (membership || syncChanges(changed, topology) || topology.size > 0) {
       reconcileEntries();
     }
 
-    if (membership) {
+    if (membership || topology.size > 0) {
+      // Refresh owned-point links even if all automatic appearances remain empty.
       syncTracking();
       queueChanges(changed);
     }
@@ -413,16 +429,19 @@ function createGeometry(object: MapEntry): Geometry {
     return position;
   };
 
-  const invalidation: SceneInvalidation = { membership: false, changed: new Set() };
+  const invalidation: SceneInvalidation = {
+    membership: false,
+    changed: new Set(),
+    topology: new Set(),
+  };
   trackScene(object, new WeakRef(invalidation));
   let positions = Object.freeze(object.points.map(positionFor));
 
   return Object.freeze({
     kind: 'polyline',
     get points(): readonly Point3[] {
-      if (invalidation.membership) {
+      if (invalidation.topology.delete(object)) {
         positions = Object.freeze(object.points.map(positionFor));
-        invalidation.membership = false;
         invalidation.changed.clear();
       }
 
