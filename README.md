@@ -1,89 +1,110 @@
 # Atlas
 
-Renderer-independent interactive map engine.
+Atlas is a renderer-independent interactive map engine for browser pages. The
+current prototype provides an SVG renderer through an explicitly registered Web
+Component. Application UI stays outside the engine.
 
-The project is currently in the design and prototyping stage.
-Start with the [design overview](docs/DESIGN_MAIN.md) for accepted decisions,
-open questions, and the agreed prototype scope.
+Available now:
 
-## Development
+- Map loading with explicit layers, image backgrounds and independent visibility.
+- Points, straight lines, routes and horizontal polygons with optional vertical
+  extrusion; runtime object addition, removal and geometry edits.
+- Direct layer membership and automatic x/y/z intersections with shared source
+  identity for display and picking.
+- Camera center/zoom/fit, mouse drag/wheel, touch pan/pinch, coordinate conversion,
+  `press`, `release` and `objectclick` events with the hit layer.
 
-Run `npm ci` to install development tools and enable the pre-commit hook.
-Node is only needed for development tools. No project Node version is pinned;
-use a version supported by the locked dependencies. Checked on Node 20.19.6.
+This is a prototype, with provisional built-in appearance and URL/size backgrounds.
+SVG displays an x/y projection, including extruded polygons; it is not a 3D view.
+Materials, labels, batch updates, a resource registry and current-state export are
+not implemented. Framework adapters and an editor are future consumers. Browser,
+mobile and performance validation remain incomplete. See the
+[current contract](docs/design/CURRENT_CONTRACT.md) and the
+[integration guide's follow-up status](docs/INTEGRATION.md#object-events-and-the-external-panel).
 
-| Command                                   | Purpose                                                       |
-| ----------------------------------------- | ------------------------------------------------------------- |
-| `npm run dev`                             | Start Vite for the examples, with automatic page updates      |
-| `npm run typecheck:watch`                 | Watch browser source for type errors                          |
-| `npm run build`                           | Check types, bundle ESM, and generate declarations in `dist/` |
-| `npm run check`                           | Type checking, lint, and formatting checks                    |
-| `npm run typecheck`                       | Check browser source and tooling configuration                |
-| `npm run lint` / `npm run lint:fix`       | Check code / apply automatic lint fixes                       |
-| `npm run format:check` / `npm run format` | Check formatting / format files                               |
+## First map
 
-In VS Code, run **Atlas: dev** (`Ctrl/Cmd+Shift+B`). It starts Vite and the type
-watcher; compiler diagnostics appear in Problems. Tasks use blue map icons.
-Stop background tasks through `Tasks: Terminate Task` when finished.
+The package is private and has no npm/CDN distribution. From this checkout:
 
-Without VS Code, run `npm run dev`; optionally run `npm run typecheck:watch` in
-another terminal for continuous diagnostics. Open http://127.0.0.1:8080/examples/.
-Vite binds to loopback and fails if that port is occupied. No initial build is needed.
-Vite transforms TypeScript but does not type-check it; `build` checks types first.
-
-The example imports library source directly during development. Changes propagate
-through Vite; this custom element uses full page reloads, not in-place replacement
-of a registered element class. Reloading resets example state.
-
-## First component
-
-`src/index.ts` exports `MapElement`, an initial custom-element shell. It creates an
-empty SVG surface in an open Shadow DOM, follows the host's content size, releases
-its resize observer when detached, and resumes observation on the same surface when
-reconnected. The application provides dimensions and registers the element explicitly:
-
-```js
-import { MapElement } from './dist/index.js';
-
-customElements.define('atlas-map', MapElement);
+```sh
+npm ci
+npm run build
+npm run dev
 ```
 
-The example provides a resizable frame. Map data, camera behavior, and interaction
-events remain subsequent implementation steps.
+The build produces `dist/index.js` and bundled types in `dist/index.d.ts`; it clears
+previous `dist/` output. Run it outside benchmark measurement windows.
+Save this as `quickstart.html` beside `package.json`, then open
+[the quickstart page](http://127.0.0.1:8080/quickstart.html):
 
-## Component templates
+```html
+<!doctype html>
+<html lang="en">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Atlas quickstart</title>
+  <style>
+    atlas-map {
+      display: block;
+      width: 100%;
+      height: 360px;
+    }
+  </style>
+  <atlas-map role="region" aria-label="Example map"></atlas-map>
+  <script type="module">
+    import { MapElement, Rect } from './dist/index.js';
 
-```text
-src/components/map-element/
-  map-element.ts
-  map-element.html
+    customElements.define('atlas-map', MapElement);
+    const map = document.querySelector('atlas-map');
+    if (!(map instanceof MapElement)) throw new Error('Map element is missing.');
+
+    await map.load({
+      layers: [{ id: 'ground', objects: ['entrance'] }],
+      objects: [{ id: 'entrance', kind: 'point', position: { x: 50, y: 50 } }],
+    });
+    map.camera.fit(new Rect(0, 0, 100, 100));
+  </script>
+</html>
 ```
 
-Behavior lives in TypeScript; static markup and CSS live in the adjacent HTML file:
+The application registers the element and gives it nonzero dimensions. `layers`
+is required; there is no implicit default layer. Without a background, use
+`camera.fit(rect)` as above: `map.fit()` fits backgrounds only.
 
-```ts
-import html from './map-element.html?raw';
-```
+Continue with the [integration guide](docs/INTEGRATION.md) for a self-contained
+background, all four object kinds, floors, click details, runtime edits and load
+error handling. `await map.load()` commits the prepared map; it does not promise
+that the browser has painted it.
 
-Vite handles the raw import in development and embeds the string in the library
-bundle. There is no generated source file or custom template watcher. Templates are
-trusted repository code inserted into Shadow DOM, not arbitrary application HTML.
+## Development and examples
 
-## Build and tooling
+`npm run dev` serves [Factory](http://127.0.0.1:8080/examples/) and
+[Buildings](http://127.0.0.1:8080/examples/buildings.html) on loopback port 8080.
+Factory demonstrates camera/input, layers, routes and object editing; Buildings
+demonstrates independent floors and a shared extruded polygon. Both use local
+assets. No initial build is needed for these examples: Vite transforms their source
+imports, and component changes reload the page, resetting its state.
 
-Vite library mode emits one unminified ESM entry, `dist/index.js`, and a source map.
-vite-plugin-dts and API Extractor bundle public types into `dist/index.d.ts`. A build
-cleans previous output after type checks pass. ES2022 is the provisional output target,
-not a final browser compatibility guarantee; no automatic polyfills are added.
+Node is needed for development tools only; use a version supported by the locked
+dependencies. No project Node version is pinned.
 
-All dependencies are development-only. The private package has no runtime dependencies,
-framework adapter or publishing configuration. GitHub Actions runs project checks;
-see [CI and e2e](docs/TOOLING.md#ci-and-built-example-smoke-test) for the local sequence.
-Vite's development client is not included in the library build.
+| Command                                   | Purpose                                                      |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| `npm ci`                                  | Install locked tools and enable the pre-commit hook          |
+| `npm run dev`                             | Serve source examples                                        |
+| `npm run typecheck:watch`                 | Watch browser source types                                   |
+| `npm run build`                           | Check types, build ESM and bundle declarations               |
+| `npm run check`                           | Check source/tooling/test/example types, lint and formatting |
+| `npm test` / `npm run test:browser`       | Run Node / Chromium regression tests                         |
+| `npm run test:e2e`                        | Build examples and run browser integration tests             |
+| `npm run lint` / `npm run lint:fix`       | Check code / apply lint fixes                                |
+| `npm run format:check` / `npm run format` | Check / apply formatting                                     |
 
-ESLint loads `eslint.config.mts` through `jiti`. Tooling configuration has its own
-TypeScript project with Node types; browser source has DOM types and no ambient Node
-globals. The pre-commit hook lints/formats staged files. Run `npm run check` before
-requesting a commit. Original design sources and archives are excluded from formatting.
+Vite does not type-check development pages. VS Code's **Atlas: dev** task starts
+Vite and the type watcher together. Browser test setup, templates, build output,
+benchmark commands and CI details are in [Tooling](docs/TOOLING.md).
 
-See [AGENTS.md](AGENTS.md) for conventions and [tooling notes](docs/TOOLING.md) for scope.
+- [Integration guide](docs/INTEGRATION.md): practical page integration.
+- [Current contract](docs/design/CURRENT_CONTRACT.md): implemented, provisional and pending behavior.
+- [Design overview](docs/DESIGN_MAIN.md): decisions, scope and topic navigation.
+- [Tooling](docs/TOOLING.md) and [repository conventions](AGENTS.md).
