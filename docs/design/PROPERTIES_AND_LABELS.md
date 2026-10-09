@@ -1,5 +1,10 @@
 # Properties And Labels
 
+Status on 2026-10-09: accepted future design, not implemented. There is no current
+label runtime, property/behavior registry, unknown-property registry validation
+or registration API. Open schemas and examples below do not extend the
+[current object contract](CURRENT_CONTRACT.md#public-entry-and-map-input).
+
 [Navigation and current summary](../DESIGN_MAIN.md)
 
 Moved from the discussion log without losing context. Clarifications take precedence

@@ -1,11 +1,18 @@
 # Camera
 
+Current baseline: [Current contract](CURRENT_CONTRACT.md). Camera, pointer controls
+and planar conversions are merged; the press-mode second-pointer correction remains
+under review. Animation, homeView and configurable constraints are accepted future
+work; multiple viewports and keyboard APIs remain open.
+
 [Navigation and current summary](../DESIGN_MAIN.md)
 
 Moved from the discussion log without losing context. Clarifications take precedence
 over earlier proposals; explicitly open questions are not decisions.
 
-## Planar coordinate contract — accepted and implemented for review, 2026-10-09
+<a id="planar-coordinate-contract--accepted-and-implemented-for-review-2026-10-09"></a>
+
+## Planar coordinate contract — merged in PR #29, 2026-10-09
 
 `Camera.center` uses frozen `Point2` values. Assignment validates and copies x/y,
 including spatial values passed structurally; it does not retain a z coordinate.
@@ -52,14 +59,13 @@ finite-coordinate validation belongs at the consuming API boundary.
 ## First camera implementation — merged
 
 The user requested center/zoom, fitting the background, and example buttons as a
-separate step before pointer gestures. The following API is the implementation
-proposal for review, not the complete camera contract:
+separate step before pointer gestures. The following merged API is the initial subset of the camera design:
 
 - `map.camera` exposes a renderer-independent `Camera` instance.
-- Assign `camera.center = new Point(x, y)` in map coordinates and `camera.zoom` as CSS
+- Assign `camera.center = new Point2(x, y)` in map coordinates and `camera.zoom` as CSS
   pixels per map unit. Zoom changes preserve the center; center values must be
   finite and zoom must be finite and greater than zero.
-- `map.fit()` fits the current background; before a map is loaded it does nothing.
+- `map.fit()` fits all layer background extents, including hidden layers; before a map is loaded it does nothing.
   `camera.fit(new Rect(x, y, width, height))` fits an explicit rectangle.
 - The component supplies viewport dimensions through `camera.resize(new Size(width, height))`. Camera
   bounds are calculated independently of SVG; the renderer applies them.
@@ -71,11 +77,14 @@ proposal for review, not the complete camera contract:
 - Example buttons change zoom, move the camera, and fit the map. Moving right
   moves the camera center right, so the map content moves left on screen.
 
-Pointer/touch gestures, animation, fit padding, homeView, configurable camera
-constraints, and multiple-camera management remain later steps. No new runtime
-dependencies or browser input handlers were introduced.
+Pointer/touch gestures subsequently merged as described below. Animation, fit
+padding, homeView, configurable camera constraints and multiple-camera management
+remain later work. The initial center/zoom step introduced no runtime dependencies
+or browser input handlers; pointer handlers arrived in the later merged step below.
 
-## Camera at the scene-model boundary — accepted 2026-10-06, implemented for review
+<a id="camera-at-the-scene-model-boundary--accepted-2026-10-06-implemented-for-review"></a>
+
+## Camera at the scene-model boundary — merged in PR #23
 
 Internal scene ownership now lives in `MapModel`; the viewport's `Camera` remains
 in `MapElement`. `Spatial.hitTest(point, camera)` receives the camera per query, so
@@ -87,8 +96,9 @@ its state. This extraction adds no camera API or multiple viewport management.
 ## Shared math primitives — accepted
 
 Use `src/math/` for the internal math module, without a dependency or separate
-package. Start with immutable `Point(x, y)` and `Rect(x, y, width, height)` classes,
-one per file. Their constructors encapsulate freezing; they currently store values
+package. The original immutable `Point(x, y)` has been replaced by `Point2(x, y)`
+and spatial `Point3(x, y, z = 0)`; `Rect(x, y, width, height)` remains. Keep one class
+per file. Their constructors encapsulate freezing; they currently store values
 only. Camera center and bounds use these shared types instead of camera-specific
 point/rectangle interfaces. Camera validation stays at the camera boundary.
 Vectors, matrices, arithmetic, and further dimensions wait for concrete consumers.
@@ -130,7 +140,9 @@ Events remain synchronous; only rendering is deferred. Completion of `load()`
 means resource preparation/application is complete, not that a browser frame has
 already been painted.
 
-## Pointer controls and coordinate conversion — pending review
+<a id="pointer-controls-and-coordinate-conversion--pending-review"></a>
+
+## Pointer controls and coordinate conversion — merged
 
 The user requested mouse drag, cursor-anchored wheel zoom, one-finger touch pan,
 and two-finger pinch zoom as the next implementation step. Browser handlers live
@@ -157,8 +169,10 @@ and disconnects them with its lifecycle, releasing captures and active gestures.
   still be converted, which supports captured dragging.
 
 The existing camera change events and on-demand rendering remain in use. Camera
-constraints, input configuration, marker hit testing, keyboard bindings, and input
-allocation optimization are separate follow-ups. Desktop and browser-emulated touch
+constraints, input configuration, configurable picking, keyboard bindings and input
+allocation optimization are separate follow-ups. Object picking has since merged;
+[the input contract](CURRENT_CONTRACT.md#input-and-events) records press consumption
+and the pending second-pointer fix. Desktop and browser-emulated touch
 are checked in Chrome; physical iOS/Safari and Android testing remains outstanding.
 
 Browser references: [Pointer capture](https://developer.mozilla.org/en-US/docs/Web/API/Element/setPointerCapture),

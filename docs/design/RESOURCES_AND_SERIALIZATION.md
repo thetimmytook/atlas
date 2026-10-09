@@ -1,5 +1,11 @@
 # Resources and serialization
 
+Status on 2026-10-09: accepted future document/resource design, not implemented.
+Current input contains objects and explicit layers with provisional URL/size image
+backgrounds. There is no schemaVersion validation, resource registry or pluggable
+loader. `map.definition` is a load snapshot, not runtime export; see
+[Current contract](CURRENT_CONTRACT.md#layers-identity-and-runtime-state).
+
 [Main navigation](../DESIGN_MAIN.md)
 
 ## Accepted: map resource registry

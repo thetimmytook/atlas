@@ -1,5 +1,10 @@
 # Platforms, accessibility, and load
 
+Browser/input targets below are accepted direction, not a validated support matrix.
+[Current contract](CURRENT_CONTRACT.md) records available behavior and pending gesture
+work. Benchmark results retain their original dates and workloads; the representative
+load gate and physical mobile validation remain outstanding.
+
 [Main navigation](../DESIGN_MAIN.md)
 
 ## Accepted
@@ -49,7 +54,9 @@ A single rectangular clip cannot directly reproduce such a combined floor.
 Decision point: multiple layers under shared controls or a union of clipping regions.
 The current model is not automatically extended; arbitrary clipping shapes remain deferred.
 
-## Early SVG benchmark — implemented for review, 2026-10-06
+<a id="early-svg-benchmark--implemented-for-review-2026-10-06"></a>
+
+## Early SVG benchmark — merged in PR #22; historical 2026-10-06 results
 
 The [Atlas baseline](../performance/BASELINE.md) records deterministic 3000/5000-root
 scenes, distinguishes semantic roots/owned points/visual primitives/DOM nodes, and
@@ -58,5 +65,5 @@ the current flat scene and temporary symbols; the current Factory background is
 not the future heavy-background/layer/label gate. Actual phone performance remains
 unmeasured; instructions for a physical-device run are included. The separately
 requested [Leaflet SVG/Canvas comparison](../performance/LEAFLET_COMPARISON.md)
-is implemented for mini review with fresh Atlas measurements, explicit metric
+subsequently merged in PR #25 with its separately dated Atlas measurements, explicit metric
 boundaries and weaker Canvas correctness coverage. No FPS budget or thresholds are added.

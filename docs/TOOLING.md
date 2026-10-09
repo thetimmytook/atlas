@@ -15,8 +15,14 @@ The user subsequently approved Vite for development, raw templates, and library 
   tooling TypeScript project covers configs with Node types. Browser source rules
   reject Node built-ins and development-package imports.
 - Prettier and Husky/lint-staged; original and archived documents are preserved.
+  [.husky/pre-commit](../.husky/pre-commit) runs only `npx --no-install lint-staged`.
+  Staged script files receive ESLint fixes and Prettier; staged JSON/CSS/HTML/Markdown/
+  YAML receive Prettier. Typecheck/tests/build are separate local/CI checks.
+  ESLint warnings are advisory; no `--max-warnings 0` policy is configured.
 - No project Node version pin. Development dependencies retain their own requirements;
-  the setup is checked on Node 20.19.6. lint-staged remains on version 16 for compatibility.
+  the local macOS environment checked on 2026-10-09 uses Node 20.19.6 and npm 10.8.2.
+  CI configures Ubuntu 24.04 and Node 24. These are distinct environments, not a
+  project-wide pin; lint-staged remains on major version 16.
 
 ## Development and build
 
@@ -28,7 +34,9 @@ state through HMR is outside the current scope.
 
 Vite does not check types. `npm run typecheck:watch` provides continuous source
 checks. VS Code's default `Atlas: dev` task starts both processes, with `$tsc-watch`
-diagnostics and blue map icons. `npm run typecheck` also checks tooling configuration.
+diagnostics and blue map icons. `npm run typecheck` checks source, tooling, tests and
+examples. `npm run check` runs those type checks, ESLint and Prettier verification;
+CI additionally runs Node/browser tests, library/benchmark builds and built-example E2E.
 
 `npm run build` checks types, then runs Vite library mode with vite-plugin-dts
 and API Extractor to bundle declarations. Output is unminified ESM with a source
@@ -77,8 +85,8 @@ Node watch mode; `npm run test:browser -- --watch` does the same for Browser Mod
 `npm run test:browser -- svg-renderer` filters the renderer suite. Repeat the
 browser command to check stability; there are no test retries or arbitrary sleeps.
 
-Vitest 4.1.11 uses the existing Node 20.19.6, Vite 8.3.1, and TypeScript 6.0.3
-toolchain. The [Vitest 4 Playwright provider configuration](https://v4.vitest.dev/config/browser/playwright)
+The checked lockfile/toolchain uses Vitest 4.1.11, Vite 8.3.1 and TypeScript 6.0.3.
+Local validation was recorded with Node 20.19.6; CI configures Node 24. The [Vitest 4 Playwright provider configuration](https://v4.vitest.dev/config/browser/playwright)
 uses `@vitest/browser-playwright`, whose exact peer dependency is `vitest@4.1.11`;
 the provider is therefore pinned to 4.1.11. Playwright 1.63.0 is also pinned and
 requires Node 20 or later. Both additions are development dependencies; the
@@ -91,10 +99,19 @@ excluding `tests/browser/` and `tests/e2e/`; `vitest.browser.config.mts` include
 The shared test TypeScript project includes Playwright action types and the
 existing HTML-import declaration for the real component template.
 
-The 110 Node tests cover models, route editing, spatial queries, camera state,
-and component load/lifecycle contracts using browser stand-ins.
-The 40 browser tests add 24 direct `SvgRenderer` regressions and 16 focused
-`MapElement` integrations. They use native SVG, registered custom elements,
+Historical validation counts, not results of a new run:
+
+| Date and implementation stage                          | Node |           Chromium Browser Mode |                     Built example E2E |
+| ------------------------------------------------------ | ---: | ------------------------------: | ------------------------------------: |
+| 2026-10-07, invalidation after reattachment correction |  110 | 40 (24 renderer + 16 component) |               Not part of that report |
+| 2026-10-09, polygon acceptance, merged PR #30          |  223 |                              75 | 1 combined Factory/Buildings scenario |
+
+See [dated stage reports](design/PROTOTYPE.md#polygon-and-extrusion-contract--accepted-2026-10-09).
+The already committed polygon count correction is complete; pending runtime fixes
+have their own validation and are not included in these counts. Node tests cover
+models, geometry/spatial queries, camera and component contracts with browser stand-ins.
+Browser Mode covers real `SvgRenderer` and `MapElement` behavior. These tests use
+native SVG, registered custom elements,
 Shadow DOM, ResizeObserver, image decoding, browser RAF, and provider clicks.
 Small inline SVG backgrounds and an intentionally revoked local Blob URL keep
 fixtures independent of external network resources.
@@ -137,14 +154,15 @@ See [baseline method and limitations](performance/BASELINE.md).
 
 ## CI and built example smoke test
 
-Project-check CI is approved on 2026-10-07. `.github/workflows/checks.yml` runs
+Project-check CI was approved on 2026-10-07 and is merged in PR #26.
+[.github/workflows/checks.yml](../.github/workflows/checks.yml) runs
 on every pull request targeting `master` and every push to `master`, with no path
 filters. One `Atlas checks` job uses Ubuntu 24.04, Node 24 LTS, and headless
 Playwright Chromium, with a 20-minute timeout. Node 24 is a CI tooling choice,
 not a consumer requirement or a project-wide Node version pin. The locked Vite,
 Vitest, Playwright, ESLint, and lint-staged Node ranges all include Node 24.
 
-The workflow uses the current official
+The checked workflow configures
 [checkout v7](https://github.com/actions/checkout),
 [setup-node v7](https://github.com/actions/setup-node), and
 [upload-artifact v7](https://github.com/actions/upload-artifact) actions.
@@ -156,7 +174,8 @@ See the [Node release schedule](https://nodejs.org/en/about/previous-releases)
 for Node 24 LTS status and the [Playwright browser installation instructions](https://playwright.dev/docs/browsers)
 for the Linux dependency installation.
 
-To run the same checks locally, use Node 24 LTS and this order:
+To reproduce CI's configured Node environment locally, use Node 24 and this order
+(the recorded local macOS runs used Node 20.19.6):
 
 ```sh
 npm ci
@@ -173,12 +192,13 @@ On macOS, use `npx --no-install playwright install chromium` instead of the
 Linux installation command. `bench:build` builds both benchmark pages; CI never
 runs performance measurements or enforces performance thresholds.
 
-`npm run test:e2e` builds the existing `examples/index.html` with the small
-`example.config.mts` into ignored `dist/example`, then runs one Node/Vitest test
+`npm run test:e2e` builds Factory (`examples/index.html`) and Buildings
+(`examples/buildings.html`) with `example.config.mts` into ignored `dist/example`,
+then runs one combined Node/Vitest test
 using the existing Playwright library. It adds no runner or dependency.
 `npm run build:example` is also available separately. Library build configuration
 is unchanged; build the library first because it clears `dist/`. The example
-build uses its source imports, bundles the real component and Factory background,
+build uses its source imports, bundles the real component and example backgrounds,
 and contains no Vite development client. This is page/component integration
 coverage; package-consumer and declaration coverage remain separate.
 
@@ -187,6 +207,9 @@ port. It waits for the decoded-background loaded status and visible SVG objects,
 clicks Zoom in and checks the rendered viewBox, clicks the known route checkpoint
 and checks the external details panel, then clicks Move route point and checks
 both the moved SVG point/route and the newly picked position in the panel.
+The same test then checks Buildings: independent floor selection, polygon/route
+hit identity, height/contour edits and a 390 CSS-pixel viewport. This is responsive
+layout coverage, not physical mobile gesture validation.
 Only DOM output and trusted mouse/button actions are used. Each wait has a bounded
 timeout; uncaught page errors and error-level console messages fail the test.
 Nested cleanup closes the browser and preview server on success and failure.
@@ -215,7 +238,8 @@ Repository settings are managed separately; this workflow does not change them.
 This checks one desktop Chromium environment on Linux. Firefox, WebKit,
 mobile/touch, accessibility, the full supported-browser matrix, and performance
 remain separate validation work. Local macOS results do not confirm a GitHub Linux
-run; action execution and Linux system dependencies need the first real CI run.
+run. This documentation task verified workflow configuration, not remote execution
+or branch-protection settings, and did not query CI status.
 
 ## Deferred
 
@@ -227,8 +251,8 @@ validated. Runtime dependencies must be evaluated for concrete purpose and bundl
 ## Internal named imports
 
 package.json `imports` maps `#camera/*.js`, `#components/*.js`, `#definitions/*.js`,
-`#errors/*.js`, `#interaction/*.js`, `#math/*.js`, `#renderers/*.js`, and
-`#validators/*.js` to the corresponding TypeScript files under `src/`.
+`#errors/*.js`, `#interaction/*.js`, `#math/*.js`, `#objects/*.js`, `#renderers/*.js`,
+`#spatial/*.js` and `#validators/*.js` to the corresponding TypeScript files under `src/`.
 TypeScript (Bundler resolution), Vite, and ESLint's TypeScript resolver use these
 mappings. Neighboring `./` imports remain relative; parent-relative `../` source
 imports use named paths instead. No duplicate tsconfig paths or Vite aliases are needed.

@@ -1,5 +1,9 @@
 # Materials
 
+Status on 2026-10-09: material design is accepted but unimplemented; assignment
+schemas and operations remain open. [Current temporary appearance](CURRENT_CONTRACT.md#temporary-implemented-contracts)
+is built into the prototype and is not a material API.
+
 [Navigation and current summary](../DESIGN_MAIN.md)
 
 Moved from the discussion log without losing context. Clarifications take precedence
@@ -8,7 +12,7 @@ over earlier proposals; explicitly open questions are not decisions.
 ## Object-model clarification
 
 The current map-object model keeps marker semantics in the application. Concrete
-objects are `MapPoint`, `MapLine`, and `MapRoute`. The older kind/type assignment
+objects are `MapPoint`, `MapLine`, `MapRoute`, and `MapPolygon`. The older kind/type assignment
 examples below need adaptation to this model; their replacement API is not yet
 settled. Named materials and explicit inheritance remain accepted. The proposed
 `MapSettings.point` API was removed after review. Temporary point size, stroke,
@@ -18,9 +22,10 @@ public appearance contract.
 All objects, including routes and their owned points, share the `MapObjectDefinition`
 and `MapObject` foundations. Material assignment belongs to this common contract
 when implemented; this refactor does not choose its field schema or add a separate
-route-only appearance API. Object `kind` is `point`, `line`, or `route` in the current
+route-only appearance API. Object `kind` is `point`, `line`, `route`, or `polygon` in the current
 prototype. Points expose `position`; lines and routes expose owned `points`.
-Geometric forms (`point`, `line`, `polyline`) are internal spatial views used by
+Polygons expose x/y `contour` and independent `baseZ`/`height`.
+Geometric forms (`point`, `line`, `polyline`, `polygon`) are internal spatial views used by
 rendering and queries, not a public `geometry` property on map objects. Earlier
 `ObjectDefinition`, `kind: 'geometry'`, and route-owned-line wording is historical.
 Material selection must account for the current object model when its earlier
@@ -30,9 +35,10 @@ The accepted [route-vertex separation](GEOMETRY_AND_ROUTES.md#route-vertex-geome
 requires point appearance to support a vertex without a symbol while preserving
 its contribution to the route geometry. Separate point picking is another concern;
 a symbol does not by itself settle interaction participation. The material/property
-fields remain open. The accepted route-vertex default is no symbol and no separate
+fields remain open. The accepted, unimplemented route-vertex default is no symbol and no separate
 point picking; the author explicitly assigns appearance and enables interaction
-for a point of interest. Defaults for independent point appearances are unchanged.
+for a point of interest. The merged renderer still draws/picks temporary symbols for all eligible original
+route vertices. Defaults for independent point appearances are unchanged.
 
 The accepted [classification decision](GEOMETRY_AND_ROUTES.md#application-classification--accepted-2026-10-05)
 moves application `type` to `data.type`; objects have no separate semantic `type`
@@ -42,6 +48,11 @@ assignment uses application data remains open. Named materials, explicit inherit
 and selection of one assigned material remain accepted.
 
 ## Appearance — clarification replacing Meta
+
+This is future design. Built-in _materials_ in these proposals are not implemented
+by the current hardcoded symbols/fills. Older styles and alter/replace/reset
+statements below are superseded by the explicit relationship/open-operation
+clarifications; they do not settle an API.
 
 ### Current decision: explicit material relationships
 
