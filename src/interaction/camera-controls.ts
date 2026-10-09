@@ -67,6 +67,11 @@ export class CameraControls extends EventTarget {
     this.#press = undefined;
   }
 
+  /** Only the first, unconsumed single-pointer press can initiate an object click. */
+  get canClickOnPress(): boolean {
+    return this.#press !== undefined;
+  }
+
   consumeGesture(): void {
     this.#gestureHandled = true;
     this.#press = undefined;

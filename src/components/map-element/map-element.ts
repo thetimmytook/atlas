@@ -182,7 +182,9 @@ export class MapElement extends HTMLElement {
 
     const input = (event as CustomEvent<SurfaceInputDetail>).detail;
     const mapPoint = this.#coordinates.clientToMap(input.clientPoint);
-    const shouldClick = this.#clickTrigger === type && (type === 'press' || input.isClick === true);
+    const shouldClick =
+      this.#clickTrigger === type &&
+      (type === 'press' ? this.#controls.canClickOnPress : input.isClick === true);
 
     // The pre-load collection is available, but has no prepared display to pick.
     const hit =
@@ -198,6 +200,8 @@ export class MapElement extends HTMLElement {
       !hit ||
       !this.isConnected ||
       this.#model !== model ||
+      this.#clickTrigger !== type ||
+      (type === 'press' && !this.#controls.canClickOnPress) ||
       !model.spatial.hasHit(hit, mapPoint, this.#camera)
     ) {
       return;
