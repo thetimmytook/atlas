@@ -17,7 +17,7 @@ export function validateMapPoint(field: string, point: MapPointDefinition): void
   }
 
   validateObjectId(`${field}.id`, point.id);
-  validatePoint(`${field}.position`, point.position);
+  validatePoint(`${field}.position`, point.position, { spatial: true });
 }
 
 /** Copy a validated definition and fill an omitted ID. */
@@ -25,6 +25,6 @@ export function resolveMapPoint(point: MapPointDefinition): WithId<MapPointDefin
   return Object.freeze({
     id: point.id ?? createId(),
     kind: 'point',
-    position: new Point(point.position.x, point.position.y),
+    position: new Point(point.position.x, point.position.y, point.position.z ?? 0),
   });
 }

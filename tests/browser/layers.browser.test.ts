@@ -457,10 +457,10 @@ describe('layers in actual SVG and picking', () => {
         code = 'UNKNOWN_LAYER_OBJECT';
         candidate = { layers: [{ objects: ['missing'] }] };
       } else {
-        code = 'UNSUPPORTED_INTERSECTION_BOUNDS';
+        code = 'INVALID_INTERSECTION_BOUNDS';
         candidate = {
-          layers: [{ intersectionBounds: { min: { z: 0 } } }],
-        } as unknown as MapDefinition;
+          layers: [{ intersectionBounds: { min: { z: 3 }, max: { z: 0 } } }],
+        };
       }
 
       const decode = vi.spyOn(HTMLImageElement.prototype, 'decode');

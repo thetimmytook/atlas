@@ -1,6 +1,7 @@
 import { AtlasError } from '#errors/atlas-error.js';
 import { Size } from '#math/size.js';
 import { createId } from '#objects/create-id.js';
+import { resolveIntersectionBounds } from '#validators/intersection-bounds.validator.js';
 import { validateLayerObjectId } from '#validators/layer-object-id.validator.js';
 import { resolveMapPoint, validateMapPoint } from '#validators/map-point.validator.js';
 import {
@@ -105,13 +106,6 @@ function resolveMapLayer(
     });
   }
 
-  if (Object.hasOwn(layer, 'intersectionBounds')) {
-    throw new AtlasError('Layer intersection bounds are not supported.', {
-      code: 'UNSUPPORTED_INTERSECTION_BOUNDS',
-      details: { field, layerId: layer.id },
-    });
-  }
-
   if (layer.id !== undefined && (typeof layer.id !== 'string' || !layer.id.trim())) {
     throw new AtlasError('Layer ID must be non-empty.', {
       code: 'INVALID_LAYER_ID',
@@ -148,6 +142,14 @@ function resolveMapLayer(
     id,
     stackIndex,
     objects: Object.freeze([...new Set(objects)]),
+    ...(layer.intersectionBounds === undefined
+      ? {}
+      : {
+          intersectionBounds: resolveIntersectionBounds(
+            layer.intersectionBounds,
+            `${field}.intersectionBounds`,
+          ),
+        }),
     ...(layer.background === undefined
       ? {}
       : { background: resolveBackground(layer.background, `${field}.background`) }),

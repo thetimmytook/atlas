@@ -148,7 +148,7 @@ describe('internal DOM-independent scene model', () => {
     expect(model.geometry.objects[1]).toBe(entries[1]);
     expect(path.geometry.points[0]).toBe(coordinates[0]);
     expect(path.geometry.points[2]).toBe(coordinates[2]);
-    expect(coordinates[0]).toEqual(new Point(-200, 100));
+    expect(coordinates[0]).toEqual(new Point(-200, 100, 0));
     model.observeChanges();
     expect(model.spatial.hitTest(new Point(0, 100), view)?.object).toBe(replacement);
   });

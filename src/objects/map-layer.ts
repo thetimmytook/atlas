@@ -5,6 +5,7 @@ import { MapLayerObjectIdCollection } from './map-layer-object-id-collection.js'
 
 import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { ResolvedMapLayerDefinition } from '#definitions/map-layer-definition.js';
+import type { IntersectionBounds } from '#math/intersection-bounds.js';
 import type { SceneInvalidation } from '#spatial/scene-invalidation.js';
 import type { MapEntry, MapObjectCollection } from './map-object-collection.js';
 
@@ -40,11 +41,15 @@ export class MapLayer extends EventTarget {
     return this.#definition.background;
   }
 
+  get intersectionBounds(): IntersectionBounds | undefined {
+    return this.#definition.intersectionBounds;
+  }
+
   get objectIds(): MapLayerObjectIdCollection {
     return this.#objectIds;
   }
 
-  /** Only direct root content; future clipped appearances are prepared separately. */
+  /** Only direct root content; automatic clipped appearances are prepared separately. */
   get objects(): readonly MapEntry[] {
     if (this.#invalidation.membership) {
       this.#objects = Object.freeze(

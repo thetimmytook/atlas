@@ -92,8 +92,8 @@ describe('explicit layer loading', () => {
       [{ objects: [''] }],
       [{ objects: [12] }],
       [{ objects: 'point' }],
-      [{ intersectionBounds: { min: { z: 0 } } }],
-      [{ intersectionBounds: undefined }],
+      [{ intersectionBounds: { min: { z: 3 }, max: { z: 0 } } }],
+      [{ intersectionBounds: {} }],
     ].map(layers => ({ layers })),
   )('rejects invalid or unsupported layer input before preparation: %j', ({ layers }) => {
     expect(() => resolveMapDefinition({ layers } as unknown as MapDefinition)).toThrow();

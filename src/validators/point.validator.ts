@@ -2,7 +2,11 @@ import { validateNumber } from './number.validator.js';
 
 import type { Point } from '#math/point.js';
 
-export function validatePoint(field: string, value: Point): void {
+export function validatePoint(field: string, value: Point, { spatial = false } = {}): void {
   validateNumber(`${field}.x`, value?.x);
   validateNumber(`${field}.y`, value?.y);
+
+  if (spatial && value.z !== undefined) {
+    validateNumber(`${field}.z`, value.z);
+  }
 }

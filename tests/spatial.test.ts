@@ -137,7 +137,7 @@ describe('picking current state without rendering', () => {
     start.position = new Point(10, 20);
     expect(scene.objects).toBe(entries);
     expect(path.geometry.points).toBe(positions);
-    expect(positions[0]).toEqual(new Point(10, 20));
+    expect(positions[0]).toEqual(new Point(10, 20, 0));
     route.insertPoint(1, pointDefinition(100, 100));
     expect(scene.objects[0]).toBe(path);
     expect(scene.objects[1]).toBe(entries[1]);
@@ -151,7 +151,7 @@ describe('picking current state without rendering', () => {
     expect(path.geometry.points[0]).toBe(positions[0]);
     expect(path.geometry.points[2]).toBe(positions[2]);
     start.position = new Point(30, 40);
-    expect(positions[0]).toEqual(new Point(30, 40));
+    expect(positions[0]).toEqual(new Point(30, 40, 0));
   });
 
   it('keeps separate owner context for the same point attached as a root and route vertex', () => {

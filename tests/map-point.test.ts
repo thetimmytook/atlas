@@ -13,7 +13,7 @@ describe('point positions and owner notifications', () => {
     const route = new MapRoute('route', [definition]);
     const point = route.points[0]!;
     definition.position.x = 999;
-    expect(point.position).toEqual(new Point(10, 20));
+    expect(point.position).toEqual(new Point(10, 20, 0));
 
     const routeChanged = vi.fn(() => point.position);
     const pointChanged = vi.fn(() => point.position);
@@ -22,7 +22,7 @@ describe('point positions and owner notifications', () => {
     const position = new Point(30, 40);
     point.position = position;
 
-    expect(point.position).toEqual(position);
+    expect(point.position).toEqual(new Point(position.x, position.y, 0));
     expect(point.position).not.toBe(position);
     expect(point.id).toBe('vertex');
     expect(routeChanged).toHaveBeenCalledOnce();

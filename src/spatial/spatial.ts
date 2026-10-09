@@ -1,10 +1,11 @@
 import { squaredDistanceToSegment } from '#math/distance.js';
 
-import { isLayerEligible } from './scene-geometry.js';
+import { isLayerEligible, isSceneObjectEligible } from './scene-geometry.js';
 
 import type { Camera } from '#camera/camera.js';
 import type { Point } from '#math/point.js';
 import type { Geometry } from './geometry.js';
+import type { ClippedSegment } from './intersection.js';
 import type { SceneGeometry, SceneObject, SceneSymbols } from './scene-geometry.js';
 
 /** Spatial queries over scene geometry, independent of rendering and browser DOM. */
@@ -13,6 +14,14 @@ export class Spatial {
 
   constructor(geometry: SceneGeometry) {
     this.#geometry = geometry;
+  }
+
+  /** Check only the captured display, without picking an object underneath it. */
+  hasHit(entry: SceneObject, point: Point, camera: Camera): boolean {
+    return (
+      isSceneObjectEligible(this.#geometry, entry) &&
+      hitTestGeometry(point, entry.geometry, this.#geometry.symbols, camera.zoom)
+    );
   }
 
   /** Flat-view picking, equivalent to a perpendicular ray with 2D composition order. */
@@ -70,7 +79,17 @@ function hitTestGeometry(
   const radius = symbols.line.strokeWidth / (2 * zoom);
 
   if (geometry.kind === 'line') {
+    if (geometry.segment) {
+      return hitTestClippedSegment(point, geometry.segment, radius * radius);
+    }
+
     return squaredDistanceToSegment(point, geometry.start, geometry.end) <= radius * radius;
+  }
+
+  if (geometry.segments) {
+    return geometry.segments.some(segment =>
+      hitTestClippedSegment(point, segment, radius * radius),
+    );
   }
 
   return geometry.points.some((end, index) => {
@@ -78,4 +97,43 @@ function hitTestGeometry(
 
     return start !== undefined && squaredDistanceToSegment(point, start, end) <= radius * radius;
   });
+}
+
+/** A hit exists when an eligible centerline position lies within the screen-sized stroke. */
+function hitTestClippedSegment(
+  point: Point,
+  segment: ClippedSegment,
+  radiusSquared: number,
+): boolean {
+  const { start, end, startIncluded, endIncluded } = segment;
+  const distance = squaredDistanceToSegment(point, start, end);
+
+  if (distance < radiusSquared) {
+    // An interior position can be arbitrarily close to an excluded endpoint.
+    return true;
+  }
+
+  if (!Number.isFinite(distance) || distance > radiusSquared) {
+    return false;
+  }
+
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+
+  if (dx === 0 && dy === 0) {
+    // Every eligible position of a vertical transition projects to the same screen point.
+    return true;
+  }
+
+  const projection = (point.x - start.x) * dx + (point.y - start.y) * dy;
+
+  if (projection <= 0) {
+    return startIncluded;
+  }
+
+  if (projection >= dx * dx + dy * dy) {
+    return endIncluded;
+  }
+
+  return true;
 }

@@ -232,7 +232,7 @@ describe('component scene replacement', () => {
     data.layers[0]!.background.size.width = 999;
     await loading;
     const point = element.objects.get('point') as MapPoint;
-    expect(point.position).toEqual(new Point(100, 100));
+    expect(point.position).toEqual(new Point(100, 100, 0));
     expect(element.definition?.layers[0]?.background?.size).toEqual(new Size(1000, 600));
     point.position = new Point(200, 200);
     expect(element.definition?.objects[0]).toMatchObject({ position: { x: 100, y: 100 } });

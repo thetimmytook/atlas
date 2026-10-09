@@ -15,7 +15,11 @@ export class MapPoint extends MapObject {
   constructor(definition: MapPointDefinition) {
     validateMapPoint('point', definition);
     super(definition.id, 'point.id');
-    this.#position = new Point(definition.position.x, definition.position.y);
+    this.#position = new Point(
+      definition.position.x,
+      definition.position.y,
+      definition.position.z ?? 0,
+    );
   }
 
   override get kind(): 'point' {
@@ -27,8 +31,8 @@ export class MapPoint extends MapObject {
   }
 
   set position(value: Point) {
-    validatePoint('position', value);
-    this.#position = new Point(value.x, value.y);
+    validatePoint('position', value, { spatial: true });
+    this.#position = new Point(value.x, value.y, value.z ?? 0);
     invalidateScenes(this);
     this.dispatchEvent(new Event('change'));
   }

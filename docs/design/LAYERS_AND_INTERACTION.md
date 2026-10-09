@@ -2,11 +2,15 @@
 
 ## Explicit layers — accepted and implemented for review, 2026-10-08
 
+Current status: merged, confirmed by the user on 2026-10-08 after the review fixes.
+The direct-content contract below remains in effect. The automatic stage is implemented
+for review in the intersection-bounds section below.
+
 The first implementation supports direct full appearances, layer backgrounds,
 composition and independent visibility. `intersectionBounds` remains the accepted
-next direction; supplying that property currently rejects loading with
-`UNSUPPORTED_INTERSECTION_BOUNDS`, including an explicit `undefined` value. z,
-automatic intersections, clipping and volumetric zones are not implemented.
+next direction. The merged first stage rejected it with
+`UNSUPPORTED_INTERSECTION_BOUNDS`, including an explicit `undefined` value.
+The next stage below supersedes that rejection; volumetric zones remain deferred.
 
 `MapDefinition.layers` is required: no default layer or flat-input compatibility.
 `layers: []` is valid and displays nothing; a top-level `background` is rejected.
@@ -97,6 +101,88 @@ background-only layer, two independent content layers sharing one runtime route,
 external toggle/edit buttons and hit-layer IDs in its panel. Temporary route vertex
 symbols remain unchanged until the separate appearance/interaction step.
 
+## Intersection bounds contract — accepted and implemented for review, 2026-10-08
+
+The user approved the coordinate and bounds corrections; they are now implemented
+for mini review. The picking rule below is the tested implementation proposed for
+review, including screen stroke thickness.
+
+Use the existing [Point with optional height](GEOMETRY_AND_ROUTES.md#optional-height-on-point--accepted-and-implemented-for-review-2026-10-08):
+
+```ts
+export interface IntersectionBounds {
+  readonly min?: Partial<Point>;
+  readonly max?: Partial<Point>;
+}
+
+// MapLayerDefinition
+readonly intersectionBounds?: IntersectionBounds | undefined;
+
+// MapLayer
+get intersectionBounds(): IntersectionBounds | undefined;
+```
+
+`Partial<Point>` retains the readonly coordinate fields; an additional `Readonly`
+wrapper is unnecessary. Omitted bounds or `undefined` disable automatic display.
+Supplied bounds require at least one finite coordinate constraint. Reject `{}`,
+`{ min: {} }`, `{ max: {} }`, and other forms without an effective constraint;
+they do not implicitly enable an automatic display of every root object.
+One-sided limits are valid, and omitted axis limits remain unbounded. For an axis
+with both limits supplied, reject `min >= max`. Invalid shape, coordinates or
+range use `AtlasError` with `INVALID_INTERSECTION_BOUNDS` and structured details.
+The runtime getter exposes the copied, frozen loaded bounds, including nested
+limits. No runtime setter is added in this stage.
+
+Use a simple parametric segment algorithm: axis constraints narrow the admissible
+interval in `t` from `[0, 1]`. A route retains sequential disconnected fragments
+and its original direction. Cut coordinates do not create runtime objects or
+markers; rendering and picking share the derived geometry.
+
+Automatic candidates are all current `map.objects` roots, including roots selected
+in another layer. Owned points are not independent candidates unless separately
+attached as roots. Direct `objectIds` selection wins for that runtime instance in
+the same layer: it appears whole, with no additional automatic appearance. Distinct
+roots with the same ID stay distinct. `layer.objects` and `objectIds` still describe
+only direct roots. Mixed direct/automatic appearances retain root collection order;
+`stackIndex` controls layer composition, not height. Backgrounds remain independent.
+
+### Boundary picking — implemented for review
+
+Spatial membership of centerline positions and marker centers is `[min, max)`.
+SVG strokes reach the cut plane, including a visually closed round cap. Picking
+asks whether **any eligible centerline position** is within the existing stroke
+radius (`strokeWidth / (2 * zoom)`) of the 2D query. The camera does not infer a click z.
+This retains hits near an excluded endpoint when eligible interior positions fall
+inside the hit disk. At exactly the outer tangent, an excluded endpoint alone does
+not qualify; an included endpoint or an eligible interior position does. There is
+no tolerance added to the height/axis ownership rules or new hit-area setting.
+
+For projected zero-length segments, every admissible source position shares the
+same x/y; that projection remains pickable, including the hit disk's tangent. An
+interval with no admissible position has no display or hit. Markers at z = 3 occur
+only in `[3, 6)`. Strokes of neighboring floors may have overlapping screen hit areas;
+when both are visible, the top composed layer wins. Hiding it reveals the other
+eligible path. This is screen composition, not a height estimate from the pointer.
+
+Concrete Node and native Chromium checks use a four-pixel stroke at zoom 1:
+
+| Eligible centerline / query                                                 | Result                                  |
+| --------------------------------------------------------------------------- | --------------------------------------- |
+| x in `[50, 150)`, query `(48, 100)` on the min cap tangent                  | hit                                     |
+| same segment, `(150, 100)` or `(151, 100)` near max                         | hit through eligible interior           |
+| same segment, `(152, 100)` or `(150, 102)` at max cap tangent               | miss                                    |
+| same segment, `(150, 101.9)`                                                | hit                                     |
+| same segment at zoom 2, `(150.5, 100)` / `(151, 100)`                       | hit / miss                              |
+| floor transition z `0 → 6`, shared cut `(120, 100)`                         | upper layer; lower when upper is hidden |
+| vertical transition at `(100, 100)` through both floors, query `(100, 101)` | upper layer; lower when upper is hidden |
+
+Clicks identify the original `MapLine`/`MapRoute` and runtime layer. Eligible original
+vertices identify their `MapPoint` and owning route. After synchronous press/release
+handlers, only the captured appearance is revalidated against current membership,
+visibility and geometry. A removed/ineligible/moved-away hit is suppressed without
+picking an object underneath; a reference in `objectIds` is not required for an
+automatic hit. The source route and points remain unchanged by clipping.
+
 ## Clarifications after studying tarkov.dev
 
 - Both scenarios are useful: local building floor switching on the main map
@@ -167,9 +253,8 @@ layer behavior. The shared collection, current ordered-point route representatio
 and volumetric-zone prototype scope remain in effect.
 
 The separate `intersectingObjects` input-list proposal is superseded. Automatic
-intersection candidates come from the map's common object collection. Eligibility
-of objects explicitly displayed in other layers, and precedence when one instance
-is both direct content and an automatic intersection, remain open. Implicit
+intersection candidates come from the map's common object collection. The implemented intersection-bounds contract above now settles eligibility
+across layers and direct appearance precedence by runtime instance. Implicit
 default-layer behavior and runtime layer-management signatures also need separate decisions. This accepted
 input structure does not silently settle those rules or promise scanning performance.
 

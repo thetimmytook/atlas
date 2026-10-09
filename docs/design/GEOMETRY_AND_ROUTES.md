@@ -27,6 +27,41 @@ separate steps. Ordinary API names use no Atlas prefix; the error family retains
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
 
+## Optional height on Point — accepted and implemented for review, 2026-10-08
+
+The z/intersection stage extends the existing immutable mathematical
+`Point` with `readonly z?: number` and an optional third constructor argument.
+`Point` remains the position type in `MapPointDefinition` and both runtime
+`MapPoint.position` accessors. Do not introduce `PointPosition`, `Point3D`, or a
+separate public normalized-position type. Plain `{ x, y }` values and
+`new Point(x, y)` remain valid input.
+
+Creating or assigning a map-object position validates and copies the coordinates,
+normalizing an omitted z to zero. This also applies to owned points, definition
+resolution and route editing. Finite negative heights are valid. Runtime map-object
+positions and copied definition snapshots remain frozen. The public optional
+property still has type `number | undefined`; geometry code can use `z ?? 0`
+without introducing another coordinate type merely to express normalization.
+
+Camera and client/surface coordinates continue using x/y. A screen-to-map
+conversion does not infer height from a screen position; ordinary two-argument
+`Point` values may omit z. This extends the earlier 2D coordinate contract below
+without adding a 3D camera or changing runtime object identity.
+
+The internal segment clipper narrows the source parameter interval over the bounded
+axes, preserving inclusive/exclusive endpoint flags. Parallel or repeated endpoints
+are tested without division; vertical transitions remain ordinary segments in 3D
+whose SVG projection can have zero length. Cut coordinates stay finite and retain
+exact active plane coordinates. Extreme finite endpoint differences use a scaled
+parameter/distance calculation to avoid overflow in intermediate arithmetic.
+
+Routes produce separate sequential polyline fragments. Adjacent eligible segments
+join only through an included original vertex; an excursion or excluded max vertex
+separates fragments even when cut coordinates happen to coincide. Each fragment
+retains the source route and direction. Original route vertices use the existing
+temporary symbols only in eligible automatic appearances; cuts have no symbol,
+point identity or independent point hit area. No material or POI API is introduced.
+
 ## Route vertex geometry, symbol, and picking — accepted 2026-10-08
 
 Keep the common `MapPoint` representation for route vertices and distinguish three

@@ -95,8 +95,10 @@
     <p id="status" role="status">Loading map…</p>
     <p>
       The background has its own visible layer. First and second layers can be toggled
-      independently. Both display the same route: moving a route point changes both appearances. A
-      hidden layer does not intercept clicks; the details panel identifies the layer of each hit.
+      independently. The route climbs from z = 1 to z = 5 and returns: each floor displays its own
+      parts. “Change route height” moves the checkpoint between floors. The explicitly selected
+      independent line stays whole in the first layer. A hidden layer does not intercept clicks; the
+      details panel identifies the layer of each hit.
     </p>
     <fieldset class="controls" aria-label="Map controls" disabled>
       <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
@@ -108,6 +110,7 @@
       <button type="button" id="right" aria-label="Move camera right">→</button>
       <button type="button" id="move-line-end">Move line end</button>
       <button type="button" id="move-route-point">Move route point</button>
+      <button type="button" id="change-route-height">Change route height</button>
       <button type="button" id="add-route-point">Add route point</button>
       <button type="button" id="insert-route-point">Insert route point</button>
       <button type="button" id="remove-route-point" disabled>Remove inserted point</button>
@@ -193,12 +196,14 @@
           },
           {
             id: 'first',
-            objects: ['demo-marker-1', 'demo-marker-3', 'demo-line-1', 'demo-route'],
+            objects: ['demo-marker-1', 'demo-marker-3', 'demo-line-1'],
+            intersectionBounds: { min: { z: 0 }, max: { z: 3 } },
           },
           {
             id: 'second',
             stackIndex: 1,
-            objects: ['demo-marker-2', 'demo-route', 'second-route'],
+            objects: ['demo-marker-2', 'second-route'],
+            intersectionBounds: { min: { z: 3 }, max: { z: 6 } },
           },
         ],
         objects: [
@@ -206,8 +211,8 @@
             id: 'demo-line-1',
             kind: 'line',
             points: [
-              { kind: 'point', position: { x: 40, y: 45 } },
-              { kind: 'point', position: { x: 85, y: 70 } },
+              { kind: 'point', position: { x: 40, y: 45, z: -2 } },
+              { kind: 'point', position: { x: 85, y: 70, z: 8 } },
             ],
           },
           {
@@ -219,23 +224,23 @@
             id: 'demo-route',
             kind: 'route',
             points: [
-              { kind: 'point', id: 'route-start', position: { x: 85, y: 70 } },
-              { kind: 'point', id: 'route-checkpoint', position: { x: 60, y: 90 } },
-              { kind: 'point', position: { x: 30, y: 110 } },
+              { kind: 'point', id: 'route-start', position: { x: 85, y: 70, z: 1 } },
+              { kind: 'point', id: 'route-checkpoint', position: { x: 60, y: 90, z: 5 } },
+              { kind: 'point', position: { x: 30, y: 110, z: 1 } },
             ],
           },
           {
             id: 'demo-marker-2',
             kind: 'point',
-            position: { x: 85, y: 70 },
+            position: { x: 85, y: 70, z: 3 },
           },
           { id: 'demo-marker-3', kind: 'point', position: { x: 30, y: 110 } },
           {
             id: 'second-route',
             kind: 'route',
             points: [
-              { kind: 'point', position: { x: 100, y: 95 } },
-              { kind: 'point', position: { x: 110, y: 125 } },
+              { kind: 'point', position: { x: 100, y: 95, z: 4 } },
+              { kind: 'point', position: { x: 110, y: 125, z: 4 } },
             ],
           },
         ],
@@ -257,14 +262,20 @@
       document.querySelector('#move-line-end').onclick = () => {
         const line = map.objects.get('demo-line-1');
         const end = line.points[1];
-        const { x, y } = end.position;
-        end.position = new Point(x, y === 70 ? 90 : 70);
+        const { x, y, z } = end.position;
+        end.position = new Point(x, y === 70 ? 90 : 70, z);
       };
       document.querySelector('#move-route-point').onclick = () => {
         const route = map.objects.get('demo-route');
         const point = route.points[1];
-        const { x, y } = point.position;
-        point.position = new Point(x === 60 ? 45 : 60, y);
+        const { x, y, z } = point.position;
+        point.position = new Point(x === 60 ? 45 : 60, y, z);
+      };
+      document.querySelector('#change-route-height').onclick = () => {
+        const point = map.objects.get('demo-route').points[1];
+        const { x, y, z } = point.position;
+        point.position = new Point(x, y, z === 5 ? 1 : 5);
+        status.textContent = `Checkpoint ${point.id} is at z = ${point.position.z}.`;
       };
       document.querySelector('#add-route-point').onclick = () => {
         const route = map.objects.get('demo-route');
@@ -274,6 +285,7 @@
           position: new Point(
             last.position.x === 30 ? 50 : 30,
             last.position.y === 110 ? 125 : 110,
+            last.position.z,
           ),
         });
         status.textContent = `Added route point ${point.id}; route has ${route.points.length} points.`;
@@ -287,6 +299,7 @@
           position: new Point(
             (start.position.x + end.position.x) / 2,
             (start.position.y + end.position.y) / 2,
+            ((start.position.z ?? 0) + (end.position.z ?? 0)) / 2,
           ),
         });
         document.querySelector('#remove-route-point').disabled = false;
@@ -303,8 +316,8 @@
         const start = route.points[0];
         const end = route.points.at(-1);
         const points = route.replacePoints(1, route.points.length - 1, [
-          { kind: 'point', position: new Point(start.position.x, end.position.y) },
-          { kind: 'point', position: new Point(end.position.x, start.position.y) },
+          { kind: 'point', position: new Point(start.position.x, end.position.y, 5) },
+          { kind: 'point', position: new Point(end.position.x, start.position.y, 1) },
         ]);
         document.querySelector('#remove-route-point').disabled = true;
         status.textContent = `Replaced route interior with ${points.length} new points; endpoints ${start.id} and ${end.id} retained.`;

@@ -35,7 +35,7 @@ describe('route membership and surviving identity', () => {
       expect(point.id).toBe(['a', 'b', 'c', 'd'].at(index));
     });
     expect(route.points[4]).toBe(appended);
-    expect(appended.position).toEqual(new Point(400, 0));
+    expect(appended.position).toEqual(new Point(400, 0, 0));
     expect(appended.id.length).toBeGreaterThan(0);
     expect(changed).toHaveBeenCalledOnce();
     expect(changed).toHaveReturnedWith(route.points);
@@ -126,7 +126,7 @@ describe('route membership and surviving identity', () => {
     expect(route.points[2]).toBe(replacements[1]);
     expect(replacements[0]).not.toBe(before[1]);
     expect(replacements[0]!.id).toBe('b');
-    expect(replacements[0]!.position).toEqual(new Point(50, 100));
+    expect(replacements[0]!.position).toEqual(new Point(50, 100, 0));
     expect(replacements[1]!.id.length).toBeGreaterThan(0);
     expect(Object.isFrozen(replacements)).toBe(true);
     expect(Object.isFrozen(route.points)).toBe(true);
