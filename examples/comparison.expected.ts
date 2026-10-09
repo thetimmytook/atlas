@@ -1,14 +1,13 @@
-import type { MapEntryDefinition } from '#definitions/map-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
-import type { StressScene } from './stress.scene.js';
+import type { StressEntryDefinition, StressScene } from './stress.scene.js';
 
 function moved(point: MapPointDefinition): MapPointDefinition {
   return { ...point, position: { x: point.position.x + 1, y: point.position.y + 1 } };
 }
 
 /** Oracle copied from input before timing; never read adapter/runtime state here. */
-export function expectedDefinitions(scene: StressScene, scenario: string): MapEntryDefinition[] {
-  const roots = scene.definition.objects!.map(root => structuredClone(root));
+export function expectedDefinitions(scene: StressScene, scenario: string): StressEntryDefinition[] {
+  const roots = scene.definition.objects.map(root => structuredClone(root));
   const amount = Number(scenario.split('-').at(1));
 
   if (scenario.startsWith('add-')) {

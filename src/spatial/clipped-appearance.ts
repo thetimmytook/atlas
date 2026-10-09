@@ -1,4 +1,5 @@
 import { clipPolyline, clipSegment, containsPosition } from './intersection.js';
+import { createClippedPolygonAppearance } from './polygon-geometry.js';
 
 import type { Point3 } from '#math/point3.js';
 import type { MapLayer } from '#objects/map-layer.js';
@@ -15,6 +16,10 @@ export function createClippedAppearance(
   pointEntry: (layer: MapLayer, point: MapPoint, route?: MapRoute) => SceneObject,
 ): () => readonly SceneObject[] {
   const bounds = layer.intersectionBounds!;
+
+  if (object.kind === 'polygon') {
+    return createClippedPolygonAppearance(layer, object);
+  }
 
   if (object.kind === 'point') {
     const entry = pointEntry(layer, object);

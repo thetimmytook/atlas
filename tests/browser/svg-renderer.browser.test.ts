@@ -784,7 +784,7 @@ it('updates shared root/vertex appearances when their route returns before rende
 function createReattachmentRoot(
   objects: MapObjectCollection,
   kind: 'point' | 'line' | 'route',
-): MapEntry {
+): Exclude<MapEntry, { kind: 'polygon' }> {
   if (kind === 'point') {
     return objects.add(pointDefinition(40, 30, 'returned'));
   }

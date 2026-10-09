@@ -11,10 +11,9 @@ import { instrumentSvg } from './comparison.instrument.js';
 import { LeafletAdapter } from './comparison.leaflet.js';
 import { cameraAt, createStressScene, HIT_POSITION, MISS_POSITION, SEED } from './stress.scene.js';
 
-import type { MapEntryDefinition } from '#definitions/map-definition.js';
 import type { BenchmarkAdapter, CameraTarget, Variant } from './comparison.adapter.js';
 import type { CanvasControls } from './comparison.canvas-controls.js';
-import type { StressScene } from './stress.scene.js';
+import type { StressEntryDefinition, StressScene } from './stress.scene.js';
 
 declare const __BENCH_BUILD__: {
   sourceCommit: string;
@@ -318,7 +317,7 @@ async function sample(
       );
       emit('create_to_raf_opportunities_ms', 'ms', 0, totalMs);
       const nodes = map.nodeCounts();
-      emit('semantic_roots', 'count', 0, scene.definition.objects!.length);
+      emit('semantic_roots', 'count', 0, scene.definition.objects.length);
       emit('owned_points', 'count', 0, scene.counts.ownedPoints);
       emit('visual_primitives', 'count', 0, scene.counts.visualPrimitives);
       emit('svg_element_nodes', 'count', 0, nodes.svg);
@@ -679,7 +678,7 @@ element('instrument').addEventListener('click', () => {
 
 function smokeScene(): StressScene {
   const scene = createStressScene(3000, 'mixed');
-  const objects: MapEntryDefinition[] = [
+  const objects: StressEntryDefinition[] = [
     { id: 'smoke-point', kind: 'point', position: HIT_POSITION },
     {
       id: 'smoke-line',

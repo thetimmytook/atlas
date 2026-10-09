@@ -66,6 +66,7 @@ export class AtlasAdapter implements BenchmarkAdapter {
     return (checkpoint): void => {
       if (scenario.startsWith('position-')) {
         for (const root of selected) {
+          assertComparison(root.kind !== 'polygon', 'benchmark root kind');
           const point = root.kind === 'point' ? root : root.points[0];
           point.position = new Point3(point.position.x + 1, point.position.y + 1, point.position.z);
         }

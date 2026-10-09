@@ -110,7 +110,7 @@ function clipAxis(
   );
 }
 
-function boundaryParameter(a: number, b: number, limit: number): number {
+export function boundaryParameter(a: number, b: number, limit: number): number {
   const difference = b - a;
   const offset = limit - a;
 

@@ -1,9 +1,8 @@
 import { createStressScene, HIT_POSITION } from './stress.scene.js';
 
-import type { MapEntryDefinition } from '#definitions/map-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
 import type { CanvasChange } from './comparison.canvas.js';
-import type { StressScene } from './stress.scene.js';
+import type { StressEntryDefinition, StressScene } from './stress.scene.js';
 
 const POSITION_SCENARIO = 'position-single';
 const BLUE_NEW: CanvasChange = 'blue-new';
@@ -27,12 +26,12 @@ export function canvasFixtures(): CanvasFixture[] {
   const base = createStressScene(3000, 'mixed');
   const gutter = point('gutter', HIT_POSITION.x, HIT_POSITION.y);
   const isolated = point('independent', 45, 30);
-  const line: MapEntryDefinition = {
+  const line: StressEntryDefinition = {
     id: 'line',
     kind: 'line',
     points: [point('line-start', 45, 30), point('line-end', 15, 60)],
   };
-  const route: MapEntryDefinition = {
+  const route: StressEntryDefinition = {
     id: 'route',
     kind: 'route',
     points: [
@@ -41,7 +40,7 @@ export function canvasFixtures(): CanvasFixture[] {
       point('route-end', 100, 110),
     ],
   };
-  const replaced: MapEntryDefinition = {
+  const replaced: StressEntryDefinition = {
     id: 'replaced-route',
     kind: 'route',
     points: [
@@ -51,12 +50,12 @@ export function canvasFixtures(): CanvasFixture[] {
       point('end', 40, 115),
     ],
   };
-  const overlay: MapEntryDefinition = {
+  const overlay: StressEntryDefinition = {
     id: 'top-line',
     kind: 'line',
     points: [point('overlay-start', 25, 30), point('overlay-end', 75, 30)],
   };
-  const routeOverlay: MapEntryDefinition = {
+  const routeOverlay: StressEntryDefinition = {
     id: 'route-overlay',
     kind: 'line',
     points: [point('over-start', 50, 50), point('over-end', 80, 95)],
@@ -64,9 +63,9 @@ export function canvasFixtures(): CanvasFixture[] {
   const fixture = (
     id: string,
     scenario: string,
-    objects: MapEntryDefinition[],
+    objects: StressEntryDefinition[],
     required: CanvasChange[],
-    additions: MapEntryDefinition[] = [],
+    additions: StressEntryDefinition[] = [],
   ): CanvasFixture => ({
     id,
     scenario,

@@ -228,6 +228,10 @@ function queries(map: MapElement, scene: StressScene, scenario: 'hit' | 'miss', 
 
 function editPositions(roots: readonly MapEntry[], amount: number): void {
   for (const object of roots.slice(0, amount)) {
+    if (object.kind === 'polygon') {
+      throw new Error('Unexpected benchmark root kind.');
+    }
+
     const point = object.kind === 'point' ? object : object.points[0];
 
     if (point) {

@@ -1,4 +1,5 @@
 import { createClippedAppearance } from './clipped-appearance.js';
+import { createPolygonGeometry } from './polygon-geometry.js';
 import { trackScene, untrackScene } from './scene-invalidation.js';
 
 import type { Point3 } from '#math/point3.js';
@@ -211,7 +212,7 @@ export function prepareSceneGeometry(
     for (const entry of entries) {
       dependOn(entry.object, entry);
 
-      if (entry.object.kind !== 'point') {
+      if (entry.object.kind === 'line' || entry.object.kind === 'route') {
         for (const point of entry.object.points) {
           dependOn(point, entry);
         }
@@ -252,7 +253,7 @@ export function prepareSceneGeometry(
 
       dependOn(root, root);
 
-      if (root.kind !== 'point') {
+      if (root.kind === 'line' || root.kind === 'route') {
         for (const point of root.points) {
           dependOn(point, root);
         }
@@ -372,6 +373,10 @@ export function isLayerEligible(layer: MapLayer): boolean {
 }
 
 function createGeometry(object: MapEntry): Geometry {
+  if (object.kind === 'polygon') {
+    return createPolygonGeometry(object);
+  }
+
   if (object.kind === 'point') {
     return Object.freeze({
       kind: 'point',

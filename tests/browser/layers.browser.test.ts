@@ -330,6 +330,11 @@ describe('layers in actual SVG and picking', () => {
         ],
       });
       const instance = map.objects.get('returned')!;
+
+      if (instance.kind === 'polygon') {
+        throw new Error('Unexpected polygon fixture.');
+      }
+
       const oldGroups = svgGroups(surface);
       const point = instance.kind === 'point' ? instance : instance.points[0];
       const events = clicks(map);
