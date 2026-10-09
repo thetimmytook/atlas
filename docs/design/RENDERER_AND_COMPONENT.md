@@ -1,6 +1,13 @@
 # Renderer And Component
 
-## Automatic spatial appearances — implemented for review, 2026-10-08
+Current baseline: [Current contract](CURRENT_CONTRACT.md). Model ownership (PR #23),
+browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #28–29)
+and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
+and single-consumer; they are not public core lifecycle or multiple viewport support.
+
+<a id="automatic-spatial-appearances--implemented-for-review-2026-10-08"></a>
+
+## Automatic spatial appearances — merged in PR #29
 
 Segment clipping and appearance preparation live in the spatial subsystem, with no
 SVG or DOM dependency. Each layer/root retains cached direct or derived scene entries;
@@ -28,7 +35,9 @@ spatial reads until `takeChanges()` drains it for the current renderer. Removed
 entries are pruned; newly tracked sources queue current geometry after reattachment.
 Pan and hide/show do not prepare cuts, scan roots, or write object coordinates.
 Membership changes still reconcile scene ordering/dependencies; a topology change
-can flatten the prepared entry list without reclipping unrelated roots on point edits.
+can flatten the prepared entry list without reclipping unrelated roots on position
+edits. Route-owned membership edits still cause global reconciliation in the merged
+baseline; the bounded correction remains under review.
 There is no spatial index, generic pipeline, scheduler, multi-view queue or geometry
 package. Initial/membership preparation traverses root candidates per layer; a changed
 route is clipped as a whole rather than incrementally by individual segment.
@@ -42,7 +51,9 @@ unrelated marker/background. Pan causes one viewBox mutation; hide then show cau
 two display mutations and preserves all prepared nodes. These are functional
 invalidation boundaries, not timings or a new Atlas/Leaflet performance measurement.
 
-## Layer display and invalidation — implemented for review, 2026-10-08
+<a id="layer-display-and-invalidation--implemented-for-review-2026-10-08"></a>
+
+## Layer display and invalidation — merged in PR #28
 
 Internal `MapModel` owns renderer-independent layers and shared roots. Direct
 membership is cached and invalidated by root or ID-list mutations before synchronous
@@ -59,7 +70,7 @@ after an intervening query, retaining SVG nodes surviving until RAF.
 
 The internal provisional single-view renderer signature is now
 `prepare(geometry: SceneGeometry): Promise<PreparedScene>`; backgrounds travel with
-scene layers. Future clipped appearances extend scene preparation. This is not a
+scene layers. Merged clipped appearances also use scene preparation. This is not a
 public standalone model or final multi-view renderer contract.
 
 SVG creates one permanent group per layer, with its optional image before objects.
@@ -105,15 +116,16 @@ Accepted direction:
 - The renderer efficiently transfers scene/display data into backend output
   (SVG elements in the first implementation) and updates affected output with
   minimal redundant work. Its contract must not own hit testing or collision queries.
-- Runtime retains behavior, validation, material resolution, layer configuration,
-  normalized events, change tracking, and batch. Geometric preparation and querying
+- Runtime retains behavior, validation, layer configuration, normalized events and
+  change tracking; material resolution and batch remain accepted future work. Geometric preparation and querying
   share this state with rendering rather than reconstructing it from rendered DOM.
 - Application UI and the response to events remain outside these subsystems.
 
 Proposals and open points:
 
-- `Spatial` is a proposed subsystem name; `GeometryProcessing` is a proposed name
-  for its preparation stage. Neither is an approved class or interface signature.
+- The proposal subsequently became internal `Spatial` and `prepareSceneGeometry`;
+  `GeometryProcessing` did not become an export. Their signatures are internal, not
+  an approved public extension contract.
 - Separate reusable geometry preparation from on-demand queries within that subsystem.
   A hit test should not require rerendering; rendering should not run unused collision
   queries. Cache/invalidation details require a concrete prototype, not a new global
@@ -128,15 +140,15 @@ Proposals and open points:
 
 ## Spatial implementation — merged
 
-`prepareSceneGeometry(objects)` prepares a shared `SceneGeometry` description before
-renderer preparation. Each entry retains its runtime object and references a symbol
-with radius and stroke width in viewport CSS pixels. The current circle symbol is
-explicitly temporary until material resolution supplies it. Rendering and queries
+`prepareSceneGeometry(objects, layers)` prepares a shared `SceneGeometry` description before
+renderer preparation. Each entry retains its runtime object/layer and geometry;
+the scene shares temporary point/line symbols with sizes in viewport CSS pixels.
+The current circle symbol is temporary until material resolution supplies it. Rendering and queries
 use the same description and observe current runtime positions; no per-frame object
 copying is introduced by this preparation step.
 
-`Spatial.hitTest(mapPoint, camera)` performs numeric point-symbol picking without
-DOM, SVG types, or a renderer dependency. It checks the camera viewport, accounts
+`Spatial.hitTest(mapPoint, camera)` performs numeric picking of point symbols,
+line/route strokes and polygon fills without DOM, SVG types or a renderer dependency. It checks the camera viewport, accounts
 for zoom to preserve screen-sized hit areas, and returns the first hit in reverse
 composition order. This flat-view calculation represents a perpendicular ray; no
 unused 3D ray abstraction or collision engine is introduced. Spatial implementation files
@@ -149,11 +161,12 @@ state and do not read the last painted SVG state or request a render.
 
 A successful load replaces runtime objects, shared geometry, and the spatial query
 instance together after renderer preparation succeeds. Failure retains the previous
-scene for both display and interaction. Future materials, non-point geometry,
-layers/clipping, indexing, and cache invalidation will extend this boundary under
+scene for both display and interaction. This initial point-only stage was extended
+by merged line/route/polygon geometry. Layers/clipping and explicit invalidation
+have also merged; materials and spatial indexing remain future work under
 separate review.
 
-The line-geometry step under review generalizes `SceneGeometry` to an ordered
+The merged line-geometry step generalized `SceneGeometry` to an ordered
 `objects` array and shared `symbols` defaults for point and line primitives.
 The defaults are temporary until per-object material resolution supplies them.
 Both consumers read internal live geometry views, so endpoint changes do not leave
@@ -173,7 +186,7 @@ These are internal SVG operations, not a new public pipeline API.
 
 The route step prepares a polyline entry for the `MapRoute`, followed by point entries
 with `MapPoint` identity and owning-route context. Scene identities use `MapEntry`
-(`MapPoint | MapLine | MapRoute`), preserving the concrete object type through
+(`MapPoint | MapLine | MapRoute | MapPolygon`), preserving the concrete object type through
 picking and events. Both entries use internal live geometry views. The renderer draws SVG `polyline` geometry
 with a round, non-scaling stroke and round joins; spatial queries test adjacent
 coordinate pairs with the same width. No runtime line objects are created.
@@ -184,7 +197,8 @@ read each owned point's current position. Views are stable; their readonly coord
 array changes only with membership.
 Existing SVG nodes and scene entries are reused.
 
-The route append step is implemented for review. Shared scene descriptions detect
+The route append step is merged in PR #14. The following scan description records
+that stage; explicit invalidation below supersedes it. Shared scene descriptions detect
 replacement of a route's readonly point array and refresh their ordered entry array
 on demand. Existing entries and coordinate views are reused; only the appended
 vertex gains a new view and SVG node. The SVG renderer synchronizes changed membership
@@ -203,7 +217,7 @@ the component checks its current owned membership and suppresses the stale click
 Reconnect applies edits made while disconnected. See the
 [editing contract](RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review).
 
-Route point range replacement is implemented for review using the same array-identity
+Route point range replacement is merged in PR #20 using the same array-identity
 detection and synchronization. New geometry and scene entries follow the resulting
 point order even when the point count is unchanged. Surviving coordinate views,
 entries, path nodes, and point nodes are reused; removed vertex nodes are retired.
@@ -241,7 +255,9 @@ owner/object pair. Each appearance keeps its SVG node and owning-route click con
 Separate maps retain independent scene entries and subscriptions for shared objects.
 See [instance attachment](RUNTIME_AND_LOADING.md#runtime-instance-attachment--accepted-2026-10-06-implemented-for-review).
 
-## Internal scene model — accepted 2026-10-06, implemented for review
+<a id="internal-scene-model--accepted-2026-10-06-implemented-for-review"></a>
+
+## Internal scene model — merged in PR #23
 
 The first scene-ownership substep introduces internal `MapModel` in
 `src/objects/map-model.ts`. It owns the resolved definition snapshot, runtime root
@@ -286,10 +302,11 @@ detach/reconnect, image-decode failure, root reattachment and replacement isolat
 The Node stand-ins are not a full browser environment; physical mobile validation
 remains outside this step.
 
-Public standalone model lifecycle, a public core entry point, multiple viewport
-management, explicit invalidation/revisions, and affected SVG updates remain
-separate decisions or implementation steps. Layers/z/clipping, batch, materials,
-labels, constructor/validation changes, and a loader framework are outside this step.
+Public standalone model lifecycle, a public core entry point and multiple viewport
+management remain open/deferred. Explicit invalidation and affected SVG updates
+subsequently merged in PR #27, and layers/z/clipping in PRs #28–30. Batch, materials,
+labels and a loader framework remain unimplemented; constructor/validation changes
+require separate review.
 
 ## Component lifecycle
 
@@ -375,7 +392,7 @@ Omitted IDs are generated by `createId()` and retained
 in the prepared definition and runtime objects. IDs are opaque strings.
 
 `element.objects` is an iterable collection with `size` and `get(id)`. Each
-`MapObject` is an `EventTarget`. The concrete `MapPoint`, `MapLine`, and `MapRoute` extend it;
+`MapObject` is an `EventTarget`. The concrete `MapPoint`, `MapLine`, `MapRoute`, and `MapPolygon` extend it;
 assigning `MapPoint.position` validates and copies its value, then emits `change`.
 Lines and routes forward point changes without storing or rebuilding geometry.
 The component coalesces changes into its next render frame and reuses SVG elements.
@@ -406,10 +423,12 @@ Click/tap interaction is merged; see
 [object events](LAYERS_AND_INTERACTION.md#first-surface-events-and-object-clicktap--merged).
 Popups remain application UI.
 
-## Browser SVG regression coverage — implemented for review, 2026-10-06
+<a id="browser-svg-regression-coverage--implemented-for-review-2026-10-06"></a>
 
-The requested Browser Mode step adds 16 real `SvgRenderer` tests and 13 focused
-`MapElement` integrations, alongside the 103 merged Node tests. See
+## Browser SVG regression coverage — merged in PR #24
+
+At the initial 2026-10-06/07 Browser Mode stage, 16 real `SvgRenderer` tests and
+13 focused `MapElement` integrations ran alongside 103 Node tests. See
 [installation and commands](../TOOLING.md#regression-tests).
 
 Direct renderer checks cover preparation/show/render of a mixed scene, point and
@@ -431,7 +450,7 @@ the replacement scene.
 The initial tests were prepared against `master` at `f393bc3` on 2026-10-06.
 On 2026-10-07 the branch was updated to `a317f54`, including the internal
 `MapModel` ownership extraction merged in PR #23. All 29 browser tests passed
-unchanged in two successive Chromium runs; the merged Node suite now has 103 tests,
+unchanged in two successive Chromium runs; that 2026-10-07 stage had 103 Node tests,
 including model and component stand-in tests. The browser coverage supplements
 those contract tests with real output and native lifecycle/input behavior.
 
@@ -440,7 +459,9 @@ The tests protect the next explicit-invalidation step without imposing
 geometry-write counts or claiming mobile, performance, or complete prototype
 validation.
 
-## Explicit scene invalidation — implemented for review, 2026-10-07
+<a id="explicit-scene-invalidation--implemented-for-review-2026-10-07"></a>
+
+## Explicit scene invalidation — merged in PR #27
 
 The user authorized this implementation on the merged model/browser-test/benchmark
 foundation. This is the internal mechanism selected for the current flat, single-view
@@ -491,7 +512,8 @@ pending current state. Existing atomic load/failure behavior and stale-click che
 are unchanged and covered by regression tests.
 
 The two substeps passed existing tests before proceeding: model/geometry invalidation,
-then affected SVG output. After the reattachment review correction, coverage is 110 Node and 40 real-browser tests; new
+then affected SVG output. At the 2026-10-07 invalidation stage, after the
+reattachment review correction, coverage was 110 Node and 40 real-browser tests; new
 MutationObserver assertions include same-value writes and distinguish attribute
 mutations from child-node removal. Reproducible before/after results, remaining full
 walks, and measurement limits are in [the invalidation measurements](../performance/INVALIDATION.md).

@@ -1,17 +1,24 @@
 # Layers And Interaction
 
-## Explicit layers — accepted and implemented for review, 2026-10-08
+Current baseline: [Current contract](CURRENT_CONTRACT.md). Explicit layers (PR #28),
+coordinates/intersections (PR #29) and polygons (PR #30) are merged. The separate
+route-vertex appearance/picking design is accepted but unimplemented. Second-pointer
+press correction and gesture regressions remain under review.
+
+<a id="explicit-layers--accepted-and-implemented-for-review-2026-10-08"></a>
+
+## Explicit layers — merged in PR #28, 2026-10-08
 
 Current status: merged, confirmed by the user on 2026-10-08 after the review fixes.
-The direct-content contract below remains in effect. The automatic stage is implemented
-for review in the intersection-bounds section below.
+The direct-content contract remains in effect; the automatic stage below is merged
+in PR #29. First-stage limitations are historical.
 
 The first implementation supports direct full appearances, layer backgrounds,
-composition and independent visibility. `intersectionBounds` remains the accepted
-next direction. The merged first stage rejected it with
+composition and independent visibility. At that first stage, `intersectionBounds`
+was the accepted next direction. The merged first stage rejected it with
 `UNSUPPORTED_INTERSECTION_BOUNDS`, including an explicit `undefined` value.
 The automatic stage below supersedes that rejection. Horizontal polygons and their
-vertical extrusion are now implemented for mini review under the
+vertical extrusion are now merged in PR #30 under the
 [accepted polygon contract](GEOMETRY_AND_ROUTES.md#horizontal-polygons-and-vertical-extrusion--accepted-contract-2026-10-09).
 
 `MapDefinition.layers` is required: no default layer or flat-input compatibility.
@@ -24,6 +31,7 @@ interface MapLayerDefinition {
   readonly stackIndex?: number;
   readonly objects?: readonly string[];
   readonly background?: BackgroundDescription;
+  readonly intersectionBounds?: IntersectionBounds;
 }
 
 // MapElement
@@ -33,6 +41,7 @@ get layers(): readonly MapLayer[];
 get id(): string;
 get stackIndex(): number;
 get background(): BackgroundDescription | undefined;
+get intersectionBounds(): IntersectionBounds | undefined;
 get objects(): readonly MapEntry[];
 get objectIds(): MapLayerObjectIdCollection;
 get visible(): boolean;
@@ -74,8 +83,8 @@ reject the entire load.
 
 `layer.objects` means only current roots selected through direct `objectIds`.
 Its frozen arrays cannot be changed with `push/splice`; retained arrays preserve
-old membership and live references. Future automatic clipped appearances are prepared
-separately and will not change this getter's meaning. Root/reference edits reconcile
+old membership and live references. Automatic clipped appearances are prepared
+separately and do not change this getter's meaning. Root/reference edits reconcile
 synchronously on read before RAF, including disconnected state. Coordinate, camera
 and visibility changes retain current arrays and composition.
 
@@ -103,11 +112,12 @@ background-only layer, two independent content layers sharing one runtime route,
 external toggle/edit buttons and hit-layer IDs in its panel. Temporary route vertex
 symbols remain unchanged until the separate appearance/interaction step.
 
-## Intersection bounds contract — accepted and implemented for review, 2026-10-08
+<a id="intersection-bounds-contract--accepted-and-implemented-for-review-2026-10-08"></a>
 
-The user approved the coordinate and bounds corrections; they are now implemented
-for mini review. The picking rule below is the tested implementation proposed for
-review, including screen stroke thickness.
+## Intersection bounds contract — merged in PR #29, 2026-10-09
+
+The coordinate and bounds corrections are merged in PR #29. The picking rule
+below describes that implementation, including screen stroke thickness.
 
 The 2026-10-09 coordinate migration uses [Point3 for partial spatial limits](GEOMETRY_AND_ROUTES.md#planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09):
 
@@ -152,7 +162,9 @@ roots with the same ID stay distinct. `layer.objects` and `objectIds` still desc
 only direct roots. Mixed direct/automatic appearances retain root collection order;
 `stackIndex` controls layer composition, not height. Backgrounds remain independent.
 
-### Boundary picking — implemented for review
+<a id="boundary-picking--implemented-for-review"></a>
+
+### Boundary picking — merged in PR #29
 
 Spatial membership of centerline positions and marker centers is `[min, max)`.
 SVG strokes reach the cut plane, including a visually closed round cap. Picking
@@ -204,8 +216,8 @@ automatic hit. The source route and points remain unchanged by clipping.
   dimensions have been proposed; syntax and supported parameters are not yet defined.
 - Vertical polygon extrusion now has an
   [accepted contract](GEOMETRY_AND_ROUTES.md#horizontal-polygons-and-vertical-extrusion--accepted-contract-2026-10-09)
-  with an x/y contour and independent `baseZ`/`height`; implementation is available
-  for mini review in the [prototype status](PROTOTYPE.md#polygon-and-extrusion-contract--accepted-2026-10-09). All clipped cells without positive x/y area are discarded for both display
+  with an x/y contour and independent `baseZ`/`height`; implementation is merged
+  in PR #30, as recorded in the [prototype status](PROTOTYPE.md#polygon-and-extrusion-contract--accepted-2026-10-09). All clipped cells without positive x/y area are discarded for both display
   and picking, including degenerate cells beside valid ones. External result
   contours must be obtained before outlines are supported.
 
@@ -343,9 +355,9 @@ and its owner in `detail.route`. Both retain map/client interaction coordinates.
 Point symbols compose above their own path; root map-object order remains unchanged.
 
 `ObjectClickDetail.object` and the constructor argument of `ObjectClickEvent` use
-`MapEntry` (`MapPoint | MapLine | MapRoute`). Spatial scene entries preserve this
-union, allowing consumers to narrow the object by `kind` and access `position` or
-`points` without a cast. The shared `MapObject` base still owns identity and events.
+`MapEntry` (`MapPoint | MapLine | MapRoute | MapPolygon`). Spatial scene entries preserve this
+union, allowing consumers to narrow the object by `kind` and access `position`,
+`points` or `contour` without a cast. The shared `MapObject` base still owns identity and events.
 
 Point IDs do not control visibility. Layer visibility and clipping determine which
 spatial portion can participate; point materials and interaction properties will
@@ -354,14 +366,19 @@ keeps position, symbol appearance, and separate point picking independent. A ben
 with no symbol remains part of the route; when its point interaction is disabled,
 clicks on the eligible path return the route. Layer visibility constrains all its
 appearances; intersection bounds additionally constrain automatic appearances.
-Route vertices default to no symbol and no separate point picking; appearance and
-interaction are explicitly assigned for a point of interest and stay independent.
+The accepted future default is no symbol and no separate point picking; future
+appearance and interaction settings stay independent. These settings/defaults are
+not implemented.
 The current prototype draws all route vertices with
 the temporary point symbol to exercise clicks, independent of supplied/generated
 IDs. It adds no visibility flag to route-point data. Surface press/release behavior
 is unchanged. Older line-identity wording below is historical.
 
 ## 5. Layers and floors — discussion ongoing
+
+Historical discussion: undefined layer terminology and route-line schemas below
+are superseded by the [merged layer contract](CURRENT_CONTRACT.md#layers-identity-and-runtime-state)
+and route polyline model. Multiple viewports/layer groups and real 3D remain open.
 
 - Floors must be supported in the first version.
 - The term layer is not yet defined. The assistant's proposal to treat a layer only
@@ -526,14 +543,15 @@ and [Leaflet marker clustering](https://github.com/Leaflet/Leaflet.markercluster
 
 `press` and `release` are surface events emitted by the map component, including
 when the pointer is over empty/background space. `MapSurfaceEvent.detail` contains
-`mapPoint` and `clientPoint` in browser viewport CSS pixels. A release also supplies
+`mapPoint` in map units and `clientPoint` in browser viewport CSS pixels. A release also supplies
 `isClick`, indicating whether this release is eligible to trigger an object click/tap. A drag
 or pinch still produces release on pointer-up, but with `isClick: false`. Pointer
 cancellation and lost capture are not normal releases. These events describe input,
-not selected objects. Names are the current reviewable API.
+not selected objects. These names are merged public API.
 
 `map.clickTrigger` configures when the component identifies an object and emits
-`objectclick`: `release` by default, or `press` for immediate response. Default
+`objectclick`: `release` by default, or `press` for immediate response. This is a
+JavaScript property, not an observed HTML attribute. Default
 release handling requires `isClick: true` and performs one hit test at the release
 position. It does not retain or compare the object at pointer-down. Press mode
 responds immediately. When it hits an object, the gesture is consumed: subsequent
@@ -541,11 +559,15 @@ pointer movement and pinch do not move or zoom the camera, and release does not
 produce a second object click. The gesture stays consumed until all tracked pointers
 are released or cancelled; wheel zoom is suppressed while it is consumed. Pressing
 empty space does not consume the gesture, so background panning remains available.
+The merged baseline has a known defect: a second pointer can also trigger press
+picking and consume a valid pinch. Its correction and gesture regressions remain
+under review in the [accepted follow-up](PROTOTYPE.md#repeat-review-follow-up--accepted-2026-10-09);
+first-hit press consumption stays accepted. A public cancellation notification is open.
 Changing the trigger or successfully replacing the map
 cancels pending release-click eligibility. Disconnect discards the pending gesture.
 
-`ObjectClickEvent.detail` contains the runtime `object`, `mapPoint`, and
-`clientPoint`. Both surface and object events bubble and cross enclosing Shadow DOM
+`ObjectClickEvent.detail` contains the runtime `object`, hit `layer`, `mapPoint`,
+`clientPoint`, and optional `route` for an owned route point. Both surface and object events bubble and cross enclosing Shadow DOM
 boundaries; they are notifications without a default action to cancel. Atlas does
 not create selection state, a description panel, or a popup. The Factory example
 renders object details in ordinary application HTML, displays surface events, and
@@ -563,8 +585,8 @@ the starting point does not restore release-click eligibility. Multi-pointer inp
 pointer cancellation/lost capture, and wheel zoom also cancel that eligibility.
 The threshold is explicitly temporary and will be replaced by input configuration.
 
-Picking scans shared scene points in reverse composition order. Spatial indexing
-remains dependent on measurements. Interaction participation settings, layer IDs,
+Picking scans shared point, line, route and polygon appearances in reverse composition order. Spatial indexing
+remains dependent on measurements. Interaction participation settings,
 hover, keyboard activation, and configurable hit-area expansion remain later steps.
 
 The subsequent [line step](GEOMETRY_AND_ROUTES.md#line-geometry--merged)
@@ -573,8 +595,9 @@ composition order for both rendering and picking. The temporary round line strok
 also defines its hit area, including collapsed segments with coincident endpoints.
 Hit-area expansion is still a separate configuration decision.
 
-The [first route slice](GEOMETRY_AND_ROUTES.md#first-route-slice--pending-review)
-keeps the same events and adds optional `detail.route` for an owned line.
+The historical [first route slice](GEOMETRY_AND_ROUTES.md#first-route-slice--pending-review)
+kept the same events and added optional `detail.route` for an owned line. The
+following line-identity notes are superseded by the route point/path contract above.
 `detail.object` is the clicked runtime line; `detail.route` is the same route
 instance stored in `map.objects`. Independent objects omit this field. Route lines
 use their owner's position in composition order, with later lines on top within

@@ -1,5 +1,10 @@
 # Geometry And Routes
 
+Current baseline: [Current contract](CURRENT_CONTRACT.md). Four structural kinds
+(`point`, `line`, `route`, `polygon`), `Point2`/`Point3` and polygon PR #30 are merged.
+Appearance and interaction settings remain future design; historical examples below
+do not add exports or override the baseline.
+
 [Navigation and current summary](../DESIGN_MAIN.md)
 
 Moved from the discussion log without losing context. Clarifications take precedence
@@ -7,16 +12,16 @@ over earlier proposals; explicitly open questions are not decisions.
 
 ## Current clarification — objects and geometry
 
-Atlas owns generic objects, geometric primitives, materials, and shared runtime
-mechanisms. Markers, loot, quest zones, and other application concepts are defined
+Atlas implements generic objects, geometric primitives and shared runtime
+mechanisms; materials remain accepted but unimplemented. Markers, loot, quest zones, and other application concepts are defined
 outside Atlas. This replaces the earlier built-in `kind: marker` object model below.
 `geometry.kind` describes a geometric form, not application meaning.
-The merged implementation supports point, straight line and polyline geometry.
-Horizontal polygons and vertical extrusion are implemented for PR review under the
-accepted contract below. Circles remain a subsequent primitive. This does not add
+The merged implementation supports point, straight line, polyline and polygon
+geometry. Horizontal polygons and vertical extrusion are merged in PR #30 under
+the contract below. Circles remain a subsequent primitive. This does not add
 an arbitrary geometry plugin API.
 
-The current review uses `MapPointDefinition` (`id?`, `kind: 'point'`, `position: { x, y }`)
+The merged implementation uses `MapPointDefinition` (`id?`, `kind: 'point'`, `position: { x, y }`)
 and `MapPoint` for independent and route-owned points. Independent straight lines
 use `MapLineDefinition` and `MapLine`; routes use `MapRouteDefinition` and `MapRoute`.
 Assigning `MapPoint.position` validates, copies, and emits a change event; owning
@@ -33,7 +38,7 @@ this clarification does not silently finalize a new material assignment API.
 Use one `MapPolygon` for a horizontal filled polygon and its optional vertical
 extrusion. Application-specific zone meaning remains outside the engine. This
 records the agreed contract; it does not itself authorize implementation. The later
-user instruction authorized the implementation now available for mini review; see
+user instruction authorized the implementation now merged in PR #30; see
 [status and checks](PROTOTYPE.md#polygon-and-extrusion-contract--accepted-2026-10-09).
 
 ```ts
@@ -142,7 +147,9 @@ atomic vertical overflow rejection, removal of degenerate cells beside valid cel
 an entirely degenerate clipped result, and a concave contour clipped into disjoint
 areas with no hit in the gap. Existing point/line/route behavior must remain intact.
 
-## Planar and spatial coordinates — accepted and implemented for review, 2026-10-09
+<a id="planar-and-spatial-coordinates--accepted-and-implemented-for-review-2026-10-09"></a>
+
+## Planar and spatial coordinates — merged in PR #29, 2026-10-09
 
 The current contract replaces the 2026-10-08 optional-height `Point` decision with
 two immutable, frozen mathematical coordinate values. `Point` is removed without a
@@ -180,7 +187,9 @@ unchanged. Frozen live geometry views continue reading current source coordinate
 Plain `{ x, y }`, `{ x, y, z }`, `Point2` and `Point3` values remain valid position
 input. Construction, loading, assignment and owned-point editing validate finite
 coordinates before mutation and copy input into a new `Point3`; its constructor
-default supplies omitted z = 0. Finite negative heights are valid. Runtime positions
+default supplies omitted z = 0. Assignment replaces the complete position, so
+`point.position = new Point2(x, y)` resets a previous nonzero z to 0; callers
+retaining height supply it explicitly. Finite negative heights are valid. Runtime positions
 and load snapshots remain frozen. Guaranteed spatial values read z directly;
 partial input is normalized only at input boundaries.
 
@@ -204,6 +213,10 @@ temporary symbols only in eligible automatic appearances; cuts have no symbol,
 point identity or independent point hit area. No material or POI API is introduced.
 
 ## Route vertex geometry, symbol, and picking — accepted 2026-10-08
+
+**Accepted, not implemented.** The merged renderer still displays and picks a
+temporary symbol for every eligible original route vertex; see
+[temporary defaults](CURRENT_CONTRACT.md#temporary-implemented-contracts).
 
 Keep the common `MapPoint` representation for route vertices and distinguish three
 independent concerns:
@@ -240,7 +253,9 @@ hit-area configuration remain open. The current implementation still displays an
 picks a temporary circle at every route vertex; this decision does not authorize
 implementation or change that behavior yet.
 
-## Route point appending — accepted 2026-10-05, implemented for review
+<a id="route-point-appending--accepted-2026-10-05-implemented-for-review"></a>
+
+## Route point appending — merged in PR #14
 
 `MapRoute.addPoint` accepts a `MapPointDefinition`, appends a new owned `MapPoint`,
 and returns it. The operation replaces the frozen readonly point array while
@@ -255,7 +270,7 @@ segment immediately, independently of rendering. `addLine` is removed from the
 route API plans: consecutive owned points already define segments. Insertion and
 removal are merged in PR #19 under the
 [editing contract](RUNTIME_AND_LOADING.md#route-point-insertion-and-removal--accepted-2026-10-06-implemented-for-review);
-range replacement is implemented for review under the
+range replacement is merged in PR #20 under the
 [replacement contract](RUNTIME_AND_LOADING.md#route-point-range-replacement--accepted-2026-10-06-implemented-for-review).
 It replaces exactly the selected ordered points with new instances, without ID or
 coordinate matching; surviving points and their coordinate views retain identity.
@@ -316,8 +331,8 @@ tuple. Runtime behavior is unchanged.
 Use `Resolved` / `resolve` instead of `Normalized` / `normalize` for the completed
 definitions and their preparation functions: `ResolvedMapDefinition`,
 `ResolvedMapEntry`, `resolveMapDefinition`, `resolveMapPoint`, and `resolveMapPoints`.
-Resolution validates and copies data, reserves explicit IDs, and generates missing
-IDs. The term does not imply that resources have loaded or runtime objects exist.
+Resolution validates and copies data, preserves explicit IDs without reserving
+them or rejecting duplicates, and generates missing IDs. The term does not imply that resources have loaded or runtime objects exist.
 
 ### Recursive identity helper — superseded proof of concept 2026-10-05
 
@@ -358,6 +373,10 @@ The experiment used the earlier `Normalized` names; the user subsequently chose
 `Resolved` for the current implementation.
 
 ## Grouped positions, sizes, and owned points — accepted 2026-10-05
+
+The grouped input/ownership decision remains accepted. Public geometry accessors
+and rebuilding language in these original notes are superseded by
+[object positions and internal views](#object-positions-and-internal-geometry-views--accepted-2026-10-05).
 
 Use `position`, without the `pos` abbreviation, for a point object's mathematical
 coordinate: `{ id?, kind: 'point', position: { x, y } }`. `MapPointDefinition` owns
@@ -402,8 +421,9 @@ that implementation.
 
 ## Concrete map objects — accepted 2026-10-05
 
-`MapObject` is the shared base for identity, events, and geometry access. Its
-concrete implementations are `MapPoint`, `MapLine`, and `MapRoute`. Remove the
+`MapObject` is the shared base for identity and events. Its merged concrete
+implementations are `MapPoint`, `MapLine`, `MapRoute` and `MapPolygon`; spatial
+geometry views are internal, with no public object geometry accessor. Remove the
 temporary `MapGeometryObject` / `MapGeometryObjectDefinition` wrapper and its
 `kind: 'geometry'` input. Each supported object declares its concrete kind.
 
@@ -435,17 +455,23 @@ concrete map-object class.
 
 ## Shared point object and naming — accepted 2026-10-05
 
+Naming and the shared point class remain current. Geometry getter/setter and
+route-view rebuilding language below is superseded by
+[object positions and internal views](#object-positions-and-internal-geometry-views--accepted-2026-10-05);
+route membership editing has since merged.
+
 Use `Map` for map-object classes and their serializable definitions:
 
-| Serializable input    | Runtime instance |
-| --------------------- | ---------------- |
-| `MapObjectDefinition` | `MapObject`      |
-| `MapPointDefinition`  | `MapPoint`       |
-| `MapLineDefinition`   | `MapLine`        |
-| `MapRouteDefinition`  | `MapRoute`       |
+| Serializable input     | Runtime instance |
+| ---------------------- | ---------------- |
+| `MapObjectDefinition`  | `MapObject`      |
+| `MapPointDefinition`   | `MapPoint`       |
+| `MapLineDefinition`    | `MapLine`        |
+| `MapRouteDefinition`   | `MapRoute`       |
+| `MapPolygonDefinition` | `MapPolygon`     |
 
-`MapDefinition` still describes the whole map. Mathematical `Point`, `Rect`, and
-`Size` retain their names and have no object identity. Input `id?: string` is
+`MapDefinition` still describes the whole map. Mathematical `Point2`, `Point3`,
+`Rect` and `Size` have no object identity; the old `Point` name has been removed. Input `id?: string` is
 inherited from `MapObjectDefinition`; omitted IDs are generated and runtime IDs
 are stable and required. Historical sections below may use the previous names
 and the removed generic geometry-object wrapper.
@@ -467,6 +493,11 @@ frame. Adding, removing, and replacing route points remain subsequent API work;
 this step does not introduce an editable collection or nested coordinate setters.
 
 ## Route polylines and point identity — accepted 2026-10-05
+
+The polyline/identity decision remains current. The original public geometry
+accessor wording below is superseded by
+[object positions and internal views](#object-positions-and-internal-geometry-views--accepted-2026-10-05);
+`MapRoute` exposes `points`, and the spatial subsystem derives geometry internally.
 
 This decision supersedes the earlier route-owned-line model, composite route view,
 and line-based editing contracts below. Object, renderer, spatial, and layer
@@ -496,7 +527,7 @@ Point IDs are optional in input and generated when absent. They remain stable at
 runtime and are retained in the resolved definition. The later
 [ID handling decision](RUNTIME_AND_LOADING.md#id-handling--accepted-2026-10-06-implemented-for-review)
 removes ID reservation and duplicate rejection: explicit IDs are preserved, and
-missing IDs use `crypto.randomUUID()`. The mathematical `Point` remains a coordinate without ID.
+missing IDs use `crypto.randomUUID()`. Mathematical `Point2`/`Point3` values have no ID.
 Application `data` and `label` on significant points remain future work; this step
 adds no placeholder fields for them.
 
@@ -518,8 +549,8 @@ runtime objects even when explicit IDs repeat. No implicit closed-path flag is a
 
 A path click identifies the route. A displayed point click identifies the runtime
 point plus its owning route. ID presence does not enable visibility or interaction.
-Layer visibility, clipping, and object visibility retain their agreed roles; actual
-layer support is a later implementation step. This implementation introduces no separate
+Layer visibility and clipping are now merged; their
+[current rules](CURRENT_CONTRACT.md#layers-identity-and-runtime-state) determine eligibility. Object-level visibility settings remain future design. This implementation introduces no separate
 `visible` flag in point data; the exact presentation configuration remains open.
 For current click testing, every vertex uses the existing temporary point symbol,
 regardless of whether its ID was explicit or generated. Resolved point materials
@@ -620,8 +651,10 @@ Illustrative classification on a route:
 
 ## Common object contract — accepted
 
-The common base remains current. References to owned lines below are historical;
-the polyline decision replaces them with owned points and a route geometry field.
+The common-base principle remains current; names, discriminants, geometry access
+and owned-line examples below are superseded by
+[the current four-kind object contract](CURRENT_CONTRACT.md#public-entry-and-map-input).
+Routes own points and expose no public geometry field.
 
 All object definitions share `ObjectDefinition` with optional input `id` and required
 `kind`. `GeometryObjectDefinition` and `RouteDefinition` extend it; `LineDefinition`
@@ -663,7 +696,9 @@ the subsequent confirmation names the class and establishes its placement within
 the library. The JSON representation, collection read API, and numeric tolerance
 remain subject to prototype review; the first slice below uses provisional choices.
 
-## First route slice — pending review
+<a id="first-route-slice--pending-review"></a>
+
+## First route slice — superseded line-based draft
 
 This earlier line-based slice is retained as history and superseded by the
 route-polyline implementation above. It is no longer the current JSON or runtime API.
@@ -792,6 +827,10 @@ verified traversable route.
 
 ## 3. Objects — agreed
 
+Historical model: marker objects, label/data fields and route segments below are
+superseded or future design. The [current object contract](CURRENT_CONTRACT.md#public-entry-and-map-input)
+uses points, lines, routes and polygons; labels/materials/data are not implemented.
+
 - Common fields: id, kind, optional label and data.
   id is optional in input data — see the identity section.
 - kind describes structure; application classification is stored in optional
@@ -817,7 +856,9 @@ The map-wide uniqueness rules in this historical discussion are superseded by th
 [ID handling decision](RUNTIME_AND_LOADING.md#id-handling--accepted-2026-10-06-implemented-for-review).
 The route-segment structure is superseded by the later polyline decision above.
 
-Accepted:
+Historical accepted statements below describe the superseded line/segment model.
+They do not impose map-wide uniqueness: [current ID semantics](CURRENT_CONTRACT.md#layers-identity-and-runtime-state)
+accept duplicate root/owned-point IDs and retain every instance.
 
 - A route encapsulates its segments. They are not references to independent map lines;
   segments are not reused between routes.

@@ -1,5 +1,10 @@
 # Scope
 
+This document records product direction, not implemented capabilities. Hover,
+highlighting/materials, application-data fields and unfinished event/configuration
+examples below remain future design. See [Current contract](CURRENT_CONTRACT.md)
+for merged public behavior and provisional limits.
+
 [Navigation and current summary](../DESIGN_MAIN.md)
 
 Moved from the discussion log without losing context. Clarifications take precedence

@@ -49,7 +49,7 @@ code from the design drafts until implementation is requested.
 - Use `Map` for map-object classes and their definitions: `MapPointDefinition` /
   `MapPoint`, `MapRouteDefinition` / `MapRoute`, and `MapObjectDefinition` /
   `MapObject`. `*Definition` describes serializable input with optional `id`;
-  runtime objects have stable IDs. Mathematical `Point`, `Rect`, and `Size`
+  runtime objects have stable IDs. Mathematical `Point2`, `Point3`, `Rect`, and `Size`
   keep their unprefixed names. `MapDefinition` describes the whole map.
 - Use `UPPER_SNAKE_CASE` for module-level/global string and numeric constants
   such as `SVG_NAMESPACE`. Local variables, functions, and object instances
