@@ -9,6 +9,7 @@ import { pointDefinition, selectAddedRoots } from './fixtures.js';
 
 import type { MapElement } from '#components/map-element/map-element.js';
 import type { MapDefinition } from '#definitions/map-definition.js';
+import type { LabelLength } from '#definitions/material-definition.js';
 import type { ObjectClickEvent } from '#interaction/object-click-event.js';
 import type { MapRoute } from '#objects/map-route.js';
 import type { PreparedScene, Renderer } from '#renderers/renderer.js';
@@ -281,6 +282,108 @@ describe('component scene replacement', () => {
     requestFrame.mockClear();
     point.position = new Point2(300, 200);
     expect(requestFrame).toHaveBeenCalledOnce();
+  });
+
+  it('copies labels before preparation and retains load snapshots through runtime edits', async () => {
+    const element = createElement();
+    const point = { ...pointDefinition(100, 100, 'point'), label: '  Point  ' };
+    const vertex = { ...pointDefinition(200, 100), label: '  Vertex  ' };
+    const label = {
+      font: { size: '1rem' as LabelLength, family: '  Arial  ' },
+      offset: { x: '0px' as LabelLength, y: '-1rem' as LabelLength },
+    };
+    const input: MapDefinition = {
+      layers: [{ id: 'content', objects: ['point', 'route'] }],
+      objects: [point, { kind: 'route', id: 'route', label: 'Route', points: [vertex] }],
+      materials: { style: { properties: { label } } },
+    };
+    const loading = element.load(input);
+    point.label = 'external';
+    vertex.label = 'external';
+    label.font.size = '9px';
+    label.offset.y = '9px';
+    await loading;
+    const snapshot = element.definition!;
+    const live = element.objects.get('point')!;
+    const route = element.objects.get('route') as MapRoute;
+    const material = element.materials.get('style')!;
+    expect(live.label).toBe('  Point  ');
+    expect(route.label).toBe('Route');
+    expect(route.points[0]!.label).toBe('  Vertex  ');
+    expect(material.properties.label).toEqual({
+      font: { size: '1rem', family: '  Arial  ' },
+      offset: { x: '0px', y: '-1rem' },
+    });
+
+    live.label = undefined;
+    route.label = 'edited';
+    route.points[0]!.label = '';
+    route.addPoint({ ...pointDefinition(300, 100), label: 'added' });
+    material.properties = { label: { font: {} } };
+    expect(element.definition).toBe(snapshot);
+    expect(snapshot.objects[0]!.label).toBe('  Point  ');
+    expect(snapshot.objects[1]).toMatchObject({
+      label: 'Route',
+      points: [{ label: '  Vertex  ' }],
+    });
+    expect(snapshot.materials.style!.properties.label!.font!.size).toBe('1rem');
+    expect(Object.isFrozen(snapshot.materials.style!.properties.label!.font)).toBe(true);
+    expect(Object.isFrozen(snapshot.materials.style!.properties.label!.offset)).toBe(true);
+  });
+
+  it.each<MapDefinition>([
+    { layers: [], objects: [{ ...pointDefinition(100, 100), label: 'bad\nlabel' }] },
+    { layers: [], objects: [{ kind: 'route', label: 'bad\rlabel', points: [] }] },
+    {
+      layers: [],
+      objects: [
+        {
+          kind: 'line',
+          points: [pointDefinition(0), { ...pointDefinition(1), label: 'bad\r\nlabel' }],
+        },
+      ],
+    },
+    { layers: [], materials: { invalid: { properties: { label: { font: { size: '1e2px' } } } } } },
+  ])('preserves the complete active map after rejected label input %j', async invalid => {
+    const element = createElement();
+    await element.load({
+      ...definition(),
+      objects: [{ ...pointDefinition(100, 100, 'point'), label: 'Kept', material: 'style' }],
+      materials: { style: { properties: { label: { font: { size: '1rem' } } } } },
+    });
+    const objects = element.objects;
+    const layers = element.layers;
+    const snapshot = element.definition;
+    const materials = element.materials;
+    const properties = materials.get('style')!.properties;
+    const point = objects.get('point')!;
+    const oldDisplay = display;
+    element.camera.center = new Point2(200, 150);
+    element.camera.zoom = 2;
+    const center = element.camera.center;
+    renderer.prepare.mockClear();
+    renderer.show.mockClear();
+
+    await expect(element.load(invalid)).rejects.toThrow();
+    expect(renderer.prepare).not.toHaveBeenCalled();
+    expect(renderer.show).not.toHaveBeenCalled();
+    expect(element.objects).toBe(objects);
+    expect(element.objects.get('point')).toBe(point);
+    expect(point.label).toBe('Kept');
+    expect(element.layers).toBe(layers);
+    expect(element.definition).toBe(snapshot);
+    expect(element.materials).toBe(materials);
+    expect(materials.get('style')!.properties).toBe(properties);
+    expect(display).toBe(oldDisplay);
+    expect(element.camera.center).toBe(center);
+    expect(element.camera.zoom).toBe(2);
+    const clicked = vi.fn();
+    element.addEventListener('objectclick', clicked);
+    const client = element.coordinates.mapToClient((point as MapPoint).position);
+    click(element, client.x, client.y);
+    expect(clicked).toHaveBeenCalledOnce();
+    await element.load({ layers: [] });
+    expect(element.definition).not.toBe(snapshot);
   });
 
   it('copies all layers before preparation and validates every background before any preparation', async () => {

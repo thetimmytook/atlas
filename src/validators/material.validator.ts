@@ -7,6 +7,7 @@ import {
   isObjectKind,
 } from '#objects/property-configuration.js';
 
+import { copyLabelProperties } from './material-label.validator.js';
 import { isPlainRecord } from './object-data.validator.js';
 
 import type { MapDefinition, MapEntryDefinition } from '#definitions/map-definition.js';
@@ -87,6 +88,8 @@ export function copyMaterialProperties(value: unknown, material?: string): Mater
         break;
       case 'image':
         return [property, copyPointImage(actual, material)];
+      case 'label':
+        return [property, copyLabelProperties(actual, material)];
       default:
         fail('UNKNOWN_MATERIAL_PROPERTY', details);
     }
@@ -235,7 +238,10 @@ function copyResources(input: unknown): Readonly<Record<ImageResourceId, ImageRe
   );
 }
 
-/** The image entry is spread as one top-level value, never merged field by field. */
+/**
+ * The image entry is spread as one top-level value, never merged field by field.
+ * Label declarations are retained only; the visual label step will resolve label/font fields.
+ */
 export function effectiveMaterialProperties(
   materials: Readonly<Record<string, MaterialDefinition>>,
 ): ReadonlyMap<string, MaterialProperties> {
@@ -302,6 +308,10 @@ export function validateMaterialKind(
   }
 
   for (const property of Object.keys(properties)) {
+    if (property === 'label') {
+      continue;
+    }
+
     if (!supported.includes(property)) {
       fail('INCOMPATIBLE_MATERIAL_PROPERTY', { kind, material, property });
     }

@@ -3,15 +3,75 @@
 Current public baseline: [Current contract](CURRENT_CONTRACT.md), checked against
 merged `a5be046` on 2026-10-09. Polygon PR #30 and the route-membership/gesture fixes
 (PRs #33–34) are merged. Batch subsequently merged in
-[PR #38](https://github.com/thetimmytook/atlas/pull/38). The first material slice is
-implemented and accepted for PR, pending merge. Older
+[PR #38](https://github.com/thetimmytook/atlas/pull/38). The user confirmed the first
+material slice merged in [PR #39](https://github.com/thetimmytook/atlas/pull/39).
+The first label preparation step is implemented and accepted for PR;
+visual labels remain unimplemented. Older
 review-stage sections below retain dated implementation/validation history.
+
+Current label decisions and open questions are recorded in
+[Properties and labels](PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).
+
+Scope clarification accepted on 2026-10-16: the next label stage uses a built-in
+object property and material appearance group. General registration of new visual
+properties and behaviors moves to a separate next stage. This supersedes the older
+label-registration example in the historical sequence and proposed extension
+criterion below. Existing selection-property registration remains available.
+After reviewing the nested `label.font` signatures, the user requested the bounded
+preparation step below. This does not authorize the later visual implementation.
+
+## Label preparation — implemented for review, 2026-10-16
+
+Preparation passed final acceptance on 2026-10-16 and is accepted for PR.
+
+The first mini step adds five package-root type exports (`LabelLength`,
+`LabelOrigin`, `LabelOffset`, `LabelFontProperties`, `LabelProperties`), common
+object `label?: string`, runtime `MapObject.label` and material `label` declarations.
+Typography is nested under `label.font`; flat font-prefixed fields are rejected.
+See [accepted types and diagnostics](PROPERTIES_AND_LABELS.md#label-preparation--accepted-signatures-and-implemented-scope-2026-10-16).
+
+Common attribute copying preserves text in all concrete constructors, loading,
+root definition additions and route-owned point edits. Instance attachment retains
+shared identity/text. Strings, including empty/space-only and literal HTML/Markdown,
+are preserved without normalization. `undefined` removes runtime text; invalid
+types and LF/CR/CRLF reject before mutation or successful `change` notification.
+Every successful assignment, including the same value, emits existing `change`.
+
+Material validation checks nested fields with exact diagnostic paths, finite decimal
+px/rem strings, positive font sizes, complete offset pairs, nine origins, color,
+family and weight. Label/font/offset copies are frozen, empty groups are retained
+and own declarations never receive defaults. Whole-value replacement keeps the
+existing material contract and immutable load snapshots. Selectors, reader
+projections, shared consumers, collections and whole-image inheritance are unchanged.
+
+The Node regressions exercise copying/input paths, notifications/shared objects,
+failed-operation/map preservation, deep freezing, nested unknown/undefined fields,
+strict length grammar (including TypeScript-accepted exponent/hex/whitespace inputs)
+and runtime edits that leave load snapshots unchanged.
+The review correction reads an input label getter once, then validates and copies
+that captured value; constructor and resolved-snapshot regressions cover changing getters.
+
+Validation on 2026-10-16: `npm run check` passes with zero errors and the existing
+35 advisory warnings; `npm test` passes 415 Node tests in 19 files;
+`npm run test:browser` passes all 145 existing desktop Chromium tests in eight files;
+`npm run build` produces the library and bundled declarations. The browser run
+required permission for the local Vitest server after sandbox `listen EPERM`;
+the permitted run passed. API Extractor retains its existing bundled-TypeScript
+5.9.3/project-TypeScript 6.0.3 advisory. No new label SVG/E2E scenarios, performance
+measurements or broader platform acceptance are claimed.
+
+**Remaining boundary:** label/font inheritance per field is not implemented.
+The next visual step resolves that chain and defaults; only offset is atomic.
+Text measurement, browser fonts/rem, SVG composition, placement/clipping and label
+picking remain separate work. No renderer/picking code, visual stubs, future
+invalidation mechanism or general visual registration is added. The accepted
+design decisions are retained alongside the bounded implementation.
 
 ## First material slice — implemented for review, 2026-10-12
 
 After accepting the revised [public contract](MATERIALS_FIRST_SLICE_CONTRACT.md),
 the user requested implementation. All five steps passed final acceptance on
-2026-10-16 and are accepted for PR, pending merge. This section updates the
+2026-10-16 and subsequently merged in PR #39, as confirmed by the user. This section updates the
 current stage while retaining the dated baseline/history below.
 
 - `material-definition.ts`, the material/data validators and `AtlasMaterialError`
@@ -470,7 +530,9 @@ A final public API and polished UI are not the goals of this stage.
 - SVG renderer, camera, events, and an external description panel.
 - Runtime objects, incremental updates, and batch.
 - Minimal materials with explicit inheritance.
-- Property registration using a label as the example.
+- Built-in labels, under the 2026-10-16 scope clarification. User-defined selection
+  properties are already registered through application configuration; general
+  visual-property/behavior registration follows as a separate stage.
 - Desktop/mobile validation and loads of 3000/5000 objects.
 - A complex behavior system, full editor, and 3D renderer are outside this stage.
 

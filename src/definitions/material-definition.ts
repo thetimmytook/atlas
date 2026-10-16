@@ -60,6 +60,44 @@ export interface PointImage extends Partial<Size> {
   readonly anchor?: Point2;
 }
 
+/**
+ * Limits units only; runtime also requires a finite decimal without surrounding
+ * whitespace, exponents or hexadecimal notation. TypeScript may accept values
+ * such as '1e2px', '0x10px' or ' 2px' that runtime validation rejects.
+ */
+export type LabelLength = `${number}px` | `${number}rem`;
+
+export type LabelOrigin =
+  | 'top left'
+  | 'top center'
+  | 'top right'
+  | 'center left'
+  | 'center center'
+  | 'center right'
+  | 'bottom left'
+  | 'bottom center'
+  | 'bottom right';
+
+/** One atomic pair; both coordinates are required. Positive x/y mean right/down. */
+export interface LabelOffset {
+  readonly x: LabelLength;
+  readonly y: LabelLength;
+}
+
+export interface LabelFontProperties {
+  readonly size?: LabelLength;
+  readonly family?: string;
+  readonly weight?: 'normal' | 'bold';
+}
+
+/** Own declarations only. Visual resolution, including font-field inheritance, is a later step. */
+export interface LabelProperties {
+  readonly color?: string;
+  readonly font?: LabelFontProperties;
+  readonly origin?: LabelOrigin;
+  readonly offset?: LabelOffset;
+}
+
 export interface MaterialProperties {
   readonly symbol?: 'none' | 'circle' | 'image';
   readonly color?: string;
@@ -67,6 +105,7 @@ export interface MaterialProperties {
   readonly width?: number;
   readonly opacity?: number;
   readonly image?: PointImage;
+  readonly label?: LabelProperties;
 }
 
 /** Map-owned handle. Properties are copied own declarations, not resolved defaults. */
