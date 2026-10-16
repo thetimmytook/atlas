@@ -2,6 +2,7 @@ import { validateMaterialName } from '#validators/material.validator.js';
 import { copyObjectAttributes } from '#validators/object-attributes.validator.js';
 import { copyObjectData } from '#validators/object-data.validator.js';
 import { validateObjectId } from '#validators/object-id.validator.js';
+import { validateObjectLabel } from '#validators/object-label.validator.js';
 
 import { createId } from './create-id.js';
 import { prepareObjectMaterialChange } from './material-consumers.js';
@@ -14,6 +15,7 @@ export abstract class MapObject extends EventTarget {
   readonly #id: string;
   #data: JsonObject | undefined;
   #material: string | undefined;
+  #label: string | undefined;
 
   protected constructor(definition: MapObjectDefinition, field = 'object') {
     super();
@@ -22,6 +24,7 @@ export abstract class MapObject extends EventTarget {
     const attributes = copyObjectAttributes(definition, field);
     this.#data = attributes.data;
     this.#material = attributes.material;
+    this.#label = attributes.label;
   }
 
   get id(): string {
@@ -29,6 +32,17 @@ export abstract class MapObject extends EventTarget {
   }
 
   abstract get kind(): string;
+
+  /** Single-line literal text shared by every use of this instance; undefined removes it. */
+  get label(): string | undefined {
+    return this.#label;
+  }
+
+  set label(value: string | undefined) {
+    validateObjectLabel(value);
+    this.#label = value;
+    this.dispatchEvent(new Event('change'));
+  }
 
   get data(): JsonObject | undefined {
     return this.#data;
