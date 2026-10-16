@@ -5,8 +5,9 @@ merged `a5be046` on 2026-10-09. Polygon PR #30 and the route-membership/gesture 
 (PRs #33–34) are merged. Batch subsequently merged in
 [PR #38](https://github.com/thetimmytook/atlas/pull/38). The user confirmed the first
 material slice merged in [PR #39](https://github.com/thetimmytook/atlas/pull/39).
-The first label preparation step is implemented and accepted for PR;
-visual labels remain unimplemented. Older
+The user confirmed the first label preparation step merged in
+[PR #40](https://github.com/thetimmytook/atlas/pull/40).
+Point visual labels are now implemented for review; line/route/polygon labels remain future work. Older
 review-stage sections below retain dated implementation/validation history.
 
 Current label decisions and open questions are recorded in
@@ -18,11 +19,122 @@ properties and behaviors moves to a separate next stage. This supersedes the old
 label-registration example in the historical sequence and proposed extension
 criterion below. Existing selection-property registration remains available.
 After reviewing the nested `label.font` signatures, the user requested the bounded
-preparation step below. This does not authorize the later visual implementation.
+preparation step below. A subsequent explicit request authorizes the bounded point
+visual step recorded here; other object label visuals remain separate work.
+
+## Point labels — implemented for review, 2026-10-16
+
+The working branch `feat/point-labels` starts at `aa06446`, the merge of PR #40.
+The three pre-existing document edits recording that merge are preserved. After
+the local implementation and independent review follow-ups below, the user
+requested PR publication on 2026-10-16. Material resolution, point visuals and
+the documentation are prepared as separate commits.
+
+Standalone and route-owned points now render safe literal single-line labels with
+preserved spaces, all nine origins and zoom-independent px/rem typography/offsets.
+Label/font inheritance is field-based, offset is atomic, and defaults are internal;
+container font family remains map-specific. Symbols circle/image/none all work.
+Empty/whitespace-only/undefined labels retain their stored value and have no visual
+or label hit area. Labels follow each owner's layer appearance, extend beyond
+intersection bounds, and stay immediately after their own geometry in composition.
+
+The view measures hidden SVG text and supplies neutral screen-pixel rectangles to
+spatial queries. Queries refresh dirty text/material/typography independently of
+paint and use live point positions, preserving effective pickable and captured-hit
+rules. Text edits have a separate local queue; material descendants use existing
+consumer invalidation. Measurements are reused across a point's appearances in one
+map, while different maps retain their own container fonts. Position/pan/zoom and
+color/offset-only edits reuse metrics. Browser typography uses a rem/text ResizeObserver
+probe, style/load/resize observers and font-set completion events, with synchronous
+computed root/family refresh before every render and picking query. Disconnect releases browser subscriptions and
+helper nodes; reconnect refreshes missed font/style changes. Scene replacement
+resets the per-scene caches without changing immutable load snapshots.
+
+Factory now includes `Entry` on the standalone marker and `Checkpoint` on the
+route-owned point, with no new controls. Node regressions cover the material chain,
+atomic offsets, defaults, frozen own values and retained snapshots. Real-SVG browser
+regressions cover appearance, alignment, fonts/rem, composition/clipping, rectangular
+picking, immediate batch updates, shared roles/maps, reconnect, local mutations,
+node reuse and obsolete press/release hits. Tests use RAF or observable browser
+events, with no arbitrary sleeps or fixed system-font width assumptions.
+
+Initial validation on 2026-10-16: `npm run check` passes with zero errors and the existing
+35 advisory warnings; `npm test` passes 418 Node tests in 19 files;
+`npm run test:browser` passes 178 desktop Chromium tests in nine files (33 new
+point-label scenarios); `npm run build` produces the library/bundled declarations;
+`npm run test:e2e` passes all 23 existing built-example/native-input tests in two
+files. The E2E surface selectors now exclude the hidden measurement SVG. Browser
+and E2E servers required sandbox escalation after local `listen EPERM`.
+API Extractor retains its bundled-TypeScript 5.9.3/project-TypeScript 6.0.3 advisory.
+
+The first review correction on 2026-10-16 explicitly fixes horizontal writing mode
+on both SVG text paths and tracks inherited probe text width. Stylesheet load and
+window resize refresh typography; ancestor observation crosses nested shadow hosts
+and assigned slots. Regression cases retain vertical-rl/vertical-lr, stylesheet
+completion, viewport media, CSSOM changes that resize the probe, nested open/closed
+Shadow DOM and slot inheritance. Lifecycle checks include removing font/load/resize
+listeners. The private spatial helper is named `#hitTestEntry`; initial
+picking and captured-hit revalidation still share it unchanged.
+
+Validation before the independent review follow-up on 2026-10-16: `npm run check` passes with zero errors
+and the existing 35 warnings; all 418 Node tests, 186 Chromium browser tests
+(41 point-label scenarios) and 23 E2E tests pass. `npm run build` succeeds with the
+existing API Extractor TypeScript-version advisory. At that review, changes remained
+unstaged and the pre-existing index was preserved, with no commits, push or PR.
+
+The independent review follow-up keeps `text-anchor: start` and `text-transform:
+none` on both displayed and measurement SVG text, alongside horizontal writing mode.
+Cached labels retain literal case, origin/offset placement and picking alignment
+after container text CSS changes, including later remeasurement. The recursive
+stylesheet/media traversal and its subscriptions are removed. Empty maps do not
+read CSS-rule or stylesheet collections; no global CSS manager, CSSOM interception,
+polling or persistent RAF loop replaces that work.
+
+**Accepted update boundary:** ResizeObserver probe changes, document font completion,
+observed container/ancestor style/class changes, stylesheet DOM/load events, window
+resize and reconnect refresh automatically. Arbitrary CSSOM and non-viewport media
+changes with unchanged probe dimensions and no supported notification need not
+render automatically while idle. A Latin probe can miss changed Cyrillic label
+metrics. The next ordinary render or picking must synchronously read current root
+font-size/container family and update the affected metrics/layouts; queries do not
+drain deferred paint. There is no public refresh API or complete automatic CSSOM
+tracking promise. Tests cover both next-render and next-query recovery, including
+real Cyrillic SVG reference measurements and owner objectclick at rectangle edges.
+
+Independent follow-up validation on 2026-10-16: `npm run check` passes with zero
+errors and the existing 35 warnings; `npm test` passes 418 Node tests;
+`npm run test:browser` passes 192 Chromium tests, including 47 point-label cases;
+`npm run build` succeeds with the existing API Extractor TypeScript-version advisory;
+`npm run test:e2e` passes all 23 existing tests. Real SVG/objectclick regressions
+cover cached anchor/transform changes, later remeasurement, both render/query
+recovery paths and Cyrillic text whose Latin probe stays unchanged. Three empty
+maps with 500 unrelated CSS rules make zero accesses to application stylesheet/
+CSS-rule collections. No benchmark or new public API is added. During that follow-up,
+the pre-existing index and unrelated unstaged edits, including `#hitTestEntry`, were
+preserved; the fixes remained unstaged, with no commits, push or PR before the
+subsequent publication request.
+
+Review files: `src/validators/material.validator.ts`, `src/objects/map-materials.ts`,
+`src/objects/map-object.ts`, `src/objects/map-model.ts`,
+`src/spatial/scene-invalidation.ts`, `src/spatial/scene-geometry.ts`,
+`src/spatial/point-label.ts`, `src/spatial/spatial.ts`,
+`src/components/map-element/point-labels.ts`, `src/components/map-element/map-element.ts`,
+`src/renderers/svg/svg-renderer.ts`, `src/renderers/svg/svg-renderer.utils.ts`,
+`tests/label-materials.test.ts`, `tests/map-element.test.ts`,
+`tests/browser/materials.browser.test.ts`, `tests/browser/point-labels.browser.test.ts`,
+`tests/e2e/example.e2e.test.ts` (select the display SVG rather than hidden measurement SVG),
+`examples/index.html`, this document, `PROPERTIES_AND_LABELS.md`,
+`RENDERER_AND_COMPONENT.md` and `../DESIGN_MAIN.md`.
+
+Remaining: line/route/polygon labels retain their prepared fields and the accepted
+midpoint/projected-length/visible-centroid rules. Collision avoidance, zoom
+visibility, multiline, general visual registration and broader browser/mobile
+acceptance remain separate work. No new benchmark or performance claim is added.
 
 ## Label preparation — implemented for review, 2026-10-16
 
-Preparation passed final acceptance on 2026-10-16 and is accepted for PR.
+Preparation passed final acceptance on 2026-10-16 and subsequently merged in
+PR #40, as confirmed by the user.
 
 The first mini step adds five package-root type exports (`LabelLength`,
 `LabelOrigin`, `LabelOffset`, `LabelFontProperties`, `LabelProperties`), common
@@ -60,7 +172,8 @@ the permitted run passed. API Extractor retains its existing bundled-TypeScript
 5.9.3/project-TypeScript 6.0.3 advisory. No new label SVG/E2E scenarios, performance
 measurements or broader platform acceptance are claimed.
 
-**Remaining boundary:** label/font inheritance per field is not implemented.
+**Boundary at preparation merge (historical; extended by the point step above):**
+label/font inheritance per field was not implemented.
 The next visual step resolves that chain and defaults; only offset is atomic.
 Text measurement, browser fonts/rem, SVG composition, placement/clipping and label
 picking remain separate work. No renderer/picking code, visual stubs, future

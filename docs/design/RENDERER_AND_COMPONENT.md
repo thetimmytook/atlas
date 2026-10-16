@@ -5,6 +5,59 @@ browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #
 and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
 and single-consumer; they are not public core lifecycle or multiple viewport support.
 
+## Point label view boundary — implemented for review, 2026-10-16
+
+`PointLabels` belongs to the browser component/view. It measures one hidden SVG
+text node with preserved whitespace and keeps per-map metrics plus per-appearance
+layouts. The internal `PointLabelView` bridge carries numeric CSS-pixel rectangles
+and typography to SVG and Spatial; it adds no public API or DOM dependency to
+runtime objects, mathematical geometry or spatial picking. Hidden measurement
+works before an object's first SVG render. Position stays in the existing live
+geometry; origin/offset rectangles are relative to that position and independent
+of camera zoom. SVG places text in the owner's group after its symbol and applies
+inverse screen scaling to it. Layer clipping controls owner appearance membership,
+without letter clipping at intersection bounds; the main SVG clips at the viewport.
+Displayed and measurement text explicitly use horizontal writing mode, start text
+anchor and no text transform. These internal settings keep literal case, placement
+and measured rectangles consistent even after inherited container CSS changes.
+
+`SceneGeometry.takeChanges()` now also drains a separate `labels` set. A label setter
+invalidates before synchronous events without marking geometry or reclipping routes.
+Material appearance changes reuse existing consumer dependencies and additionally
+refresh the affected text layout. Picking uses current layouts without consuming
+paint work, including captured-hit revalidation. Node reuse and deferred batch
+rendering retain their contracts. The internal model/renderer signatures accept an
+optional view bridge; the internal single-consumer/provisional boundary is unchanged.
+
+A ResizeObserver probe combines rem height and inherited text width. Probe-size,
+style/class, font/load and window resize notifications schedule typography updates;
+current root font-size and container font-family are also read before every ordinary
+render and picking query. Ancestor observation crosses shadow hosts and assigned
+slots; containing document/shadow roots receive stylesheet DOM/load notifications.
+There is no stylesheet-content analysis, `cssRules`/`styleSheets`/`adoptedStyleSheets`
+lookup, media-condition subscription, CSSOM interception or polling.
+Document font-set completion invalidates cached font metrics; reconnect does the
+same for changes missed while detached. Ordinary text/material edits update their
+consumers only. Pan/zoom/position do not remeasure unchanged text/font; color and
+offset reuse metrics too. Typography notifications can refresh all point layouts
+in that map, with no permanent frame loop or periodic scene traversal. Observers
+and font subscriptions belong to the component rather than a model: scene
+replacement resets caches, and disconnect releases observers, including font/load/
+resize subscriptions, and helper nodes.
+
+The accepted prototype boundary permits idle SVG to retain its previous font after
+an arbitrary CSSOM or non-viewport media change if probe dimensions are unchanged
+and no supported notification fires. In particular, the Latin probe does not
+necessarily detect changed Cyrillic label metrics. The next render or picking query
+must update from current computed typography; a query remeasures when necessary
+before testing a rectangle, retaining deferred paint and captured-hit behavior.
+This requires no public refresh API and makes no claim of complete automatic CSSOM
+tracking. Root-size, font/stylesheet completion, viewport media via resize, observed
+style/class changes, shadow inheritance and reconnect retain automatic refresh.
+
+Line/route/polygon label visuals remain a later step; their accepted rules are in
+[Properties and labels](PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).
+
 ## Material appearance invalidation — implemented for review, 2026-10-12
 
 The [first material slice](MATERIALS_FIRST_SLICE_CONTRACT.md) keeps geometry and
