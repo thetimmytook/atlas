@@ -5,6 +5,7 @@ export interface SceneInvalidation {
   membership: boolean;
   readonly changed: Set<object>;
   readonly topology: Set<MapRoute>;
+  labels?: Set<object>;
 }
 
 // Weak scene links let retained/shared runtime objects outlive their maps.
@@ -39,6 +40,18 @@ export function invalidateScenes(source: object, membership = false): void {
 /** Owned points change the route's appearances, not the scene's root/layer membership. */
 export function invalidateRouteTopology(route: MapRoute): void {
   invalidate(route, false, route);
+}
+
+/** Text changes affect only the owner's visuals, without reclipping paths. */
+export function invalidateSceneLabels(source: object): void {
+  for (const reference of SCENES.get(source) ?? []) {
+    const scene = reference.deref();
+
+    if (scene) {
+      scene.labels ??= new Set();
+      scene.labels.add(source);
+    }
+  }
 }
 
 function invalidate(source: object, membership: boolean, route?: MapRoute): void {

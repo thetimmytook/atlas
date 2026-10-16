@@ -240,7 +240,7 @@ function copyResources(input: unknown): Readonly<Record<ImageResourceId, ImageRe
 
 /**
  * The image entry is spread as one top-level value, never merged field by field.
- * Label declarations are retained only; the visual label step will resolve label/font fields.
+ * Label and font inherit per field; offset, like image, remains a whole value.
  */
 export function effectiveMaterialProperties(
   materials: Readonly<Record<string, MaterialDefinition>>,
@@ -267,7 +267,22 @@ export function effectiveMaterialProperties(
 
     visiting.add(name);
     const parent = material.inherits === undefined ? {} : visit(material.inherits);
-    const properties = Object.freeze({ ...parent, ...material.properties });
+    const own = material.properties;
+    const properties = Object.freeze({
+      ...parent,
+      ...own,
+      ...(parent.label || own.label
+        ? {
+            label: Object.freeze({
+              ...parent.label,
+              ...own.label,
+              ...(parent.label?.font || own.label?.font
+                ? { font: Object.freeze({ ...parent.label?.font, ...own.label?.font }) }
+                : {}),
+            }),
+          }
+        : {}),
+    });
     visiting.delete(name);
     result.set(name, properties);
 

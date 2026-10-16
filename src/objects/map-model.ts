@@ -6,6 +6,7 @@ import { MapMaterials } from './map-materials.js';
 import { MapObjectCollection } from './map-object-collection.js';
 
 import type { ResolvedMapDefinition } from '#definitions/map-definition.js';
+import type { PointLabelView } from '#spatial/point-label.js';
 import type { SceneGeometry } from '#spatial/scene-geometry.js';
 import type { MapEntry } from './map-object-collection.js';
 
@@ -21,7 +22,7 @@ export class MapModel extends EventTarget {
   #observing = false;
 
   /** Takes the already resolved input; validation/copying stays at the load boundary. */
-  constructor(definition?: ResolvedMapDefinition) {
+  constructor(definition?: ResolvedMapDefinition, labels?: PointLabelView) {
     super();
     this.definition = definition;
     this.objects = new MapObjectCollection(definition?.objects);
@@ -36,7 +37,7 @@ export class MapModel extends EventTarget {
       }
     });
     this.geometry = prepareSceneGeometry(this.objects, this.layers, this.materials);
-    this.spatial = new Spatial(this.geometry);
+    this.spatial = new Spatial(this.geometry, labels);
   }
 
   /** Internal view-controlled observation, not a public standalone model lifecycle. */

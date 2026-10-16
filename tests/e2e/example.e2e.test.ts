@@ -12,7 +12,7 @@ const DOM_TIMEOUT = 5_000;
 
 async function checkBuildings(page: Page, origin: string): Promise<void> {
   await page.goto(`${origin}/examples/buildings.html`);
-  const surface = page.locator('atlas-buildings svg');
+  const surface = page.locator('atlas-buildings svg:not([aria-hidden])');
   const zone = (layer: string): Locator =>
     surface.locator(`[data-layer-id="${layer}"] [data-object-id="shared-zone"] path`);
   const details = page.locator('#object-details');
@@ -138,7 +138,7 @@ test('built Factory and Buildings examples load, pick and update across independ
     try {
       await page.goto(`http://127.0.0.1:${address.port}/examples/`, { timeout: 10_000 });
       const status = page.locator('#status');
-      const surface = page.locator('atlas-map svg');
+      const surface = page.locator('atlas-map svg:not([aria-hidden])');
       const checkpoint = surface.locator(
         '[data-layer-id="second"] [data-object-id="route-checkpoint"]',
       );

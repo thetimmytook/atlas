@@ -211,6 +211,7 @@ function traceCoordinates(scene: SceneGeometry, reads: Map<string, number>): Sce
       return {
         geometry: new Set([...changes.geometry].map(trace)),
         appearance: new Set([...changes.appearance].map(trace)),
+        labels: new Set([...changes.labels].map(trace)),
       };
     },
   };

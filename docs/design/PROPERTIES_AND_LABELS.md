@@ -3,9 +3,11 @@
 Status on 2026-10-16: the user confirmed the first material slice merged in
 [PR #39](https://github.com/thetimmytook/atlas/pull/39), including JSON `data`,
 `MapElement.configure`, selection-property registration and strict readers.
-The first built-in label preparation step is implemented and accepted for PR:
+The user confirmed the first built-in label preparation step merged in
+[PR #40](https://github.com/thetimmytook/atlas/pull/40):
 types, validated text storage and immutable own material declarations.
-Visual resolution, rendering and label picking remain unimplemented; general
+Point-label resolution, rendering and rectangular picking are now implemented for
+review on `feat/point-labels`. Labels on lines, routes and polygons remain future work; general
 visual-property/behavior registration is deferred to a separate next stage. The accepted
 [first-slice contract](MATERIALS_FIRST_SLICE_CONTRACT.md) and
 [implementation checks](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)
@@ -15,7 +17,81 @@ supersede earlier proposal-stage wording for this subset.
 
 Reviewed first-slice configuration, reader input and JSON-data signatures are in
 the [contract](MATERIALS_FIRST_SLICE_CONTRACT.md);
-visual labels and behavior registration remain separate work.
+the point visual step below extends that merged preparation. Behavior registration remains separate work.
+
+### Point labels — implemented for review, 2026-10-16
+
+The user requested visual labels for standalone and route-owned `MapPoint`, using
+the accepted public types without new exports. Material resolution merges label
+fields and the individual `font.size/family/weight` fields along explicit parents;
+offset remains one pair. Internal point defaults are `#222222`, `1rem`, normal
+weight, bottom-center origin and `{ x: '0px', y: '-1rem' }`. An omitted family is
+resolved by the browser view from its own map container. Geometry color remains
+independent. Own frozen declarations, whole-value material replacement, whole-image
+inheritance, validation and immutable load snapshots retain their contracts.
+
+Each prepared point appearance draws horizontal, single-line SVG text immediately
+after its symbol in the same owner group. Both displayed and measurement text
+explicitly use `writing-mode: horizontal-tb`, `text-anchor: start` and
+`text-transform: none`. Container CSS cannot shift the text away from origin/offset
+or change the literal case independently of cached picking measurements.
+`textContent` and preserved whitespace
+keep HTML/Markdown literal; undefined/empty/whitespace-only values produce no text
+node or label hit rectangle. Circle, image and none symbols all support labels.
+All nine origins align the label's measured rectangle relative to the coordinate;
+positive offsets move right/down. Font size and offset are CSS pixels after px/rem
+resolution, with inverse camera scaling. Owner/layer clipping decides whether an
+appearance exists; an existing label extends whole beyond layer bounds, and the
+map viewport clips it. Standalone/owned and per-layer uses keep separate context.
+
+The browser view measures an isolated hidden SVG text node, before painting if
+picking needs it. A per-map/per-point measurement cache is independent of position,
+pan and zoom; per-appearance layouts contain immutable numeric rectangles relative
+to the point in CSS pixels. Spatial queries use those rectangles and live geometry,
+following reverse composition and effective pickable, without DOM/SVG access.
+The same layout drives actual SVG placement. Captured-hit revalidation checks only
+the original appearance after synchronous press/release handlers, without repicking.
+
+Text invalidation is separate from geometry/clipping and material appearance work.
+Queries do not drain paint queues. Text/material/position/pickable changes are
+visible to picking before RAF, including batch, shared maps and reconnect. A text
+edit affects its owner's appearances; material edits use existing consumer/ancestor
+invalidation. Surviving owner/text nodes remain stable; removing empty text removes
+only that text node.
+
+A hidden probe has `1rem` height and intrinsic text width in the inherited family;
+ResizeObserver detects root-size and inherited typography changes that resize it.
+Ancestor observation follows assigned slots and `ShadowRoot.host`, including nested
+closed roots. Stylesheet mutations/load events are observed in the containing
+document and shadow roots; window resize covers viewport media changes. Stylesheet
+contents are not inspected: there is no CSS-rule traversal, media-query registration,
+CSSOM interception or polling. `document.fonts` loadingdone/loadingerror events invalidate
+font measurements; reconnect also refreshes them after an unobserved interval.
+Current root size/container family are checked synchronously before queries and
+painting, covering changes before observer delivery. Typography notifications may
+refresh all point labels in that map; unchanged numeric fonts/text reuse metrics
+on root/family changes. Font-set completion invalidates that view's font cache.
+There is no periodic scene walk or per-frame text measurement. Component-owned
+observers survive a scene replacement without retaining old scene subscriptions;
+replacement resets scene caches, and disconnect releases observers, font/load
+and resize listeners and measurement/probe nodes.
+
+**Accepted prototype boundary (2026-10-16):** arbitrary CSSOM edits and non-viewport
+media changes that alter font-family without resizing the probe or producing one
+of the supported notifications need not schedule rendering while idle. A Latin
+probe can stay unchanged while a Cyrillic label's actual dimensions change; probe
+metrics are not a complete typography-change signal. The next ordinary render or
+picking query reads current container font-family and document root font-size,
+updates cached label metrics/layouts and uses the current rectangle. Picking stays
+synchronous before the subsequent paint. No public refresh API is added. Automatic
+refresh remains supported for root-size/probe-size changes, font completion,
+stylesheet load, viewport resize, observed ancestor/container style/class changes
+and reconnect; complete automatic CSSOM tracking is outside this prototype.
+
+Line/route/polygon labels are still stored and validated but have no visual output
+or label picking. Their accepted attachment rules below remain the next step.
+Collision avoidance, zoom visibility, multiline, separate label objects and general
+visual registration remain outside scope. See [checks and review files](PROTOTYPE.md#point-labels--implemented-for-review-2026-10-16).
 
 ### Label preparation — accepted signatures and implemented scope, 2026-10-16
 
@@ -93,7 +169,8 @@ concrete definitions and owned points. `MapObject.label` has the accepted
   `details.field` path such as `properties.label.font.size`. Rejected loads and
   material setters preserve the active map/value and send no successful notification.
 
-This step stores data only. Label appearance inheritance **is not implemented**:
+At the merged preparation stage this step stored data only; the point visual step
+above subsequently implements inheritance/defaults and browser visuals. The original boundary was:
 the next visual step must resolve label fields, including individual font size,
 family and weight, through the explicit parent chain. Only offset is atomic.
 That step also owns agreed defaults, text measurement, browser font/rem handling,
@@ -104,8 +181,9 @@ projections retain their current contracts. See
 
 ### Label content and appearance — accepted separation, 2026-10-16
 
-The product behavior below includes the agreed future visual step. Only the
-preparation scope above is implemented and accepted for PR.
+The product behavior below covers the implemented point visual step and accepted
+future line/route/polygon labels. Preparation is merged in PR #40; point visuals
+await review on `feat/point-labels`.
 
 - The user accepted built-in labels for this stage. General registration of new
   visual properties/behaviors is deferred to a separate next stage. This explicitly

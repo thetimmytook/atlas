@@ -23,6 +23,7 @@ import { RuntimeMaterial } from './runtime-material.js';
 import type { ResolvedMapDefinition } from '#definitions/map-definition.js';
 import type {
   ImageResourceId,
+  LabelProperties,
   Material,
   MaterialDefinition,
   MaterialLookup,
@@ -41,7 +42,23 @@ const DEFAULTS = {
   path: { color: '#d95012', width: 4 },
   polygon: { color: '#f59e0b', opacity: 0.3 },
   image: { preserveAspectRatio: true, anchor: new Point2(0.5, 0.5) },
+  pointLabel: {
+    color: '#222222',
+    font: Object.freeze({ size: '1rem', weight: 'normal' }),
+    origin: 'bottom center',
+    offset: Object.freeze({ x: '0px', y: '-1rem' }),
+  },
 } as const;
+
+/** Internal resolved declarations; the view supplies the container family and px metrics. */
+export interface ResolvedPointLabel {
+  readonly color: string;
+  readonly font: Required<Omit<NonNullable<LabelProperties['font']>, 'family'>> & {
+    readonly family?: string;
+  };
+  readonly origin: NonNullable<LabelProperties['origin']>;
+  readonly offset: NonNullable<LabelProperties['offset']>;
+}
 
 export interface PreparedImage {
   readonly source: string;
@@ -61,6 +78,7 @@ export type ResolvedAppearance =
       readonly color: string;
       readonly size: number;
       readonly pickable: boolean;
+      readonly label: ResolvedPointLabel;
       readonly image?: ResolvedPointImage;
     }
   | { readonly kind: 'line' | 'route'; readonly color: string; readonly width: number }
@@ -240,6 +258,11 @@ export class MapMaterials implements MaterialLookup {
         color: properties.color ?? DEFAULTS.point.color,
         size: properties.size ?? DEFAULTS.point.size,
         pickable: object.pickable ?? defaults.pickable,
+        label: Object.freeze({
+          ...DEFAULTS.pointLabel,
+          ...properties.label,
+          font: Object.freeze({ ...DEFAULTS.pointLabel.font, ...properties.label?.font }),
+        }),
         ...(symbol === 'image' ? { image: resolveImage(properties.image!, this.#images) } : {}),
       });
     } else if (object.kind === 'polygon') {

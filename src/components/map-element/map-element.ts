@@ -13,6 +13,7 @@ import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 
 import { prepareImageResources } from './image-resources.js';
 import html from './map-element.html?raw';
+import { PointLabels } from './point-labels.js';
 
 import type { MapDefinition, ResolvedMapDefinition } from '#definitions/map-definition.js';
 import type { MapConfiguration, MaterialLookup } from '#definitions/material-definition.js';
@@ -31,6 +32,7 @@ export class MapElement extends HTMLElement {
   #batchDepth = 0;
   #renderPending = false;
   readonly #renderer: Renderer;
+  readonly #labels: PointLabels;
   #model = new MapModel();
   #clickTrigger: ClickTrigger = 'release';
   #loading = false;
@@ -52,7 +54,8 @@ export class MapElement extends HTMLElement {
       throw new Error('MapElement template must contain an SVG surface.');
     }
 
-    this.#renderer = new SvgRenderer(surface);
+    this.#labels = new PointLabels(this, shadow, this.#requestRender);
+    this.#renderer = new SvgRenderer(surface, this.#labels);
     this.#coordinates = new MapCoordinates(surface, this.#camera);
     this.#controls = new CameraControls(surface, this.#camera, this.#coordinates);
   }
@@ -168,7 +171,7 @@ export class MapElement extends HTMLElement {
 
     try {
       const resolvedDefinition = resolveMapDefinition(definition);
-      const model = new MapModel(resolvedDefinition);
+      const model = new MapModel(resolvedDefinition, this.#labels);
       candidate = model;
       images = await prepareImageResources(resolvedDefinition.resources);
       model.materials.setPreparedImages(images.images);
@@ -176,6 +179,7 @@ export class MapElement extends HTMLElement {
       const previousModel = this.#model;
       scene.show();
       this.#model = model;
+      this.#labels.setScene(model.geometry);
       this.#unobserveModel(previousModel);
       previousModel.materials.deactivate();
       this.#preparedImages?.release();
@@ -199,6 +203,7 @@ export class MapElement extends HTMLElement {
     }
 
     this.#observeModel();
+    this.#labels.connect();
     this.#controls.addEventListener('press', this.#surfacePress);
     this.#controls.addEventListener('release', this.#surfaceRelease);
     this.#controls.connect();
@@ -217,6 +222,7 @@ export class MapElement extends HTMLElement {
   }
 
   disconnectedCallback(): void {
+    this.#labels.disconnect();
     this.#unobserveModel(this.#model);
     this.#controls.disconnect();
     this.#controls.removeEventListener('press', this.#surfacePress);
