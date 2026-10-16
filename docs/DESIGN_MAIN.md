@@ -14,8 +14,10 @@ continue between answers rather than relying on HTML anchors.
 
 Read [Current contract](design/CURRENT_CONTRACT.md) for the short public-contract
 baseline, checked on 2026-10-09 against merged `a5be046`. Batch subsequently merged
-in [PR #38](https://github.com/thetimmytook/atlas/pull/38); the first material slice
-is implemented and accepted for PR, pending merge. The baseline distinguishes
+in [PR #38](https://github.com/thetimmytook/atlas/pull/38); the user confirmed the
+first material slice merged in [PR #39](https://github.com/thetimmytook/atlas/pull/39).
+The label preparation step is implemented and accepted for PR; visual labels
+remain the next step. The baseline distinguishes
 implemented/merged behavior, temporary implemented contracts, accepted future work
 and open/deferred decisions. The topic documents below retain decision history;
 illustrative future APIs do not extend the available exports.
@@ -43,13 +45,15 @@ illustrative future APIs do not extend the available exports.
 - Synchronous nested batch is merged in PR #38: state, events
   and picking remain immediate; only this map's rendering is deferred. See the
   [accepted signature and diagnostics](design/RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09).
-- First material slice is implemented and accepted for PR, pending merge:
+- First material slice is merged in PR #39, as confirmed by the user:
   static selection-property registration, immutable JSON data, named materials/rules,
   explicit assignment, whole-value material edits, SVG/PNG icons and atomic updates.
   Route-owned points default to no symbol and no picking; `pickable` independently
   overrides picking. Full-definition line/route constructors replace `(id, points)`.
-- Labels, the general resource registry/loader, schemaVersion, homeView and camera
-  constraints remain accepted future work.
+- Label text/types, validation and immutable own material declarations are implemented
+  and accepted for PR. Visual label resolution/rendering/picking, the
+  general resource registry/loader, schemaVersion, homeView and camera constraints
+  remain accepted future work.
 - Public core/model lifecycle, multiple viewports, live export and unfinished API
   schemas remain open/deferred. No ID registry, new tooling policy or architectural
   requirement follows automatically from a review finding.
@@ -84,6 +88,51 @@ Updating this baseline does not approve pending runtime work or unfinished API e
 
 ## Where we stopped
 
+The first material slice is merged in PR #39. The user agreed to continue with
+minimal labels, followed by final representative measurements and platform
+acceptance. Label text is a string on the object; appearance, including offset,
+belongs to the owner's material, without a separate label material. See the
+[accepted label content and appearance decisions](design/PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).
+The user then approved the nested `label.font` types and requested only label
+preparation. That step is implemented and accepted for PR: common runtime text, all input
+copying paths, immutable snapshots/material declarations and strict validation.
+See [scope and checks](design/PROTOTYPE.md#label-preparation--implemented-for-review-2026-10-16).
+The following placement, inheritance and picking behavior is agreed for the next
+visual step and is not implemented by preparation.
+Font size and offset use strings with explicit `px` or `rem`, independently of
+map-camera zoom; font size is positive and offsets allow negative/zero values.
+Rem-based values follow the document root font size.
+Material `origin` uses nine fixed vertical/horizontal word pairs to select the
+label's alignment point; `offset` moves
+it relative to its owner. Point, line and route labels default to bottom-center
+origin and a `-1rem` vertical offset from their attachment point. Lines attach labels at the
+segment midpoint; routes use half the projected x/y path length, based on each
+layer's displayed geometry after clipping. Text stays horizontal. Flat and
+extruded polygons use the visible x/y area centroid, with a largest-convex-cell
+fallback; polygon labels default to centered origin and zero offset.
+Labels follow owner visibility, can extend beyond layer intersection bounds and
+are clipped by the map viewport. Label rectangles select the owner with its hit
+layer/route context; point labels follow effective `pickable`. Runtime text uses
+the common `MapObject.label: string | undefined` getter/setter, with immediate
+picking and deferred batch rendering. Label typography groups `size`, `family`
+and `weight` inside `label.font`; `label.color` remains separate, with agreed
+defaults in the topic document. This supersedes the earlier flat font-prefixed fields.
+Label appearance inherits per field through the explicit material chain; `offset`
+is one atomic x/y pair. The first stage uses single-line plain text with preserved
+spaces and no automatic wrapping; validation rejects both LF (`\n`) and CR (`\r`),
+including CRLF. Labels stay directly above their owner's geometry in normal
+object/layer composition order; picking follows that order in reverse.
+This stage uses built-in labels; general visual-property/behavior registration is
+deferred to a separate next stage, replacing the earlier label-registration
+prototype goal. Built-in `label` remains separate from application-owned `data`.
+Clipped route fragments share one route label per object/layer, positioned at half
+their summed displayed x/y length; zero-length projections use the first displayed
+position and absent geometry has no label. The five reviewed type exports and
+preparation diagnostics are recorded in
+[Properties and labels](design/PROPERTIES_AND_LABELS.md#label-preparation--accepted-signatures-and-implemented-scope-2026-10-16).
+Preparation does not yet resolve label/font inheritance, apply visual defaults,
+measure text or produce SVG/hit areas.
+
 The user confirmed the preceding measurements complete and accepted. The current
 batch work was based on `a5be046`, including contract consolidation (PR #31), bounded
 route-topology invalidation (PR #33), second-pointer protection (PR #34) and the
@@ -94,7 +143,7 @@ documents; this task adds no performance measurements or platform acceptance cla
 
 The user approved the revised [first material slice contract](design/MATERIALS_FIRST_SLICE_CONTRACT.md)
 and requested implementation on 2026-10-12. The complete slice passed final
-acceptance on 2026-10-16 and is accepted for PR, pending merge. See
+acceptance on 2026-10-16 and subsequently merged in PR #39, as confirmed by the user. See
 [implementation scope and checks](design/PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12).
 `MapElement.configure` accumulates global registrations until the first load starts,
 including a failed load. Every applicable reader is strict even when unused by rules;
