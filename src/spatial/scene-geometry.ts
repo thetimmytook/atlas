@@ -25,6 +25,7 @@ export interface SceneObject {
 export interface SceneChanges {
   readonly geometry: ReadonlySet<SceneObject>;
   readonly appearance: ReadonlySet<SceneObject>;
+  readonly labels: ReadonlySet<SceneObject>;
 }
 
 export interface SceneGeometry {
@@ -382,10 +383,21 @@ export function prepareSceneGeometry(
       }
 
       appearanceChanges.clear();
+      const labels = new Set<SceneObject>();
+
+      for (const object of invalidation.labels ?? []) {
+        for (const entry of entryDependencies.get(object) ?? []) {
+          if (entry.object === object) {
+            labels.add(entry);
+          }
+        }
+      }
+
+      invalidation.labels?.clear();
       const geometry = new Set(pending);
       pending.clear();
 
-      return { geometry, appearance };
+      return { geometry, appearance, labels };
     },
   });
 }

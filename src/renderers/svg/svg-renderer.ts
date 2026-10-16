@@ -3,6 +3,7 @@ import { isLayerEligible } from '#spatial/scene-geometry.js';
 
 import {
   applyGeometry,
+  applyLabel,
   applyAppearance,
   applyScreenScale,
   createObject,
@@ -13,11 +14,15 @@ import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
 import type { MapLayer } from '#objects/map-layer.js';
 import type { PreparedScene } from '#renderers/renderer.js';
+import type { PointLabelView } from '#spatial/point-label.js';
 import type { SceneGeometry, SceneObject } from '#spatial/scene-geometry.js';
 import type { SvgObject } from './svg-renderer.utils.js';
 
 export class SvgRenderer extends Renderer {
   readonly #surface: SVGSVGElement;
+  readonly #labels: PointLabelView | undefined;
+  #labelRevision: number | undefined;
+  readonly #labelChanges = new Set<SvgObject>();
   #objects: readonly SvgObject[] = [];
   #geometry: SceneGeometry | undefined;
   #layers = new Map<MapLayer, SVGGElement>();
@@ -33,9 +38,10 @@ export class SvgRenderer extends Renderer {
   #viewBox: string | undefined;
   #scale: number | undefined;
 
-  constructor(surface: SVGSVGElement) {
+  constructor(surface: SVGSVGElement, labels?: PointLabelView) {
     super();
     this.#surface = surface;
+    this.#labels = labels;
   }
 
   override async prepare(geometry: SceneGeometry): Promise<PreparedScene> {
@@ -69,6 +75,8 @@ export class SvgRenderer extends Renderer {
         this.#bySource = new Map(objects.map(object => [object.source, object]));
         this.#geometryChanges.clear();
         this.#appearanceChanges.clear();
+        this.#labelChanges.clear();
+        this.#labelRevision = undefined;
         this.#unpainted.clear();
         this.#points.clear();
         this.#scale = undefined;
@@ -84,6 +92,8 @@ export class SvgRenderer extends Renderer {
   }
 
   override render(viewport: Size, bounds: Rect): void {
+    this.#labels?.refresh();
+
     if (viewport.width !== this.#width) {
       this.#surface.setAttribute('width', String(viewport.width));
       this.#width = viewport.width;
@@ -97,23 +107,7 @@ export class SvgRenderer extends Renderer {
     this.#syncObjects();
     this.#syncVisibility();
 
-    const changes = this.#geometry?.takeChanges();
-
-    for (const source of changes?.geometry ?? []) {
-      const object = this.#bySource.get(source);
-
-      if (object) {
-        this.#geometryChanges.add(object);
-      }
-    }
-
-    for (const source of changes?.appearance ?? []) {
-      const object = this.#bySource.get(source);
-
-      if (object) {
-        this.#appearanceChanges.add(object);
-      }
-    }
+    this.#collectChanges();
 
     // Keep both pending change kinds and new-node visibility until a usable viewport returns.
     if (viewport.width <= 0 || viewport.height <= 0) {
@@ -133,12 +127,50 @@ export class SvgRenderer extends Renderer {
     if (scaleChanged) {
       for (const object of this.#points) {
         applyScreenScale(object.shape, 'point', scale);
+
+        if (object.label) {
+          applyScreenScale(object.label, 'point', scale);
+        }
       }
 
       this.#scale = scale;
     }
 
     this.#applyChanges(scaleChanged, scale);
+  }
+
+  #collectChanges(): void {
+    const changes = this.#geometry?.takeChanges();
+
+    for (const source of changes?.geometry ?? []) {
+      const object = this.#bySource.get(source);
+
+      if (object) {
+        this.#geometryChanges.add(object);
+      }
+    }
+
+    for (const source of changes?.appearance ?? []) {
+      const object = this.#bySource.get(source);
+
+      if (object) {
+        this.#appearanceChanges.add(object);
+        this.#labelChanges.add(object);
+      }
+    }
+
+    for (const source of changes?.labels ?? []) {
+      const object = this.#bySource.get(source);
+
+      if (object) {
+        this.#labelChanges.add(object);
+      }
+    }
+
+    if (this.#labels && this.#labels.revision !== this.#labelRevision) {
+      this.#points.forEach(object => this.#labelChanges.add(object));
+      this.#labelRevision = this.#labels.revision;
+    }
   }
 
   #applyChanges(scaleChanged: boolean, scale: number): void {
@@ -155,6 +187,10 @@ export class SvgRenderer extends Renderer {
       applyGeometry(object.element, object.shape, object.source.geometry);
     }
 
+    for (const object of this.#labelChanges) {
+      applyLabel(object, this.#labels?.forEntry(object.source), scale);
+    }
+
     for (const object of this.#unpainted) {
       if (!scaleChanged) {
         applyScreenScale(object.shape, object.source.geometry.kind, scale);
@@ -165,12 +201,14 @@ export class SvgRenderer extends Renderer {
 
     this.#geometryChanges.clear();
     this.#appearanceChanges.clear();
+    this.#labelChanges.clear();
     this.#unpainted.clear();
   }
 
   #addObject(object: SvgObject): void {
     this.#geometryChanges.add(object);
     this.#unpainted.add(object);
+    this.#labelChanges.add(object);
 
     if (object.source.geometry.kind === 'point') {
       this.#points.add(object);
@@ -209,6 +247,7 @@ export class SvgRenderer extends Renderer {
       object.element.remove();
       this.#geometryChanges.delete(object);
       this.#appearanceChanges.delete(object);
+      this.#labelChanges.delete(object);
       this.#unpainted.delete(object);
       this.#points.delete(object);
     }

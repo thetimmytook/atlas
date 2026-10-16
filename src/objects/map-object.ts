@@ -1,3 +1,4 @@
+import { invalidateSceneLabels } from '#spatial/scene-invalidation.js';
 import { validateMaterialName } from '#validators/material.validator.js';
 import { copyObjectAttributes } from '#validators/object-attributes.validator.js';
 import { copyObjectData } from '#validators/object-data.validator.js';
@@ -41,6 +42,7 @@ export abstract class MapObject extends EventTarget {
   set label(value: string | undefined) {
     validateObjectLabel(value);
     this.#label = value;
+    invalidateSceneLabels(this);
     this.dispatchEvent(new Event('change'));
   }
 

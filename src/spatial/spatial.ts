@@ -9,26 +9,31 @@ import type { Point2 } from '#math/point2.js';
 import type { ResolvedAppearance } from '#objects/map-materials.js';
 import type { Geometry } from './geometry.js';
 import type { ClippedSegment } from './intersection.js';
+import type { PointLabelView } from './point-label.js';
 import type { SceneGeometry, SceneObject } from './scene-geometry.js';
 
 /** Spatial queries over scene geometry, independent of rendering and browser DOM. */
 export class Spatial {
   readonly #geometry: SceneGeometry;
+  readonly #labels: PointLabelView | undefined;
 
-  constructor(geometry: SceneGeometry) {
+  constructor(geometry: SceneGeometry, labels?: PointLabelView) {
     this.#geometry = geometry;
+    this.#labels = labels;
   }
 
   /** Check only the captured display, without picking an object underneath it. */
   hasHit(entry: SceneObject, point: Point2, camera: Camera): boolean {
+    this.#labels?.refresh();
+
     return (
-      isSceneObjectEligible(this.#geometry, entry) &&
-      hitTestGeometry(point, entry.geometry, this.#geometry.appearanceFor(entry), camera.zoom)
+      isSceneObjectEligible(this.#geometry, entry) && this.#hitTestEntry(entry, point, camera.zoom)
     );
   }
 
   /** Flat-view picking, equivalent to a perpendicular ray with 2D composition order. */
   hitTest(point: Point2, camera: Camera): SceneObject | undefined {
+    this.#labels?.refresh();
     const { center, zoom, viewport } = camera;
     const x = (point.x - center.x) * zoom;
     const y = (point.y - center.y) * zoom;
@@ -54,12 +59,33 @@ export class Spatial {
         continue;
       }
 
-      if (hitTestGeometry(point, entry.geometry, this.#geometry.appearanceFor(entry), zoom)) {
+      if (this.#hitTestEntry(entry, point, zoom)) {
         return entry;
       }
     }
 
     return undefined;
+  }
+
+  #hitTestEntry(entry: SceneObject, point: Point2, zoom: number): boolean {
+    const appearance = this.#geometry.appearanceFor(entry);
+
+    if (entry.geometry.kind === 'point' && appearance.kind === 'point' && appearance.pickable) {
+      const label = this.#labels?.forEntry(entry);
+
+      if (label) {
+        const { position } = entry.geometry;
+        const dx = (point.x - position.x) * zoom;
+        const dy = (point.y - position.y) * zoom;
+        const { x, y, width, height } = label.bounds;
+
+        if (dx >= x && dx <= x + width && dy >= y && dy <= y + height) {
+          return true;
+        }
+      }
+    }
+
+    return hitTestGeometry(point, entry.geometry, appearance, zoom);
   }
 }
 

@@ -3,6 +3,7 @@ import { AtlasError } from '#errors/atlas-error.js';
 import type { BackgroundDescription } from '#definitions/map-definition.js';
 import type { ResolvedAppearance } from '#objects/map-materials.js';
 import type { Geometry } from '#spatial/geometry.js';
+import type { PointLabel } from '#spatial/point-label.js';
 import type { SceneObject } from '#spatial/scene-geometry.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
@@ -20,6 +21,39 @@ export interface SvgObject {
   readonly element: SVGGElement;
   shape: SvgShape;
   appearance: ResolvedAppearance;
+  label?: SVGTextElement;
+}
+
+/** The text is the owner's next child, preserving geometry/label composition. */
+export function applyLabel(object: SvgObject, label: PointLabel | undefined, scale: number): void {
+  if (!label) {
+    object.label?.remove();
+    delete object.label;
+
+    return;
+  }
+
+  if (!object.label) {
+    const text = document.createElementNS(SVG_NAMESPACE, 'text');
+    text.style.cssText =
+      'writing-mode:horizontal-tb;white-space:pre;text-anchor:start;text-transform:none;font-style:normal;font-variant:normal;letter-spacing:normal;word-spacing:normal;';
+    object.element.append(text);
+    object.label = text;
+  }
+
+  const text = object.label;
+
+  if (text.textContent !== label.text) {
+    text.textContent = label.text;
+  }
+
+  setChangedAttribute(text, 'x', String(label.x));
+  setChangedAttribute(text, 'y', String(label.y));
+  setChangedAttribute(text, 'fill', label.color);
+  setChangedAttribute(text, 'font-family', label.family);
+  setChangedAttribute(text, 'font-size', String(label.size));
+  setChangedAttribute(text, 'font-weight', label.weight);
+  setChangedAttribute(text, 'transform', `scale(${scale})`);
 }
 
 /** Browser resource preparation stays outside the renderer-independent runtime. */

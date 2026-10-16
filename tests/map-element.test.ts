@@ -28,6 +28,20 @@ vi.mock('#renderers/svg/svg-renderer.js', () => ({
   },
 }));
 
+// Font measurement/observers are browser responsibilities, covered against real SVG there.
+vi.mock('#components/map-element/point-labels.js', () => ({
+  PointLabels: class {
+    revision = 0;
+    connect(): void {}
+    disconnect(): void {}
+    setScene(): void {}
+    refresh(): void {}
+    forEntry(): undefined {
+      return undefined;
+    }
+  },
+}));
+
 // Minimal browser boundary for Node tests; controls, coordinates, camera and picking are real.
 class TestSurface extends EventTarget {
   isConnected = false;
