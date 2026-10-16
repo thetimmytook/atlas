@@ -24,7 +24,7 @@ afterEach(() => {
 });
 
 function point(id: string, x: number, y = 100, z = 1): MapPointDefinition {
-  return { kind: 'point', id, position: { x, y, z } };
+  return { kind: 'point', pickable: true, id, position: { x, y, z } };
 }
 
 async function paint(): Promise<void> {

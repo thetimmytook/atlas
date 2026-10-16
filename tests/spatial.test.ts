@@ -196,9 +196,9 @@ describe('picking current state without rendering', () => {
       kind: 'line',
       points: [pointDefinition(100), pointDefinition(300)],
     });
-    const { camera, scene, spatial } = createSpatial(objects);
-    const pointRadius = scene.symbols.point.radius + scene.symbols.point.strokeWidth / 2;
-    const lineRadius = scene.symbols.line.strokeWidth / 2;
+    const { camera, spatial } = createSpatial(objects);
+    const pointRadius = 11;
+    const lineRadius = 2;
 
     for (const zoom of [0.5, 1, 2]) {
       camera.zoom = zoom;

@@ -4,6 +4,7 @@ import { validateMapPoints } from '#validators/map-points.validator.js';
 
 import { MapObject } from './map-object.js';
 import { createMapPoints, MapPoint } from './map-point.js';
+import { prepareOwnedPointAttachment, refreshRouteConsumers } from './material-consumers.js';
 
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
 import type { MapRouteDefinition } from '#definitions/map-route-definition.js';
@@ -12,10 +13,17 @@ import type { MapRouteDefinition } from '#definitions/map-route-definition.js';
 export class MapRoute extends MapObject {
   #points: readonly MapPoint[];
 
-  constructor(id: string, points: MapRouteDefinition['points']) {
-    super(id);
-    validateMapPoints('points', points);
-    this.#points = createMapPoints(points);
+  constructor(definition: MapRouteDefinition) {
+    if (definition?.kind !== 'route') {
+      throw new AtlasError('Unsupported object kind.', {
+        code: 'INVALID_OBJECT_KIND',
+        details: { kind: definition?.kind },
+      });
+    }
+
+    super(definition, 'route');
+    validateMapPoints('points', definition.points);
+    this.#points = createMapPoints(definition.points);
 
     for (const point of this.#points) {
       point.addEventListener('change', this.#pointChange);
@@ -45,12 +53,15 @@ export class MapRoute extends MapObject {
     }
 
     const point = new MapPoint(definition);
+    const commit = prepareOwnedPointAttachment(this, [point]);
     point.addEventListener('change', this.#pointChange);
     this.#points = Object.freeze([
       ...this.#points.slice(0, index),
       point,
       ...this.#points.slice(index),
     ]);
+    commit();
+    refreshRouteConsumers(this);
     invalidateRouteTopology(this);
     this.dispatchEvent(new Event('change'));
 
@@ -65,6 +76,7 @@ export class MapRoute extends MapObject {
 
     this.#points = Object.freeze(this.#points.filter(entry => entry !== point));
     point.removeEventListener('change', this.#pointChange);
+    refreshRouteConsumers(this);
     invalidateRouteTopology(this);
     this.dispatchEvent(new Event('change'));
 
@@ -98,6 +110,7 @@ export class MapRoute extends MapObject {
     }
 
     const removed = this.#points.slice(startIndex, endIndex);
+    const commit = prepareOwnedPointAttachment(this, points);
     this.#points = Object.freeze([
       ...this.#points.slice(0, startIndex),
       ...points,
@@ -111,6 +124,9 @@ export class MapRoute extends MapObject {
     for (const point of points) {
       point.addEventListener('change', this.#pointChange);
     }
+
+    commit();
+    refreshRouteConsumers(this);
 
     invalidateRouteTopology(this);
     this.dispatchEvent(new Event('change'));

@@ -102,6 +102,15 @@ selectors only when their necessity is demonstrated.
 The user explicitly confirmed deferring cross-property bindings, a parameterized
 language, selectors, and a general layout engine.
 
+Subsequent clarification on 2026-10-09: application code should explicitly connect
+custom registered properties to object data for material selection, rather than
+Atlas treating `data.type` as a built-in selector. The connections belong to shared
+setup before creating maps; live reconfiguration is outside the current scope.
+That concrete direction and its open API are recorded in
+[Materials](design/MATERIALS.md#application-defined-selection-properties--clarification-2026-10-09).
+The general binding/selector language and dependency-graph system below remain
+deferred.
+
 Binding one property to another is a particularly separate topic: it needs a dependency
 graph, cycle detection, evaluation order, invalidation, subscription cleanup, and clear
 diagnostics. It must not emerge unnoticed as arbitrary setters calling one another.

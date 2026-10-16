@@ -259,6 +259,7 @@ describe('component scene replacement', () => {
     });
     const loading = element.load(definition());
     const failure = expect(loading).rejects.toThrow('Image failed');
+    await vi.waitFor(() => expect(rejectPreparation).toBeTypeOf('function'));
     expect(element.objects).toBe(objects);
     expect(display).toBe(oldDisplay);
     point.position = new Point2(200, 200);

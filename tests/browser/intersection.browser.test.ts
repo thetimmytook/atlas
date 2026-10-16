@@ -27,7 +27,7 @@ afterEach(() => {
 });
 
 function point(x: number, y: number, z: number, id: string): MapPointDefinition {
-  return { kind: 'point', id, position: new Point3(x, y, z) };
+  return { kind: 'point', pickable: true, id, position: new Point3(x, y, z) };
 }
 
 async function paint(): Promise<void> {
@@ -38,6 +38,8 @@ async function paint(): Promise<void> {
 
 function floors(): MapDefinition {
   return {
+    materials: { vertex: { properties: { symbol: 'circle' } } },
+    materialRules: [{ when: { kind: 'point' }, material: 'vertex' }],
     objects: [
       {
         id: 'route',

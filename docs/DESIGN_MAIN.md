@@ -13,8 +13,9 @@ continue between answers rather than relying on HTML anchors.
 ## Current foundation
 
 Read [Current contract](design/CURRENT_CONTRACT.md) for the short public-contract
-baseline, checked on 2026-10-09 against merged `a5be046`, with batch separately marked
-as implemented for review, not merged. It distinguishes
+baseline, checked on 2026-10-09 against merged `a5be046`. Batch subsequently merged
+in [PR #38](https://github.com/thetimmytook/atlas/pull/38); the first material slice
+is implemented and accepted for PR, pending merge. The baseline distinguishes
 implemented/merged behavior, temporary implemented contracts, accepted future work
 and open/deferred decisions. The topic documents below retain decision history;
 illustrative future APIs do not extend the available exports.
@@ -39,36 +40,40 @@ illustrative future APIs do not extend the available exports.
 - Internal `MapModel` ownership and explicit scene invalidation are merged.
   Scene changes still have one consumer. Temporary background, appearance and
   notification contracts are listed separately in [Current contract](design/CURRENT_CONTRACT.md#temporary-implemented-contracts).
-- Synchronous nested batch is implemented for review, not merged: state, events
+- Synchronous nested batch is merged in PR #38: state, events
   and picking remain immediate; only this map's rendering is deferred. See the
   [accepted signature and diagnostics](design/RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09).
-- Accepted but unimplemented: route geometry/symbol/picking separation (including
-  no-symbol/no-point-picking defaults), minimal materials, labels/property
-  registration, resource registry, schemaVersion, homeView and camera constraints.
-  Current route vertices still display/pick temporary symbols when eligible.
+- First material slice is implemented and accepted for PR, pending merge:
+  static selection-property registration, immutable JSON data, named materials/rules,
+  explicit assignment, whole-value material edits, SVG/PNG icons and atomic updates.
+  Route-owned points default to no symbol and no picking; `pickable` independently
+  overrides picking. Full-definition line/route constructors replace `(id, points)`.
+- Labels, the general resource registry/loader, schemaVersion, homeView and camera
+  constraints remain accepted future work.
 - Public core/model lifecycle, multiple viewports, live export and unfinished API
   schemas remain open/deferred. No ID registry, new tooling policy or architectural
   requirement follows automatically from a review finding.
 
 ## Topic documents
 
-| Topic                                                   | Document                                                             |
-| ------------------------------------------------------- | -------------------------------------------------------------------- |
-| Verified current public contract                        | [Current contract](design/CURRENT_CONTRACT.md)                       |
-| Use cases and responsibility boundaries                 | [Scope](design/SCOPE.md)                                             |
-| Coordinates, objects, IDs, and routes                   | [Geometry and routes](design/GEOMETRY_AND_ROUTES.md)                 |
-| Layers, clipping, hit testing, screen sizes             | [Layers and interaction](design/LAYERS_AND_INTERACTION.md)           |
-| Camera, constraints, homeView                           | [Camera](design/CAMERA.md)                                           |
-| Runtime, loading, updates, batch, route operations      | [Runtime and loading](design/RUNTIME_AND_LOADING.md)                 |
-| Materials and open alter/replace/reset questions        | [Materials](design/MATERIALS.md)                                     |
-| Registration, labels, deprecation, validator            | [Properties and labels](design/PROPERTIES_AND_LABELS.md)             |
-| Renderer and component lifecycle                        | [Renderer and component](design/RENDERER_AND_COMPONENT.md)           |
-| Console logging                                         | [Diagnostics](design/DIAGNOSTICS.md)                                 |
-| Resources and serialization                             | [Resources and serialization](design/RESOURCES_AND_SERIALIZATION.md) |
-| Agreed first-prototype scope                            | [Prototype](design/PROTOTYPE.md)                                     |
-| Browsers, accessibility, keyboard, and load reference   | [Platforms and performance](design/PLATFORMS_AND_PERFORMANCE.md)     |
-| Distant future of the appearance system                 | [Exploration](MATERIAL_SYSTEM_EXPLORATION.md)                        |
-| Research into all tarkov.dev maps, not new requirements | [Map audit](TARKOV_MAP_AUDIT.md)                                     |
+| Topic                                                   | Document                                                                  |
+| ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Verified current public contract                        | [Current contract](design/CURRENT_CONTRACT.md)                            |
+| Use cases and responsibility boundaries                 | [Scope](design/SCOPE.md)                                                  |
+| Coordinates, objects, IDs, and routes                   | [Geometry and routes](design/GEOMETRY_AND_ROUTES.md)                      |
+| Layers, clipping, hit testing, screen sizes             | [Layers and interaction](design/LAYERS_AND_INTERACTION.md)                |
+| Camera, constraints, homeView                           | [Camera](design/CAMERA.md)                                                |
+| Runtime, loading, updates, batch, route operations      | [Runtime and loading](design/RUNTIME_AND_LOADING.md)                      |
+| Materials and open alter/replace/reset questions        | [Materials](design/MATERIALS.md)                                          |
+| First material slice: accepted contract and review      | [First material slice contract](design/MATERIALS_FIRST_SLICE_CONTRACT.md) |
+| Registration, labels, deprecation, validator            | [Properties and labels](design/PROPERTIES_AND_LABELS.md)                  |
+| Renderer and component lifecycle                        | [Renderer and component](design/RENDERER_AND_COMPONENT.md)                |
+| Console logging                                         | [Diagnostics](design/DIAGNOSTICS.md)                                      |
+| Resources and serialization                             | [Resources and serialization](design/RESOURCES_AND_SERIALIZATION.md)      |
+| Agreed first-prototype scope                            | [Prototype](design/PROTOTYPE.md)                                          |
+| Browsers, accessibility, keyboard, and load reference   | [Platforms and performance](design/PLATFORMS_AND_PERFORMANCE.md)          |
+| Distant future of the appearance system                 | [Exploration](MATERIAL_SYSTEM_EXPLORATION.md)                             |
+| Research into all tarkov.dev maps, not new requirements | [Map audit](TARKOV_MAP_AUDIT.md)                                          |
 
 For the proposed platform matrix, reproducible scenarios and evidence protocol,
 see the [Platform acceptance plan](validation/PLATFORM_ACCEPTANCE_PLAN.md).
@@ -80,12 +85,35 @@ Updating this baseline does not approve pending runtime work or unfinished API e
 ## Where we stopped
 
 The user confirmed the preceding measurements complete and accepted. The current
-batch work is based on `a5be046`, including contract consolidation (PR #31), bounded
+batch work was based on `a5be046`, including contract consolidation (PR #31), bounded
 route-topology invalidation (PR #33), second-pointer protection (PR #34) and the
-integration guide (PR #35). Synchronous nested `map.batch()` is implemented for
-review, not merged; see the [current status and fresh validation](design/PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09).
+integration guide (PR #35). Synchronous nested `map.batch()` is merged in PR #38;
+see the [implementation history and validation](design/PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09).
 Historical measurement results and the platform acceptance plan remain separate
 documents; this task adds no performance measurements or platform acceptance claim.
+
+The user approved the revised [first material slice contract](design/MATERIALS_FIRST_SLICE_CONTRACT.md)
+and requested implementation on 2026-10-12. The complete slice passed final
+acceptance on 2026-10-16 and is accepted for PR, pending merge. See
+[implementation scope and checks](design/PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12).
+`MapElement.configure` accumulates global registrations until the first load starts,
+including a failed load. Every applicable reader is strict even when unused by rules;
+its input is a frozen candidate projection of id/kind/data. Selector names and
+appearance parameter names are separate. `data.type` has no built-in selector.
+
+`object.material` holds only an explicit name; `undefined` resumes rules/internal
+fallback. Materials inherit through explicit parents, then parameter defaults.
+Public built-in materials and a computed-material getter are outside the slice.
+Whole-value edits, shared-object attachment/data/assignment and route point edits
+preflight all map consumers before committing. The provisional `map.materials.get(name)`
+lookup contains only user declarations and is replaced on successful load.
+SVG/PNG preparation validates every declared icon, including unused ones, before
+replacing the map. `MapPoint.pickable` is independent of symbol choice and clears
+with `undefined`, restoring each appearance's context default. Both line and route
+constructors now take their complete corresponding definition, with no legacy overload.
+The [2026-10-16 type/default/name refactor](design/PROTOTYPE.md#typedefaultname-refactor--implemented-for-review-2026-10-16)
+keeps that behavior, reuses `Partial<Size>`/`ImageResourceId`,
+centralizes internal defaults and names map-object links as consumers.
 
 ## Implementation history — original review stages
 

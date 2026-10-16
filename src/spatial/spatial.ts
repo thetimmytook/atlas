@@ -6,9 +6,10 @@ import { isLayerEligible, isSceneObjectEligible } from './scene-geometry.js';
 
 import type { Camera } from '#camera/camera.js';
 import type { Point2 } from '#math/point2.js';
+import type { ResolvedAppearance } from '#objects/map-materials.js';
 import type { Geometry } from './geometry.js';
 import type { ClippedSegment } from './intersection.js';
-import type { SceneGeometry, SceneObject, SceneSymbols } from './scene-geometry.js';
+import type { SceneGeometry, SceneObject } from './scene-geometry.js';
 
 /** Spatial queries over scene geometry, independent of rendering and browser DOM. */
 export class Spatial {
@@ -22,7 +23,7 @@ export class Spatial {
   hasHit(entry: SceneObject, point: Point2, camera: Camera): boolean {
     return (
       isSceneObjectEligible(this.#geometry, entry) &&
-      hitTestGeometry(point, entry.geometry, this.#geometry.symbols, camera.zoom)
+      hitTestGeometry(point, entry.geometry, this.#geometry.appearanceFor(entry), camera.zoom)
     );
   }
 
@@ -53,7 +54,7 @@ export class Spatial {
         continue;
       }
 
-      if (hitTestGeometry(point, entry.geometry, this.#geometry.symbols, zoom)) {
+      if (hitTestGeometry(point, entry.geometry, this.#geometry.appearanceFor(entry), zoom)) {
         return entry;
       }
     }
@@ -65,7 +66,7 @@ export class Spatial {
 function hitTestGeometry(
   point: Point2,
   geometry: Geometry,
-  symbols: SceneSymbols,
+  appearance: ResolvedAppearance,
   zoom: number,
 ): boolean {
   if (geometry.kind === 'polygon') {
@@ -77,15 +78,30 @@ function hitTestGeometry(
 
   if (geometry.kind === 'point') {
     const { position } = geometry;
-    const { radius, strokeWidth } = symbols.point;
+
+    if (appearance.kind !== 'point' || !appearance.pickable) {
+      return false;
+    }
+
     const dx = (point.x - position.x) * zoom;
     const dy = (point.y - position.y) * zoom;
-    const outerRadius = radius + strokeWidth / 2;
 
-    return dx * dx + dy * dy <= outerRadius * outerRadius;
+    if (appearance.image) {
+      const { x, y, width, height } = appearance.image;
+
+      return dx >= x && dx <= x + width && dy >= y && dy <= y + height;
+    }
+
+    const outerRadius = appearance.size / 2;
+
+    return Math.hypot(dx, dy) <= outerRadius;
   }
 
-  const radius = symbols.line.strokeWidth / (2 * zoom);
+  if (appearance.kind !== 'line' && appearance.kind !== 'route') {
+    return false;
+  }
+
+  const radius = appearance.width / 2 / zoom;
 
   if (geometry.kind === 'line') {
     if (geometry.segment) {

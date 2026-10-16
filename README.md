@@ -4,7 +4,7 @@ Atlas is a renderer-independent interactive map engine for browser pages. The
 current prototype provides an SVG renderer through an explicitly registered Web
 Component. Application UI stays outside the engine.
 
-Available now:
+Merged prototype foundation:
 
 - Map loading with explicit layers, image backgrounds and independent visibility.
 - Points, straight lines, routes and horizontal polygons with optional vertical
@@ -14,17 +14,25 @@ Available now:
 - Camera center/zoom/fit, mouse drag/wheel, touch pan/pinch, coordinate conversion,
   `press`, `release` and `objectclick` events with the hit layer.
 
-This is a prototype, with provisional built-in appearance and URL/size backgrounds.
-SVG displays an x/y projection, including extruded polygons; it is not a 3D view.
-Materials, labels, a resource registry and current-state export are not implemented.
-Synchronous `map.batch()` is implemented for review and not yet merged; see the
+The first material slice is implemented and accepted for PR, **pending merge**:
+named materials/rules, explicit assignment, immutable JSON data, SVG/PNG icons and
+independent point picking. Synchronous `map.batch()` is merged in
+[PR #38](https://github.com/thetimmytook/atlas/pull/38). See the
+[material contract](docs/design/MATERIALS_FIRST_SLICE_CONTRACT.md) and
 [batch contract](docs/design/RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09).
+
+This is a prototype, with internal appearance defaults and provisional URL/size backgrounds.
+SVG displays an x/y projection, including extruded polygons; it is not a 3D view.
+Labels, the general resource registry/pluggable loader and current-state export
+remain unimplemented; the material slice supports map-local image declarations.
 Framework adapters and an editor are future consumers. Browser,
 mobile and performance validation remain incomplete. See the
 [current contract](docs/design/CURRENT_CONTRACT.md) and the
 [integration guide's follow-up status](docs/INTEGRATION.md#object-events-and-the-external-panel).
 
 ## First map
+
+This example uses the material implementation under review in this checkout.
 
 The package is private and has no npm/CDN distribution. From this checkout:
 
@@ -61,8 +69,30 @@ Save this as `quickstart.html` beside `package.json`, then open
     if (!(map instanceof MapElement)) throw new Error('Map element is missing.');
 
     await map.load({
-      layers: [{ id: 'ground', objects: ['entrance'] }],
-      objects: [{ id: 'entrance', kind: 'point', position: { x: 50, y: 50 } }],
+      layers: [{ id: 'ground', objects: ['entrance', 'walk'] }],
+      materials: {
+        path: { properties: { color: '#d95012', width: 4 } },
+        poi: { properties: { symbol: 'circle', color: '#16a34a', size: 28 } },
+      },
+      materialRules: [{ when: { kind: 'route' }, material: 'path' }],
+      objects: [
+        { id: 'entrance', kind: 'point', position: { x: 20, y: 20 } },
+        {
+          id: 'walk',
+          kind: 'route',
+          points: [
+            { kind: 'point', position: { x: 20, y: 20 } },
+            { id: 'bend', kind: 'point', position: { x: 50, y: 60 } },
+            {
+              id: 'checkpoint',
+              kind: 'point',
+              position: { x: 80, y: 60 },
+              material: 'poi',
+              pickable: true,
+            },
+          ],
+        },
+      ],
     });
     map.camera.fit(new Rect(0, 0, 100, 100));
   </script>
@@ -73,8 +103,21 @@ The application registers the element and gives it nonzero dimensions. `layers`
 is required; there is no implicit default layer. Without a background, use
 `camera.fit(rect)` as above: `map.fit()` fits backgrounds only.
 
+The ordinary bend contributes to the route path and defaults to no symbol and no
+point picking. The checkpoint explicitly chooses its symbol through `material`
+and independently enables picking through `pickable`:
+
+- `true`: the point participates in picking.
+- `false`: picking skips the point; its symbol and geometry remain.
+- `undefined` / omitted: the context default applies, standalone on and route-owned off.
+
+The runtime getter returns the explicit override, not a resolved value for an
+appearance. Symbol choice and picking are independent. Materials resolve own
+parameters, then explicit parents, then internal defaults. `object.material` is
+the explicit name; clearing it with `undefined` resumes rules/internal fallback.
+
 Continue with the [integration guide](docs/INTEGRATION.md) for a self-contained
-background, all four object kinds, floors, click details, runtime edits and load
+background, materials/icons, all four object kinds, floors, click details, runtime edits and load
 error handling. `await map.load()` commits the prepared map; it does not promise
 that the browser has painted it.
 

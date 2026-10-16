@@ -248,8 +248,8 @@ function editRoute(roots: readonly MapEntry[]): void {
   }
 
   route.replacePoints(1, route.points.length - 1, [
-    { id: 'replacement-0', kind: 'point', position: { x: 60, y: 65 } },
-    { id: 'replacement-1', kind: 'point', position: { x: 62, y: 67 } },
+    { id: 'replacement-0', kind: 'point', position: { x: 60, y: 65 }, pickable: true },
+    { id: 'replacement-1', kind: 'point', position: { x: 62, y: 67 }, pickable: true },
   ]);
 }
 

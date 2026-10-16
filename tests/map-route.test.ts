@@ -10,12 +10,16 @@ import { pointDefinition } from './fixtures.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
 
 function createRoute(): MapRoute {
-  return new MapRoute('route', [
-    pointDefinition(0, 0, 'a'),
-    pointDefinition(100, 0, 'b'),
-    pointDefinition(200, 0, 'c'),
-    pointDefinition(300, 0, 'd'),
-  ]);
+  return new MapRoute({
+    id: 'route',
+    kind: 'route',
+    points: [
+      pointDefinition(0, 0, 'a'),
+      pointDefinition(100, 0, 'b'),
+      pointDefinition(200, 0, 'c'),
+      pointDefinition(300, 0, 'd'),
+    ],
+  });
 }
 
 describe('route membership and surviving identity', () => {

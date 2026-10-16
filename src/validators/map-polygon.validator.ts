@@ -9,6 +9,7 @@ import {
 import { createId } from '#objects/create-id.js';
 
 import { validateNumber } from './number.validator.js';
+import { copyObjectAttributes } from './object-attributes.validator.js';
 import { validateObjectId } from './object-id.validator.js';
 import { validatePoint } from './point.validator.js';
 
@@ -145,6 +146,7 @@ export function resolveMapPolygon(
   return Object.freeze({
     id: definition.id ?? createId(),
     kind: 'polygon',
+    ...copyObjectAttributes(definition, field),
     contour,
     baseZ,
     height,

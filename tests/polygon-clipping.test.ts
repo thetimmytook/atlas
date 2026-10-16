@@ -176,7 +176,7 @@ describe('polygon cells and shared appearances', () => {
     expect(model.geometry.objects[0]).toBe(entry);
     expect(model.geometry.objects[1]).toBe(other);
     expect(geometry(model, 1).cells).toBe(otherCells);
-    expect(model.geometry.takeChanges()).toEqual(new Set([entry]));
+    expect(model.geometry.takeChanges().geometry).toEqual(new Set([entry]));
     root.baseZ = 3;
     expect(model.geometry.objects).toEqual([other]);
     model.layers[0]!.visible = false;

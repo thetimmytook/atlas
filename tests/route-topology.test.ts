@@ -16,7 +16,7 @@ import type { SceneObject } from '#spatial/scene-geometry.js';
 afterEach(() => vi.restoreAllMocks());
 
 function point(id: string, x: number, y = 100, z = 1): MapPointDefinition {
-  return { kind: 'point', id, position: { x, y, z } };
+  return { kind: 'point', pickable: true, id, position: { x, y, z } };
 }
 
 function definition(remove = false): MapDefinition {
@@ -135,7 +135,7 @@ describe('route-owned topology among unrelated automatic roots', () => {
     camera.center = new Point2(200, 150);
     const vertex = route.addPoint(point('new', 120, 180, 9));
     expect(model.geometry.objects).toEqual([]);
-    expect(model.geometry.takeChanges().size).toBe(0);
+    expect(model.geometry.takeChanges().geometry.size).toBe(0);
     vertex.position = new Point3(120, 180, 1);
     expect(model.spatial.hitTest(vertex.position, camera)?.object).toBe(vertex);
     expect(paths(model.geometry.objects, 'floor', route)).toEqual([
@@ -144,7 +144,7 @@ describe('route-owned topology among unrelated automatic roots', () => {
         [120, 180, 1],
       ],
     ]);
-    expect(model.geometry.takeChanges().size).toBeGreaterThan(0);
+    expect(model.geometry.takeChanges().geometry.size).toBeGreaterThan(0);
   });
 
   it.each(['add', 'insert', 'remove', 'replace'] as const)(
@@ -181,7 +181,7 @@ describe('route-owned topology among unrelated automatic roots', () => {
       // No synchronization or clipping is performed by the mutation itself.
       checkUnread.forEach(check => check());
       const after = model.geometry.objects;
-      const changes = model.geometry.takeChanges();
+      const changes = model.geometry.takeChanges().geometry;
       checkUnread.forEach(check => check());
       expect(roots).not.toHaveBeenCalled();
       expect(changes.size).toBeGreaterThan(0);
@@ -261,7 +261,7 @@ describe('route-owned topology among unrelated automatic roots', () => {
         expect(hit?.layer.id).toBe('upper');
       }
 
-      expect(model.geometry.takeChanges().size).toBe(0);
+      expect(model.geometry.takeChanges().geometry.size).toBe(0);
     },
   );
 
@@ -283,9 +283,9 @@ describe('route-owned topology among unrelated automatic roots', () => {
     ).toBe(false);
     model.geometry.takeChanges();
     transient.position = new Point3(80, 180, 1);
-    expect(model.geometry.takeChanges().size).toBe(0);
+    expect(model.geometry.takeChanges().geometry.size).toBe(0);
     removed.position = new Point3(350, 180, 1);
-    const changes = [...model.geometry.takeChanges()];
+    const changes = [...model.geometry.takeChanges().geometry];
     expect(changes.length).toBeGreaterThan(0);
     expect(changes.every(entry => entry.object === removed && !entry.route)).toBe(true);
     expect(model.spatial.hitTest(removed.position, camera)?.object).toBe(removed);
@@ -315,7 +315,7 @@ describe('route-owned topology among unrelated automatic roots', () => {
 
     // Synchronous picking must leave the display work pending for both maps.
     for (const model of [first.model, second.model]) {
-      const changes = [...model.geometry.takeChanges()];
+      const changes = [...model.geometry.takeChanges().geometry];
       expect(changes.some(entry => entry.object === vertex)).toBe(true);
       expect(changes.some(entry => entry.object === first.route)).toBe(true);
     }
@@ -325,7 +325,7 @@ describe('route-owned topology among unrelated automatic roots', () => {
     first.model.geometry.takeChanges();
     vertex.position = new Point3(70, 190, 5);
     first.route.addPoint(point('tail', 300, 190, 5));
-    expect(first.model.geometry.takeChanges().size).toBe(0);
+    expect(first.model.geometry.takeChanges().geometry.size).toBe(0);
     expect(second.model.spatial.hitTest(vertex.position, second.camera)?.object).toBe(vertex);
     first.model.objects.add(first.route);
     expect(first.model.spatial.hitTest(vertex.position, first.camera)?.object).toBe(vertex);

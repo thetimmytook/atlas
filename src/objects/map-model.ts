@@ -2,6 +2,7 @@ import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 import { Spatial } from '#spatial/spatial.js';
 
 import { MapLayer } from './map-layer.js';
+import { MapMaterials } from './map-materials.js';
 import { MapObjectCollection } from './map-object-collection.js';
 
 import type { ResolvedMapDefinition } from '#definitions/map-definition.js';
@@ -15,6 +16,7 @@ export class MapModel extends EventTarget {
   readonly layers: readonly MapLayer[];
   readonly geometry: SceneGeometry;
   readonly spatial: Spatial;
+  readonly materials: MapMaterials;
   readonly #observedObjects = new Set<MapEntry>();
   #observing = false;
 
@@ -26,7 +28,14 @@ export class MapModel extends EventTarget {
     this.layers = Object.freeze(
       (definition?.layers ?? []).map(layer => new MapLayer(layer, this.objects)),
     );
-    this.geometry = prepareSceneGeometry(this.objects, this.layers);
+    this.materials = new MapMaterials(definition, this.objects, (objects, notify) => {
+      this.geometry.invalidateAppearances(objects);
+
+      if (notify && this.#observing) {
+        this.#changed();
+      }
+    });
+    this.geometry = prepareSceneGeometry(this.objects, this.layers, this.materials);
     this.spatial = new Spatial(this.geometry);
   }
 

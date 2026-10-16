@@ -496,12 +496,10 @@ describe('real SvgRenderer scene output', () => {
       expect(rect.width).toBeCloseTo(22);
       expect(rect.height).toBeCloseTo(22);
 
-      // The SVG bounding box excludes stroke: radius 11 + 2px stroke is 24 CSS pixels.
+      // Circle picking and display share the 22px diameter without a separate outline.
       const matrix = circle.getScreenCTM()!;
       expect(matrix.a).toBeCloseTo(1);
-      expect(
-        Number.parseFloat(getComputedStyle(circle).strokeWidth) * matrix.a + rect.width,
-      ).toBeCloseTo(24);
+      expect(getComputedStyle(circle).stroke).toBe('none');
 
       for (const symbol of surface.querySelectorAll('circle')) {
         expect(symbol.getBoundingClientRect().width).toBeCloseTo(22);

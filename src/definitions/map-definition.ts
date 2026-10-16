@@ -10,7 +10,9 @@ import {
   validateMapPoints,
 } from '#validators/map-points.validator.js';
 import { resolveMapPolygon } from '#validators/map-polygon.validator.js';
+import { resolveMaterialDeclarations } from '#validators/material.validator.js';
 import { validateNumber } from '#validators/number.validator.js';
+import { copyObjectAttributes } from '#validators/object-attributes.validator.js';
 import { validateObjectId } from '#validators/object-id.validator.js';
 import { validateSize } from '#validators/size.validator.js';
 
@@ -23,6 +25,12 @@ import type {
   ResolvedMapPolygonDefinition,
 } from './map-polygon-definition.js';
 import type { MapRouteDefinition, ResolvedMapRouteDefinition } from './map-route-definition.js';
+import type {
+  ImageResourceId,
+  ImageResourceDefinition,
+  MaterialDefinition,
+  MaterialRule,
+} from './material-definition.js';
 
 export type MapEntryDefinition =
   MapLineDefinition | MapPointDefinition | MapPolygonDefinition | MapRouteDefinition;
@@ -42,11 +50,17 @@ export interface BackgroundDescription {
 export interface MapDefinition {
   readonly layers: readonly MapLayerDefinition[];
   readonly objects?: readonly MapEntryDefinition[];
+  readonly materials?: Readonly<Record<string, MaterialDefinition>>;
+  readonly materialRules?: readonly MaterialRule[];
+  readonly resources?: Readonly<Record<ImageResourceId, ImageResourceDefinition>>;
 }
 
 export interface ResolvedMapDefinition extends MapDefinition {
   readonly layers: readonly ResolvedMapLayerDefinition[];
   readonly objects: readonly ResolvedMapEntry[];
+  readonly materials: Readonly<Record<string, MaterialDefinition>>;
+  readonly materialRules: readonly MaterialRule[];
+  readonly resources: Readonly<Record<ImageResourceId, ImageResourceDefinition>>;
 }
 
 const objectKinds: readonly MapEntryDefinition['kind'][] = ['line', 'route', 'point', 'polygon'];
@@ -98,6 +112,7 @@ export function resolveMapDefinition(definition: MapDefinition): ResolvedMapDefi
   return Object.freeze({
     layers: Object.freeze(layers),
     objects: Object.freeze(objects),
+    ...resolveMaterialDeclarations(definition),
   });
 }
 
@@ -220,6 +235,7 @@ export function resolveMapEntry(object: MapEntryDefinition, field = 'object'): R
       id,
       kind: 'route',
       points: resolveMapPoints(object.points),
+      ...copyObjectAttributes(object, field),
     });
   }
 
@@ -227,5 +243,6 @@ export function resolveMapEntry(object: MapEntryDefinition, field = 'object'): R
     id,
     kind: object.kind,
     points: resolveMapPoints(object.points),
+    ...copyObjectAttributes(object, field),
   });
 }

@@ -116,7 +116,7 @@ describe('reattachment after synchronous membership reconciliation', () => {
       expect(spatial.hitTest(new Point2(40, 30), camera)).toBeUndefined();
       const point = root.kind === 'point' ? root : root.points[0];
       point.position = new Point2(90, 80);
-      expect(scene.takeChanges().size).toBe(0);
+      expect(scene.takeChanges().geometry.size).toBe(0);
       objects.add(root);
       expect(spatial.hitTest(new Point2(90, 80), camera)?.object).toBe(
         root.kind === 'route' ? point : root,
@@ -124,19 +124,19 @@ describe('reattachment after synchronous membership reconciliation', () => {
       const returned = scene.objects;
       expect(returned).toHaveLength(original.length);
       returned.forEach((entry, index) => expect(entry).toBe(original.at(index)));
-      const changes = scene.takeChanges();
+      const changes = scene.takeChanges().geometry;
       expect(changes.has(original[0]!)).toBe(true);
 
       if (root.kind === 'route') {
         expect(changes.has(original[1]!)).toBe(true);
       }
 
-      expect(scene.takeChanges().size).toBe(0);
+      expect(scene.takeChanges().geometry.size).toBe(0);
       objects.remove(root);
       expect(scene.objects).toEqual([]);
       scene.takeChanges();
       point.position = new Point2(100, 90);
-      expect(scene.takeChanges().size).toBe(0);
+      expect(scene.takeChanges().geometry.size).toBe(0);
     },
   );
 });
@@ -152,7 +152,7 @@ it('keeps detached route edits out of surviving scene membership', () => {
   const roots = vi.spyOn(objects, Symbol.iterator);
   route.insertPoint(1, pointDefinition(100, 80));
   expect(scene.objects).toBe(survivors);
-  expect(scene.takeChanges().size).toBe(0);
+  expect(scene.takeChanges().geometry.size).toBe(0);
   expect(roots).not.toHaveBeenCalled();
   roots.mockRestore();
 });

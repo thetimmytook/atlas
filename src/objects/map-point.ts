@@ -1,9 +1,10 @@
 import { Point3 } from '#math/point3.js';
 import { invalidateScenes } from '#spatial/scene-invalidation.js';
-import { validateMapPoint } from '#validators/map-point.validator.js';
+import { validateMapPoint, validatePointPickable } from '#validators/map-point.validator.js';
 import { validatePoint } from '#validators/point.validator.js';
 
 import { MapObject } from './map-object.js';
+import { refreshPointAppearance } from './material-consumers.js';
 
 import type { MapLineDefinition } from '#definitions/map-line-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
@@ -12,10 +13,12 @@ import type { Point2 } from '#math/point2.js';
 /** A point with the same identity and behavior independently or within a route. */
 export class MapPoint extends MapObject {
   #position: Point3;
+  #pickable: boolean | undefined;
 
   constructor(definition: MapPointDefinition) {
     validateMapPoint('point', definition);
-    super(definition.id, 'point.id');
+    super(definition, 'point');
+    this.#pickable = definition.pickable;
     this.#position = new Point3(
       definition.position.x,
       definition.position.y,
@@ -29,6 +32,23 @@ export class MapPoint extends MapObject {
 
   get position(): Point3 {
     return this.#position;
+  }
+
+  /**
+   * Explicit picking override, not the resolved value of a particular appearance.
+   * true includes the point in picking; false skips it, preserving symbol and geometry.
+   * undefined restores the context default: standalone on, route-owned off.
+   * Symbol choice and participation in picking are independent.
+   */
+  get pickable(): boolean | undefined {
+    return this.#pickable;
+  }
+
+  set pickable(value: boolean | undefined) {
+    validatePointPickable(value);
+    this.#pickable = value;
+    refreshPointAppearance(this);
+    this.dispatchEvent(new Event('change'));
   }
 
   set position(value: Point2 | Point3) {

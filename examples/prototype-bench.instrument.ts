@@ -82,7 +82,8 @@ export function instrument(): {
     let previous: typeof geometry.objects | undefined;
 
     return prepare.call(this, {
-      symbols: geometry.symbols,
+      appearanceFor: geometry.appearanceFor,
+      invalidateAppearances: geometry.invalidateAppearances,
       layers: geometry.layers,
       get objects(): typeof geometry.objects {
         increment('renderer_scene_reads');
@@ -99,7 +100,10 @@ export function instrument(): {
       },
       takeChanges: () => {
         const changed = geometry.takeChanges();
-        increment('renderer_changed_entries', changed.size);
+        increment(
+          'renderer_changed_entries',
+          new Set([...changed.geometry, ...changed.appearance]).size,
+        );
 
         return changed;
       },

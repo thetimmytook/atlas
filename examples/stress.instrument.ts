@@ -78,7 +78,8 @@ export function instrumentAtlas(): {
   SvgRenderer.prototype.prepare = async function (geometry): ReturnType<typeof prepare> {
     let previous: readonly SceneObject[] | undefined;
     const observed: SceneGeometry = {
-      symbols: geometry.symbols,
+      appearanceFor: geometry.appearanceFor,
+      invalidateAppearances: geometry.invalidateAppearances,
       layers: geometry.layers,
       takeChanges: () => geometry.takeChanges(),
       get objects(): readonly SceneObject[] {

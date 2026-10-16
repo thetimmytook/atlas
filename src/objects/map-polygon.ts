@@ -21,7 +21,7 @@ export class MapPolygon extends MapObject {
 
   constructor(definition: MapPolygonDefinition) {
     const resolved = resolveMapPolygon(definition, 'polygon');
-    super(resolved.id);
+    super(resolved, 'polygon');
     this.#contour = resolved.contour;
     this.#baseZ = resolved.baseZ;
     this.#height = resolved.height;

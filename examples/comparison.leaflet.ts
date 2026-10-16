@@ -24,8 +24,7 @@ function coordinate(position: { x: number; y: number }): L.LatLngTuple {
 
 const POINT_STYLE = {
   radius: 11,
-  color: '#ffffff',
-  weight: 2,
+  stroke: false,
   fillColor: '#2775d9',
   fillOpacity: 1,
   opacity: 1,
@@ -326,8 +325,7 @@ export class LeafletAdapter implements BenchmarkAdapter {
     if (layer instanceof L.CircleMarker) {
       assertComparison(
         element.getAttribute('fill') === POINT_STYLE.fillColor &&
-          element.getAttribute('stroke') === POINT_STYLE.color &&
-          Number(element.getAttribute('stroke-width')) === 2 &&
+          element.getAttribute('stroke') === 'none' &&
           layer.getRadius() === 11,
         'Leaflet SVG point style',
       );
@@ -335,7 +333,7 @@ export class LeafletAdapter implements BenchmarkAdapter {
       const screen = this.#map.latLngToContainerPoint(layer.getLatLng());
       const size = this.#map.getSize();
       const outside =
-        screen.x + 12 < 0 || screen.y + 12 < 0 || screen.x - 12 > size.x || screen.y - 12 > size.y;
+        screen.x + 11 < 0 || screen.y + 11 < 0 || screen.x - 11 > size.x || screen.y - 11 > size.y;
 
       if (outside) {
         assertComparison(d === 'M0 0', 'Leaflet native circle culling');

@@ -1,15 +1,69 @@
 # Current Atlas contract
 
-[Main navigation](../DESIGN_MAIN.md) · [Current work](PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09)
+[Main navigation](../DESIGN_MAIN.md) · [Current work](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)
 
 Verified on 2026-10-09 against merged commit `a5be046`, including polygons,
 route-local topology invalidation and second-pointer protection (PRs #30, #33–34).
 The authority for available names is [src/index.ts](../../src/index.ts); behavior
 was checked in the runtime, validators, scene preparation and SVG renderer at that
-commit. Synchronous nested batch is implemented for review, not merged;
-its status is separate from the merged baseline.
+commit. Synchronous nested batch subsequently merged in
+[PR #38](https://github.com/thetimmytook/atlas/pull/38); its implementation history
+is separate from this dated baseline.
 This summary takes precedence over older implementation notes and design examples;
 topic documents retain decisions and their history.
+
+## Working-tree material slice — implemented for review, 2026-10-12
+
+The user accepted the revised signatures and requested implementation. This
+working-tree overlay supersedes the dated merged-baseline appearance/data statements
+below; it passed final acceptance on 2026-10-16 and is accepted for PR, pending
+merge. The complete
+[public contract](MATERIALS_FIRST_SLICE_CONTRACT.md) and
+[review scope/checks](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)
+cover the additions:
+
+- `MapElement.configure(MapConfiguration)` accumulates copied global property
+  registrations and locks at the start of the first load, including failure.
+  Readers receive a frozen candidate id/kind/data projection; all applicable
+  readers are checked for roots and owned points, even hidden and unused by rules.
+- `MapObject.data` is copied/deeply frozen JSON object state; `material` is an
+  optional explicit name. Both replace whole values and clear with `undefined`.
+  Load/add/route editing preserve these fields. `MapLine` and `MapRoute` take their
+  full definition, with optional id, and have no `(id, points)` overload.
+- `materials`, `materialRules` and image `resources` are copied/frozen load input,
+  normalized to empty collections only for absence/`undefined`; `null` is rejected.
+  Material/resource/rule declarations reject unknown fields; application `data`
+  keys remain arbitrary. Selection is internal fallback → last kind-only
+  rule → last conditional rule → explicit assignment. Only explicit parents supply
+  inherited parameters; missing parameters then use internal defaults.
+- `map.materials.get(name)` exposes only user declarations through a frozen lookup.
+  Its type and handle types are interfaces, not public constructors. Own
+  `properties` replace whole copied/frozen snapshots; old handles are independent
+  after replacement. No public built-in material names or computed-material getter.
+- SVG/PNG icons use `ImageResourceId` (a plain `string` alias), source dimensions, screen-sized final rectangles
+  and normalized anchors. `PointImage extends Partial<Size>` retains readonly optional
+  dimensions. Every declaration prepares before replacement; failure
+  retains the previous scene, lookup, objects, snapshot and camera. Backgrounds
+  retain their separate provisional URL/size input. Browser icon preparation uses
+  standard fetch/CORS access to inspect bytes and SVG dimensions.
+- `MapPoint.pickable: boolean | undefined` is an explicit override. Absent means
+  root on / route-owned off, independent of symbol choice; clearing restores these
+  defaults. Point `symbol` defaults to circle / none in those roles. Circle/none
+  picking has diameter `size`; images use the final anchored rectangle including
+  transparency. Circle outlines are removed; line endpoints and cuts create no
+  separately prepared point appearances.
+- `AtlasMaterialError` is a new runtime export with stable typed codes, fixed
+  messages, structured details and wrapped causes. Other new names are type exports
+  listed in the contract. Shared-object mutations preflight every map, including
+  disconnected use, before committing. Style invalidation does not rebuild clipped
+  geometry or serialize coordinates. Internal display changes retain distinct
+  geometry/appearance sets and apply both in one paint when batched. Picking drains
+  neither set. Batch still defers only paint.
+
+## Dated merged baseline
+
+The following status table records the 2026-10-09 baseline. Batch subsequently
+merged in PR #38; the material overlay above records the later accepted slice.
 
 ## Status key
 
@@ -46,7 +100,8 @@ kind. Top-level backgrounds and implicit/default layers are unsupported;
 `MapEntry` is `MapPoint | MapLine | MapRoute | MapPolygon`; the definition union
 contains the corresponding four definitions. Application marker/zone meaning stays
 outside the engine. `data.type` is an accepted future classification location;
-`data`, labels and materials are not implemented object fields.
+`data` and materials were not implemented at this merged baseline; the working-tree
+overlay above adds them. Labels remain unimplemented.
 
 ## Coordinates and polygons
 
@@ -146,6 +201,8 @@ notification remains open. See [accepted follow-up](PROTOTYPE.md#repeat-review-f
 
 ## Synchronous batch — implemented for review, not merged
 
+This review-stage heading is historical; batch subsequently merged in PR #38.
+
 `map.batch(callback: () => void): void` invokes the callback synchronously once.
 Nested batches defer only this component's rendering until the outermost exit;
 data, events and picking remain immediate, including nested handlers. Successful
@@ -173,8 +230,12 @@ and [review status and validation](PROTOTYPE.md#synchronous-nested-batch--implem
 
 ## Accepted future work and open decisions
 
-Minimal materials, label/property registration and resource/schemaVersion
-design remain accepted future work; their illustrative APIs are not available now.
+Labels/behavior registration, the full resource manager/loader and schemaVersion
+remain accepted future work. Minimal materials and selection-property registration
+are implemented in the working-tree overlay above.
+The [first material slice contract](MATERIALS_FIRST_SLICE_CONTRACT.md) is accepted
+and implemented for review (2026-10-12), superseding the old appearance defaults
+in this dated baseline. Named runtime lookup remains provisional.
 Home view, camera constraints and animation also remain unimplemented.
 Public model lifecycle, multiple viewports, current-state export, exact material and
 interaction schemas, cancellation notification, broader browser/mobile validation

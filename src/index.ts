@@ -23,6 +23,29 @@ export type { MapPointDefinition } from './definitions/map-point-definition.js';
 export type { WithId } from './definitions/identity.js';
 
 export { AtlasError } from './errors/atlas-error.js';
+export { AtlasMaterialError } from '#errors/atlas-material-error.js';
+export type {
+  AtlasMaterialErrorCode,
+  AtlasMaterialErrorOptions,
+} from '#errors/atlas-material-error.js';
+export type {
+  JsonValue,
+  JsonObject,
+  PropertyReadObject,
+  PropertyRegistration,
+  MapConfiguration,
+  MaterialScalar,
+  MaterialConditionValue,
+  MaterialCondition,
+  MaterialRule,
+  MaterialDefinition,
+  ImageResourceDefinition,
+  ImageResourceId,
+  PointImage,
+  MaterialProperties,
+  Material,
+  MaterialLookup,
+} from '#definitions/material-definition.js';
 export type { AtlasErrorOptions } from './errors/atlas-error.js';
 
 export { Camera } from './camera/camera.js';
