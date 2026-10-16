@@ -44,6 +44,7 @@ export function createStressScene(
   const point = (id: string): MapPointDefinition => ({
     id,
     kind: 'point',
+    pickable: true,
     position: {
       x: 35 + random() * (BACKGROUND_SIZE.width - 43),
       y: 8 + random() * (BACKGROUND_SIZE.height - 16),
@@ -70,6 +71,7 @@ export function createStressScene(
     const points = Array.from({ length }, (_, vertex): MapPointDefinition => ({
       id: `${id}-${vertex}`,
       kind: 'point',
+      pickable: true,
       position: {
         x: Math.min(BACKGROUND_SIZE.width - 8, origin.position.x + vertex * 0.8),
         y: Math.min(
@@ -113,6 +115,8 @@ export function createStressScene(
     roots,
     composition,
     definition: {
+      materials: { vertex: { properties: { symbol: 'circle' } } },
+      materialRules: [{ when: { kind: 'point' }, material: 'vertex' }],
       layers: [
         {
           id: 'content',

@@ -6,4 +6,11 @@ import type { MapObjectDefinition } from './map-object-definition.js';
 export interface MapPointDefinition extends MapObjectDefinition {
   readonly kind: 'point';
   readonly position: Point2 | Point3;
+
+  /**
+   * Picking override, independent of the point's symbol and geometry.
+   * true includes the point in picking; false skips it without hiding its symbol.
+   * Omitted/undefined uses the context default: standalone on, route-owned off.
+   */
+  readonly pickable?: boolean;
 }

@@ -74,7 +74,7 @@ export function createClippedAppearance(
       return path.entry;
     });
 
-    // Temporary route symbols; materials/point interaction will replace this selection later.
+    // Original vertices retain their own material/picking context; cuts create no points.
     for (const point of points) {
       if (containsPosition(bounds, point.position)) {
         result.push(pointEntry(layer, point, object));

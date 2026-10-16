@@ -46,8 +46,8 @@ describe('object position z', () => {
   });
 
   it('retains copied z through line ownership and every route point operation', () => {
-    const route = new MapRoute('route', [point(-1)]);
-    const line = new MapLine('line', [point(-2), point(4)]);
+    const route = new MapRoute({ id: 'route', kind: 'route', points: [point(-1)] });
+    const line = new MapLine({ id: 'line', kind: 'line', points: [point(-2), point(4)] });
     expect(line.points.map(vertex => vertex.position.z)).toEqual([-2, 4]);
     expect(line.points.every(vertex => vertex.position instanceof Point3)).toBe(true);
     const added = route.addPoint(point(5));
@@ -79,7 +79,7 @@ describe('object position z', () => {
         }),
       );
       expect(() => resolveMapDefinition({ layers: [], objects: [invalid] })).toThrow();
-      const route = new MapRoute('route', [point(1)]);
+      const route = new MapRoute({ id: 'route', kind: 'route', points: [point(1)] });
       const previous = route.points;
       const changed = vi.fn();
       route.addEventListener('change', changed);

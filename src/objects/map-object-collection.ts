@@ -5,6 +5,7 @@ import { MapLine } from './map-line.js';
 import { MapPoint } from './map-point.js';
 import { MapPolygon } from './map-polygon.js';
 import { MapRoute } from './map-route.js';
+import { prepareRootAttachment, refreshCollectionConsumers } from './material-consumers.js';
 
 import type { MapEntryDefinition, ResolvedMapEntry } from '#definitions/map-definition.js';
 import type { MapLineDefinition } from '#definitions/map-line-definition.js';
@@ -53,7 +54,10 @@ export class MapObjectCollection extends EventTarget implements Iterable<MapEntr
       return object;
     }
 
+    const commit = prepareRootAttachment(this, object);
     this.#objects = Object.freeze([...this.#objects, object]);
+    commit();
+    refreshCollectionConsumers(this);
 
     invalidateScenes(this, true);
 
@@ -70,6 +74,7 @@ export class MapObjectCollection extends EventTarget implements Iterable<MapEntr
     }
 
     this.#objects = Object.freeze(this.#objects.filter(entry => entry !== object));
+    refreshCollectionConsumers(this);
 
     invalidateScenes(this, true);
 
@@ -89,9 +94,9 @@ function createMapObject(definition: ResolvedMapEntry): MapEntry {
     case 'point':
       return new MapPoint(definition);
     case 'line':
-      return new MapLine(definition.id, definition.points);
+      return new MapLine(definition);
     case 'route':
-      return new MapRoute(definition.id, definition.points);
+      return new MapRoute(definition);
     case 'polygon':
       return new MapPolygon(definition);
   }

@@ -26,7 +26,6 @@ export interface CanvasPixels {
 
 const BLUE = '#2775d9';
 const ORANGE = '#d95012';
-const WHITE = '#ffffff';
 
 /** Sparse-only reference: input definitions, native Canvas, public map projection.
  * No layer getters, SVG rasterization, or renderer-private coordinates are used.
@@ -53,9 +52,6 @@ function reference(
     context.arc(screen.x, screen.y, 11, 0, Math.PI * 2);
     context.fillStyle = BLUE;
     context.fill();
-    context.lineWidth = 2;
-    context.strokeStyle = WHITE;
-    context.stroke();
   };
 
   definitions.forEach(root => {
@@ -144,7 +140,7 @@ function stable(
 }
 
 // Native damage clipping can slightly change antialiasing versus an unclipped
-// reference. These channel tolerances are far below blue/orange/white separation.
+// reference. These channel tolerances are far below blue/orange separation.
 function matches(actual: Uint8ClampedArray, expected: Uint8ClampedArray, index: number): boolean {
   if (expected[index + 3] === 0) {
     return actual[index + 3]! <= 8;

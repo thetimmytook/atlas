@@ -13,7 +13,7 @@ export const BUILDINGS = [
 export const INITIAL_FLOORS = [0, 1, 2, 0] as const;
 
 export function point(id: string, x: number, y: number, z: number): MapPointDefinition {
-  return { id, kind: 'point', position: { x, y, z } };
+  return { id, kind: 'point', pickable: true, position: { x, y, z } };
 }
 
 /** Small deterministic vector plan, not a randomly generated or downloaded image. */
@@ -185,6 +185,8 @@ export function createScene(roots: 3000 | 5000, background: string): MapDefiniti
 
   return {
     objects,
+    materials: { vertex: { properties: { symbol: 'circle' } } },
+    materialRules: [{ when: { kind: 'point' }, material: 'vertex' }],
     layers: [
       { id: 'background', stackIndex: -1, background: { source: background, size: MAP_SIZE } },
       ...BUILDINGS.flatMap((building, b) =>

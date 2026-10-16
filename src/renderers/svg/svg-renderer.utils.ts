@@ -1,17 +1,25 @@
 import { AtlasError } from '#errors/atlas-error.js';
 
 import type { BackgroundDescription } from '#definitions/map-definition.js';
+import type { ResolvedAppearance } from '#objects/map-materials.js';
 import type { Geometry } from '#spatial/geometry.js';
-import type { SceneObject, SceneSymbols } from '#spatial/scene-geometry.js';
+import type { SceneObject } from '#spatial/scene-geometry.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
-type SvgShape = SVGCircleElement | SVGLineElement | SVGPolylineElement | SVGPathElement;
+type SvgShape =
+  | SVGCircleElement
+  | SVGLineElement
+  | SVGPolylineElement
+  | SVGPathElement
+  | SVGImageElement
+  | SVGGElement;
 
 export interface SvgObject {
   readonly source: SceneObject;
   readonly element: SVGGElement;
-  readonly shape: SvgShape;
+  shape: SvgShape;
+  appearance: ResolvedAppearance;
 }
 
 /** Browser resource preparation stays outside the renderer-independent runtime. */
@@ -41,7 +49,7 @@ export async function prepareImage(
 }
 
 /** Translate a shared symbol into SVG without changing scene composition order. */
-export function createObject(source: SceneObject, symbols: SceneSymbols): SvgObject {
+export function createObject(source: SceneObject, appearance: ResolvedAppearance): SvgObject {
   const { kind } = source.geometry;
   const group = document.createElementNS(SVG_NAMESPACE, 'g');
   group.setAttribute('class', `atlas-${kind}`);
@@ -49,10 +57,52 @@ export function createObject(source: SceneObject, symbols: SceneSymbols): SvgObj
   group.setAttribute('visibility', 'hidden');
   group.setAttribute('aria-hidden', 'true');
 
-  const shape = createShape(kind, symbols);
+  const shape = createShape(kind, appearance);
   group.append(shape);
+  const object = { source, element: group, shape, appearance };
+  applyAppearance(object, appearance);
 
-  return { source, element: group, shape };
+  return object;
+}
+
+/** A symbol switch replaces only the point's child; style edits keep its existing shape. */
+export function applyAppearance(object: SvgObject, appearance: ResolvedAppearance): boolean {
+  let replaced = false;
+
+  if (appearance.kind === 'point') {
+    const tag = pointShapeTag(appearance.symbol);
+
+    if (object.shape.localName !== tag) {
+      const shape = createShape('point', appearance);
+      object.shape.replaceWith(shape);
+      object.shape = shape;
+      replaced = true;
+    }
+
+    if (appearance.symbol === 'circle') {
+      setChangedAttribute(object.shape, 'r', String(appearance.size / 2));
+      setChangedAttribute(object.shape, 'fill', appearance.color);
+      setChangedAttribute(object.shape, 'stroke', 'none');
+    } else if (appearance.image) {
+      const image = appearance.image;
+      setChangedAttribute(object.shape, 'href', image.source);
+      setChangedAttribute(object.shape, 'x', String(image.x));
+      setChangedAttribute(object.shape, 'y', String(image.y));
+      setChangedAttribute(object.shape, 'width', String(image.width));
+      setChangedAttribute(object.shape, 'height', String(image.height));
+      setChangedAttribute(object.shape, 'preserveAspectRatio', 'none');
+    }
+  } else if (appearance.kind === 'polygon') {
+    setChangedAttribute(object.shape, 'fill', appearance.color);
+    setChangedAttribute(object.shape, 'fill-opacity', String(appearance.opacity));
+  } else {
+    setChangedAttribute(object.shape, 'stroke', appearance.color);
+    setChangedAttribute(object.shape, 'stroke-width', String(appearance.width));
+  }
+
+  object.appearance = appearance;
+
+  return replaced;
 }
 
 /** Write map-space coordinates; camera scale does not affect this step. */
@@ -113,14 +163,10 @@ export function applyScreenScale(shape: SvgShape, kind: Geometry['kind'], scale:
   shape.setAttribute('transform', `scale(${scale})`);
 }
 
-function createShape(kind: Geometry['kind'], symbols: SceneSymbols): SvgShape {
+function createShape(kind: Geometry['kind'], appearance: ResolvedAppearance): SvgShape {
   if (kind === 'polygon') {
     const path = document.createElementNS(SVG_NAMESPACE, 'path');
 
-    // Temporary prototype fill; replace with resolved polygon materials. External contours are
-    // required before outline support: stroking these cell subpaths would expose internal edges.
-    path.setAttribute('fill', '#f59e0b');
-    path.setAttribute('fill-opacity', '0.3');
     path.setAttribute('fill-rule', 'nonzero');
     path.setAttribute('stroke', 'none');
 
@@ -129,8 +175,7 @@ function createShape(kind: Geometry['kind'], symbols: SceneSymbols): SvgShape {
 
   if (kind !== 'point') {
     const line = document.createElementNS(SVG_NAMESPACE, kind);
-    line.setAttribute('stroke-width', String(symbols.line.strokeWidth));
-    line.setAttribute('stroke-linecap', symbols.line.lineCap);
+    line.setAttribute('stroke-linecap', 'round');
     line.setAttribute('stroke-linejoin', 'round');
     line.setAttribute('fill', 'none');
     line.setAttribute('vector-effect', 'non-scaling-stroke');
@@ -138,9 +183,15 @@ function createShape(kind: Geometry['kind'], symbols: SceneSymbols): SvgShape {
     return line;
   }
 
-  const circle = document.createElementNS(SVG_NAMESPACE, 'circle');
-  circle.setAttribute('r', String(symbols.point.radius));
-  circle.setAttribute('stroke-width', String(symbols.point.strokeWidth));
+  const symbol = appearance.kind === 'point' ? appearance.symbol : 'none';
 
-  return circle;
+  return document.createElementNS(SVG_NAMESPACE, pointShapeTag(symbol));
+}
+
+function pointShapeTag(symbol: 'circle' | 'image' | 'none'): 'circle' | 'image' | 'g' {
+  if (symbol === 'none') {
+    return 'g';
+  }
+
+  return symbol;
 }

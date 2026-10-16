@@ -487,10 +487,11 @@ describe('real MapElement browser integration', () => {
   it('keeps shared runtime instances active in the second component after first-view detach and removal', async () => {
     const first = await createMap();
     const second = await createMap();
-    const route = new MapRoute('shared-route', [
-      pointDefinition(50, 170, 'a'),
-      pointDefinition(250, 170, 'b'),
-    ]);
+    const route = new MapRoute({
+      id: 'shared-route',
+      kind: 'route',
+      points: [pointDefinition(50, 170, 'a'), pointDefinition(250, 170, 'b')],
+    });
     const point = route.points[0]!;
     first.map.objects.add(route);
     first.map.objects.add(point);

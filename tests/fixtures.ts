@@ -1,5 +1,6 @@
 import { resolveMapDefinition } from '#definitions/map-definition.js';
 import { MapLayer } from '#objects/map-layer.js';
+import { MapMaterials } from '#objects/map-materials.js';
 import { MapModel } from '#objects/map-model.js';
 import { prepareSceneGeometry } from '#spatial/scene-geometry.js';
 
@@ -8,8 +9,9 @@ import type { MapPointDefinition } from '#definitions/map-point-definition.js';
 import type { MapObjectCollection, MapEntry } from '#objects/map-object-collection.js';
 import type { SceneGeometry } from '#spatial/scene-geometry.js';
 
+/** Existing geometry/interaction cases opt in; materials.test checks contextual defaults. */
 export function pointDefinition(x: number, y = 0, id?: string): MapPointDefinition {
-  return { kind: 'point', position: { x, y }, ...(id === undefined ? {} : { id }) };
+  return { kind: 'point', pickable: true, position: { x, y }, ...(id === undefined ? {} : { id }) };
 }
 
 /** Test application explicitly assigns added roots to its single content layer. */
@@ -34,7 +36,18 @@ export function objectScene(
   );
   selectAddedRoots(objects, layer);
 
-  return prepareSceneGeometry(objects, [layer]);
+  const materials = new MapMaterials(
+    resolveMapDefinition({
+      layers: [],
+      materials: { vertex: { properties: { symbol: 'circle' } } },
+      materialRules: [{ when: { kind: 'point' }, material: 'vertex' }],
+    }),
+    objects,
+    changed => scene.invalidateAppearances(changed),
+  );
+  const scene = prepareSceneGeometry(objects, [layer], materials);
+
+  return scene;
 }
 
 export function editableModel(): MapModel {

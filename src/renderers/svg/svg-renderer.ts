@@ -3,6 +3,7 @@ import { isLayerEligible } from '#spatial/scene-geometry.js';
 
 import {
   applyGeometry,
+  applyAppearance,
   applyScreenScale,
   createObject,
   prepareImage,
@@ -23,7 +24,8 @@ export class SvgRenderer extends Renderer {
   #visible = new Map<MapLayer, boolean>();
   #sources: readonly SceneObject[] = [];
   #bySource = new Map<SceneObject, SvgObject>();
-  readonly #changed = new Set<SvgObject>();
+  readonly #geometryChanges = new Set<SvgObject>();
+  readonly #appearanceChanges = new Set<SvgObject>();
   readonly #unpainted = new Set<SvgObject>();
   readonly #points = new Set<SvgObject>();
   #width: number | undefined;
@@ -51,7 +53,7 @@ export class SvgRenderer extends Renderer {
     );
     const byLayer = new Map(layers);
     const sources = geometry.objects;
-    const objects = sources.map(entry => createObject(entry, geometry.symbols));
+    const objects = sources.map(entry => createObject(entry, geometry.appearanceFor(entry)));
 
     for (const object of objects) {
       byLayer.get(object.source.layer)!.append(object.element);
@@ -65,7 +67,8 @@ export class SvgRenderer extends Renderer {
         this.#visible.clear();
         this.#sources = sources;
         this.#bySource = new Map(objects.map(object => [object.source, object]));
-        this.#changed.clear();
+        this.#geometryChanges.clear();
+        this.#appearanceChanges.clear();
         this.#unpainted.clear();
         this.#points.clear();
         this.#scale = undefined;
@@ -94,15 +97,25 @@ export class SvgRenderer extends Renderer {
     this.#syncObjects();
     this.#syncVisibility();
 
-    for (const source of this.#geometry?.takeChanges() ?? []) {
+    const changes = this.#geometry?.takeChanges();
+
+    for (const source of changes?.geometry ?? []) {
       const object = this.#bySource.get(source);
 
       if (object) {
-        this.#changed.add(object);
+        this.#geometryChanges.add(object);
       }
     }
 
-    // Keep pending geometry and new-node visibility until a usable viewport returns.
+    for (const source of changes?.appearance ?? []) {
+      const object = this.#bySource.get(source);
+
+      if (object) {
+        this.#appearanceChanges.add(object);
+      }
+    }
+
+    // Keep both pending change kinds and new-node visibility until a usable viewport returns.
     if (viewport.width <= 0 || viewport.height <= 0) {
       return;
     }
@@ -125,28 +138,38 @@ export class SvgRenderer extends Renderer {
       this.#scale = scale;
     }
 
-    this.#applyChangedGeometry(scaleChanged, scale);
+    this.#applyChanges(scaleChanged, scale);
   }
 
-  #applyChangedGeometry(scaleChanged: boolean, scale: number): void {
-    for (const object of this.#changed) {
-      const { geometry } = object.source;
-      applyGeometry(object.element, object.shape, geometry);
+  #applyChanges(scaleChanged: boolean, scale: number): void {
+    for (const object of this.#appearanceChanges) {
+      const appearance = this.#geometry!.appearanceFor(object.source);
+      const replaced = appearance !== object.appearance && applyAppearance(object, appearance);
 
-      if (this.#unpainted.delete(object)) {
-        if (!scaleChanged) {
-          applyScreenScale(object.shape, geometry.kind, scale);
-        }
-
-        object.element.removeAttribute('visibility');
+      if (replaced) {
+        applyScreenScale(object.shape, object.source.geometry.kind, scale);
       }
     }
 
-    this.#changed.clear();
+    for (const object of this.#geometryChanges) {
+      applyGeometry(object.element, object.shape, object.source.geometry);
+    }
+
+    for (const object of this.#unpainted) {
+      if (!scaleChanged) {
+        applyScreenScale(object.shape, object.source.geometry.kind, scale);
+      }
+
+      object.element.removeAttribute('visibility');
+    }
+
+    this.#geometryChanges.clear();
+    this.#appearanceChanges.clear();
+    this.#unpainted.clear();
   }
 
   #addObject(object: SvgObject): void {
-    this.#changed.add(object);
+    this.#geometryChanges.add(object);
     this.#unpainted.add(object);
 
     if (object.source.geometry.kind === 'point') {
@@ -176,7 +199,7 @@ export class SvgRenderer extends Renderer {
         return existing;
       }
 
-      const object = createObject(source, geometry.symbols);
+      const object = createObject(source, geometry.appearanceFor(source));
       this.#addObject(object);
 
       return object;
@@ -184,7 +207,8 @@ export class SvgRenderer extends Renderer {
 
     for (const object of previous.values()) {
       object.element.remove();
-      this.#changed.delete(object);
+      this.#geometryChanges.delete(object);
+      this.#appearanceChanges.delete(object);
       this.#unpainted.delete(object);
       this.#points.delete(object);
     }

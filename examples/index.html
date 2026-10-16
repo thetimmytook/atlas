@@ -83,15 +83,16 @@
     </p>
     <p>
       Click or tap a route, point, or independent line to inspect it. A route point shows its own ID
-      and its route. Objects are illustrative positions, not verified loot locations or paths. Use
-      “Move line end” to update the independent line or “Move route point” to update the route. “Add
-      route point” appends a new vertex that can be inspected and moved. “Insert route point” adds a
-      vertex between the first two; “Remove inserted point” removes the most recent insertion.
-      “Replace route interior” replaces every point between the endpoints with two new vertices in
-      one operation, keeping both endpoints. “Add point” creates an independent point at the camera
-      center; “Move added point” moves the most recent one. “Remove added point” detaches that point
-      from the map. It can still be moved while detached; “Restore added point” returns the same
-      point at its current position.
+      and its route. Ordinary route bends have no symbol or separate picking; the green checkpoint
+      and points added by the controls explicitly enable both. Objects are illustrative positions,
+      not verified loot locations or paths. Use “Move line end” to update the independent line or
+      “Move route point” to update the route. “Add route point” appends a new vertex that can be
+      inspected and moved. “Insert route point” adds a vertex between the first two; “Remove
+      inserted point” removes the most recent insertion. “Replace route interior” replaces every
+      point between the endpoints with two new vertices in one operation, keeping both endpoints.
+      “Add point” creates an independent point at the camera center; “Move added point” moves the
+      most recent one. “Remove added point” detaches that point from the map. It can still be moved
+      while detached; “Restore added point” returns the same point at its current position.
     </p>
     <p id="status" role="status">Loading map…</p>
     <p>
@@ -144,6 +145,17 @@
       import { MapElement, Point2, Point3 } from '../src/index.ts';
 
       customElements.define('atlas-map', MapElement);
+      MapElement.configure({
+        properties: [
+          {
+            name: 'type',
+            valueType: 'string',
+            optional: true,
+            appliesTo: ['point'],
+            read: object => object.data?.type,
+          },
+        ],
+      });
 
       const map = document.querySelector('atlas-map');
       const status = document.querySelector('#status');
@@ -186,6 +198,14 @@
       });
 
       const definition = {
+        materials: {
+          marker: { properties: { color: '#2775d9', size: 22 } },
+          poi: { inherits: 'marker', properties: { symbol: 'circle', color: '#2e8b57', size: 28 } },
+        },
+        materialRules: [
+          { when: { kind: 'point' }, material: 'marker' },
+          { when: { kind: 'point', type: 'poi' }, material: 'poi' },
+        ],
         layers: [
           {
             id: 'background',
@@ -226,7 +246,13 @@
             kind: 'route',
             points: [
               { kind: 'point', id: 'route-start', position: { x: 85, y: 70, z: 1 } },
-              { kind: 'point', id: 'route-checkpoint', position: { x: 60, y: 90, z: 5 } },
+              {
+                kind: 'point',
+                id: 'route-checkpoint',
+                data: { type: 'poi' },
+                pickable: true,
+                position: { x: 60, y: 90, z: 5 },
+              },
               { kind: 'point', position: { x: 30, y: 110, z: 1 } },
             ],
           },
@@ -283,6 +309,8 @@
         const last = route.points.at(-1);
         const point = route.addPoint({
           kind: 'point',
+          data: { type: 'poi' },
+          pickable: true,
           position: new Point3(
             last.position.x === 30 ? 50 : 30,
             last.position.y === 110 ? 125 : 110,
@@ -297,6 +325,8 @@
         const [start, end] = route.points;
         insertedRoutePoint = route.insertPoint(1, {
           kind: 'point',
+          data: { type: 'poi' },
+          pickable: true,
           position: new Point3(
             (start.position.x + end.position.x) / 2,
             (start.position.y + end.position.y) / 2,

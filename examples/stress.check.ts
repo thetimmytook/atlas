@@ -24,7 +24,6 @@ interface ExpectedObject {
 
 // Temporary symbol contract of the prototype, independent of renderer/picking defaults.
 const POINT_RADIUS = 11;
-const POINT_STROKE = 2;
 const LINE_STROKE = 4;
 const PROBE_ZOOM = 10000;
 const ROUTE_SCENARIO = 'route-update';
@@ -203,7 +202,7 @@ function checkShape(group: Element, expected: ExpectedObject, scale: number): vo
     assertMatch(
       shape.localName === 'circle' &&
         shape.getAttribute('r') === String(POINT_RADIUS) &&
-        shape.getAttribute('stroke-width') === String(POINT_STROKE) &&
+        shape.getAttribute('stroke') === 'none' &&
         shape.getAttribute('transform') === `scale(${scale})`,
       'SVG point symbol',
       expected.id,
@@ -274,10 +273,7 @@ function covers(object: ExpectedObject, point: Point2, zoom: number): boolean {
   if (object.kind === 'point') {
     const position = object.points[0]!.position;
 
-    return (
-      Math.hypot(point.x - position.x, point.y - position.y) * zoom <=
-      POINT_RADIUS + POINT_STROKE / 2
-    );
+    return Math.hypot(point.x - position.x, point.y - position.y) * zoom <= POINT_RADIUS;
   }
 
   return object.points

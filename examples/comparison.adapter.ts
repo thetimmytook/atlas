@@ -59,8 +59,8 @@ export class AtlasAdapter implements BenchmarkAdapter {
     const removed = roots.slice(0, amount);
     const route = roots.find(root => root.kind === 'route');
     const replacements = [
-      { id: 'replacement-0', kind: 'point' as const, position: { x: 60, y: 65 } },
-      { id: 'replacement-1', kind: 'point' as const, position: { x: 62, y: 67 } },
+      { id: 'replacement-0', kind: 'point' as const, position: { x: 60, y: 65 }, pickable: true },
+      { id: 'replacement-1', kind: 'point' as const, position: { x: 62, y: 67 }, pickable: true },
     ];
 
     return (checkpoint): void => {

@@ -29,6 +29,7 @@ function floor(building: 'a' | 'b', index: number): MapLayerDefinition {
 }
 
 const definition: MapDefinition = {
+  materials: { poi: { properties: { symbol: 'circle' } } },
   layers: [
     {
       id: 'site',
@@ -62,10 +63,34 @@ const definition: MapDefinition = {
       id: 'journey',
       kind: 'route',
       points: [
-        { id: 'a-entry', kind: 'point', position: { x: 40, y: 165, z: 1 } },
-        { id: 'a-stairs', kind: 'point', position: { x: 110, y: 165, z: 4 } },
-        { id: 'b-stairs', kind: 'point', position: { x: 250, y: 165, z: 4 } },
-        { id: 'b-entry', kind: 'point', position: { x: 320, y: 165, z: 1 } },
+        {
+          id: 'a-entry',
+          kind: 'point',
+          material: 'poi',
+          pickable: true,
+          position: { x: 40, y: 165, z: 1 },
+        },
+        {
+          id: 'a-stairs',
+          kind: 'point',
+          material: 'poi',
+          pickable: true,
+          position: { x: 110, y: 165, z: 4 },
+        },
+        {
+          id: 'b-stairs',
+          kind: 'point',
+          material: 'poi',
+          pickable: true,
+          position: { x: 250, y: 165, z: 4 },
+        },
+        {
+          id: 'b-entry',
+          kind: 'point',
+          material: 'poi',
+          pickable: true,
+          position: { x: 320, y: 165, z: 1 },
+        },
       ],
     },
     ...buildingNames.flatMap(building =>

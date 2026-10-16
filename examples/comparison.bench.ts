@@ -420,9 +420,8 @@ async function run(all: boolean, instrumented: boolean): Promise<void> {
     scenarios,
     symbols: {
       pointRadius: 11,
-      pointStroke: 2,
+      pointStroke: 0,
       fill: '#2775d9',
-      pointStrokeColor: '#ffffff',
       lineStroke: 4,
       lineColor: '#d95012',
       caps: 'round',

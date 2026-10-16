@@ -241,7 +241,7 @@ describe('live layer membership and eligibility', () => {
     const point = model.objects.get('shared') as MapPoint;
     model.geometry.takeChanges();
     point.position = new Point2(90, 80);
-    expect(model.geometry.takeChanges().size).toBe(2);
+    expect(model.geometry.takeChanges().geometry.size).toBe(2);
 
     for (let index = 0; index < 10; index++) {
       view.center = new Point2(160 + index, 120);

@@ -18,14 +18,17 @@ export const background: BackgroundDescription = {
   size: new Size(320, 240),
 };
 
+/** Existing vertex interaction cases opt in; the material suite checks contextual defaults. */
 export function pointDefinition(x: number, y: number, id: string): MapPointDefinition {
-  return { kind: 'point', id, position: new Point2(x, y) };
+  return { kind: 'point', id, pickable: true, position: new Point2(x, y) };
 }
 
 export function mapDefinition(objects: NonNullable<MapDefinition['objects']> = []): MapDefinition {
   const roots = objects.map(object => ({ ...object, id: object.id ?? createId() }));
 
   return {
+    materials: { vertex: { properties: { symbol: 'circle' } } },
+    materialRules: [{ when: { kind: 'point' }, material: 'vertex' }],
     layers: [{ id: 'content', background, objects: roots.map(object => object.id) }],
     objects: roots,
   };

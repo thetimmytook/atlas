@@ -93,7 +93,11 @@ describe('root object membership', () => {
 
   it('reattaches the same instance with current state and treats repeated attachment as a no-op', () => {
     const objects = new MapObjectCollection();
-    const route = new MapRoute('route', [pointDefinition(0, 0, 'start')]);
+    const route = new MapRoute({
+      id: 'route',
+      kind: 'route',
+      points: [pointDefinition(0, 0, 'start')],
+    });
     const first = route.points[0]!;
     objects.add(route);
     objects.remove(route);

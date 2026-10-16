@@ -8,16 +8,20 @@ import { ObjectClickEvent } from '#interaction/object-click-event.js';
 import { Rect } from '#math/rect.js';
 import { Size } from '#math/size.js';
 import { MapModel } from '#objects/map-model.js';
+import { configureProperties, lockPropertyConfiguration } from '#objects/property-configuration.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 
+import { prepareImageResources } from './image-resources.js';
 import html from './map-element.html?raw';
 
 import type { MapDefinition, ResolvedMapDefinition } from '#definitions/map-definition.js';
+import type { MapConfiguration, MaterialLookup } from '#definitions/material-definition.js';
 import type { SurfaceInputDetail } from '#interaction/camera-controls.js';
 import type { ClickTrigger } from '#interaction/map-surface-event.js';
 import type { MapLayer } from '#objects/map-layer.js';
 import type { MapObjectCollection } from '#objects/map-object-collection.js';
 import type { Renderer } from '#renderers/renderer.js';
+import type { PreparedImages } from './image-resources.js';
 
 export class MapElement extends HTMLElement {
   readonly #coordinates: MapCoordinates;
@@ -31,6 +35,11 @@ export class MapElement extends HTMLElement {
   #clickTrigger: ClickTrigger = 'release';
   #loading = false;
   #resizeObserver: ResizeObserver | undefined;
+  #preparedImages: PreparedImages | undefined;
+
+  static configure(configuration: MapConfiguration): void {
+    configureProperties(configuration);
+  }
 
   constructor() {
     super();
@@ -105,6 +114,10 @@ export class MapElement extends HTMLElement {
     return this.#model.definition;
   }
 
+  get materials(): MaterialLookup {
+    return this.#model.materials.lookup;
+  }
+
   /**
    * Group synchronous edits while deferring only this map's rendering.
    * Returned thenables are rejected after invocation; successful edits are not rolled back.
@@ -141,6 +154,8 @@ export class MapElement extends HTMLElement {
   }
 
   async load(definition: MapDefinition): Promise<void> {
+    lockPropertyConfiguration();
+
     if (this.#loading) {
       throw new AtlasError('A map load is already in progress.', {
         code: 'MAP_LOAD_IN_PROGRESS',
@@ -148,20 +163,32 @@ export class MapElement extends HTMLElement {
     }
 
     this.#loading = true;
+    let images: PreparedImages | undefined;
+    let candidate: MapModel | undefined;
 
     try {
       const resolvedDefinition = resolveMapDefinition(definition);
       const model = new MapModel(resolvedDefinition);
+      candidate = model;
+      images = await prepareImageResources(resolvedDefinition.resources);
+      model.materials.setPreparedImages(images.images);
       const scene = await this.#renderer.prepare(model.geometry);
       const previousModel = this.#model;
       scene.show();
       this.#model = model;
       this.#unobserveModel(previousModel);
+      previousModel.materials.deactivate();
+      this.#preparedImages?.release();
+      this.#preparedImages = images;
+      images = undefined;
+      candidate = undefined;
       this.#controls.cancelClick();
       this.#observeModel();
       this.fit();
       this.#requestRender();
     } finally {
+      images?.release();
+      candidate?.materials.deactivate();
       this.#loading = false;
     }
   }

@@ -1,31 +1,19 @@
+import { MapMaterials } from '#objects/map-materials.js';
+import { getCollectionMaterials } from '#objects/material-consumers.js';
+
 import { createClippedAppearance } from './clipped-appearance.js';
 import { createPolygonGeometry } from './polygon-geometry.js';
 import { trackScene, untrackScene } from './scene-invalidation.js';
 
 import type { Point3 } from '#math/point3.js';
 import type { MapLayer } from '#objects/map-layer.js';
+import type { ResolvedAppearance } from '#objects/map-materials.js';
 import type { MapEntry, MapObjectCollection } from '#objects/map-object-collection.js';
+import type { MapObject } from '#objects/map-object.js';
 import type { MapPoint } from '#objects/map-point.js';
 import type { MapRoute } from '#objects/map-route.js';
 import type { Geometry } from './geometry.js';
 import type { SceneInvalidation } from './scene-invalidation.js';
-
-/** Circle dimensions in viewport CSS pixels, shared by rendering and spatial queries. */
-export interface PointSymbol {
-  readonly radius: number;
-  readonly strokeWidth: number;
-}
-
-/** Screen-sized stroke; round caps also define the segment's picking boundary. */
-export interface LineSymbol {
-  readonly strokeWidth: number;
-  readonly lineCap: 'round';
-}
-
-export interface SceneSymbols {
-  readonly point: PointSymbol;
-  readonly line: LineSymbol;
-}
 
 export interface SceneObject {
   readonly layer: MapLayer;
@@ -34,26 +22,27 @@ export interface SceneObject {
   readonly route?: MapRoute;
 }
 
+export interface SceneChanges {
+  readonly geometry: ReadonlySet<SceneObject>;
+  readonly appearance: ReadonlySet<SceneObject>;
+}
+
 export interface SceneGeometry {
   /** Fixed bottom-to-top layer composition, shared by SVG and spatial queries. */
   readonly layers: readonly MapLayer[];
   readonly objects: readonly SceneObject[];
-  readonly symbols: SceneSymbols;
+  appearanceFor(entry: SceneObject): ResolvedAppearance;
+  invalidateAppearances(objects: ReadonlySet<MapObject>): void;
 
   /** Drain display changes for the current single view; spatial reads never consume them. */
-  takeChanges(): ReadonlySet<SceneObject>;
+  takeChanges(): SceneChanges;
 }
-
-// Temporary shared defaults; replace with per-object symbols derived from resolved materials.
-const defaultSymbols: SceneSymbols = Object.freeze({
-  point: Object.freeze({ radius: 11, strokeWidth: 2 }),
-  line: Object.freeze({ strokeWidth: 4, lineCap: 'round' }),
-});
 
 /** Shared direct views and cached derived appearances, reconciled before queries or painting. */
 export function prepareSceneGeometry(
   objects: MapObjectCollection,
   layers: readonly MapLayer[],
+  materialSet?: MapMaterials,
 ): SceneGeometry {
   const orderedLayers = Object.freeze([...layers].sort((a, b) => a.stackIndex - b.stackIndex));
   const invalidation: SceneInvalidation = {
@@ -64,6 +53,13 @@ export function prepareSceneGeometry(
   const reference = new WeakRef(invalidation);
   const tracked = new Set<object>();
   const pending = new Set<SceneObject>();
+  const appearanceChanges = new Set<MapObject>();
+  const materials =
+    materialSet ??
+    getCollectionMaterials(objects) ??
+    new MapMaterials(undefined, objects, changed => {
+      changed.forEach(object => appearanceChanges.add(object));
+    });
   let roots: readonly MapEntry[] = [];
   let entries: readonly SceneObject[] = [];
   let entryDependencies = new Map<object, SceneObject[]>();
@@ -367,13 +363,29 @@ export function prepareSceneGeometry(
 
       return entries;
     },
-    symbols: defaultSymbols,
-    takeChanges(): ReadonlySet<SceneObject> {
+    appearanceFor(entry: SceneObject): ResolvedAppearance {
+      return materials.appearanceFor(entry.object, entry.route !== undefined);
+    },
+    invalidateAppearances(changed: ReadonlySet<MapObject>): void {
+      changed.forEach(object => appearanceChanges.add(object));
+    },
+    takeChanges(): SceneChanges {
       sync();
-      const affected = new Set(pending);
+      const appearance = new Set<SceneObject>();
+
+      for (const object of appearanceChanges) {
+        for (const entry of entryDependencies.get(object) ?? []) {
+          if (entry.object === object) {
+            appearance.add(entry);
+          }
+        }
+      }
+
+      appearanceChanges.clear();
+      const geometry = new Set(pending);
       pending.clear();
 
-      return affected;
+      return { geometry, appearance };
     },
   });
 }

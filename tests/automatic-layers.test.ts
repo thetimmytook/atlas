@@ -19,7 +19,12 @@ const EXPECTED_LINE = 'Expected line.';
 const FLOOR = { min: { z: 0 }, max: { z: 3 } };
 
 function vertex(x: number, y: number, z: number, id?: string): MapPointDefinition {
-  return { kind: 'point', ...(id === undefined ? {} : { id }), position: new Point3(x, y, z) };
+  return {
+    kind: 'point',
+    pickable: true,
+    ...(id === undefined ? {} : { id }),
+    position: new Point3(x, y, z),
+  };
 }
 
 function camera(): Camera {
@@ -203,7 +208,7 @@ describe('automatic appearances', () => {
     expect(positions[1]!.x).toBe(45);
     expect(clipping).toHaveBeenCalledTimes(1);
     expect(roots).not.toHaveBeenCalled();
-    expect([...scene.geometry.takeChanges()].map(entry => entry.object.id)).toEqual([
+    expect([...scene.geometry.takeChanges().geometry].map(entry => entry.object.id)).toEqual([
       'route',
       'route',
     ]);
@@ -216,7 +221,7 @@ describe('automatic appearances', () => {
     }
 
     expect(clipping).toHaveBeenCalledTimes(1);
-    expect(scene.geometry.takeChanges().size).toBe(0);
+    expect(scene.geometry.takeChanges().geometry.size).toBe(0);
   });
 
   it('tracks initially excluded and hidden geometry and resumes after remove/query/edit/reattach', () => {
@@ -237,11 +242,11 @@ describe('automatic appearances', () => {
     scene.objects.remove(route);
     expect(scene.spatial.hitTest(new Point2(50, 100), camera())).toBeUndefined();
     route.points[0]!.position = new Point3(20, 100, 2);
-    expect(scene.geometry.takeChanges().size).toBe(0);
+    expect(scene.geometry.takeChanges().geometry.size).toBe(0);
     scene.objects.add(route);
     expect(scene.geometry.objects[0]).toBe(entries[0]);
     expect(scene.spatial.hitTest(new Point2(40, 100), camera())?.object).toBe(route);
-    expect(scene.geometry.takeChanges().has(entries[0]!)).toBe(true);
+    expect(scene.geometry.takeChanges().geometry.has(entries[0]!)).toBe(true);
   });
 
   it('revalidates a captured fragment when its eligible geometry changes, without repicking underneath', () => {

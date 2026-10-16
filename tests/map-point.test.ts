@@ -11,7 +11,7 @@ import { pointDefinition } from './fixtures.js';
 describe('point positions and owner notifications', () => {
   it('copies input and updates position before notifying the point and its owner', () => {
     const definition = { kind: 'point' as const, id: 'vertex', position: { x: 10, y: 20 } };
-    const route = new MapRoute('route', [definition]);
+    const route = new MapRoute({ id: 'route', kind: 'route', points: [definition] });
     const point = route.points[0]!;
     definition.position.x = 999;
     expect(point.position).toEqual(new Point3(10, 20, 0));
@@ -35,7 +35,7 @@ describe('point positions and owner notifications', () => {
   it.each([new Point2(NaN, 10), new Point2(10, Infinity), new Point2(-Infinity, 10)])(
     'rejects non-finite positions without changing state or notifying the owner: %j',
     position => {
-      const route = new MapRoute('route', [pointDefinition(10, 20)]);
+      const route = new MapRoute({ id: 'route', kind: 'route', points: [pointDefinition(10, 20)] });
       const point = route.points[0]!;
       const previous = point.position;
       const points = route.points;
@@ -58,10 +58,11 @@ describe('point positions and owner notifications', () => {
   );
 
   it('forwards either line endpoint edit while retaining endpoint references and IDs', () => {
-    const line = new MapLine('line', [
-      pointDefinition(0, 0, 'start'),
-      pointDefinition(100, 0, 'end'),
-    ]);
+    const line = new MapLine({
+      id: 'line',
+      kind: 'line',
+      points: [pointDefinition(0, 0, 'start'), pointDefinition(100, 0, 'end')],
+    });
     const points = line.points;
     const changed = vi.fn();
     line.addEventListener('change', changed);
