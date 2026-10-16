@@ -29,6 +29,87 @@ const origins: readonly LabelOrigin[] = [
   'bottom right',
 ];
 
+describe('resolved point label declarations', () => {
+  function inherited(): MapModel {
+    return new MapModel(
+      resolveMapDefinition({
+        layers: [{ objects: ['p'] }],
+        materials: {
+          base: {
+            properties: {
+              color: '#abcdef',
+              label: {
+                color: '#123456',
+                font: { size: '2rem', family: 'serif' },
+                origin: 'top right',
+                offset: { x: '7px', y: '-3px' },
+              },
+            },
+          },
+          middle: { inherits: 'base', properties: { label: { font: { weight: 'bold' } } } },
+          child: { inherits: 'middle', properties: { label: { color: '#654321', font: {} } } },
+        },
+        objects: [{ kind: 'point', id: 'p', position: { x: 0, y: 0 }, material: 'child' }],
+      }),
+    );
+  }
+
+  function label(scene: MapModel): unknown {
+    const appearance = scene.geometry.appearanceFor(scene.geometry.objects[0]!);
+    expect(appearance.kind).toBe('point');
+
+    return appearance.kind === 'point' ? appearance.label : undefined;
+  }
+
+  it('inherits label/font leaves through the entire explicit chain', () => {
+    const scene = inherited();
+    expect(label(scene)).toEqual({
+      color: '#654321',
+      font: { size: '2rem', family: 'serif', weight: 'bold' },
+      origin: 'top right',
+      offset: { x: '7px', y: '-3px' },
+    });
+    scene.materials.get('middle')!.properties = { label: { font: { size: '18px' } } };
+    expect(label(scene)).toMatchObject({
+      font: { size: '18px', family: 'serif', weight: 'normal' },
+    });
+    expect(scene.materials.get('child')!.properties).toEqual({
+      label: { color: '#654321', font: {} },
+    });
+  });
+
+  it('replaces offset as a whole pair and resumes inheritance after whole-value replacement', () => {
+    const scene = inherited();
+    const child = scene.materials.get('child')!;
+    const snapshot = scene.definition;
+    child.properties = { label: { offset: { x: '0px', y: '4rem' } } };
+    expect(label(scene)).toMatchObject({ offset: { x: '0px', y: '4rem' } });
+    child.properties = {};
+    expect(label(scene)).toMatchObject({ offset: { x: '7px', y: '-3px' } });
+    expect(child.properties).toEqual({});
+    expect(scene.definition).toBe(snapshot);
+    expect(snapshot!.materials.child!.properties).toEqual({
+      label: { color: '#654321', font: {} },
+    });
+  });
+
+  it('applies independent defaults without adding a family or modifying own declarations', () => {
+    const scene = inherited();
+    const snapshot = scene.definition;
+    scene.materials.get('base')!.properties = { color: '#abcdef' };
+    scene.materials.get('middle')!.properties = { label: { font: {} } };
+    scene.materials.get('child')!.properties = {};
+    expect(label(scene)).toEqual({
+      color: '#222222',
+      font: { size: '1rem', weight: 'normal' },
+      origin: 'bottom center',
+      offset: { x: '0px', y: '-1rem' },
+    });
+    expect(scene.materials.get('middle')!.properties).toEqual({ label: { font: {} } });
+    expect(snapshot!.materials.base!.properties.label!.font!.family).toBe('serif');
+  });
+});
+
 function model(properties: MaterialProperties = {}): MapModel {
   return new MapModel(
     resolveMapDefinition({
