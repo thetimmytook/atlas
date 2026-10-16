@@ -5,6 +5,18 @@ browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #
 and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
 and single-consumer; they are not public core lifecycle or multiple viewport support.
 
+## Material appearance invalidation — implemented for review, 2026-10-12
+
+The [first material slice](MATERIALS_FIRST_SLICE_CONTRACT.md) keeps geometry and
+appearance invalidation separate through `SceneGeometry.takeChanges()` and SVG.
+Its internal result contains `geometry` and `appearance` sets; the same entry can
+occur in both. Color-only edits update appearance without reading coordinates or
+serializing paths/cells. Geometry changes write coordinates once, and both causes
+are applied in the same paint regardless of assignment order within batch. A zero
+viewport retains both sets until recovery. Picking does not consume either set.
+Existing nodes, local clipping/triangulation caches and the single-consumer boundary
+remain in use. The dated merged-baseline notes below describe the earlier geometry queue.
+
 ## Batch rendering boundary — implemented for review, 2026-10-09
 
 The [accepted synchronous nested batch contract](RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09)

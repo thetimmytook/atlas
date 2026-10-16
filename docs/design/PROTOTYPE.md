@@ -2,10 +2,101 @@
 
 Current public baseline: [Current contract](CURRENT_CONTRACT.md), checked against
 merged `a5be046` on 2026-10-09. Polygon PR #30 and the route-membership/gesture fixes
-(PRs #33–34) are merged. Batch is implemented for review, not merged. Older
+(PRs #33–34) are merged. Batch subsequently merged in
+[PR #38](https://github.com/thetimmytook/atlas/pull/38). The first material slice is
+implemented and accepted for PR, pending merge. Older
 review-stage sections below retain dated implementation/validation history.
 
+## First material slice — implemented for review, 2026-10-12
+
+After accepting the revised [public contract](MATERIALS_FIRST_SLICE_CONTRACT.md),
+the user requested implementation. All five steps passed final acceptance on
+2026-10-16 and are accepted for PR, pending merge. This section updates the
+current stage while retaining the dated baseline/history below.
+
+- `material-definition.ts`, the material/data validators and `AtlasMaterialError`
+  add the serializable/type-only public contracts, copied own declarations, strict
+  JSON boundary, graph/rule/reference checks and fixed diagnostics.
+- `property-configuration.ts` implements accumulating/locking registrations and
+  strict readers over frozen candidate projections. `material-consumers.ts` and
+  `MapMaterials` preflight all map consumers without relying on DOM observation;
+  route membership refresh stays local and preserves independent root use.
+- Full-definition line/route construction, common data/material fields and the
+  independent `pickable` override are wired through direct construction, load,
+  root additions/attachments and route point edits. Material lookup/handles stay
+  map-owned; edits update only selected consumers/descendants and retain load snapshots.
+- Browser `image-resources.ts` prepares every SVG/PNG declaration and its intrinsic
+  dimensions before replacement. Failure releases candidate resource URLs and
+  retains the active map. Successful replacement releases old map-consumer links and
+  image URLs, so retained handles do not constrain or invalidate the new map.
+- The scene resolves per-map/per-role appearance shared by SVG and spatial queries.
+  Style edits queue local appearance work independently of geometry/clipping.
+  The renderer drains separate geometry/appearance sets, avoiding coordinate reads
+  and serialization on color-only edits while applying both causes within batch.
+  SVG keeps surviving groups/shapes, replacing a point child only for a symbol-kind
+  switch. Picking and captured-hit revalidation update synchronously, including batch.
+- Factory demonstrates an ordinary bend and an explicitly styled/pickable checkpoint.
+  Benchmark fixtures explicitly request vertex circles/picking; comparison reference
+  styles and checks follow the accepted removal of circle outlines. Historical
+  measurements/artifacts remain unchanged; no new performance claim is made.
+
+First-slice validation on 2026-10-12: 285 Node tests, 124 desktop Chromium browser tests and 23
+built-example/native-input E2E tests pass, together with project checks and the
+library/declaration build. New material suites cover registration/data strictness, graph/rule
+precedence, parent edits, atomic shared membership/assignment, both point roles,
+image dimensions/anchors/transparency, unused broken resources, stale handles,
+local SVG mutations, immediate batch picking and reconnect. Broader browser/mobile
+acceptance, labels, universal interactions/hit areas, background migration and the
+full resource manager remain separate work.
+
+Review corrections reject unknown material/resource/rule fields and `null` map
+collections while retaining arbitrary application data keys. Focused regressions
+count renderer coordinate reads for 1000-vertex routes/polygons and check combined
+geometry/color batches in both assignment orders, plus active-map preservation
+after rejected loads.
+
+### Type/default/name refactor — implemented for review, 2026-10-16
+
+The small follow-up preserves the accepted material behavior and remains in the
+working tree, without commits, push or PR. `PointImage extends Partial<Size>` and
+the exported plain-string `ImageResourceId` alias are used consistently for image
+references, resource keys and prepared-image maps. `MapMaterials` centralizes its
+existing defaults in one internal `DEFAULTS` object, keeps `appearanceFor` returning
+`ResolvedAppearance` and leaves TypeScript configuration unchanged.
+
+Internal weak links now use Consumer terminology in `material-consumers.ts`;
+`#decrementObjectUsage` retains the same usage-count cleanup at zero. Preflight,
+commit ordering and shared/disconnected consumers are unchanged. Public `pickable`
+JSDoc and the [README](../../README.md)/[integration guide](../INTEGRATION.md) explain
+explicit overrides, both role defaults and independent symbol/picking choices.
+The guides now show current material/route examples and distinguish review from merge.
+
+Validation on 2026-10-16: `npm run check` passes with 36 advisory warnings and no
+errors; all 285 Node tests and 124 Chromium browser tests pass, together with the
+library/declaration build, `git diff --check` and 203 local links in the seven
+updated Markdown files (including anchors). The 2026-10-12 E2E result above is
+historical and is not a new E2E run. Existing null/unknown-field, color-only
+coordinate-read and mixed geometry/appearance batch regressions are retained.
+
+### Final material acceptance — 2026-10-16
+
+Independent review corrections reject explicit zero, negative and nonfinite SVG
+dimensions even when a positive viewBox is available. A failed image preparation
+now aborts sibling work immediately, releases candidate URLs and guards late
+fetch/body/decode results. The original error and previous map are preserved;
+a subsequent valid load succeeds. Focused regressions cover invalid dimensions,
+late resolutions/rejections, URL cleanup and unhandled-rejection prevention.
+
+Fresh acceptance passes 285 Node tests, 145 desktop Chromium browser tests and 23
+built-example/native-input E2E tests, plus project checks (35 advisory warnings,
+zero errors), library/declaration build and diff checks. Independent browser
+reproductions confirm both corrections. Earlier dated counts above remain
+historical; no new performance or broader platform acceptance claim is made.
+
 ## Synchronous nested batch — implemented for review, 2026-10-09
+
+Subsequently merged in [PR #38](https://github.com/thetimmytook/atlas/pull/38).
+The dated implementation and validation history below is retained.
 
 The user confirmed the preceding measurements complete and accepted, then requested
 implementation of the [agreed batch contract](RUNTIME_AND_LOADING.md#synchronous-nested-batch--accepted-contract-2026-10-09).
@@ -72,7 +163,8 @@ These earlier results do not replace validation on the updated base. They are
 separate from the historical polygon acceptance below. No new
 timing measurements or speedup claim belong to this task. Existing saved benchmark
 evidence remains unchanged.
-The implementation is ready for pull-request review and is not yet merged.
+The implementation was ready for pull-request review at this stage and
+subsequently merged in PR #38.
 
 ## Repeat-review follow-up — accepted, 2026-10-09
 

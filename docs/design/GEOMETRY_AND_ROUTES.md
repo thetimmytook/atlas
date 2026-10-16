@@ -33,6 +33,35 @@ separate steps. Ordinary API names use no Atlas prefix; the error family retains
 Earlier kind/type material selection must be revisited against this separation;
 this clarification does not silently finalize a new material assignment API.
 
+## Full-definition constructors — implemented for review, 2026-10-12
+
+The user requested one construction form per concrete object, using its full
+corresponding definition. The revised signatures were accepted and implemented:
+
+```ts
+// Accepted constructor excerpts; implemented in the working tree.
+export declare class MapLine extends MapObject {
+  constructor(definition: MapLineDefinition);
+  get kind(): 'line';
+}
+
+export declare class MapRoute extends MapObject {
+  constructor(definition: MapRouteDefinition);
+  get kind(): 'route';
+}
+```
+
+Point/polygon already take their full definitions. The accepted line/route forms
+replace the former `(id, points)` signatures, accepting optional IDs and common
+data/material fields together with geometry. No old-form overload or third
+attributes argument is retained. Definition inputs still copy/validate owned
+points; runtime-instance attachment still preserves identity and sharing.
+The factory and direct constructor callers have migrated together; load, collection definition inputs and route point-editing
+methods keep their existing public creation forms. See
+[declarations and affected creation paths](MATERIALS_FIRST_SLICE_CONTRACT.md#json-data-and-common-objects).
+
+These signatures are implemented for mini review, not committed or merged.
+
 ## Horizontal polygons and vertical extrusion — accepted contract, 2026-10-09
 
 Use one `MapPolygon` for a horizontal filled polygon and its optional vertical
@@ -214,9 +243,9 @@ point identity or independent point hit area. No material or POI API is introduc
 
 ## Route vertex geometry, symbol, and picking — accepted 2026-10-08
 
-**Accepted, not implemented.** The merged renderer still displays and picks a
-temporary symbol for every eligible original route vertex; see
-[temporary defaults](CURRENT_CONTRACT.md#temporary-implemented-contracts).
+**Implemented for mini review, 2026-10-12; not committed or merged.** The first
+material slice replaces the old temporary per-vertex symbol/picking defaults; see
+[the accepted contract](MATERIALS_FIRST_SLICE_CONTRACT.md).
 
 Keep the common `MapPoint` representation for route vertices and distinguish three
 independent concerns:
@@ -241,6 +270,18 @@ does not implicitly enable picking, and enabling picking does not assign a symbo
 This default concerns the route-owned appearance; defaults for independent point
 appearances are not changed by this decision.
 
+Accepted clarification on 2026-10-12: the point itself must support an optional
+explicit boolean override independently of its material. An independent
+appearance defaults to picking enabled, a route-owned appearance to disabled;
+clearing the override restores each context's default. One shared point can have
+both roles, so its getter exposes only the explicit value or `undefined`.
+The [accepted minimal flag](MATERIALS_FIRST_SLICE_CONTRACT.md#point-picking--proposed-minimal-flag)
+is `MapPointDefinition.pickable?: boolean` with `MapPoint.pickable` getter/setter
+of `boolean | undefined`. The spelling/signature is accepted and implemented. The
+[route example](MATERIALS_FIRST_SLICE_CONTRACT.md#compact-end-to-end-example)
+has an ordinary bend and a point with a separately assigned symbol and picking.
+No general interaction or hit-area schema is added.
+
 This also permits author-provided route parts on separate floors to have endpoints
 without markers. The later [layer clarification](LAYERS_AND_INTERACTION.md#layer-contract-clarification--2026-10-08)
 accepts automatic display clipping of a whole route; cut coordinates do not create
@@ -248,8 +289,9 @@ runtime points or markers. The [accepted map structure](LAYERS_AND_INTERACTION.m
 uses a layer's object-ID list for direct content and optional intersection bounds
 for automatic geometry display. Unknown references reject loading; a repeated root
 ID selects all matching instances under the accepted layer-reference rules.
-Exact appearance/interaction fields, assignment through materials, and
-hit-area configuration remain open. The current implementation still displays and
+First-slice appearance is covered by the reviewed material contract; the exact
+minimal picking flag above awaits mini review. General interaction and
+configurable hit-area schemas remain open. The current implementation still displays and
 picks a temporary circle at every route vertex; this decision does not authorize
 implementation or change that behavior yet.
 
@@ -623,6 +665,11 @@ a stale snapshot or copying coordinates per frame.
 
 ## Application classification — accepted 2026-10-05
 
+Clarification on 2026-10-09: `data.type` is an optional application convention, not
+a built-in material selector. Application code explicitly connects its data to a
+registered property used by material assignment. See
+[application-defined selection properties](MATERIALS.md#application-defined-selection-properties--clarification-2026-10-09).
+
 - Move application-defined `type` into `data.type`. There is no separate
   object-level `type` field in the current object contract.
 - `kind` stays outside `data`: it describes the structural object kind understood
@@ -636,8 +683,33 @@ a stale snapshot or copying coordinates per frame.
   `data.type`; they do not establish another structural field or an event payload field.
 - The earlier material-selection rules involving kind/type need adaptation.
   Moving the classification does not settle the selector or material-assignment API.
-- This records the data-model decision only. Application-data storage and its
-  runtime API remain a separate implementation step; no automatic migration is added.
+- This records the classification decision. Application-data storage remains a
+  separate implementation step; the later runtime replacement decision below does
+  not add an automatic migration.
+
+### Runtime application data — accepted, 2026-10-09
+
+- Application code replaces an object's whole `data` value through a setter.
+- Atlas copies the supplied data. The getter exposes an immutable value, so later
+  edits to the caller's input do not silently change runtime state.
+- Assigning data reevaluates that object's registered properties using the value
+  connections already configured in the shared setup. Where selection changes,
+  its material updates across all of its appearances according to the accepted
+  assignment priorities. This does not reconfigure registrations or connections.
+- The update mechanism is generic: `data.type` has no built-in special handling.
+
+Illustrative accepted access pattern:
+
+```javascript
+object.data = {
+  ...object.data,
+  type: 'exit',
+};
+```
+
+This is accepted future behavior, not an implemented field. Exact JSON type
+declarations, absent-value handling, notification details and failed-update
+semantics remain open.
 
 Illustrative classification on a route:
 

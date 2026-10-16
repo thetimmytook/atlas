@@ -366,13 +366,18 @@ keeps position, symbol appearance, and separate point picking independent. A ben
 with no symbol remains part of the route; when its point interaction is disabled,
 clicks on the eligible path return the route. Layer visibility constrains all its
 appearances; intersection bounds additionally constrain automatic appearances.
-The accepted future default is no symbol and no separate point picking; future
-appearance and interaction settings stay independent. These settings/defaults are
-not implemented.
-The current prototype draws all route vertices with
-the temporary point symbol to exercise clicks, independent of supplied/generated
-IDs. It adds no visibility flag to route-point data. Surface press/release behavior
-is unchanged. Older line-identity wording below is historical.
+The first material slice implements no symbol/no separate picking as the
+route-owned default, with independent material symbol choice and the explicit
+`MapPoint.pickable` override. Absent means independent on / route-owned off;
+`undefined` restores these context defaults. A symbol never enables picking.
+The [accepted contract](MATERIALS_FIRST_SLICE_CONTRACT.md#point-picking--proposed-minimal-flag)
+is implemented for mini review, not committed or merged. Disabling the flag
+preserves route geometry/path picking, subject to layer visibility and clipped
+eligibility. Shared points resolve their defaults per appearance without new
+runtime objects. Surface press/release behavior is unchanged; captured-hit
+revalidation suppresses a point click if a synchronous handler disables its
+picking, without choosing an underlying replacement hit.
+Older line-identity wording below is historical.
 
 ## 5. Layers and floors — discussion ongoing
 
