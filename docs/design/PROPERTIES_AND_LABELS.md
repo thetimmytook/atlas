@@ -7,8 +7,10 @@ The user confirmed the first built-in label preparation step merged in
 [PR #40](https://github.com/thetimmytook/atlas/pull/40):
 types, validated text storage and immutable own material declarations.
 Point-label resolution, rendering and rectangular picking are merged in PR #41
-(`33a6a11`). Line/route labels are implemented for review on `feat/path-labels`;
-polygon labels remain the next visual step. General
+(`33a6a11`). Line/route labels and the white outline are merged in PR #42
+(`bd8b508`), confirmed by the user. Polygon labels are implemented for review on
+`feat/polygon-labels`, completing visual coverage for current object kinds. The next
+step is representative measurements with materials/labels, then platform acceptance. General
 visual-property/behavior registration is deferred to a separate next stage. The accepted
 [first-slice contract](MATERIALS_FIRST_SLICE_CONTRACT.md) and
 [implementation checks](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)
@@ -19,6 +21,47 @@ supersede earlier proposal-stage wording for this subset.
 Reviewed first-slice configuration, reader input and JSON-data signatures are in
 the [contract](MATERIALS_FIRST_SLICE_CONTRACT.md);
 the point visual step below extends that merged preparation. Behavior registration remains separate work.
+
+### Polygon labels — implemented for review, 2026-10-19
+
+Flat and extruded `MapPolygon` now reuse `ObjectLabels` / `ObjectLabelView`, with
+one label per runtime owner/layer pair. Identity is by instance, including duplicate
+IDs. Existing geometry/clipping determines appearance eligibility; the attachment
+is the area centroid of all displayed XY cells. Height does not displace SVG text.
+Each existing convex cell supplies its area and centroid; their area-weighted
+centroid is used when it belongs to the cell union, including internal boundaries.
+Otherwise the centroid of the first largest cell is used. Disconnected clipped
+regions participate together; no positive displayed area means no label/hit area.
+Direct layer membership retains full-geometry priority.
+
+`src/spatial/polygon-label-position.ts` computes translated, independently scaled
+XY moments and relative area weights, avoiding raw area overflow/underflow and
+large-coordinate cancellation. It consumes existing `PolygonGeometry` cells;
+there is no retriangulation, contour reconstruction, new runtime point/ID or source
+mutation. Scene geometry dependencies recalculate only affected polygons before
+picking/painting, including batch. Text/color/material-only changes do not recalculate
+centroids, and geometry changes reuse unchanged text/font measurements.
+
+Polygon placement defaults are `center center` and `(0px, 0px)` after inheritance;
+font/color/container family and the white 3 CSS-pixel outline use the shared defaults.
+Own declarations and immutable load snapshots remain untouched. Text is horizontal,
+literal, single-line, space-preserving and screen-sized in px/rem. Undefined, empty
+and whitespace-only labels have neither output nor hit area.
+
+SVG draws text immediately after its owner's fill. Following objects/higher layers
+can cover it; there is no label overlay. Whole text can extend beyond contour and
+intersection bounds, while viewport clipping still applies. Picking uses the same
+layout rectangle, including the outline, and returns the source polygon/hit layer,
+with `route: undefined`. Initial hits and press/release revalidation share the same
+entry test. Captures revalidate only the original owner/layer's current appearance,
+retaining valid direct/clipped switches and suppressing stale hits without picking
+underneath. Surviving polygon group, path and text nodes stay stable across those
+switches. Removal/reattachment, shared maps and disconnect/reconnect reuse the existing
+scene queues and lifecycle.
+
+The CSSOM/media notification boundary below is unchanged. Text fitting, collision
+avoidance, multiline, zoom visibility, 3D label depth and general visual registration
+remain outside this step. See [checks and next stage](PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
 
 ### Label contrast — implemented for review, 2026-10-19
 
@@ -240,9 +283,9 @@ projections retain their current contracts. See
 
 ### Label content and appearance — accepted separation, 2026-10-16
 
-The product behavior below covers merged point visuals and line/route visuals
-implemented for review. Polygon labels remain accepted future work. Preparation
-is merged in PR #40 and point visuals in PR #41.
+The product behavior below covers merged point visuals (PR #41), merged line/route
+visuals (PR #42) and polygon visuals implemented for review. Preparation is merged
+in PR #40.
 
 - The user accepted built-in labels for this stage. General registration of new
   visual properties/behaviors is deferred to a separate next stage. This explicitly

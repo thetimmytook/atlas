@@ -2,8 +2,8 @@
 
 Current baseline: [Current contract](CURRENT_CONTRACT.md). Four structural kinds
 (`point`, `line`, `route`, `polygon`), `Point2`/`Point3` and polygon PR #30 are merged.
-Appearance and interaction settings remain future design; historical examples below
-do not add exports or override the baseline.
+Current material/label status is recorded in the baseline; historical appearance
+examples below do not add exports or override it.
 
 [Navigation and current summary](../DESIGN_MAIN.md)
 
@@ -61,6 +61,19 @@ methods keep their existing public creation forms. See
 [declarations and affected creation paths](MATERIALS_FIRST_SLICE_CONTRACT.md#json-data-and-common-objects).
 
 These signatures are implemented for mini review, not committed or merged.
+
+## Polygon label geometry — implemented for review, 2026-10-19
+
+One DOM-independent attachment per polygon/layer uses all displayed positive-area
+convex cells, after the existing XY/vertical clipping. Area-weighted cell centroids
+give the union centroid; if it is outside, use the first largest cell's centroid.
+Internal cell boundaries remain part of the region. Disconnected regions participate
+together; absent positive area gives no label. Direct membership uses full geometry.
+Both flat polygons and extrusions use this XY rule; height controls eligibility
+rather than screen displacement. The calculation uses existing cells without
+retriangulation, union reconstruction, source mutation or runtime points/IDs.
+See [behavior and defaults](PROPERTIES_AND_LABELS.md#polygon-labels--implemented-for-review-2026-10-19)
+and [checks](PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
 
 ## Horizontal polygons and vertical extrusion — accepted contract, 2026-10-09
 

@@ -5,6 +5,32 @@ browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #
 and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
 and single-consumer; they are not public core lifecycle or multiple viewport support.
 
+## Polygon label attachment — implemented for review, 2026-10-19
+
+The path-label base is merged in PR #42 (`bd8b508`), confirmed by the user.
+`polygonLabelPosition` reads the existing positive convex `PolygonGeometry.cells`
+and computes area moments in translated, separately scaled XY coordinates. It weights
+cell centroids by relative areas, tests membership in the displayed union, and uses
+the first largest cell's centroid if needed. This is DOM-independent and changes no
+source/runtime geometry. Existing scene root/layer dependencies update the cached
+attachment on geometry or membership changes before both SVG and picking, including
+batch, reattachment, shared maps and disconnected edits. Text/material changes stay
+on their existing queues and never invalidate polygon area work.
+
+Polygon `ResolvedAppearance` now includes the common resolved label; only its
+centered origin/zero-offset defaults differ. `ObjectLabels` supplies the same measured
+rectangles and metrics cache as for points/paths. Geometry changes never remeasure
+unchanged text/font. SVG retains polygon owner/path/text nodes when direct/clipped
+scene entries switch, retargeting the existing internal node record to the current
+entry. Text stays after the fill, in normal composition, and extends whole past the
+contour/layer bounds until viewport clipping. Initial picking and captured-hit checks
+use the same entry geometry/label test. Polygon captures follow current appearances
+of only their original owner/layer, while point/path semantics remain intact.
+
+See [complete behavior](PROPERTIES_AND_LABELS.md#polygon-labels--implemented-for-review-2026-10-19)
+and [validation/next stage](PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
+The typography notification boundary below is unchanged.
+
 ## Path attachment and shared label view — implemented for review, 2026-10-19
 
 The line/route step starts from merged point labels (PR #41, `33a6a11`).
@@ -93,8 +119,8 @@ This requires no public refresh API and makes no claim of complete automatic CSS
 tracking. Root-size, font/stylesheet completion, viewport media via resize, observed
 style/class changes, shadow inheritance and reconnect retain automatic refresh.
 
-The line/route step above now extends this pipeline; polygon labels remain a later
-step. Their accepted rules are in
+The line/route and polygon steps above extend this pipeline to all current kinds.
+Their rules are in
 [Properties and labels](PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).
 
 ## Material appearance invalidation — implemented for review, 2026-10-12

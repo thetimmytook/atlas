@@ -19,9 +19,10 @@ first material slice merged in [PR #39](https://github.com/thetimmytook/atlas/pu
 The user confirmed label preparation merged in
 [PR #40](https://github.com/thetimmytook/atlas/pull/40). Point visual labels are merged in
 [PR #41](https://github.com/thetimmytook/atlas/pull/41), verified against `33a6a11`.
-Line/route visual labels and a default white outline for point/path text are
-implemented for review on `feat/path-labels`;
-polygon labels remain the next visual step. The baseline distinguishes
+Line/route visual labels and the default white outline are merged in
+[PR #42](https://github.com/thetimmytook/atlas/pull/42), confirmed by the user and
+verified at `bd8b508`. Polygon labels are implemented for review on
+`feat/polygon-labels`, completing visual labels for the current object kinds. The baseline distinguishes
 implemented/merged behavior, temporary implemented contracts, accepted future work
 and open/deferred decisions. The topic documents below retain decision history;
 illustrative future APIs do not extend the available exports.
@@ -57,7 +58,8 @@ illustrative future APIs do not extend the available exports.
 - Label text/types, validation and immutable own material declarations are merged
   in PR #40, as confirmed by the user. Point label resolution, measurement, SVG
   display and rectangular picking are merged in PR #41. Line/route labels reuse
-  that pipeline and are implemented for review. Polygon label visuals, the general
+  that pipeline and are merged in PR #42. Polygon labels now use the displayed XY
+  area centroid with a largest-cell fallback, implemented for review. The general
   resource registry/loader, schemaVersion, homeView and camera constraints remain accepted future work.
 - Public core/model lifecycle, multiple viewports, live export and unfinished API
   schemas remain open/deferred. No ID registry, new tooling policy or architectural
@@ -104,10 +106,12 @@ copying paths, immutable snapshots/material declarations and strict validation.
 See [scope and checks](design/PROTOTYPE.md#label-preparation--implemented-for-review-2026-10-16).
 The bounded visual point step is merged in PR #41:
 [scope, boundaries and checks](design/PROTOTYPE.md#point-labels--implemented-for-review-2026-10-16).
-The subsequent line/route step is implemented for review:
+The subsequent line/route step is merged in PR #42:
 [scope, architecture and checks](design/PROTOTYPE.md#line-and-route-labels--implemented-for-review-2026-10-19).
-The following rules are implemented for points, lines and routes; polygon visual
-rules remain accepted future work. Preparation alone did not implement these visuals.
+The polygon visual step completes labels for all four current kinds and is ready
+for review: [scope and checks](design/PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
+Next: representative measurements with materials/labels, then platform acceptance.
+The following rules are implemented; preparation alone did not implement the visuals.
 Font size and offset use strings with explicit `px` or `rem`, independently of
 map-camera zoom; font size is positive and offsets allow negative/zero values.
 Rem-based values follow the document root font size.
@@ -139,12 +143,14 @@ their summed displayed x/y length; zero-length projections use the first display
 position and absent geometry has no label. The five reviewed type exports and
 preparation diagnostics are recorded in
 [Properties and labels](design/PROPERTIES_AND_LABELS.md#label-preparation--accepted-signatures-and-implemented-scope-2026-10-16).
-The shared point/path visual pipeline resolves label/font inheritance and defaults,
+The shared object-label visual pipeline resolves label/font inheritance and defaults,
 measures text in the browser view and shares neutral rectangles with synchronous spatial picking.
 Rem/style/font notifications invalidate typography without a permanent frame loop;
 text/material edits remain local, and pan/zoom reuse unchanged metrics. Surviving
 SVG text/owner nodes are reused, including transfer of a route text node when its
-fragment host changes. Only prepared polygon text still has no SVG or label hit area.
+fragment host changes and reuse of polygon owner/shape/text nodes across direct/clipped
+switches. Polygon area calculations use existing convex cells, include disconnected
+regions and run before picking, including batch; text/color edits do not recalculate them.
 The accepted prototype update boundary allows CSSOM/non-viewport media changes
 that leave probe dimensions unchanged and emit no supported notification to wait
 until the next ordinary render or picking query. That read uses current computed
