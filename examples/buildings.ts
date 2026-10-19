@@ -46,6 +46,7 @@ const definition: MapDefinition = {
     {
       id: ZONE_ID,
       kind: 'polygon',
+      label: 'Shared zone',
       contour: [
         { x: 30, y: 70 },
         { x: 330, y: 70 },
