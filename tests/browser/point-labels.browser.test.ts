@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cdp, page, userEvent } from 'vitest/browser';
 
 import { MapElement } from '#components/map-element/map-element.js';
-import { PointLabels } from '#components/map-element/point-labels.js';
+import { ObjectLabels } from '#components/map-element/object-labels.js';
 import { resolveMapDefinition } from '#definitions/map-definition.js';
 import { Point2 } from '#math/point2.js';
 import { Rect } from '#math/rect.js';
@@ -262,8 +262,8 @@ describe('point label SVG and picking', () => {
       expect(original.x).toBeCloseTo(point.x + 40, 3);
       expect(original.y).toBeCloseTo(point.y + 30, 3);
       clickClient(map, original.right - 1, original.y + original.height / 2);
-      clickClient(map, original.x - 1, original.y + original.height / 2);
-      clickClient(map, original.right + 1, original.y + original.height / 2);
+      clickClient(map, original.x - 2, original.y + original.height / 2);
+      clickClient(map, original.right + 2, original.y + original.height / 2);
       expect(events).toHaveLength(1);
       expect(events[0]!.detail.object).toBe(map.objects.get('p'));
 
@@ -275,7 +275,7 @@ describe('point label SVG and picking', () => {
       expect(updated.x).toBeCloseTo(point.x + 40, 3);
       expect(updated.y).toBeCloseTo(point.y + 30, 3);
       clickClient(map, updated.right - 1, updated.y + updated.height / 2);
-      clickClient(map, updated.right + 1, updated.y + updated.height / 2);
+      clickClient(map, updated.right + 2, updated.y + updated.height / 2);
       expect(events).toHaveLength(2);
     },
   );
@@ -392,8 +392,37 @@ describe('point label SVG and picking', () => {
     const box = node.getBoundingClientRect();
     clickClient(map, box.right - 1, box.y + box.height / 2);
     expect(events[0]!.detail.object.id).toBe('p');
-    clickClient(map, box.right + 1, box.y + box.height / 2);
+    clickClient(map, box.right + 2, box.y + box.height / 2);
     expect(events).toHaveLength(1);
+  });
+
+  it('picks the white halo outside the text rectangle at every camera zoom without remeasurement', async () => {
+    const map = await createMap(style());
+    const node = text(map);
+    const events = clicks(map);
+    const measurements = vi.spyOn(SVGGraphicsElement.prototype, 'getBBox');
+
+    for (const zoom of [1, 2, 0.75]) {
+      map.camera.zoom = zoom;
+      await paint();
+      const box = node.getBoundingClientRect();
+      const computed = getComputedStyle(node);
+      expect(computed.stroke).toBe('rgb(255, 255, 255)');
+      expect(computed.paintOrder).toBe('stroke');
+      expect(computed.strokeLinejoin).toBe('round');
+      expect(parseFloat(computed.strokeWidth) * node.getScreenCTM()!.a).toBeCloseTo(3, 3);
+      const count = events.length;
+      clickClient(map, box.x - 1, box.y + box.height / 2);
+      clickClient(map, box.right + 1, box.y + box.height / 2);
+      clickClient(map, box.x + box.width / 2, box.y - 1);
+      clickClient(map, box.x + box.width / 2, box.bottom + 1);
+      expect(events).toHaveLength(count + 4);
+      expect(events.every(event => event.detail.object === map.objects.get('p'))).toBe(true);
+      clickClient(map, box.right + 2, box.y + box.height / 2);
+      expect(events).toHaveLength(count + 4);
+    }
+
+    expect(measurements).not.toHaveBeenCalled();
   });
 
   it('picks the rectangular whitespace gap, including native pointer input', async () => {
@@ -550,7 +579,7 @@ describe('point label composition and live invalidation', () => {
     const events = clicks(map);
     const box = node.getBoundingClientRect();
     clickClient(map, box.right - 1, box.y + box.height / 2);
-    clickClient(map, box.right + 1, box.y + box.height / 2);
+    clickClient(map, box.right + 2, box.y + box.height / 2);
     expect(events).toHaveLength(1);
   });
 
@@ -625,7 +654,7 @@ describe('point label composition and live invalidation', () => {
       const point = map.coordinates.mapToClient(new Point2(40, 70));
       clickClient(map, point.x + 40 + expected.width - 1, point.y + 30 + expected.height / 2);
       expect(events[0]!.detail.object).toBe(map.objects.get('p'));
-      clickClient(map, point.x + 40 + expected.width + 1, point.y + 30 + expected.height / 2);
+      clickClient(map, point.x + 40 + expected.width + 2, point.y + 30 + expected.height / 2);
       expect(events).toHaveLength(1);
       await paint();
       expect(text(map)).toBe(node);
@@ -847,7 +876,7 @@ describe('point label composition and live invalidation', () => {
 
   it('measures before any SVG render and leaves pending text invalidation intact', async () => {
     const map = await createMap(style());
-    const labels = new PointLabels(map, map.shadowRoot!, () => {});
+    const labels = new ObjectLabels(map, map.shadowRoot!, () => {});
     const model = new MapModel(resolveMapDefinition(definition(style())), labels);
     labels.setScene(model.geometry);
     const point = model.objects.get('p') as MapPoint;

@@ -79,6 +79,7 @@ export function instrumentAtlas(): {
     let previous: readonly SceneObject[] | undefined;
     const observed: SceneGeometry = {
       appearanceFor: geometry.appearanceFor,
+      labelPositionFor: geometry.labelPositionFor,
       invalidateAppearances: geometry.invalidateAppearances,
       layers: geometry.layers,
       takeChanges: () => geometry.takeChanges(),

@@ -2,9 +2,11 @@ import { MapMaterials } from '#objects/map-materials.js';
 import { getCollectionMaterials } from '#objects/material-consumers.js';
 
 import { createClippedAppearance } from './clipped-appearance.js';
+import { pathLabelPosition } from './path-label-position.js';
 import { createPolygonGeometry } from './polygon-geometry.js';
 import { trackScene, untrackScene } from './scene-invalidation.js';
 
+import type { Point2 } from '#math/point2.js';
 import type { Point3 } from '#math/point3.js';
 import type { MapLayer } from '#objects/map-layer.js';
 import type { ResolvedAppearance } from '#objects/map-materials.js';
@@ -33,6 +35,9 @@ export interface SceneGeometry {
   readonly layers: readonly MapLayer[];
   readonly objects: readonly SceneObject[];
   appearanceFor(entry: SceneObject): ResolvedAppearance;
+
+  /** One attachment per owner/layer, after all of its displayed path fragments. */
+  labelPositionFor(entry: SceneObject): Point2 | undefined;
   invalidateAppearances(objects: ReadonlySet<MapObject>): void;
 
   /** Drain display changes for the current single view; spatial reads never consume them. */
@@ -54,6 +59,7 @@ export function prepareSceneGeometry(
   const reference = new WeakRef(invalidation);
   const tracked = new Set<object>();
   const pending = new Set<SceneObject>();
+  const labelPositions = new WeakMap<SceneObject, Point2>();
   const appearanceChanges = new Set<MapObject>();
   const materials =
     materialSet ??
@@ -154,12 +160,55 @@ export function prepareSceneGeometry(
     return prepare();
   };
 
-  const updateAppearance = (layer: MapLayer, root: MapEntry, membership: boolean): boolean => {
+  const updateLabelPosition = (
+    root: MapEntry,
+    previous: readonly SceneObject[],
+    next: readonly SceneObject[],
+  ): void => {
+    if (root.kind !== 'line' && root.kind !== 'route') {
+      return;
+    }
+
+    const paths = next.filter(entry => entry.object === root);
+    const position = pathLabelPosition(
+      paths.flatMap(entry =>
+        entry.geometry.kind === 'line' || entry.geometry.kind === 'polyline'
+          ? [entry.geometry]
+          : [],
+      ),
+    );
+
+    // The last fragment hosts the label, ahead of owned points and following roots.
+    for (const entry of previous) {
+      if (labelPositions.delete(entry)) {
+        pending.add(entry);
+      }
+    }
+
+    const host = paths.at(-1);
+
+    if (host && position) {
+      labelPositions.set(host, position);
+      pending.add(host);
+    }
+  };
+
+  const updateAppearance = (
+    layer: MapLayer,
+    root: MapEntry,
+    membership: boolean,
+    geometryChanged = false,
+  ): boolean => {
     const byRoot = appearances.get(layer)!;
     const previous = byRoot.get(root) ?? [];
     const next = resolveLayerEntries(layer, root, membership);
+
     const same =
       previous.length === next.length && previous.every((entry, index) => entry === next.at(index));
+
+    if (!same || geometryChanged) {
+      updateLabelPosition(root, previous, next);
+    }
 
     if (!same) {
       byRoot.set(root, next);
@@ -221,19 +270,23 @@ export function prepareSceneGeometry(
     }
   };
 
-  const reconcileRoots = (): void => {
+  const reconcileRoots = (affectedRoots: ReadonlySet<MapEntry>): void => {
     roots = Array.from(objects);
     const currentRoots = new Set(roots);
 
     for (const [layer, byRoot] of appearances) {
-      for (const root of byRoot.keys()) {
-        if (!currentRoots.has(root)) {
-          byRoot.delete(root);
+      for (const [root, previous] of byRoot) {
+        if (currentRoots.has(root)) {
+          continue;
         }
+
+        // Cached entries survive removal and may return with empty/different fragments.
+        previous.forEach(entry => labelPositions.delete(entry));
+        byRoot.delete(root);
       }
 
       for (const root of roots) {
-        updateAppearance(layer, root, true);
+        updateAppearance(layer, root, true, affectedRoots.has(root));
       }
     }
   };
@@ -270,8 +323,7 @@ export function prepareSceneGeometry(
     }
   };
 
-  const syncChanges = (changed: ReadonlySet<object>, topology: ReadonlySet<MapRoute>): boolean => {
-    queueChanges(changed);
+  const affectedRootsFor = (changed: ReadonlySet<object>): ReadonlySet<MapEntry> => {
     const affectedRoots = new Set<MapEntry>();
 
     for (const source of changed) {
@@ -280,12 +332,19 @@ export function prepareSceneGeometry(
       }
     }
 
+    return affectedRoots;
+  };
+
+  const syncChanges = (
+    affectedRoots: ReadonlySet<MapEntry>,
+    topology: ReadonlySet<MapRoute>,
+  ): boolean => {
     let compositionChanged = false;
 
     for (const root of affectedRoots) {
       for (const layer of orderedLayers) {
         compositionChanged =
-          updateAppearance(layer, root, root.kind === 'route' && topology.has(root)) ||
+          updateAppearance(layer, root, root.kind === 'route' && topology.has(root), true) ||
           compositionChanged;
       }
     }
@@ -336,15 +395,18 @@ export function prepareSceneGeometry(
     invalidation.topology.clear();
     invalidation.membership = false;
 
+    queueChanges(changed);
+    const affectedRoots = affectedRootsFor(changed);
+
     if (membership) {
-      reconcileRoots();
+      reconcileRoots(affectedRoots);
     }
 
     if (membership || topology.size > 0) {
       reconcileRootDependencies();
     }
 
-    if (membership || syncChanges(changed, topology) || topology.size > 0) {
+    if (membership || syncChanges(affectedRoots, topology) || topology.size > 0) {
       reconcileEntries();
     }
 
@@ -366,6 +428,11 @@ export function prepareSceneGeometry(
     },
     appearanceFor(entry: SceneObject): ResolvedAppearance {
       return materials.appearanceFor(entry.object, entry.route !== undefined);
+    },
+    labelPositionFor(entry: SceneObject): Point2 | undefined {
+      sync();
+
+      return entry.geometry.kind === 'point' ? entry.geometry.position : labelPositions.get(entry);
     },
     invalidateAppearances(changed: ReadonlySet<MapObject>): void {
       changed.forEach(object => appearanceChanges.add(object));

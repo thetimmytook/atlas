@@ -198,6 +198,7 @@ function traceCoordinates(scene: SceneGeometry, reads: Map<string, number>): Sce
     layers: scene.layers,
     invalidateAppearances: objects => scene.invalidateAppearances(objects),
     appearanceFor: entry => scene.appearanceFor(originals.get(entry)!),
+    labelPositionFor: entry => scene.labelPositionFor(originals.get(entry)!),
     get objects(): readonly SceneObject[] {
       const sources = scene.objects;
       const entries = arrays.get(sources) ?? sources.map(trace);

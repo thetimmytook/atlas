@@ -1,8 +1,9 @@
 import { Rect } from '#math/rect.js';
+import { DEFAULTS } from '#objects/material-defaults.js';
 
 import type { LabelLength } from '#definitions/material-definition.js';
-import type { MapPoint } from '#objects/map-point.js';
-import type { PointLabel, PointLabelView } from '#spatial/point-label.js';
+import type { MapObject } from '#objects/map-object.js';
+import type { ObjectLabel, ObjectLabelView } from '#spatial/object-label.js';
 import type { SceneGeometry, SceneObject } from '#spatial/scene-geometry.js';
 
 interface Measurement {
@@ -15,15 +16,15 @@ interface Measurement {
 }
 
 /** One map's browser typography. No rendered object node is needed for a spatial query. */
-export class PointLabels implements PointLabelView {
+export class ObjectLabels implements ObjectLabelView {
   readonly #host: HTMLElement;
   readonly #shadow: ShadowRoot;
   readonly #changed: () => void;
   #scene: SceneGeometry | undefined;
-  #measurements = new WeakMap<MapPoint, Measurement>();
+  #measurements = new WeakMap<MapObject, Measurement>();
   #layouts = new WeakMap<
     SceneObject,
-    { revision: number; appearance: object; label: PointLabel }
+    { revision: number; appearance: object; label: ObjectLabel }
   >();
   #measurement: SVGSVGElement | undefined;
   #text: SVGTextElement | undefined;
@@ -136,17 +137,17 @@ export class PointLabels implements PointLabelView {
     this.#changed();
   }
 
-  forEntry(entry: SceneObject): PointLabel | undefined {
+  forEntry(entry: SceneObject): ObjectLabel | undefined {
     const object = entry.object;
     const text = object.label;
 
-    if (object.kind !== 'point' || text === undefined || !text.trim()) {
+    if (text === undefined || !text.trim() || !this.#scene!.labelPositionFor(entry)) {
       return undefined;
     }
 
     const appearance = this.#scene!.appearanceFor(entry);
 
-    if (appearance.kind !== 'point') {
+    if (appearance.kind === 'polygon') {
       return undefined;
     }
 
@@ -168,13 +169,16 @@ export class PointLabels implements PointLabelView {
     const [vertical, horizontal] = style.origin.split(' ');
     const x = this.#pixels(style.offset.x) - box.width * alignment(horizontal);
     const y = this.#pixels(style.offset.y) - box.height * alignment(vertical);
+    const padding = DEFAULTS.labelOutline.width / 2;
     const label = Object.freeze({
       text,
       color: style.color,
       family,
       size,
       weight,
-      bounds: new Rect(x, y, box.width, box.height),
+
+      // The halo extends beyond the glyph metrics; keep origin/offset on the text itself.
+      bounds: new Rect(x - padding, y - padding, box.width + 2 * padding, box.height + 2 * padding),
       x: x - box.x,
       y: y - box.y,
     });
@@ -187,7 +191,7 @@ export class PointLabels implements PointLabelView {
     return parseFloat(length) * (length.endsWith('rem') ? this.#rootSize : 1);
   }
 
-  #measure(object: MapPoint, text: string, family: string, size: number, weight: string): DOMRect {
+  #measure(object: MapObject, text: string, family: string, size: number, weight: string): DOMRect {
     const cached = this.#measurements.get(object);
 
     if (

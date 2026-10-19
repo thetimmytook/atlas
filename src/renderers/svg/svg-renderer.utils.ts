@@ -1,9 +1,11 @@
 import { AtlasError } from '#errors/atlas-error.js';
+import { DEFAULTS } from '#objects/material-defaults.js';
 
 import type { BackgroundDescription } from '#definitions/map-definition.js';
+import type { Point2 } from '#math/point2.js';
 import type { ResolvedAppearance } from '#objects/map-materials.js';
 import type { Geometry } from '#spatial/geometry.js';
-import type { PointLabel } from '#spatial/point-label.js';
+import type { ObjectLabel } from '#spatial/object-label.js';
 import type { SceneObject } from '#spatial/scene-geometry.js';
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
@@ -25,8 +27,13 @@ export interface SvgObject {
 }
 
 /** The text is the owner's next child, preserving geometry/label composition. */
-export function applyLabel(object: SvgObject, label: PointLabel | undefined, scale: number): void {
-  if (!label) {
+export function applyLabel(
+  object: SvgObject,
+  label: ObjectLabel | undefined,
+  position: Point2 | undefined,
+  scale: number,
+): void {
+  if (!label || !position) {
     object.label?.remove();
     delete object.label;
 
@@ -37,6 +44,13 @@ export function applyLabel(object: SvgObject, label: PointLabel | undefined, sca
     const text = document.createElementNS(SVG_NAMESPACE, 'text');
     text.style.cssText =
       'writing-mode:horizontal-tb;white-space:pre;text-anchor:start;text-transform:none;font-style:normal;font-variant:normal;letter-spacing:normal;word-spacing:normal;';
+
+    // Paint the halo first so it never covers the letter's fill or thin strokes.
+    const outline = DEFAULTS.labelOutline;
+    text.setAttribute('stroke', outline.color);
+    text.setAttribute('stroke-width', String(outline.width));
+    text.setAttribute('stroke-linejoin', outline.lineJoin);
+    text.setAttribute('paint-order', outline.paintOrder);
     object.element.append(text);
     object.label = text;
   }
@@ -53,7 +67,9 @@ export function applyLabel(object: SvgObject, label: PointLabel | undefined, sca
   setChangedAttribute(text, 'font-family', label.family);
   setChangedAttribute(text, 'font-size', String(label.size));
   setChangedAttribute(text, 'font-weight', label.weight);
-  setChangedAttribute(text, 'transform', `scale(${scale})`);
+  const placement =
+    object.source.geometry.kind === 'point' ? '' : `translate(${position.x} ${position.y}) `;
+  setChangedAttribute(text, 'transform', `${placement}scale(${scale})`);
 }
 
 /** Browser resource preparation stays outside the renderer-independent runtime. */

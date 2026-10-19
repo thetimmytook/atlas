@@ -1,8 +1,8 @@
 import type { Rect } from '#math/rect.js';
 import type { SceneObject } from './scene-geometry.js';
 
-/** Browser-measured visual data in CSS pixels relative to the point coordinate. */
-export interface PointLabel {
+/** Browser-measured visual data in CSS pixels relative to the attachment position. */
+export interface ObjectLabel {
   readonly text: string;
   readonly color: string;
   readonly family: string;
@@ -14,8 +14,8 @@ export interface PointLabel {
 }
 
 /** Internal single-view bridge. Spatial consumes only neutral measured rectangles. */
-export interface PointLabelView {
+export interface ObjectLabelView {
   readonly revision: number;
   refresh(): void;
-  forEntry(entry: SceneObject): PointLabel | undefined;
+  forEntry(entry: SceneObject): ObjectLabel | undefined;
 }
