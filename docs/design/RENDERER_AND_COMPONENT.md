@@ -5,12 +5,50 @@ browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #
 and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
 and single-consumer; they are not public core lifecycle or multiple viewport support.
 
+## Path attachment and shared label view — implemented for review, 2026-10-19
+
+The line/route step starts from merged point labels (PR #41, `33a6a11`).
+`SceneGeometry.labelPositionFor(entry)` is an internal renderer-independent read:
+points retain live coordinates; path preparation stores one XY attachment on the
+last displayed owner fragment in each runtime layer. `pathLabelPosition` calculates
+half the summed displayed XY lengths without joining fragments, with first-boundary,
+zero-length and absent-geometry behavior recorded in
+[Properties and labels](PROPERTIES_AND_LABELS.md#line-and-route-labels--implemented-for-review-2026-10-19).
+Existing root/point dependencies refresh only affected paths before any scene read.
+Membership reconciliation retains attachments of unchanged path entries while still
+applying simultaneous geometry edits. Removing root appearances clears their label
+attachments before cached entries are reused on reattachment; empty or split paths
+cannot inherit an obsolete host position.
+The separate pending display queue survives picking; geometry changes also refresh
+the corresponding SVG label placement. No public API or new runtime point is added.
+
+The browser bridge is now `ObjectLabels` / `ObjectLabelView` / `ObjectLabel`.
+Its per-object metrics and per-entry relative origin/offset layouts remain independent
+of the path attachment. Unchanged text/font reuse metrics after position, topology,
+clipping, membership, pan and zoom changes. SVG applies map-space translation before
+inverse camera scaling to path text; point groups retain their existing placement.
+The route label follows the last fragment's geometry and precedes owned points.
+Composition reconciliation transfers its existing text node by owner/layer identity
+when the host fragment changes, including direct/clipped switches, and removes old
+host references. There is no shared overlay of labels. Duplicate string IDs do not
+merge owners. Existing point/route contexts and point pickability are preserved.
+
+Spatial initial picking and captured-hit revalidation share the same entry test
+and current attachment/rectangle. A path label is eligible independently of its
+owned points' default pickability and returns its own MapLine/MapRoute and hit layer.
+Only the captured owner/layer is revalidated after synchronous handlers, with no
+fallback pick of another object/layer. Path captures check that owner's current
+fragments, preserving valid hits when their label host changes; point captures keep
+their existing entry/context eligibility. Shared maps, disconnected edits, reconnect, snapshots and deferred batch paint
+retain their existing contracts. The browser typography notifications and explicit
+CSSOM/non-viewport-media limitation described below remain unchanged.
+
 ## Point label view boundary — implemented for review, 2026-10-16
 
-`PointLabels` belongs to the browser component/view. It measures one hidden SVG
-text node with preserved whitespace and keeps per-map metrics plus per-appearance
-layouts. The internal `PointLabelView` bridge carries numeric CSS-pixel rectangles
-and typography to SVG and Spatial; it adds no public API or DOM dependency to
+The point step's `PointLabels` (now `ObjectLabels`) belongs to the browser
+component/view. It measures one hidden SVG text node with preserved whitespace and keeps per-map metrics plus per-appearance
+layouts. The internal `PointLabelView` bridge (now `ObjectLabelView`) carries numeric
+CSS-pixel rectangles and typography to SVG and Spatial; it adds no public API or DOM dependency to
 runtime objects, mathematical geometry or spatial picking. Hidden measurement
 works before an object's first SVG render. Position stays in the existing live
 geometry; origin/offset rectangles are relative to that position and independent
@@ -55,7 +93,8 @@ This requires no public refresh API and makes no claim of complete automatic CSS
 tracking. Root-size, font/stylesheet completion, viewport media via resize, observed
 style/class changes, shadow inheritance and reconnect retain automatic refresh.
 
-Line/route/polygon label visuals remain a later step; their accepted rules are in
+The line/route step above now extends this pipeline; polygon labels remain a later
+step. Their accepted rules are in
 [Properties and labels](PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).
 
 ## Material appearance invalidation — implemented for review, 2026-10-12

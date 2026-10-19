@@ -29,8 +29,8 @@ vi.mock('#renderers/svg/svg-renderer.js', () => ({
 }));
 
 // Font measurement/observers are browser responsibilities, covered against real SVG there.
-vi.mock('#components/map-element/point-labels.js', () => ({
-  PointLabels: class {
+vi.mock('#components/map-element/object-labels.js', () => ({
+  ObjectLabels: class {
     revision = 0;
     connect(): void {}
     disconnect(): void {}

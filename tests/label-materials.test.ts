@@ -29,7 +29,7 @@ const origins: readonly LabelOrigin[] = [
   'bottom right',
 ];
 
-describe('resolved point label declarations', () => {
+describe.each(['point', 'line', 'route'] as const)('resolved %s label declarations', kind => {
   function inherited(): MapModel {
     return new MapModel(
       resolveMapDefinition({
@@ -49,16 +49,28 @@ describe('resolved point label declarations', () => {
           middle: { inherits: 'base', properties: { label: { font: { weight: 'bold' } } } },
           child: { inherits: 'middle', properties: { label: { color: '#654321', font: {} } } },
         },
-        objects: [{ kind: 'point', id: 'p', position: { x: 0, y: 0 }, material: 'child' }],
+        objects: [
+          kind === 'point'
+            ? { kind, id: 'p', position: { x: 0, y: 0 }, material: 'child' }
+            : {
+                kind,
+                id: 'p',
+                material: 'child',
+                points: [
+                  { kind: 'point', position: { x: 0, y: 0 } },
+                  { kind: 'point', position: { x: 10, y: 0 } },
+                ],
+              },
+        ],
       }),
     );
   }
 
   function label(scene: MapModel): unknown {
     const appearance = scene.geometry.appearanceFor(scene.geometry.objects[0]!);
-    expect(appearance.kind).toBe('point');
+    expect(appearance.kind).toBe(kind);
 
-    return appearance.kind === 'point' ? appearance.label : undefined;
+    return appearance.kind !== 'polygon' ? appearance.label : undefined;
   }
 
   it('inherits label/font leaves through the entire explicit chain', () => {

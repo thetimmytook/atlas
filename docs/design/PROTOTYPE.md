@@ -7,7 +7,8 @@ merged `a5be046` on 2026-10-09. Polygon PR #30 and the route-membership/gesture 
 material slice merged in [PR #39](https://github.com/thetimmytook/atlas/pull/39).
 The user confirmed the first label preparation step merged in
 [PR #40](https://github.com/thetimmytook/atlas/pull/40).
-Point visual labels are now implemented for review; line/route/polygon labels remain future work. Older
+Point visual labels are merged in PR #41 (`33a6a11`). Line/route labels are
+implemented for review on `feat/path-labels`; polygon labels remain the next step. Older
 review-stage sections below retain dated implementation/validation history.
 
 Current label decisions and open questions are recorded in
@@ -20,7 +21,128 @@ label-registration example in the historical sequence and proposed extension
 criterion below. Existing selection-property registration remains available.
 After reviewing the nested `label.font` signatures, the user requested the bounded
 preparation step below. A subsequent explicit request authorizes the bounded point
-visual step recorded here; other object label visuals remain separate work.
+visual step recorded here. The subsequent explicit line/route request is implemented
+below; polygon labels remain separate work.
+
+## Path-label review fixes — implemented for review, 2026-10-19
+
+Both supplied findings were reproduced before correction. Removing a route and
+synchronizing the scene left cached label attachments behind: reattaching an empty
+direct route retained its old label/hit area, and reattaching an old single fragment
+as two clipped fragments retained two labels. Root appearance removal now clears
+its label positions before cached entries can be reused. Node and real-SVG browser
+regressions cover removal synchronized by a query or painting, empty reattachment,
+fragment splitting, label counts and clicks at the obsolete/current positions.
+
+Finite coordinates could overflow a segment length or the total projected length,
+producing NaN or no attachment. The label helper now rescales relative lengths on
+overflow and interpolates without an overflowing endpoint difference, preserving
+exact endpoints. Ordinary finite lengths keep their existing calculation so tiny
+displacements at a large constant coordinate are retained. Node regressions cover
+opposite extreme endpoints, diagonal norms, accumulated-length overflow, asymmetric
+routes, exact fragment boundaries and tiny displacements. No public API, geometry
+contract or text-measurement behavior changes.
+
+Validation after the review fixes: `npm run check` passes with zero errors and the
+existing 35 warnings; all 447 Node tests, 259 Chromium browser tests and 23 E2E
+tests pass. `npm run build` succeeds with the existing API Extractor advisory.
+The user approved committing and publishing the complete implementation, including
+these fixes, on 2026-10-19.
+
+## Label contrast follow-up — implemented for review, 2026-10-19
+
+The user requested a light outline because dark text disappears on dark map areas.
+Point/line/route text now paints a white 3 CSS-pixel outline with round joins before
+its existing fill. The outline stays constant through camera zoom, does not shift
+origin/offset or remeasure text, and expands the picking rectangle by 1.5 CSS pixels
+per side. All appearance defaults now live in `src/objects/material-defaults.ts`:
+material resolution imports `DEFAULTS`, and layout/SVG share its `labelOutline`
+color/width/join/paint-order settings. No separate outline constant or inline style
+defaults remain. No public API or material declaration field is added. The user
+approved publishing this follow-up together with path labels.
+
+Follow-up validation: the main browser suite passes all 256 tests in ten files
+(`npm run test:browser -- --exclude '**/review-scratch*'`); `npm run build`, including
+all TypeScript checks, succeeds with the existing API Extractor advisory.
+The final `npm run check` passes with zero errors and the existing 35 warnings.
+This follow-up is included in the complete implementation approved for publication.
+
+## Line and route labels — implemented for review, 2026-10-19
+
+`feat/path-labels` starts from current `origin/master` at `33a6a11`, the merge of
+point labels in PR #41. Work uses the main repository, with no worktree. The initial
+working tree was clean. The user requested committing and publishing the complete
+implementation after the review fixes and contrast follow-up.
+
+Line/route materials reuse point label inheritance/defaults. One attachment per
+runtime owner/layer uses the displayed line midpoint or half the summed displayed
+route XY length, excluding invisible gaps and choosing the first exact boundary.
+Zero projected length uses the first displayed position; absent geometry has no
+label. Empty/singleton routes and direct-membership priority remain supported.
+Scene preparation owns the DOM-independent calculation and existing dependencies
+invalidate only affected paths. No runtime points, IDs or connector geometry are
+created at cuts. Separate instances with the same ID keep their own labels.
+
+The existing browser label pipeline is renamed to `ObjectLabels` / `ObjectLabelView`
+and reused for metrics, typography notifications, origin/offset and px/rem. Numeric
+text layouts are independent of geometry attachment, so moving/reclipping/editing
+a path never remeasures unchanged text/font. The last route fragment hosts the text
+after all owner geometry and before owned points/following roots; fragment/direct
+membership reconciliation transfers a surviving text node. SVG and spatial picking
+use the same current attachment and rectangle. Path labels select their owner and
+hit layer; owned-point pickability and route context retain their existing behavior.
+Captures revalidate their original owner/layer after synchronous handlers without
+picking underneath. Paths use current fragments of that same owner/layer, retaining
+valid captures when a host changes and suppressing obsolete ones; point context
+eligibility is unchanged. Shared maps, batch, reconnect and immutable snapshots retain their contracts.
+
+Factory now shows `Crossing` and `Patrol route` beside the existing point labels,
+without new controls. Existing benchmark instrumentation forwards the additional
+internal geometry read; no benchmark is run or performance claim added.
+
+Node regressions cover full/clipped lines, unequal route segments, excluded gaps,
+source order/exact fragment boundaries, zero XY transitions, absent/singleton paths,
+source/runtime identity and local geometry invalidation. Membership reconciliation
+retains unchanged path attachments, including when another path moves in the same
+synchronous edit group. Material inheritance tests
+now run for point, line and route. Browser regressions use actual SVG rectangles and
+objectclick, native clicks plus same-turn synthetic input for edits before RAF,
+independent expected anchors, all nine origins, zoom/pan, literal text/whitespace,
+fragment/layer/duplicate-ID composition, visibility/viewport, topology/clipping/
+membership changes inside batch, metric reuse/local SVG mutations, shared maps,
+reconnect and obsolete press/release captures. All existing point tests are retained.
+
+Final validation on 2026-10-19: `npm run check` passes with zero errors and the
+existing 35 advisory warnings; `npm test` passes 437 Node tests in 20 files;
+`npm run test:browser` passes 255 Chromium tests in ten files, including 63 new
+path-label cases and all 47 point-label cases; `npm run build` succeeds with the
+existing API Extractor TypeScript 5.9.3/project 6.0.3 advisory;
+`npm run test:e2e` passes all 23 tests in two files. Browser/E2E local servers
+required sandbox escalation after `listen EPERM`. `npm ci` installed the existing
+tools; the pre-commit hook was enabled separately after sandbox restrictions on
+Git config. No dependency or lockfile change was needed.
+
+**Retained prototype limitation:** arbitrary CSSOM and non-viewport media changes
+that leave the typography probe unchanged and emit no supported notification can
+wait for the next ordinary render or picking query. That query reads current root
+font size/container family synchronously. No CSS-rule traversal, media subscriptions,
+interception, polling, permanent RAF or refresh API is introduced.
+Polygon labels remain the next visual step. Collision avoidance, zoom visibility,
+multiline, visual-extension registration and broader mobile/browser acceptance are
+outside this change.
+
+Review files: `src/spatial/path-label-position.ts`, `src/spatial/scene-geometry.ts`,
+`src/spatial/object-label.ts` (renamed from `point-label.ts`), `src/spatial/spatial.ts`,
+`src/components/map-element/object-labels.ts` (renamed from `point-labels.ts`),
+`src/components/map-element/map-element.ts`, `src/objects/map-materials.ts`,
+`src/objects/map-model.ts`, `src/renderers/svg/svg-renderer.ts`,
+`src/renderers/svg/svg-renderer.utils.ts`, `tests/path-label-position.test.ts`,
+`tests/label-materials.test.ts`, `tests/browser/path-labels.browser.test.ts`,
+the import/mock/geometry adapters in `tests/map-element.test.ts`,
+`tests/browser/point-labels.browser.test.ts`, `tests/browser/materials.browser.test.ts`,
+`examples/prototype-bench.instrument.ts`, `examples/stress.instrument.ts`,
+`examples/index.html`, this document, `PROPERTIES_AND_LABELS.md`,
+`RENDERER_AND_COMPONENT.md`, `CURRENT_CONTRACT.md` and `../DESIGN_MAIN.md`.
 
 ## Point labels — implemented for review, 2026-10-16
 
@@ -126,7 +248,7 @@ Review files: `src/validators/material.validator.ts`, `src/objects/map-materials
 `examples/index.html`, this document, `PROPERTIES_AND_LABELS.md`,
 `RENDERER_AND_COMPONENT.md` and `../DESIGN_MAIN.md`.
 
-Remaining: line/route/polygon labels retain their prepared fields and the accepted
+At that point step, remaining line/route/polygon labels retained their prepared fields and the accepted
 midpoint/projected-length/visible-centroid rules. Collision avoidance, zoom
 visibility, multiline, general visual registration and broader browser/mobile
 acceptance remain separate work. No new benchmark or performance claim is added.

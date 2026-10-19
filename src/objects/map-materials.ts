@@ -1,6 +1,5 @@
 /* eslint-disable security/detect-object-injection -- Dictionary keys are immutable declared handle names or previously validated parent references. */
 import { AtlasMaterialError } from '#errors/atlas-material-error.js';
-import { Point2 } from '#math/point2.js';
 import {
   copyMaterialProperties,
   effectiveMaterialProperties,
@@ -17,6 +16,7 @@ import {
   untrackMaterialConsumer,
   unregisterMaterialCollection,
 } from './material-consumers.js';
+import { DEFAULTS } from './material-defaults.js';
 import { isObjectKind, readSelectionProperties } from './property-configuration.js';
 import { RuntimeMaterial } from './runtime-material.js';
 
@@ -36,22 +36,8 @@ import type { MapObject } from './map-object.js';
 import type { MapRoute } from './map-route.js';
 import type { ObjectMaterialCandidate } from './material-consumers.js';
 
-const DEFAULTS = {
-  point: { symbol: 'circle', color: '#2775d9', size: 22, pickable: true },
-  routeOwnedPoint: { symbol: 'none', pickable: false },
-  path: { color: '#d95012', width: 4 },
-  polygon: { color: '#f59e0b', opacity: 0.3 },
-  image: { preserveAspectRatio: true, anchor: new Point2(0.5, 0.5) },
-  pointLabel: {
-    color: '#222222',
-    font: Object.freeze({ size: '1rem', weight: 'normal' }),
-    origin: 'bottom center',
-    offset: Object.freeze({ x: '0px', y: '-1rem' }),
-  },
-} as const;
-
 /** Internal resolved declarations; the view supplies the container family and px metrics. */
-export interface ResolvedPointLabel {
+export interface ResolvedLabel {
   readonly color: string;
   readonly font: Required<Omit<NonNullable<LabelProperties['font']>, 'family'>> & {
     readonly family?: string;
@@ -78,10 +64,15 @@ export type ResolvedAppearance =
       readonly color: string;
       readonly size: number;
       readonly pickable: boolean;
-      readonly label: ResolvedPointLabel;
+      readonly label: ResolvedLabel;
       readonly image?: ResolvedPointImage;
     }
-  | { readonly kind: 'line' | 'route'; readonly color: string; readonly width: number }
+  | {
+      readonly kind: 'line' | 'route';
+      readonly color: string;
+      readonly width: number;
+      readonly label: ResolvedLabel;
+    }
   | { readonly kind: 'polygon'; readonly color: string; readonly opacity: number };
 
 /** One map's material state and object consumers, independent of DOM observation. */
@@ -258,11 +249,7 @@ export class MapMaterials implements MaterialLookup {
         color: properties.color ?? DEFAULTS.point.color,
         size: properties.size ?? DEFAULTS.point.size,
         pickable: object.pickable ?? defaults.pickable,
-        label: Object.freeze({
-          ...DEFAULTS.pointLabel,
-          ...properties.label,
-          font: Object.freeze({ ...DEFAULTS.pointLabel.font, ...properties.label?.font }),
-        }),
+        label: resolveLabel(properties.label),
         ...(symbol === 'image' ? { image: resolveImage(properties.image!, this.#images) } : {}),
       });
     } else if (object.kind === 'polygon') {
@@ -276,6 +263,7 @@ export class MapMaterials implements MaterialLookup {
         kind: object.kind,
         color: properties.color ?? DEFAULTS.path.color,
         width: properties.width ?? DEFAULTS.path.width,
+        label: resolveLabel(properties.label),
       });
     }
 
@@ -434,5 +422,14 @@ function resolveImage(
     height,
     x: -anchor.x * width,
     y: -anchor.y * height,
+  });
+}
+
+/** Shared point/path defaults; own declarations and load snapshots stay untouched. */
+function resolveLabel(properties: LabelProperties | undefined): ResolvedLabel {
+  return Object.freeze({
+    ...DEFAULTS.label,
+    ...properties,
+    font: Object.freeze({ ...DEFAULTS.label.font, ...properties?.font }),
   });
 }

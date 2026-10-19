@@ -1,6 +1,6 @@
 # Current Atlas contract
 
-[Main navigation](../DESIGN_MAIN.md) · [Current work](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)
+[Main navigation](../DESIGN_MAIN.md) · [Current work](PROTOTYPE.md#line-and-route-labels--implemented-for-review-2026-10-19)
 
 Verified on 2026-10-09 against merged commit `a5be046`, including polygons,
 route-local topology invalidation and second-pointer protection (PRs #30, #33–34).
@@ -11,6 +11,22 @@ commit. Synchronous nested batch subsequently merged in
 is separate from this dated baseline.
 This summary takes precedence over older implementation notes and design examples;
 topic documents retain decisions and their history.
+
+## Current label overlay — 2026-10-19
+
+Label preparation is merged in PR #40 and point visuals in PR #41 (`33a6a11`).
+Line/route visuals are implemented for review on `feat/path-labels`; see
+[the current scope and validation](PROTOTYPE.md#line-and-route-labels--implemented-for-review-2026-10-19).
+Existing `MapObject.label` and `material.properties.label` supply single-line literal
+text and field-based appearance inheritance. One label per runtime object/layer
+uses the displayed line midpoint or half the displayed route XY length, excluding
+clipped gaps. SVG and rectangular picking share attachment and browser metrics;
+owned-point pickability and route context remain separate. Geometry updates are
+immediate for picking and deferred for painting, without remeasuring unchanged text.
+Own declarations/snapshots remain unchanged. Polygon labels are the next visual step.
+The accepted CSSOM/non-viewport-media notification limitation remains in effect;
+see [the detailed boundary](PROPERTIES_AND_LABELS.md#point-labels--implemented-for-review-2026-10-16).
+The dated baseline below retains its historical scope.
 
 ## Working-tree material slice — implemented for review, 2026-10-12
 

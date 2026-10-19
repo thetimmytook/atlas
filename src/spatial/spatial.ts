@@ -9,22 +9,35 @@ import type { Point2 } from '#math/point2.js';
 import type { ResolvedAppearance } from '#objects/map-materials.js';
 import type { Geometry } from './geometry.js';
 import type { ClippedSegment } from './intersection.js';
-import type { PointLabelView } from './point-label.js';
+import type { ObjectLabelView } from './object-label.js';
 import type { SceneGeometry, SceneObject } from './scene-geometry.js';
 
 /** Spatial queries over scene geometry, independent of rendering and browser DOM. */
 export class Spatial {
   readonly #geometry: SceneGeometry;
-  readonly #labels: PointLabelView | undefined;
+  readonly #labels: ObjectLabelView | undefined;
 
-  constructor(geometry: SceneGeometry, labels?: PointLabelView) {
+  constructor(geometry: SceneGeometry, labels?: ObjectLabelView) {
     this.#geometry = geometry;
     this.#labels = labels;
   }
 
-  /** Check only the captured display, without picking an object underneath it. */
+  /** Revalidate the captured owner/layer, without picking another object underneath. */
   hasHit(entry: SceneObject, point: Point2, camera: Camera): boolean {
     this.#labels?.refresh();
+
+    if (entry.object.kind === 'line' || entry.object.kind === 'route') {
+      // Path fragments have no public identity; their label belongs to the owner/layer.
+      return (
+        isLayerEligible(entry.layer) &&
+        this.#geometry.objects.some(
+          candidate =>
+            candidate.object === entry.object &&
+            candidate.layer === entry.layer &&
+            this.#hitTestEntry(candidate, point, camera.zoom),
+        )
+      );
+    }
 
     return (
       isSceneObjectEligible(this.#geometry, entry) && this.#hitTestEntry(entry, point, camera.zoom)
@@ -70,11 +83,11 @@ export class Spatial {
   #hitTestEntry(entry: SceneObject, point: Point2, zoom: number): boolean {
     const appearance = this.#geometry.appearanceFor(entry);
 
-    if (entry.geometry.kind === 'point' && appearance.kind === 'point' && appearance.pickable) {
+    if (appearance.kind !== 'point' || appearance.pickable) {
       const label = this.#labels?.forEntry(entry);
+      const position = label && this.#geometry.labelPositionFor(entry);
 
-      if (label) {
-        const { position } = entry.geometry;
+      if (label && position) {
         const dx = (point.x - position.x) * zoom;
         const dy = (point.y - position.y) * zoom;
         const { x, y, width, height } = label.bounds;

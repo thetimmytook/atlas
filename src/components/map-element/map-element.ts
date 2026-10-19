@@ -13,7 +13,7 @@ import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 
 import { prepareImageResources } from './image-resources.js';
 import html from './map-element.html?raw';
-import { PointLabels } from './point-labels.js';
+import { ObjectLabels } from './object-labels.js';
 
 import type { MapDefinition, ResolvedMapDefinition } from '#definitions/map-definition.js';
 import type { MapConfiguration, MaterialLookup } from '#definitions/material-definition.js';
@@ -32,7 +32,7 @@ export class MapElement extends HTMLElement {
   #batchDepth = 0;
   #renderPending = false;
   readonly #renderer: Renderer;
-  readonly #labels: PointLabels;
+  readonly #labels: ObjectLabels;
   #model = new MapModel();
   #clickTrigger: ClickTrigger = 'release';
   #loading = false;
@@ -54,7 +54,7 @@ export class MapElement extends HTMLElement {
       throw new Error('MapElement template must contain an SVG surface.');
     }
 
-    this.#labels = new PointLabels(this, shadow, this.#requestRender);
+    this.#labels = new ObjectLabels(this, shadow, this.#requestRender);
     this.#renderer = new SvgRenderer(surface, this.#labels);
     this.#coordinates = new MapCoordinates(surface, this.#camera);
     this.#controls = new CameraControls(surface, this.#camera, this.#coordinates);

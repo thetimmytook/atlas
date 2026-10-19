@@ -13,14 +13,15 @@ import {
 import type { Rect } from '#math/rect.js';
 import type { Size } from '#math/size.js';
 import type { MapLayer } from '#objects/map-layer.js';
+import type { MapEntry } from '#objects/map-object-collection.js';
 import type { PreparedScene } from '#renderers/renderer.js';
-import type { PointLabelView } from '#spatial/point-label.js';
+import type { ObjectLabelView } from '#spatial/object-label.js';
 import type { SceneGeometry, SceneObject } from '#spatial/scene-geometry.js';
 import type { SvgObject } from './svg-renderer.utils.js';
 
 export class SvgRenderer extends Renderer {
   readonly #surface: SVGSVGElement;
-  readonly #labels: PointLabelView | undefined;
+  readonly #labels: ObjectLabelView | undefined;
   #labelRevision: number | undefined;
   readonly #labelChanges = new Set<SvgObject>();
   #objects: readonly SvgObject[] = [];
@@ -38,7 +39,7 @@ export class SvgRenderer extends Renderer {
   #viewBox: string | undefined;
   #scale: number | undefined;
 
-  constructor(surface: SVGSVGElement, labels?: PointLabelView) {
+  constructor(surface: SVGSVGElement, labels?: ObjectLabelView) {
     super();
     this.#surface = surface;
     this.#labels = labels;
@@ -127,9 +128,12 @@ export class SvgRenderer extends Renderer {
     if (scaleChanged) {
       for (const object of this.#points) {
         applyScreenScale(object.shape, 'point', scale);
+      }
 
+      // Label translation stays in map units; typography and offset stay in screen units.
+      for (const object of this.#objects) {
         if (object.label) {
-          applyScreenScale(object.label, 'point', scale);
+          this.#labelChanges.add(object);
         }
       }
 
@@ -147,6 +151,7 @@ export class SvgRenderer extends Renderer {
 
       if (object) {
         this.#geometryChanges.add(object);
+        this.#labelChanges.add(object);
       }
     }
 
@@ -168,7 +173,7 @@ export class SvgRenderer extends Renderer {
     }
 
     if (this.#labels && this.#labels.revision !== this.#labelRevision) {
-      this.#points.forEach(object => this.#labelChanges.add(object));
+      this.#objects.forEach(object => this.#labelChanges.add(object));
       this.#labelRevision = this.#labels.revision;
     }
   }
@@ -188,7 +193,12 @@ export class SvgRenderer extends Renderer {
     }
 
     for (const object of this.#labelChanges) {
-      applyLabel(object, this.#labels?.forEntry(object.source), scale);
+      applyLabel(
+        object,
+        this.#labels?.forEntry(object.source),
+        this.#geometry!.labelPositionFor(object.source),
+        scale,
+      );
     }
 
     for (const object of this.#unpainted) {
@@ -228,6 +238,21 @@ export class SvgRenderer extends Renderer {
       return;
     }
 
+    const pathLabels = new Map<MapLayer, Map<MapEntry, SvgObject>>();
+
+    for (const object of this.#objects) {
+      if (
+        !object.label ||
+        (object.source.object.kind !== 'line' && object.source.object.kind !== 'route')
+      ) {
+        continue;
+      }
+
+      const byOwner = pathLabels.get(object.source.layer) ?? new Map<MapEntry, SvgObject>();
+      byOwner.set(object.source.object, object);
+      pathLabels.set(object.source.layer, byOwner);
+    }
+
     const previous = this.#bySource;
     this.#objects = sources.map(source => {
       const existing = previous.get(source);
@@ -242,6 +267,18 @@ export class SvgRenderer extends Renderer {
 
       return object;
     });
+
+    // Fragment slots can change while their owner/layer label survives.
+    for (const object of this.#objects) {
+      const oldHost = pathLabels.get(object.source.layer)?.get(object.source.object);
+
+      if (oldHost?.label && oldHost !== object && geometry.labelPositionFor(object.source)) {
+        object.label = oldHost.label;
+        delete oldHost.label;
+        object.element.append(object.label);
+        this.#labelChanges.add(object);
+      }
+    }
 
     for (const object of previous.values()) {
       object.element.remove();

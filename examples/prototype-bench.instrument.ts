@@ -83,6 +83,7 @@ export function instrument(): {
 
     return prepare.call(this, {
       appearanceFor: geometry.appearanceFor,
+      labelPositionFor: geometry.labelPositionFor,
       invalidateAppearances: geometry.invalidateAppearances,
       layers: geometry.layers,
       get objects(): typeof geometry.objects {

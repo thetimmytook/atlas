@@ -1,13 +1,14 @@
 # Properties And Labels
 
-Status on 2026-10-16: the user confirmed the first material slice merged in
+Status on 2026-10-19: the user confirmed the first material slice merged in
 [PR #39](https://github.com/thetimmytook/atlas/pull/39), including JSON `data`,
 `MapElement.configure`, selection-property registration and strict readers.
 The user confirmed the first built-in label preparation step merged in
 [PR #40](https://github.com/thetimmytook/atlas/pull/40):
 types, validated text storage and immutable own material declarations.
-Point-label resolution, rendering and rectangular picking are now implemented for
-review on `feat/point-labels`. Labels on lines, routes and polygons remain future work; general
+Point-label resolution, rendering and rectangular picking are merged in PR #41
+(`33a6a11`). Line/route labels are implemented for review on `feat/path-labels`;
+polygon labels remain the next visual step. General
 visual-property/behavior registration is deferred to a separate next stage. The accepted
 [first-slice contract](MATERIALS_FIRST_SLICE_CONTRACT.md) and
 [implementation checks](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)
@@ -18,6 +19,63 @@ supersede earlier proposal-stage wording for this subset.
 Reviewed first-slice configuration, reader input and JSON-data signatures are in
 the [contract](MATERIALS_FIRST_SLICE_CONTRACT.md);
 the point visual step below extends that merged preparation. Behavior registration remains separate work.
+
+### Label contrast — implemented for review, 2026-10-19
+
+At the user's request, point/line/route text has a white `#ffffff` outline, 3 CSS
+pixels wide, with round joins. SVG paints the outline before the fill, retaining
+thin letter strokes and the existing label color (default `#222222`). Its width
+is independent of camera zoom. This is a built-in visual default, with no new
+material fields or public API; own declarations and load snapshots are unchanged.
+Color, width, join and paint order come from `DEFAULTS.labelOutline` in the shared
+internal `src/objects/material-defaults.ts`; layout and SVG read the same defaults.
+The outline decorates the existing text layout, so origin, offset and text metrics
+stay unchanged. Picking expands the text rectangle by 1.5 CSS pixels on every side
+to include the outline. Cached text measurements remain reusable. Empty/whitespace
+labels still have no visual output or hit area.
+
+### Line and route labels — implemented for review, 2026-10-19
+
+This bounded step reuses `object.label` and `material.properties.label`, without
+new public names or pickable properties. Lines/routes resolve the same field-based
+label/font inheritance, atomic offset and internal defaults as points: `#222222`,
+`1rem`, normal weight, container family, bottom-center origin and `(0px, -1rem)`.
+Own declarations and immutable load snapshots receive no defaults.
+
+Each runtime object/layer pair has one label. A line uses its displayed segment
+midpoint. A route uses half the sum of displayed XY segment lengths in source
+order; gaps between clipped fragments add no length. The first segment to reach
+half wins, including an exact fragment end. Zero XY length uses the first displayed
+position; absent geometry has no label. Empty and singleton routes remain valid.
+Direct membership still uses full geometry. These calculations create no runtime
+points, IDs or joining geometry and never use XYZ length, vertex averages or bounds.
+
+Scene preparation calculates only the affected path's attachment independently of
+DOM. Its last displayed fragment hosts the single label after all owner geometry
+and before owned-point appearances and following objects. Grouping uses runtime
+object/layer identity, retaining distinct labels for duplicate IDs. SVG transfers
+a surviving text node when fragment membership changes. Labels follow owner/layer
+eligibility, extend whole beyond intersection bounds and are clipped by the viewport.
+
+`ObjectLabels` and `ObjectLabelView` replace the point-specific internal names;
+they retain the existing browser metrics cache and relative origin/offset rectangles.
+Geometry/topology/membership update attachment before RAF and before picking,
+including batch and shared maps, without remeasuring unchanged text/font. Text and
+material changes keep local invalidation. SVG and rectangular picking share the
+same attachment and layout, including preserved spaces. Both SVG text paths retain
+horizontal writing, start anchor and literal case. Path labels return their owner
+and hit layer, with no route context; route context and effective point pickability
+remain confined to owned-point appearances. Initial and captured-hit checks use the
+same entry test; synchronous handlers revalidate only the original owner/layer.
+Path captures use that owner's current fragments, so changing the fragment host
+preserves a still-valid hit and suppresses an obsolete one without selecting another
+object or layer. Point captures retain their existing entry/context checks.
+
+The accepted CSSOM/media update boundary in the point section below is unchanged.
+There is no stylesheet traversal, condition registration, interception, polling or
+persistent RAF. Polygon labels, collision avoidance, zoom visibility, multiline and
+general visual registration remain outside this step. See
+[validation and review files](PROTOTYPE.md#line-and-route-labels--implemented-for-review-2026-10-19).
 
 ### Point labels — implemented for review, 2026-10-16
 
@@ -88,8 +146,9 @@ refresh remains supported for root-size/probe-size changes, font completion,
 stylesheet load, viewport resize, observed ancestor/container style/class changes
 and reconnect; complete automatic CSSOM tracking is outside this prototype.
 
-Line/route/polygon labels are still stored and validated but have no visual output
-or label picking. Their accepted attachment rules below remain the next step.
+That point step originally left line/route/polygon text without visual output or
+label picking. The line/route step above extends the shared pipeline; polygon
+labels remain the next visual step.
 Collision avoidance, zoom visibility, multiline, separate label objects and general
 visual registration remain outside scope. See [checks and review files](PROTOTYPE.md#point-labels--implemented-for-review-2026-10-16).
 
@@ -181,9 +240,9 @@ projections retain their current contracts. See
 
 ### Label content and appearance — accepted separation, 2026-10-16
 
-The product behavior below covers the implemented point visual step and accepted
-future line/route/polygon labels. Preparation is merged in PR #40; point visuals
-await review on `feat/point-labels`.
+The product behavior below covers merged point visuals and line/route visuals
+implemented for review. Polygon labels remain accepted future work. Preparation
+is merged in PR #40 and point visuals in PR #41.
 
 - The user accepted built-in labels for this stage. General registration of new
   visual properties/behaviors is deferred to a separate next stage. This explicitly
