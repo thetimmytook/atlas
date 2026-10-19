@@ -147,10 +147,6 @@ export class ObjectLabels implements ObjectLabelView {
 
     const appearance = this.#scene!.appearanceFor(entry);
 
-    if (appearance.kind === 'polygon') {
-      return undefined;
-    }
-
     const style = appearance.label;
     const cached = this.#layouts.get(entry);
 

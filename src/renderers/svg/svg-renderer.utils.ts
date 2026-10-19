@@ -19,7 +19,7 @@ type SvgShape =
   | SVGGElement;
 
 export interface SvgObject {
-  readonly source: SceneObject;
+  source: SceneObject;
   readonly element: SVGGElement;
   shape: SvgShape;
   appearance: ResolvedAppearance;

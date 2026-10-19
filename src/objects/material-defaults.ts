@@ -19,4 +19,8 @@ export const DEFAULTS = {
     origin: 'bottom center',
     offset: Object.freeze({ x: '0px', y: '-1rem' }),
   },
+  polygonLabel: {
+    origin: 'center center',
+    offset: Object.freeze({ x: '0px', y: '0px' }),
+  },
 } as const;

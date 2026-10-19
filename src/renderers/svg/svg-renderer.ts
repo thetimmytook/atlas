@@ -238,27 +238,37 @@ export class SvgRenderer extends Renderer {
       return;
     }
 
-    const pathLabels = new Map<MapLayer, Map<MapEntry, SvgObject>>();
+    const ownerNodes = new Map<MapLayer, Map<MapEntry, SvgObject>>();
 
     for (const object of this.#objects) {
-      if (
-        !object.label ||
-        (object.source.object.kind !== 'line' && object.source.object.kind !== 'route')
-      ) {
+      if (object.source.object.kind === 'point') {
         continue;
       }
 
-      const byOwner = pathLabels.get(object.source.layer) ?? new Map<MapEntry, SvgObject>();
+      const byOwner = ownerNodes.get(object.source.layer) ?? new Map<MapEntry, SvgObject>();
       byOwner.set(object.source.object, object);
-      pathLabels.set(object.source.layer, byOwner);
+      ownerNodes.set(object.source.layer, byOwner);
     }
 
     const previous = this.#bySource;
     this.#objects = sources.map(source => {
-      const existing = previous.get(source);
-      previous.delete(source);
+      const existing =
+        previous.get(source) ??
+        (source.object.kind === 'polygon'
+          ? ownerNodes.get(source.layer)?.get(source.object)
+          : undefined);
 
       if (existing) {
+        previous.delete(existing.source);
+
+        // Direct/clipped polygon views replace scene entries, while the owner remains displayed.
+        if (existing.source !== source) {
+          existing.source = source;
+          this.#geometryChanges.add(existing);
+          this.#appearanceChanges.add(existing);
+          this.#labelChanges.add(existing);
+        }
+
         return existing;
       }
 
@@ -270,7 +280,7 @@ export class SvgRenderer extends Renderer {
 
     // Fragment slots can change while their owner/layer label survives.
     for (const object of this.#objects) {
-      const oldHost = pathLabels.get(object.source.layer)?.get(object.source.object);
+      const oldHost = ownerNodes.get(object.source.layer)?.get(object.source.object);
 
       if (oldHost?.label && oldHost !== object && geometry.labelPositionFor(object.source)) {
         object.label = oldHost.label;

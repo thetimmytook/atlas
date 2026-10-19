@@ -7,9 +7,11 @@ merged `a5be046` on 2026-10-09. Polygon PR #30 and the route-membership/gesture 
 material slice merged in [PR #39](https://github.com/thetimmytook/atlas/pull/39).
 The user confirmed the first label preparation step merged in
 [PR #40](https://github.com/thetimmytook/atlas/pull/40).
-Point visual labels are merged in PR #41 (`33a6a11`). Line/route labels are
-implemented for review on `feat/path-labels`; polygon labels remain the next step. Older
-review-stage sections below retain dated implementation/validation history.
+Point visual labels are merged in PR #41 (`33a6a11`). Line/route labels and the
+white outline are merged in PR #42 (`bd8b508`), confirmed by the user. Polygon labels
+are implemented for review on `feat/polygon-labels`. Visual labels now cover all current
+object kinds; representative measurements with materials/labels, then platform
+acceptance are next. Older review-stage sections below retain dated implementation/validation history.
 
 Current label decisions and open questions are recorded in
 [Properties and labels](PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).
@@ -22,7 +24,78 @@ criterion below. Existing selection-property registration remains available.
 After reviewing the nested `label.font` signatures, the user requested the bounded
 preparation step below. A subsequent explicit request authorizes the bounded point
 visual step recorded here. The subsequent explicit line/route request is implemented
-below; polygon labels remain separate work.
+below. The subsequent explicit polygon-label request is implemented here.
+
+## Polygon labels — implemented for review, 2026-10-19
+
+Work starts from current `origin/master` at `bd8b508`, the merge of path labels in
+PR #42, on `feat/polygon-labels` in the main repository, without a worktree. The
+initial working tree was clean. No commits, push or PR are requested for this step.
+
+`src/spatial/polygon-label-position.ts` computes each existing convex cell's area
+centroid and their area-weighted union centroid, with membership checking and the
+first largest-cell fallback. Local XY translation, independent axis scaling and
+relative area weights support accepted small/large and thin polygons without raw
+area overflow/underflow. Existing `PolygonGeometry` cells supply displayed geometry;
+no source mutation, retriangulation, union reconstruction or runtime points/IDs are
+introduced. Flat/extruded labels share the same XY rule, with positive-area and
+vertical appearance eligibility, direct-membership priority and no height displacement.
+
+`scene-geometry.ts` updates attachments through existing root/layer dependencies on
+geometry/membership edits before picking, including batch. Text/material-only changes
+do not recalculate area. Polygon materials resolve common font/color inheritance
+with centered origin and zero offset after inheritance, leaving own declarations
+and immutable snapshots unchanged. `ObjectLabels` / `ObjectLabelView` supply existing
+measurement/cache/typography and outline-aware rectangles to SVG and spatial picking.
+Geometry changes reuse unchanged metrics. SVG retains owner/path/text nodes across
+direct/clipped entry switches. Labels follow fills in normal composition, extend
+whole beyond contour/intersection bounds, and clip at the viewport.
+
+Initial/captured hits share the entry geometry/label test. Polygon captures check
+only the original owner/layer's current appearance, retaining valid direct/clipped
+switches and suppressing stale hits without selecting underneath. Point/path capture
+semantics remain covered. Existing scene queues handle removal/reattachment, shared
+objects and disconnect/reconnect. No public API/dependency or typography tracking
+mechanism is added; the accepted CSSOM/media boundary remains unchanged.
+
+Node regressions cover independently known rectangle/trapezoid centroids, unequal
+areas, concave/outside fallback and deterministic ties, disconnected clipped regions,
+direct priority, no positive area, winding/translation, extreme scales/aspect ratios,
+local invalidation, source identity and stale reattachment. Material inheritance
+regressions now include polygons. Real-SVG/browser objectclick tests cover defaults,
+all origins, literal spaces/outline, px/rem/zoom, flat/extruded per-layer regions,
+fallback, outside-contour/bounds and viewport clipping, composition/duplicate IDs,
+immediate/batch edits, disappearing/returning appearances, local DOM/metrics reuse,
+node preservation, shared maps/reconnect and valid/obsolete press/release captures.
+
+The Buildings example labels its existing extruded polygon `Shared zone`, with no
+new UI controls. Review files are the position helper, scene/material/view/SVG/spatial
+integration, `tests/polygon-label-position.test.ts`, `tests/label-materials.test.ts`,
+`tests/browser/polygon-labels.browser.test.ts`, `examples/buildings.ts` and these topic
+documents/main index.
+
+Final validation on 2026-10-19:
+
+- `npm run check` passes: type checking/formatting succeed, lint has zero errors
+  and the existing 35 advisory warnings.
+- `npm test` passes all 468 Node tests in 21 files, including 18 polygon-position
+  cases and polygon coverage in the three shared material inheritance cases.
+- `npm run test:browser` passes all 323 Chromium tests in 11 files, including 64
+  new polygon-label cases and the complete existing point/path suites.
+- `npm run build` succeeds; API Extractor retains its existing bundled-TypeScript
+  5.9.3/project-TypeScript 6.0.3 advisory.
+- `npm run test:e2e` builds both examples and passes all 23 tests in two files.
+
+`npm ci` installed the existing locked tools without dependency/lockfile changes.
+Sandbox restrictions required escalation for fetching/creating the requested Git
+branch, enabling the Husky hook after install, and local browser/E2E servers
+(`listen EPERM`). All required checks subsequently completed. Changes remain
+unstaged, with no commits, push or PR.
+
+Visual labels for all current kinds are complete for review. No benchmark or platform acceptance run is
+part of this step. Next: representative measurements with materials/labels, then
+platform acceptance. Text fitting/collision avoidance, multiline, zoom visibility,
+3D label depth and general visual registration remain outside the current scope.
 
 ## Path-label review fixes — implemented for review, 2026-10-19
 

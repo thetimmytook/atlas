@@ -73,7 +73,12 @@ export type ResolvedAppearance =
       readonly width: number;
       readonly label: ResolvedLabel;
     }
-  | { readonly kind: 'polygon'; readonly color: string; readonly opacity: number };
+  | {
+      readonly kind: 'polygon';
+      readonly color: string;
+      readonly opacity: number;
+      readonly label: ResolvedLabel;
+    };
 
 /** One map's material state and object consumers, independent of DOM observation. */
 export class MapMaterials implements MaterialLookup {
@@ -257,6 +262,7 @@ export class MapMaterials implements MaterialLookup {
         kind: object.kind,
         color: properties.color ?? DEFAULTS.polygon.color,
         opacity: properties.opacity ?? DEFAULTS.polygon.opacity,
+        label: resolveLabel(properties.label, true),
       });
     } else {
       appearance = Object.freeze({
@@ -425,10 +431,11 @@ function resolveImage(
   });
 }
 
-/** Shared point/path defaults; own declarations and load snapshots stay untouched. */
-function resolveLabel(properties: LabelProperties | undefined): ResolvedLabel {
+/** Apply kind defaults after inheritance; own declarations and snapshots stay untouched. */
+function resolveLabel(properties: LabelProperties | undefined, polygon = false): ResolvedLabel {
   return Object.freeze({
     ...DEFAULTS.label,
+    ...(polygon ? DEFAULTS.polygonLabel : {}),
     ...properties,
     font: Object.freeze({ ...DEFAULTS.label.font, ...properties?.font }),
   });

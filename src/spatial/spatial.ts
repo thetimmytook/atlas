@@ -26,8 +26,8 @@ export class Spatial {
   hasHit(entry: SceneObject, point: Point2, camera: Camera): boolean {
     this.#labels?.refresh();
 
-    if (entry.object.kind === 'line' || entry.object.kind === 'route') {
-      // Path fragments have no public identity; their label belongs to the owner/layer.
+    if (entry.object.kind !== 'point') {
+      // Derived appearances have no public identity; captures belong to the owner/layer.
       return (
         isLayerEligible(entry.layer) &&
         this.#geometry.objects.some(
