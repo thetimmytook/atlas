@@ -4,6 +4,7 @@ import { getCollectionMaterials } from '#objects/material-consumers.js';
 import { createClippedAppearance } from './clipped-appearance.js';
 import { pathLabelPosition } from './path-label-position.js';
 import { createPolygonGeometry } from './polygon-geometry.js';
+import { polygonLabelPosition } from './polygon-label-position.js';
 import { trackScene, untrackScene } from './scene-invalidation.js';
 
 import type { Point2 } from '#math/point2.js';
@@ -36,7 +37,7 @@ export interface SceneGeometry {
   readonly objects: readonly SceneObject[];
   appearanceFor(entry: SceneObject): ResolvedAppearance;
 
-  /** One attachment per owner/layer, after all of its displayed path fragments. */
+  /** One attachment per owner/layer, after all of its displayed geometry. */
   labelPositionFor(entry: SceneObject): Point2 | undefined;
   invalidateAppearances(objects: ReadonlySet<MapObject>): void;
 
@@ -165,6 +166,20 @@ export function prepareSceneGeometry(
     previous: readonly SceneObject[],
     next: readonly SceneObject[],
   ): void => {
+    if (root.kind === 'polygon') {
+      previous.forEach(entry => labelPositions.delete(entry));
+      const entry = next[0];
+      const position =
+        entry?.geometry.kind === 'polygon' ? polygonLabelPosition(entry.geometry) : undefined;
+
+      if (entry && position) {
+        labelPositions.set(entry, position);
+        pending.add(entry);
+      }
+
+      return;
+    }
+
     if (root.kind !== 'line' && root.kind !== 'route') {
       return;
     }
