@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Store originals and invoke with explicit receivers. */
+
 import { MapObjectCollection } from '#objects/map-object-collection.js';
 import { MapPolygon } from '#objects/map-polygon.js';
 import { MapRoute } from '#objects/map-route.js';
 import { SvgRenderer } from '#renderers/svg/svg-renderer.js';
 
+import type { MapElement } from '#components/map-element/map-element.js';
+
 /** Intrusive, example-only counters; installed exclusively in the instrumentation phase. */
-export function instrument(): {
+export function instrument(map: MapElement): {
   reset(): void;
   snapshot(): Record<string, number>;
   restore(): void;
@@ -16,7 +19,64 @@ export function instrument(): {
     counters[key] = (counters[key] ?? 0) + amount;
   };
 
+  const owners = new Set<string>();
+  const textOwners = new Set<string>();
+
+  const touch = (element: SVGElement): void => {
+    const id = element.closest('[data-object-id]')?.getAttribute('data-object-id');
+
+    if (id) {
+      owners.add(id);
+
+      if (element.tagName === 'text') {
+        textOwners.add(id);
+      }
+    }
+  };
+
+  const collect = (records: MutationRecord[]): void => {
+    records.forEach(record => {
+      if (record.target instanceof SVGElement && record.attributeName === 'style') {
+        increment('svg_css_style_mutations');
+      }
+    });
+  };
+
+  const observer = new MutationObserver(collect);
+  observer.observe(map.shadowRoot!, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['style'],
+  });
   const attribute = Element.prototype.setAttribute;
+  const bbox = SVGGraphicsElement.prototype.getBBox;
+  const content = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent')!;
+  const contentSetter = content.set as (this: Node, value: string | null) => void;
+
+  SVGGraphicsElement.prototype.getBBox = function (...args): DOMRect {
+    if (this.tagName === 'text') {
+      increment('text_measurement_getBBox');
+    }
+
+    return bbox.apply(this, args);
+  };
+
+  Object.defineProperty(Node.prototype, 'textContent', {
+    ...content,
+    set(this: Node, value: string | null): void {
+      if (this instanceof SVGElement && this.tagName === 'text') {
+        increment('svg_text_content_writes');
+        touch(this);
+        increment(
+          this.closest('svg')?.getAttribute('aria-hidden') === 'true'
+            ? 'measurement_text_content_writes'
+            : 'displayed_text_content_writes',
+        );
+      }
+
+      contentSetter.call(this, value);
+    },
+  });
   const iterate = MapObjectCollection.prototype[Symbol.iterator];
   const prepare = SvgRenderer.prototype.prepare;
   const render = SvgRenderer.prototype.render;
@@ -44,6 +104,28 @@ export function instrument(): {
   Element.prototype.setAttribute = function (name, value): void {
     if (this instanceof SVGElement) {
       increment('svg_attribute_writes');
+      touch(this);
+
+      if (this.tagName === 'text') {
+        increment('svg_text_attribute_writes');
+      }
+
+      if (
+        [
+          'fill',
+          'stroke',
+          'stroke-width',
+          'fill-opacity',
+          'font-family',
+          'font-size',
+          'font-weight',
+          'style',
+          'paint-order',
+          'stroke-linejoin',
+        ].includes(name)
+      ) {
+        increment('svg_style_attribute_writes');
+      }
 
       if (
         ['d', 'points', 'x1', 'y1', 'x2', 'y2'].includes(name) ||
@@ -118,15 +200,28 @@ export function instrument(): {
 
   return {
     reset(): void {
+      observer.takeRecords();
+      owners.clear();
+      textOwners.clear();
+
       for (const key of Object.keys(counters)) {
         delete counters[key];
       }
     },
     snapshot(): Record<string, number> {
-      return { ...counters };
+      collect(observer.takeRecords());
+
+      return {
+        ...counters,
+        svg_touched_owners: owners.size,
+        svg_touched_text_owners: textOwners.size,
+      };
     },
     restore(): void {
+      observer.disconnect();
       Element.prototype.setAttribute = attribute;
+      SVGGraphicsElement.prototype.getBBox = bbox;
+      Object.defineProperty(Node.prototype, 'textContent', content);
       MapObjectCollection.prototype[Symbol.iterator] = iterate;
       SvgRenderer.prototype.prepare = prepare;
       SvgRenderer.prototype.render = render;

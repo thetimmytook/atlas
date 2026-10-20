@@ -5,3 +5,4 @@
 docs/performance/leaflet-2026-10-06-150104-summary.csv -text whitespace=cr-at-eol
 docs/performance/leaflet-2026-10-06-155113-instrument.csv -text whitespace=cr-at-eol
 docs/performance/atlas-2026-10-07-invalidation-*.csv -text whitespace=cr-at-eol
+docs/performance/prototype-2026-10-20-material-labels-*.csv -text whitespace=cr-at-eol

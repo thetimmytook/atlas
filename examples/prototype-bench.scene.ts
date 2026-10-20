@@ -1,5 +1,16 @@
 import type { MapDefinition, MapEntryDefinition } from '#definitions/map-definition.js';
 import type { MapPointDefinition } from '#definitions/map-point-definition.js';
+import type { MaterialDefinition } from '#definitions/material-definition.js';
+
+export const PROFILES = ['control', 'materials-labels'] as const;
+export type Profile = (typeof PROFILES)[number];
+export const BATCH_IDS = Array.from({ length: 16 }, (_, index) => `root-${16 + index}`);
+export const SVG_ICON =
+  '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="#0369a1" d="M8 0L16 8L8 16L0 8Z"/><circle cx="8" cy="8" r="3" fill="white"/></svg>';
+
+// Original 1x1 RGBA PNG, embedded to avoid network or filesystem resource variance.
+export const PNG_BASE64 =
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLttAAAAABJRU5ErkJggg==';
 
 export const SEED = 0x50_52_4f_54;
 export const MAP_SIZE = { width: 1200, height: 800 };
@@ -121,7 +132,11 @@ function probes(): MapEntryDefinition[] {
   ];
 }
 
-export function createScene(roots: 3000 | 5000, background: string): MapDefinition {
+export function createScene(
+  roots: 3000 | 5000,
+  background: string,
+  profile: Profile = 'control',
+): MapDefinition {
   let state = SEED;
 
   const random = (): number => {
@@ -183,10 +198,13 @@ export function createScene(roots: 3000 | 5000, background: string): MapDefiniti
     objects.push({ id, kind: 'polygon', contour, baseZ: z, height: slot === 8 ? 0 : 18 });
   }
 
+  const visual = profile === 'materials-labels' ? visualProfile(objects) : {};
+
   return {
     objects,
     materials: { vertex: { properties: { symbol: 'circle' } } },
     materialRules: [{ when: { kind: 'point' }, material: 'vertex' }],
+    ...visual,
     layers: [
       { id: 'background', stackIndex: -1, background: { source: background, size: MAP_SIZE } },
       ...BUILDINGS.flatMap((building, b) =>
@@ -237,4 +255,102 @@ export function composition(definition: MapDefinition): object {
       polygonContourVertices: 0,
     },
   );
+}
+
+/** Bounded application profile; geometry, membership and PRNG consumption are unchanged. */
+function visualProfile(objects: MapEntryDefinition[]): Partial<MapDefinition> {
+  objects.forEach((object, index) => {
+    const labelled = index < 9 || Math.floor(index / 4) % 4 === 0;
+    const visual = ['svg', 'png'][index % 7] ?? 'standard';
+    const decorated = {
+      ...object,
+      data: { visual },
+      ...(labelled
+        ? { label: `${object.kind[0]!.toUpperCase()}${String(index).padStart(6, '0')}` }
+        : {}),
+      ...(index < 9 ? { material: object.kind === 'point' ? 'probe-marker' : 'probe-style' } : {}),
+    };
+
+    if (decorated.kind === 'route' && labelled) {
+      const owned = Math.floor(decorated.points.length / 2);
+      decorated.points = decorated.points.map((vertex, pointIndex) =>
+        pointIndex === owned
+          ? {
+              ...vertex,
+              label: `O${String(index).padStart(6, '0')}`,
+              material: index < 9 ? 'probe-owned' : 'svg-marker',
+              pickable: true,
+            }
+          : vertex,
+      );
+    }
+
+    objects[index] = decorated;
+  });
+
+  const materials: Record<string, MaterialDefinition> = {
+    typography: {
+      properties: {
+        label: { font: { family: 'monospace', size: '12px', weight: 'normal' }, color: '#0f172a' },
+      },
+    },
+    vertex: {
+      inherits: 'typography',
+      properties: { symbol: 'circle', color: '#2563eb', size: 10 },
+    },
+    'svg-marker': {
+      inherits: 'vertex',
+      properties: { symbol: 'image', image: { resource: 'diamond', width: 16, height: 16 } },
+    },
+    'png-marker': {
+      inherits: 'vertex',
+      properties: { symbol: 'image', image: { resource: 'pixel', width: 14, height: 14 } },
+    },
+    'line-style': { inherits: 'typography', properties: { color: '#0e7490', width: 3 } },
+    'route-style': { inherits: 'line-style', properties: { color: '#7c3aed', width: 4 } },
+    'polygon-style': { inherits: 'typography', properties: { color: '#c2410c', opacity: 0.35 } },
+    'probe-style': {
+      inherits: 'typography',
+      properties: { label: { origin: 'top left', offset: { x: '40px', y: '-20px' } } },
+    },
+    'probe-marker': {
+      inherits: 'svg-marker',
+      properties: { label: { origin: 'top left', offset: { x: '40px', y: '-20px' } } },
+    },
+    'probe-owned': {
+      inherits: 'vertex',
+      properties: { label: { origin: 'top left', offset: { x: '-60px', y: '-20px' } } },
+    },
+  };
+
+  return {
+    materials,
+    materialRules: [
+      { when: { kind: 'point' }, material: 'vertex' },
+      { when: { kind: 'line' }, material: 'line-style' },
+      { when: { kind: 'route' }, material: 'route-style' },
+      { when: { kind: 'polygon' }, material: 'polygon-style' },
+      { when: { kind: 'point', benchVisual: 'svg' }, material: 'svg-marker' },
+      { when: { kind: 'point', benchVisual: 'png' }, material: 'png-marker' },
+    ],
+    resources: {
+      diamond: { kind: 'image', source: `data:image/svg+xml,${encodeURIComponent(SVG_ICON)}` },
+      pixel: { kind: 'image', source: `data:image/png;base64,${PNG_BASE64}` },
+    },
+  };
+}
+
+export function resourceMetadata(profile: Profile): object[] {
+  return profile === 'control'
+    ? []
+    : [
+        {
+          id: 'diamond',
+          format: 'image/svg+xml',
+          width: 16,
+          height: 16,
+          bytes: new TextEncoder().encode(SVG_ICON).length,
+        },
+        { id: 'pixel', format: 'image/png', width: 1, height: 1, bytes: atob(PNG_BASE64).length },
+      ];
 }
