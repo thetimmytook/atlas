@@ -15,6 +15,7 @@ const inputs = [
   'examples/prototype-bench.scene.ts',
   'examples/prototype-bench.check.ts',
   'examples/prototype-bench.instrument.ts',
+  'examples/prototype-bench.visual.ts',
   'examples/prototype-bench.run.mjs',
   'examples/comparison.html',
   'examples/comparison.bench.ts',

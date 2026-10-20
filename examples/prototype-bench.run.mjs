@@ -14,7 +14,7 @@ import { chromium } from 'playwright';
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const args = process.argv.slice(2);
 const option = (name, fallback) => (args.includes(name) ? args[args.indexOf(name) + 1] : fallback);
-const OUTPUT = option('--output', 'docs/performance/prototype-2026-10-09-before');
+const OUTPUT = option('--output', 'docs/performance/prototype-2026-10-20-material-labels');
 const CHECK_ONLY = args.includes('--check-only');
 const OPTIONS = {
   warmups: Number(option('--warmups', '3')),
@@ -80,7 +80,9 @@ async function fileHashes(directory, prefix = '') {
   return result;
 }
 
-async function verifySources(build) {
+const sourceCheckpoints = [];
+
+async function verifySources(build, boundary) {
   const changed = [];
 
   for (const [file, expected] of Object.entries(build.hashes)) {
@@ -88,6 +90,18 @@ async function verifySources(build) {
       changed.push(file);
     }
   }
+
+  if (JSON.stringify(await fileHashes(frozen)) !== JSON.stringify(builtHashes)) {
+    throw new Error('Frozen build changed.');
+  }
+
+  sourceCheckpoints.push({
+    boundary,
+    timestamp: new Date().toISOString(),
+    inputCount: Object.keys(build.hashes).length,
+    head: git('rev-parse', 'HEAD'),
+    dirty: git('status', '--short', '--untracked-files=all'),
+  });
 
   if (changed.length || git('rev-parse', 'HEAD') !== build.sourceCommit) {
     throw new Error(`Source/build changed; discard capture: ${changed.join(', ')}`);
@@ -144,6 +158,8 @@ const device = {
     await readFile(path.join(ROOT, 'node_modules/playwright/package.json'), 'utf8'),
   ).version,
   node: process.version,
+  throttling: { cpu: 'none', network: 'none', forcedGc: false },
+  launch: 'Playwright default headless Chromium; no custom flags',
   browserViewport: { width: 1100, height: 900 },
   deviceScaleFactor: 1,
 };
@@ -151,6 +167,20 @@ const device = {
 async function openPage() {
   const page = await browser.newPage({ viewport: device.browserViewport, deviceScaleFactor: 1 });
   page.on('pageerror', error => errors.push(error.message));
+  await page.exposeFunction('prototypeProgress', progress => {
+    process.stdout.write(
+      `${progress.phase} ${progress.roots} repeat ${progress.repeat + 1}/${progress.repeats}\n`,
+    );
+  });
+  await page.exposeFunction('prototypeNativeClick', point => page.mouse.click(point.x, point.y));
+  await page.exposeFunction('prototypeNativeHold', async (point, down) => {
+    if (down) {
+      await page.mouse.move(point.x, point.y);
+      await page.mouse.down();
+    } else {
+      await page.mouse.up();
+    }
+  });
   await page.goto(`http://127.0.0.1:${port}/examples/prototype-bench.html`);
   await page.waitForFunction(() => window.prototypeBench !== undefined);
 
@@ -168,10 +198,11 @@ function summary(rows) {
   const groups = new Map();
 
   for (const row of rows) {
-    const key = `${row.phase}/${row.roots}/${row.scenario}/${row.metric}`;
+    const key = `${row.phase}/${row.roots}/${row.profile}/${row.scenario}/${row.metric}`;
     const group = groups.get(key) ?? {
       phase: row.phase,
       roots: row.roots,
+      profile: row.profile,
       scenario: row.scenario,
       metric: row.metric,
       unit: row.unit,
@@ -190,6 +221,7 @@ function summary(rows) {
     return {
       phase: group.phase,
       roots: group.roots,
+      profile: group.profile,
       scenario: group.scenario,
       metric: group.metric,
       unit: group.unit,
@@ -203,22 +235,50 @@ function summary(rows) {
 }
 
 async function nativeChecks(page) {
-  let anchor = await page.evaluate(() => window.prototypeBench.nativeSetup());
-  await page.mouse.click(anchor.x, anchor.y);
-  await page.evaluate(() => window.prototypeBench.nativeAssert('probe-route', 'b0-f0'));
-  anchor = await page.evaluate(() => window.prototypeBench.nativeEdit());
-  await page.mouse.click(anchor.x, anchor.y);
-  await page.evaluate(() => window.prototypeBench.nativeAssert('probe-route', 'b0-f0'));
-  anchor = await page.evaluate(() => window.prototypeBench.nativeFloor());
-  await page.mouse.click(anchor.x, anchor.y);
-  await page.evaluate(() => window.prototypeBench.nativeAssert('pr-1', 'b0-f1'));
-  await page.evaluate(() => window.prototypeBench.nativeCleanup());
+  const results = [];
 
-  return [
-    'native component click: original root/layer',
-    'native component click after vertex edit',
-    'native component click after independent floor switch',
-  ];
+  for (const roots of [3000, 5000]) {
+    for (const profile of ['control', 'materials-labels']) {
+      let anchor = await page.evaluate(
+        ({ roots, profile }) => window.prototypeBench.nativeSetup(roots, profile),
+        { roots, profile },
+      );
+      await page.mouse.click(anchor.x, anchor.y);
+      await page.evaluate(() => window.prototypeBench.nativeAssert('probe-route', 'b0-f0'));
+      anchor = await page.evaluate(() => window.prototypeBench.nativeLabel());
+      await page.mouse.click(anchor.x, anchor.y);
+      await page.evaluate(
+        profile =>
+          profile === 'materials-labels'
+            ? window.prototypeBench.nativeAssert('probe-point', 'b1-f1')
+            : window.prototypeBench.nativeAssertMiss(),
+        profile,
+      );
+      anchor = await page.evaluate(() => window.prototypeBench.nativeMiss());
+      await page.mouse.click(anchor.x, anchor.y);
+      await page.evaluate(() => window.prototypeBench.nativeAssertMiss());
+      anchor = await page.evaluate(() => window.prototypeBench.nativeEdit());
+      await page.mouse.click(anchor.x, anchor.y);
+      await page.evaluate(() => window.prototypeBench.nativeAssert('probe-route', 'b0-f0'));
+      anchor = await page.evaluate(() => window.prototypeBench.nativeFloor());
+      await page.mouse.click(anchor.x, anchor.y);
+      await page.evaluate(() => window.prototypeBench.nativeAssert('pr-1', 'b0-f1'));
+      await page.evaluate(() => window.prototypeBench.nativeCleanup());
+      results.push({
+        roots,
+        profile,
+        passed: [
+          'native geometry click original owner/layer',
+          'native label-only hit or control miss',
+          'native verified gutter miss',
+          'native click after vertex edit',
+          'native owned vertex/route context after floor switch',
+        ],
+      });
+    }
+  }
+
+  return results;
 }
 
 async function save(suffix, content) {
@@ -230,16 +290,20 @@ async function save(suffix, content) {
 try {
   const checkPage = await openPage();
   const build = await checkPage.evaluate(() => window.prototypeBench.build);
-  await verifySources(build);
+  await verifySources(build, 'functional:before');
   process.stdout.write('Frozen build verified; independent functional checks\n');
+  await checkPage.mouse.move(10, 10);
+  await checkPage.mouse.down();
   const functional = await checkPage.evaluate(() => window.prototypeBench.check());
+  await checkPage.mouse.up();
   const native = await nativeChecks(checkPage);
+  await verifySources(build, 'functional:after');
   await checkPage.close();
   const captures = [];
 
   if (!CHECK_ONLY) {
     for (const phase of ['timing', 'instrument']) {
-      await verifySources(build);
+      await verifySources(build, `${phase}:before`);
       process.stdout.write(`Starting ${phase}: ${JSON.stringify(OPTIONS)}\n`);
       const page = await openPage();
       const capture = await page.evaluate(
@@ -248,7 +312,12 @@ try {
       );
       captures.push(capture);
       await page.close();
-      await verifySources(build);
+      await verifySources(build, `${phase}:after`);
+
+      if (JSON.stringify(await fileHashes(frozen)) !== JSON.stringify(builtHashes)) {
+        throw new Error('Frozen build changed during phase.');
+      }
+
       process.stdout.write(`Completed ${phase}: ${capture.rows.length} raw rows\n`);
     }
   }
@@ -257,9 +326,11 @@ try {
     throw new Error(`Browser errors: ${errors.join('; ')}`);
   }
 
-  await verifySources(build);
+  await verifySources(build, 'capture:before-save');
   const manifest = {
-    schema: 1,
+    schema: 2,
+    profiles: ['control', 'materials-labels'],
+    sourceCheckpoints,
     build,
     device,
     commitBefore,
