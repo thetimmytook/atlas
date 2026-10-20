@@ -9,9 +9,12 @@ The user confirmed the first label preparation step merged in
 [PR #40](https://github.com/thetimmytook/atlas/pull/40).
 Point visual labels are merged in PR #41 (`33a6a11`). Line/route labels and the
 white outline are merged in PR #42 (`bd8b508`), confirmed by the user. Polygon labels
-are implemented for review on `feat/polygon-labels`. Visual labels now cover all current
-object kinds; representative measurements with materials/labels, then platform
-acceptance are next. Older review-stage sections below retain dated implementation/validation history.
+are merged in PR #43 (`69c0006`). Representative materials/labels measurements
+are merged in PR #44; the updated platform plan is merged in PR #45 (`59fe8ff`).
+Visual labels cover all current object kinds. The first bounded automated engine
+slice is recorded in the [cross-browser report](../validation/CROSS_BROWSER_2026_10_20.md).
+Physical devices, installed desktop browsers, full scenario cards and keyboard/focus
+contracts remain open; focused zoom profiling is separate. Older review-stage sections below retain dated implementation/validation history.
 
 Current label decisions and open questions are recorded in
 [Properties and labels](PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).
@@ -25,6 +28,29 @@ After reviewing the nested `label.font` signatures, the user requested the bound
 preparation step below. A subsequent explicit request authorizes the bounded point
 visual step recorded here. The subsequent explicit line/route request is implemented
 below. The subsequent explicit polygon-label request is implemented here.
+
+## Portable engine validation — implemented for review, 2026-10-20
+
+`chore/cross-browser-validation` starts at fetched `origin/master` `59fe8ff` in the
+main checkout, with a clean initial working tree. `npm run test:platform` uses the
+existing Vitest/Playwright, builds Factory/Buildings once, serves a frozen copy and
+runs Chromium, Firefox and WebKit sequentially in fresh scenario contexts. The
+separate config and Node exclusion keep ordinary tests/E2E/Chromium-only CDP tests
+and CI unchanged. Runtime, public API, dependencies and lockfile are unchanged.
+
+The bounded slice covers loading/resize/zero-size recovery, native drag/wheel and
+scroll/layout coordinates, independent floors/source identity, SVG/PNG decoding,
+rendered sample colors/rectangles, material/load preservation, analytic four-kind
+labels/fallback/origins/typography, native label-only/overlap/clipped hits, before-RAF
+nested batch, stale captures, removal/reconnect and one shared object in two maps.
+The [dated report](../validation/CROSS_BROWSER_2026_10_20.md) contains actual engine
+versions, source/build identity, every subcase result and regression results;
+[Tooling](../TOOLING.md#opt-in-portable-engine-validation) contains reproduction steps.
+Each pass applies only to its named subcase. Real Safari/iPhone, installed Chrome/Edge,
+physical multitouch/orientation/cancellation, full acceptance cards, accessibility
+and performance acceptance remain separate. No benchmark/profiling or numerical
+threshold is introduced. The user authorized commits and PR publication on
+2026-10-20; the dated capture metadata retains its original pre-commit state.
 
 ## Polygon labels — implemented for review, 2026-10-19
 

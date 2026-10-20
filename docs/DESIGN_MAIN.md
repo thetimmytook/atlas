@@ -21,8 +21,9 @@ The user confirmed label preparation merged in
 [PR #41](https://github.com/thetimmytook/atlas/pull/41), verified against `33a6a11`.
 Line/route visual labels and the default white outline are merged in
 [PR #42](https://github.com/thetimmytook/atlas/pull/42), confirmed by the user and
-verified at `bd8b508`. Polygon labels are implemented for review on
-`feat/polygon-labels`, completing visual labels for the current object kinds. The baseline distinguishes
+verified at `bd8b508`. Polygon labels are merged in PR #43 (`69c0006`),
+completing visual labels for the current object kinds. Representative materials/labels
+measurements are merged in PR #44; the updated platform plan is merged in PR #45. The baseline distinguishes
 implemented/merged behavior, temporary implemented contracts, accepted future work
 and open/deferred decisions. The topic documents below retain decision history;
 illustrative future APIs do not extend the available exports.
@@ -59,7 +60,7 @@ illustrative future APIs do not extend the available exports.
   in PR #40, as confirmed by the user. Point label resolution, measurement, SVG
   display and rectangular picking are merged in PR #41. Line/route labels reuse
   that pipeline and are merged in PR #42. Polygon labels now use the displayed XY
-  area centroid with a largest-cell fallback, implemented for review. The general
+  area centroid with a largest-cell fallback, merged in PR #43. The general
   resource registry/loader, schemaVersion, homeView and camera constraints remain accepted future work.
 - Public core/model lifecycle, multiple viewports, live export and unfinished API
   schemas remain open/deferred. No ID registry, new tooling policy or architectural
@@ -108,9 +109,14 @@ The bounded visual point step is merged in PR #41:
 [scope, boundaries and checks](design/PROTOTYPE.md#point-labels--implemented-for-review-2026-10-16).
 The subsequent line/route step is merged in PR #42:
 [scope, architecture and checks](design/PROTOTYPE.md#line-and-route-labels--implemented-for-review-2026-10-19).
-The polygon visual step completes labels for all four current kinds and is ready
-for review: [scope and checks](design/PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
-Next: representative measurements with materials/labels, then platform acceptance.
+The polygon visual step is merged in PR #43 and completes labels for all four current kinds: [scope and checks](design/PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
+The [representative measurements](performance/PROTOTYPE_MATERIAL_LABELS_2026_10_20.md)
+are merged in PR #44; the platform-plan update is merged in PR #45. The separate
+[2026-10-20 cross-browser report](validation/CROSS_BROWSER_2026_10_20.md) records the
+first bounded functional engine slice using production Factory/Buildings and public
+setup P. It preserves full-scenario, installed-browser, physical-device and
+keyboard/focus gaps. Focused zoom profiling remains separate; no numerical
+performance gate has been accepted.
 The following rules are implemented; preparation alone did not implement the visuals.
 Font size and offset use strings with explicit `px` or `rem`, independently of
 map-camera zoom; font size is positive and offsets allow negative/zero values.
@@ -163,7 +169,8 @@ route-topology invalidation (PR #33), second-pointer protection (PR #34) and the
 integration guide (PR #35). Synchronous nested `map.batch()` is merged in PR #38;
 see the [implementation history and validation](design/PROTOTYPE.md#synchronous-nested-batch--implemented-for-review-2026-10-09).
 Historical measurement results and the platform acceptance plan remain separate
-documents; this task adds no performance measurements or platform acceptance claim.
+documents. Those batch-stage checks added no performance measurements or platform
+acceptance claim; the later bounded engine run is linked above.
 
 The user approved the revised [first material slice contract](design/MATERIALS_FIRST_SLICE_CONTRACT.md)
 and requested implementation on 2026-10-12. The complete slice passed final

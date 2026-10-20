@@ -1,0 +1,2751 @@
+{
+  "capturedAt": "2026-10-20T11:42:51.471Z",
+  "evidenceDirectory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-platform-qI7mF9",
+  "environment": {
+    "os": "darwin",
+    "osVersion": "25.6.0",
+    "architecture": "arm64",
+    "node": "v20.19.6",
+    "playwright": "1.63.0",
+    "viewport": {
+      "width": 1280,
+      "height": 1000
+    },
+    "dpr": 1,
+    "headless": true,
+    "input": "Playwright native mouse/wheel",
+    "macOSProductVersion": "26.6.2"
+  },
+  "build": {
+    "sourceCommit": "59fe8ff8e889e05e6c9cb1792d143ad9051d8f5a",
+    "branch": "chore/cross-browser-validation",
+    "dirty": "M docs/DESIGN_MAIN.md\n M docs/TOOLING.md\n M docs/design/CURRENT_CONTRACT.md\n M docs/design/PLATFORMS_AND_PERFORMANCE.md\n M docs/design/PROPERTIES_AND_LABELS.md\n M docs/design/PROTOTYPE.md\n M docs/validation/PLATFORM_ACCEPTANCE_PLAN.md\n M package.json\n M vitest.config.mts\n?? docs/validation/CROSS_BROWSER_2026_10_20.md\n?? docs/validation/cross-browser-2026-10-20-results.json\n?? tests/platform/\n?? vitest.platform.config.mts",
+    "diffSha256": "22b49e22fd6dc060fe92c859541df356b1797fa10043ae83f761f43b25f0a571",
+    "inputs": [
+      [".prettierrc.json", "49cb495aaf15557d2645bf7422de8ac3a4542f065647c395f3f46593bc75e543"],
+      ["benchmark.config.mts", "2345c7447abeec53b6f672d1237d7dd42ece33d9f271d36f464085b07519e66d"],
+      ["eslint.config.mts", "0e67f6f52403671f5ace46b1c14aee395b8a649f16a4f3f92dabbd67fbc5d3f0"],
+      ["example.config.mts", "a94b5022f364ad403c45d5d04122b3426ff88f8e017e0b96bced89f09e495ab6"],
+      [
+        "examples/buildings.html",
+        "4b23bfca81c44f55013fb497804c0a42b6fbc3e41ae62d3a687453900bf9b563"
+      ],
+      ["examples/buildings.ts", "ab89e94fc4141a17b1d9120dfe33e7a3d4fa32919986287558628f173e600d2d"],
+      [
+        "examples/comparison.adapter.ts",
+        "83daf504c24c31f799fdb84b39e4ea136d91a5b5fef4b9b3ad49113ed1f307e3"
+      ],
+      [
+        "examples/comparison.bench.ts",
+        "bfb4a6868c9ff5bbddee2e06d95425f43d8b265e21c7918b71eb5d96f063ea98"
+      ],
+      [
+        "examples/comparison.canvas-controls.ts",
+        "8d9e459ef1625bda3b678c64b405c84a070fa90d9ec51d0b3c52cf15c87cfd02"
+      ],
+      [
+        "examples/comparison.canvas-fixtures.ts",
+        "70f3ecad74279722f9b67df50b7b6eb1f75e4598b57502aef49d438237239f1d"
+      ],
+      [
+        "examples/comparison.canvas.ts",
+        "866bd556824620926a07753efd95bf1b61bc7919f27bcdc772446d296d1cbd90"
+      ],
+      [
+        "examples/comparison.expected.ts",
+        "1a57d758322e22fc9a58c694f84076bfcfefa2db43001c05c7410284dbfff73e"
+      ],
+      [
+        "examples/comparison.html",
+        "81d852aa7ccae30aba71b7c718631566bf9e0c59b30b78bb71ac0d719242f8b1"
+      ],
+      [
+        "examples/comparison.instrument.ts",
+        "71ebe16c08857f91b9c065c19353b7ff491e65832645bf82613b36c7d1ca8e5f"
+      ],
+      [
+        "examples/comparison.leaflet.ts",
+        "76e8c9e2a718e340001b053d5b4081e6ef305505b1d917524bba9f5e6b273577"
+      ],
+      [
+        "examples/factory/Factory-ground-floor.svg",
+        "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b"
+      ],
+      [
+        "examples/factory/Factory.svg",
+        "237344e31bee3f2d830299194bacfa2768eacd9cba16dfca2243a07b44426c6b"
+      ],
+      [
+        "examples/factory/icons/LICENSE.upstream.txt",
+        "c09d89375d8cc6974aefde661be64dd16a946d34ec75b091e77553fabbfc47f2"
+      ],
+      [
+        "examples/factory/icons/loose-loot.png",
+        "ae8c9985765a1efc2e57b5737092bcb52067678801492f8fc05c1977519e9132"
+      ],
+      [
+        "examples/factory/icons/README.md",
+        "75e8f05495720b776bcef484adcc9a84180cd327b62b36c1a697093bdf4d5003"
+      ],
+      [
+        "examples/factory/LICENSE.upstream.md",
+        "1349a4b6148492b44f629e64eed676612e234fe9a839e4f3b277c1482c8849f1"
+      ],
+      [
+        "examples/factory/map-config.json",
+        "00601df3574c6055ce726b55b848681323914485c70d9f14f79a4af31be5ae20"
+      ],
+      [
+        "examples/factory/README.md",
+        "7da4a4e8d8df5b34365e6d89fe1e5a054a7f61e330025632cd6b2104a5c578d4"
+      ],
+      [
+        "examples/factory/README.upstream.md",
+        "ee4022e968c052d2920251ba2181b5ebd9ffb45c5c69bdea916bd9f3a6e7031a"
+      ],
+      ["examples/index.html", "84f4a176f926f513a075c294c0ed227ea8d409b79593f7d1617fc661e87021f8"],
+      [
+        "examples/prototype-bench.check.ts",
+        "6e2790d8b1960c68125843ccc3aa7b65e9035c908db61e404e4920bcc2bdbdfd"
+      ],
+      [
+        "examples/prototype-bench.html",
+        "9681ddbab84fa338ae84c3e92f13e7896daaab8b39d752649b7f061602e878be"
+      ],
+      [
+        "examples/prototype-bench.instrument.ts",
+        "66afb462968b6e5e0ce66314cd5d81a8056a14a25a9d65cd209862c3297e7365"
+      ],
+      [
+        "examples/prototype-bench.run.mjs",
+        "a7dfa3a89286be5b9bdea7f8e00f5fb8a9ed847bf1b3bd2c569dd83497db65cc"
+      ],
+      [
+        "examples/prototype-bench.scene.ts",
+        "6e2b0c1a997efd1db59e2cc2aa697da536872ebe3058f26ff7072cb7fe2bbd2c"
+      ],
+      [
+        "examples/prototype-bench.ts",
+        "20ab080b3fd88a8e7b76b13dcf15f73c1fa4f25893ae19b27f6a6377ff2c837e"
+      ],
+      [
+        "examples/prototype-bench.visual.ts",
+        "1a60690771a5a3c0393e203a6b1155f08deda2328cb68ef2d6d4960c2aa3eb1f"
+      ],
+      [
+        "examples/stress.bench.ts",
+        "1d13865d92806bd2e0b2aae5ca136ce0152d4480305f262a04e14416effd8381"
+      ],
+      [
+        "examples/stress.check.ts",
+        "a200f6d9d6f3e0a61f4da6b68126457911193da15589624c62120535ade3d4cc"
+      ],
+      ["examples/stress.html", "77c7d2460990079466402ecf46622ff6aca166d26ebcf2d9b1ae67481d17cbd3"],
+      [
+        "examples/stress.instrument.ts",
+        "68d433f0aa0b3f2b04de51f9872bb5b3d0a50a09e6cd35c2fd8d957365a50c30"
+      ],
+      [
+        "examples/stress.scene.ts",
+        "16bf27b1e755b602981602a571ca407d54644855092cf7839057d219fade00d9"
+      ],
+      ["package-lock.json", "d4a01b794f536804ce740bedbaa111d921eb5dc822723b2ba9b6c20253f7f271"],
+      ["package.json", "632d93462717c52afe157885bc28c5c865988f062f731ad7727b9fe3e4c07ebc"],
+      ["src/assets.d.ts", "a8f55248c82d32e1d0e2d9ab58ea4c518b3ff78da6ce1556dcc3f84192a1b258"],
+      ["src/camera/camera.ts", "07a9d53335da627a52ef8919f9d517a96f75649fbbb43e4a5bace0c873b1b6b1"],
+      [
+        "src/components/map-element/image-resources.ts",
+        "69c563771a3358fb8c26726e2918c039dcb2303f4d9b4e5363d29a79c8746d82"
+      ],
+      [
+        "src/components/map-element/map-element.html",
+        "db7c6b5ca55040934e2af39b88641ee0c5f2c87878469f5886b3cb1198642ee4"
+      ],
+      [
+        "src/components/map-element/map-element.ts",
+        "e79b586db6fd07141dfa7efaa3238c12a77e13203f0a8ca06a1ca5e61e66ef1f"
+      ],
+      [
+        "src/components/map-element/object-labels.ts",
+        "297d77ee751ee81dee7ab220be55e9fdd07376d2c9ef76573276136140343d41"
+      ],
+      [
+        "src/definitions/identity.ts",
+        "8a5c5bc88356c883e3f25e9e68654be5cbdc700adb4bebb464dcfc2f1d2394c1"
+      ],
+      [
+        "src/definitions/map-definition.ts",
+        "47dd67f098f4b1d2093d30d508d16ee6822b49bed431a8acc4df830e36254b6a"
+      ],
+      [
+        "src/definitions/map-layer-definition.ts",
+        "ee6a19e36daa4fa577b19870a8b082eece49c630facf895edeac1a864ee355a5"
+      ],
+      [
+        "src/definitions/map-line-definition.ts",
+        "27c02dc25daf2d12284939a53ff5af021907ce2dd6c943e32cf7dd9870520f5b"
+      ],
+      [
+        "src/definitions/map-object-definition.ts",
+        "2fd431f7cc1503016c8a98a7f4784b4ee887e89f51a2dbea15323db4b74d20b1"
+      ],
+      [
+        "src/definitions/map-point-definition.ts",
+        "ef4f33d1a39b944856b68400678d36b1f9b77f6d0c6154627a33f5cd01809d8d"
+      ],
+      [
+        "src/definitions/map-polygon-definition.ts",
+        "d0033e2a0e34bd746af135c3733b472b1a18756d6f07c6f307e32be5e2ed9792"
+      ],
+      [
+        "src/definitions/map-route-definition.ts",
+        "f9d5fd42fab3f9d76c4a369fe1b77ca0182553e2a715f55df483e784c5c47127"
+      ],
+      [
+        "src/definitions/material-definition.ts",
+        "53be60fa38c680c745d35ce13a830e0adb631973f16d83cfc5f8d83cedb136e9"
+      ],
+      [
+        "src/errors/atlas-error.ts",
+        "9a9fba09a8fae8850739caf416b0d33d1b2537c6e7ecee0696c6e4cd90639495"
+      ],
+      [
+        "src/errors/atlas-material-error.ts",
+        "224dc63654843b1b684792e839b81d24708f788d74869dcb53d830405b94043e"
+      ],
+      ["src/index.ts", "f539bdaac807dfc82760db4fe280a2434cd545d587209e8b8da11af903c76cc5"],
+      [
+        "src/interaction/camera-controls.ts",
+        "ede5c09fb017e4d21b5c7a590bf60c1ef48a6a8366e5ed6f69cc25186a0a8fe7"
+      ],
+      [
+        "src/interaction/map-coordinates.ts",
+        "b2502aba80977834ee49bedabc65c05180f7ec05315f87d1c9b9b5746a135952"
+      ],
+      [
+        "src/interaction/map-surface-event.ts",
+        "3db807dc24760993c4c76911bc170460da84ff73274b90ac6e806e757ee06353"
+      ],
+      [
+        "src/interaction/object-click-event.ts",
+        "7e972d00a8de30fbc100ca97eebe17e3f732ff4a19408a521bc51f2330b6ce52"
+      ],
+      ["src/math/distance.ts", "77b34548a9468da91416e37dea1df5c9b5427f40241d1e8ff861098354869c9f"],
+      [
+        "src/math/intersection-bounds.ts",
+        "98461e6102ecb7d332ec8ef7affaa8ca8c333e0cd9c29a2efdd67748e5c8d3b4"
+      ],
+      ["src/math/point2.ts", "29f617e1c889f17fa034bb9a1c4eee40b099b5c2493bc14951a5daf4721c7760"],
+      ["src/math/point3.ts", "ccabb5daa08d62ad1160dee410a83fa87da9b9302aa2b0d8433a79f904463c00"],
+      ["src/math/polygon.ts", "a22b1925b132c96ec6532d2ece8e00dc177ad4f9659e46f980f0315f8c43738d"],
+      ["src/math/rect.ts", "d5839ac951a2733bf7655062d579c4ef43593c14e380e35c654208536827600e"],
+      ["src/math/size.ts", "a492d36a4032966f754db980dcab1fcdd4d6198f1ad8a4d8452e8a1380ee8bda"],
+      [
+        "src/objects/create-id.ts",
+        "96e3eecb7c7dd9d0c2f2dda418daf77fc14a002f7ec52330c9dc08bed2c00b0c"
+      ],
+      [
+        "src/objects/map-layer-object-id-collection.ts",
+        "942ad2deb66b927ef352f6e192db7e5b7879eb2bef4c1d943a728c6b4fd825e5"
+      ],
+      [
+        "src/objects/map-layer.ts",
+        "3834ca12e34a39cac49ac0f5d4c6a5d435d9cd272fa21af374c4bcf9203c5727"
+      ],
+      [
+        "src/objects/map-line.ts",
+        "777e71a393496fa0f75defeca40a2d19d8455d0c2c7f8a7de4020b6073153870"
+      ],
+      [
+        "src/objects/map-materials.ts",
+        "3cd3122d11d508442155759817ad48115b04147fc5f069920499e777517c3afc"
+      ],
+      [
+        "src/objects/map-model.ts",
+        "528ef12769d911b70d25ea447b14a80798c8535cb06aededf3333b191720fecd"
+      ],
+      [
+        "src/objects/map-object-collection.ts",
+        "563beeb0a8717d43b0ec98dcd8ddaee9e2c64d559509563fc961508d252c2582"
+      ],
+      [
+        "src/objects/map-object.ts",
+        "e12cce89c4fff6c0cffb9955ab904008fbce0c84626e1875e08b2db2af057347"
+      ],
+      [
+        "src/objects/map-point.ts",
+        "d4100e0ace5364b775b7533673cf803a1b4ae3175d09c0d66bdcd1afa86137ad"
+      ],
+      [
+        "src/objects/map-polygon.ts",
+        "faecb052f673dcf27ea487836188cc179ec7f08f61e779bbf7a536040b34e9ed"
+      ],
+      [
+        "src/objects/map-route.ts",
+        "382826ad55e66460c4a2c2ccc96c42066a6710789027560dc191dd6c1195b889"
+      ],
+      [
+        "src/objects/material-consumers.ts",
+        "64765aaf9ae8af63133a050f2a384bb2fe7c27d1be49dcb016a0c885e06cd6ac"
+      ],
+      [
+        "src/objects/material-defaults.ts",
+        "e4ec4b62c75512a4821b497c43d97f4c0113c75412d947fc89a144c0f1dcfca1"
+      ],
+      [
+        "src/objects/property-configuration.ts",
+        "e27f45daef8ef97b6ad69148541c6cdb516075a144ef278874c3954756c58c1f"
+      ],
+      [
+        "src/objects/runtime-material.ts",
+        "973934e3543a7e8c110c9a308dabf857db84ca03ec463750fba0fcb12923b74c"
+      ],
+      [
+        "src/renderers/renderer.ts",
+        "d1f845d668c9e80034f9b22e1fee9e91d102af96763b742b21612289bda06926"
+      ],
+      [
+        "src/renderers/svg/svg-renderer.ts",
+        "4ea87f6e2f8494a33586c54459f3c8adbff85b4c6baea89745247843c9d5c361"
+      ],
+      [
+        "src/renderers/svg/svg-renderer.utils.ts",
+        "6c87c7019d32f20603f14c3a33fdb2dbb0207f4f5dd27dc9f60cb08dbb705ca9"
+      ],
+      [
+        "src/spatial/clipped-appearance.ts",
+        "afbfc6e1a3e8038cbda30eadc523bdad4c388e0b32cb42ebc9bd2598de9dfc06"
+      ],
+      [
+        "src/spatial/geometry.ts",
+        "46c545307ec29fb45c233bea8b1f60abd9eaf2f1a68f1cd6eff155c1fcaaa9fe"
+      ],
+      [
+        "src/spatial/intersection.ts",
+        "8a55b84c6a0a169ede4c5ea72fdf2dab223a0455388698c83e4f8b801f5ccd48"
+      ],
+      [
+        "src/spatial/object-label.ts",
+        "fe7dc3cb02a7f86a7a0d0b2cb441d10843df977556d50c87c28fe959c1b0bbbb"
+      ],
+      [
+        "src/spatial/path-label-position.ts",
+        "965a8c37dbb6578ce14c6d2319da3765d7dbff2d95e758fa8a6735bb6ec65503"
+      ],
+      [
+        "src/spatial/polygon-clipping.ts",
+        "ef83ee25c7205e6ecee05a2a40de9dcadfc4266e3ec627456eee1d61dd679dcd"
+      ],
+      [
+        "src/spatial/polygon-geometry.ts",
+        "2a577b8810deea97ae9b331158dfe5a9d6a2ce58173a9010ca4dc5c3bdbfe604"
+      ],
+      [
+        "src/spatial/polygon-label-position.ts",
+        "6d8a01052921406e2fe968fee089709464bcbe181c62f837832947e340c69537"
+      ],
+      [
+        "src/spatial/scene-geometry.ts",
+        "f9362bc6fdd59607e2a6dd6379859eb30b070e6541149a8f4a81ffa00a3cf9df"
+      ],
+      [
+        "src/spatial/scene-invalidation.ts",
+        "0fb55139c571f87874ca8177e8815777570cb7284766aaa0cc9e57470cddb3bb"
+      ],
+      [
+        "src/spatial/spatial.ts",
+        "d4833eff76f02c4e1a62a7dff32d7de653dbfb01f0903e674ebdcbc6a148bf03"
+      ],
+      [
+        "src/validators/intersection-bounds.validator.ts",
+        "54d48e07752a9fe3f433ba281677279e91b806e40a89948a79e18ec32e4b6077"
+      ],
+      [
+        "src/validators/layer-object-id.validator.ts",
+        "b3b68eac88cdd6d7c1f7d9ed0d2b633b9c4ee6c04a9f2115b1883860d6094dc5"
+      ],
+      [
+        "src/validators/map-point.validator.ts",
+        "b8c86a9e94eae483e291e9b3e462e2f83b1d9520282325936c9fc1586518c3ec"
+      ],
+      [
+        "src/validators/map-points.validator.ts",
+        "474d3490d515afd9199d4a1c287bdc88108c70e409b240fd080fdc6abfed1c4e"
+      ],
+      [
+        "src/validators/map-polygon.validator.ts",
+        "7ed686b5860b4f0903b5e4954854707e8ecb5471a7ac70f5a2d14e3137cc862b"
+      ],
+      [
+        "src/validators/material-label.validator.ts",
+        "5b4decf268a3a2e809f915dfe69e460cb9f0e46487ccf2507d3b108fcc49d3fa"
+      ],
+      [
+        "src/validators/material.validator.ts",
+        "aa206dfc293f0b4500c870181b6007830fb6f252d44cce318b5d0fc58c7adc88"
+      ],
+      [
+        "src/validators/number.validator.ts",
+        "551bd4590cc5f1850329269e26a26dfb0eb3a2920df1d704a531f779857177ef"
+      ],
+      [
+        "src/validators/object-attributes.validator.ts",
+        "11ae2b99084998b0a90cc4111abed258fa0c32f7501499f50b87ee927e4b2727"
+      ],
+      [
+        "src/validators/object-data.validator.ts",
+        "7cac86220c0004c1412fe59c71a1b8d1f938f8ecd28c31ffc45892cc54d8e548"
+      ],
+      [
+        "src/validators/object-id.validator.ts",
+        "0a8ad2b44b074464510e72edfd766a5eb6c9a6aded68a252ec8e22823a9d534f"
+      ],
+      [
+        "src/validators/object-label.validator.ts",
+        "89fe9c1c16f169fc717f5f357be78bf049ece6ad17783d6501f0f7029aff83c0"
+      ],
+      [
+        "src/validators/point.validator.ts",
+        "1c8436eba537259257f66fc3c87cc59e183bb51b285d169a4f189eb93a489bae"
+      ],
+      [
+        "src/validators/size.validator.ts",
+        "b571b9ab3e54989c67974cfc45e3fdf5dd5398edf5217abb0d21b23853931d04"
+      ],
+      [
+        "tests/platform/browser.ts",
+        "ec1c9d1b53a84c683ea70bfe767e8e470775847dc284dc73346085dc22d8c681"
+      ],
+      [
+        "tests/platform/camera-layers.ts",
+        "dce7c7adf0f5a6d6d806555679eff2ed7726fb54065906cdaac97e84eaa77bd3"
+      ],
+      [
+        "tests/platform/cross-browser.platform.test.ts",
+        "bc7f49bdab008dc4792ac829764897692ad800f859bbfc9b14cc2f1a6dbae044"
+      ],
+      [
+        "tests/platform/evidence.ts",
+        "66930803bf0b3baf748b24d25bf11da00b71e4e00644b9577744662b43c58039"
+      ],
+      [
+        "tests/platform/fixture.ts",
+        "3770d8a736499c44bf7121a5ebd774a0b1a4622d17e0ac66cc803503327b0ecb"
+      ],
+      [
+        "tests/platform/labels.ts",
+        "7c9bebdf0098e293956355755531368c57c0310b1736187fbb12c37b2b8d5bca"
+      ],
+      [
+        "tests/platform/lifecycle.ts",
+        "9045646c98837c119e894269bdfa3da8808ae45075b949ca86c0ec0a9b8b5afd"
+      ],
+      [
+        "tests/platform/materials.ts",
+        "67221f53b391037e81c08dbe90bb32c96690ede603bab28d4ca460647a9818b5"
+      ],
+      [
+        "tests/platform/scenarios.ts",
+        "624cf915f1aae6a71fb68547128887a6bcaf708d870eb17599431e32d7508f1f"
+      ],
+      ["tsconfig.build.json", "3ae29f31cc8a020149575dbacfd49fcd5937ce5a5d541cdd4e73ad9f738f8fc7"],
+      [
+        "tsconfig.examples.json",
+        "81b84a740cb96b01033dad8c5da33a20d64c5806692bd492fdfec1e2c038ea98"
+      ],
+      ["tsconfig.json", "6ebd07c6a92c3d1e64663c4dbbb716fc172b2c1191a673bd036226f24ad73d71"],
+      ["tsconfig.tests.json", "fa9088724b2c5ed12115b2c5f37e2f581cd7c2aa3c32a7c0e513ecda97bf509a"],
+      ["tsconfig.tooling.json", "f0a44cee3bfc0a9d22d4a53ac663e603ceb5dc89972484ec07d7d1da4e77b19c"],
+      ["vite.config.mts", "c4c1c5f705cce1443fc10fe8a65e2da25fc9ff8b0176dc7a5f5c9c244fc6a30d"],
+      [
+        "vitest.browser.config.mts",
+        "91884ab203337baea7875bce56e05ee87a0bf71b98c540823ec5dfc767d986d7"
+      ],
+      ["vitest.config.mts", "c7e5e7f3e2c284ae76235d65a1f42131741fb337aea6e4340be52d5759e6f44d"],
+      ["vitest.e2e.config.mts", "c6585e21bb9b25e191a68d585b1abdc71cd7936906c8ee8a5914409136ddb2c7"],
+      [
+        "vitest.platform.config.mts",
+        "12d9a80b3f2ed6c4c304a1e0089b8fb0e8b95ba5753aa4f1d23e96ab74ad46fa"
+      ]
+    ],
+    "inputIdentity": "4bda8d664f07157c1d31645d0e3e0b50b2c80dbbe2bb7be5e8804e9212882fc8",
+    "buildFiles": [
+      [
+        "assets/buildings-wxeFCOO0.js",
+        "60c133858435940bb9f1d130b14257eb72130a971d6bcf37a85d0e7394c061c4"
+      ],
+      [
+        "assets/buildings-wxeFCOO0.js.map",
+        "dfb1eface4f46707008f94d2024bfd168b9d09c735790fdc9710491b1e7cb975"
+      ],
+      [
+        "assets/factory-CIsw0kj3.js",
+        "7e1510cc364ec21dcb8332ed7206cd32fc6b4fc572056f1a3a40e024df7002f4"
+      ],
+      [
+        "assets/factory-CIsw0kj3.js.map",
+        "cb2e1e3508185747cbbd5d2a5a25782c19a219f6e6f2585ee0f2398b1ac9b0d6"
+      ],
+      [
+        "assets/Factory-ground-floor-CwOITdba.svg",
+        "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b"
+      ],
+      [
+        "assets/map-element-GtqM7V8k.js",
+        "4a16e17a39247398ea1ab78767ab92f884d227567dcf59fd3d8331455f440833"
+      ],
+      [
+        "assets/map-element-GtqM7V8k.js.map",
+        "83daaa19477849fe3d7cf6c2e6fc04311db31180c9ce846fe8177baa41dc5872"
+      ],
+      [
+        "examples/buildings.html",
+        "013609369a698ccea42b9c7e22e117db0e96fb35eccc469a74edeb79d1e9ef26"
+      ],
+      ["examples/index.html", "156482c83728eea600a8a2f29c76da7eea41be0a54b4465b3a79c75e8527958a"]
+    ],
+    "buildIdentity": "6e433af1464b6e3cea24aebc637998a47dfacd1a6a59e3812bdac9a8d9ce58cb"
+  },
+  "integrity": {
+    "status": "pass"
+  },
+  "results": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "status": "pass",
+      "buildIdentity": "6e433af1464b6e3cea24aebc637998a47dfacd1a6a59e3812bdac9a8d9ce58cb",
+      "scenarios": [
+        {
+          "id": "ENV-01 / Factory + Buildings production smoke",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "Factory decoded background and viewport",
+              "status": "pass",
+              "actual": {
+                "decoded": true,
+                "correctSize": true,
+                "geometry": true
+              }
+            },
+            {
+              "name": "Buildings decoded background and viewport",
+              "status": "pass",
+              "actual": {
+                "decoded": true,
+                "correctSize": true,
+                "geometry": true
+              }
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 0,
+            "allRetainedNativePointersTrustedMouse": null,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "ENV-02 / CAM-02 / zero size, resize, compact layout",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "resize preserves camera",
+              "status": "pass",
+              "actual": {
+                "x": 175,
+                "y": 95,
+                "zoom": 2
+              }
+            },
+            {
+              "name": "zero viewport rejects conversion",
+              "status": "pass",
+              "actual": "VIEWPORT_UNAVAILABLE"
+            },
+            {
+              "name": "recovery preserves camera and picking",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "compact Buildings layout",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "shared-zone",
+                "layerId": "a-0",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "MOUSE-01/02 / native pan, suppression, anchored wheel",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "native drag changes camera without objectclick",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "wheel changes zoom and preserves cursor anchor",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "COORD-01 / native picks after scroll and layout shift",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "scroll recomputes client coordinates and identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "layout shift recomputes coordinates",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LAYER-01/02/03 / Buildings floors and source context",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "independent floors and clipped polygon identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "owned point preserves route context",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "hidden layer is not pickable",
+              "status": "pass",
+              "actual": 0
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 6,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "shared-zone",
+                "layerId": "a-1",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "a-stairs",
+                "layerId": "a-1",
+                "routeId": "journey",
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "MAT-02 / decoded SVG+PNG, screen rectangles and rendered colors",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "SVG and PNG intrinsic decode and dimensions",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "aspect ratio anchor and zoom independence",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "rendered red green and transparency preserved",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "transparent rectangle native picking",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "whole image replacement resumes inheritance",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-icon",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [],
+          "renderedPixels": [
+            {
+              "rect": {
+                "x": 149,
+                "y": 402.4375,
+                "width": 40,
+                "height": 20
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            },
+            {
+              "rect": {
+                "x": 149,
+                "y": 402.4375,
+                "width": 40,
+                "height": 20
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            },
+            {
+              "rect": {
+                "x": 185,
+                "y": 376.4375,
+                "width": 80,
+                "height": 40
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MAT-01/03 / whole materials, invalid load and setter preservation",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "whole value edit and leaf inheritance",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "invalid unused SVG preserves scene camera and references",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "invalid material assignment and label preserve state and events",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native old label still picks after rejection",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LOAD-01 / MAT-03 / pending resource failure preserves usable scene",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "native old label remains usable during pending load",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "failed request retains edited object scene and camera",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native preserved label picks after failed request",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [
+            {
+              "kind": "resource",
+              "url": "http://127.0.0.1:56808/platform-deliberately-failed.svg",
+              "message": "net::ERR_FAILED",
+              "expected": true
+            },
+            {
+              "kind": "console",
+              "message": "Failed to load resource: net::ERR_FAILED",
+              "url": "http://127.0.0.1:56808/platform-deliberately-failed.svg",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "id": "LABEL-01/03 / analytic attachments and native label-only context",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "independent four-kind clipped attachments and one route label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native label-only object layer route identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "direct membership priority",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "polygon largest-cell fallback",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 6,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 12,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-line",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-route",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-flat",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-volume",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-owned",
+                "layerId": "p-low",
+                "routeId": "p-route",
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-02/05 / origins, units, spaces, outline and typography",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "all nine origins",
+              "status": "pass",
+              "actual": 9
+            },
+            {
+              "name": "px rem root font and zoom",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "container family and literal horizontal spaces",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native leading-space halo and outside picking",
+              "status": "pass",
+              "actual": [1, 1, 0]
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 6,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-03 / overlap, visibility and viewport clipping",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "later polygon covers earlier label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "removal exposes original label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "higher visible layer wins and hidden layer yields",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "label beyond intersection bounds is pickable",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "viewport clipped label does not pick outside",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 6,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 12,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-flat",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-text",
+                "layerId": "p-over",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-route",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-04 / native before-RAF edits and nested batch",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "batch commits state and events while DOM is old",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "same native press picks new geometry text and material before RAF",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "subsequent paint matches committed state",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [],
+          "insideBatch": {
+            "label": "Longer label",
+            "x": 140,
+            "offset": "60px",
+            "oldText": true,
+            "oldTransform": true,
+            "changes": [
+              {
+                "label": "Longer label",
+                "x": 170
+              },
+              {
+                "label": "Longer label",
+                "x": 140
+              }
+            ]
+          }
+        },
+        {
+          "id": "EVENT-02 / LABEL-04 / stale captured hits",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "press capture suppression without underlying fallback",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "release capture suppression without underlying fallback",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "EDIT-03 / LIFE-02 / LABEL-06 / removal and reconnect",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "removed label stops picking",
+              "status": "pass",
+              "actual": 0
+            },
+            {
+              "name": "original edited instance reattaches without ghost label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "disconnect edits and reconnect restore current typography identity",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 8,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-06 / one runtime object in two maps",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "empty second load clears direct IDs and attaches same instance",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "shared edits retain independent material and typography",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "disconnected consumer rejects assignment atomically",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native picks in both maps after reconnect",
+              "status": "pass",
+              "actual": [true, true]
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "engine": "firefox",
+      "version": "155.0",
+      "status": "pass",
+      "buildIdentity": "6e433af1464b6e3cea24aebc637998a47dfacd1a6a59e3812bdac9a8d9ce58cb",
+      "scenarios": [
+        {
+          "id": "ENV-01 / Factory + Buildings production smoke",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "Factory decoded background and viewport",
+              "status": "pass",
+              "actual": {
+                "decoded": true,
+                "correctSize": true,
+                "geometry": true
+              }
+            },
+            {
+              "name": "Buildings decoded background and viewport",
+              "status": "pass",
+              "actual": {
+                "decoded": true,
+                "correctSize": true,
+                "geometry": true
+              }
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 0,
+            "allRetainedNativePointersTrustedMouse": null,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "ENV-02 / CAM-02 / zero size, resize, compact layout",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "resize preserves camera",
+              "status": "pass",
+              "actual": {
+                "x": 175,
+                "y": 95,
+                "zoom": 2
+              }
+            },
+            {
+              "name": "zero viewport rejects conversion",
+              "status": "pass",
+              "actual": "VIEWPORT_UNAVAILABLE"
+            },
+            {
+              "name": "recovery preserves camera and picking",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "compact Buildings layout",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "shared-zone",
+                "layerId": "a-0",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "MOUSE-01/02 / native pan, suppression, anchored wheel",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "native drag changes camera without objectclick",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "wheel changes zoom and preserves cursor anchor",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "COORD-01 / native picks after scroll and layout shift",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "scroll recomputes client coordinates and identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "layout shift recomputes coordinates",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LAYER-01/02/03 / Buildings floors and source context",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "independent floors and clipped polygon identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "owned point preserves route context",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "hidden layer is not pickable",
+              "status": "pass",
+              "actual": 0
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 6,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "shared-zone",
+                "layerId": "a-1",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "a-stairs",
+                "layerId": "a-1",
+                "routeId": "journey",
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "MAT-02 / decoded SVG+PNG, screen rectangles and rendered colors",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "SVG and PNG intrinsic decode and dimensions",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "aspect ratio anchor and zoom independence",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "rendered red green and transparency preserved",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "transparent rectangle native picking",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "whole image replacement resumes inheritance",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-icon",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [],
+          "renderedPixels": [
+            {
+              "rect": {
+                "x": 149,
+                "y": 406.433349609375,
+                "width": 40,
+                "height": 20.01666259765625
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            },
+            {
+              "rect": {
+                "x": 149,
+                "y": 406.433349609375,
+                "width": 40,
+                "height": 20.01666259765625
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            },
+            {
+              "rect": {
+                "x": 185,
+                "y": 380.433349609375,
+                "width": 80,
+                "height": 40
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MAT-01/03 / whole materials, invalid load and setter preservation",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "whole value edit and leaf inheritance",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "invalid unused SVG preserves scene camera and references",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "invalid material assignment and label preserve state and events",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native old label still picks after rejection",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LOAD-01 / MAT-03 / pending resource failure preserves usable scene",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "native old label remains usable during pending load",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "failed request retains edited object scene and camera",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native preserved label picks after failed request",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [
+            {
+              "kind": "resource",
+              "url": "http://127.0.0.1:56808/platform-deliberately-failed.svg",
+              "message": "NS_ERROR_FAILURE",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "id": "LABEL-01/03 / analytic attachments and native label-only context",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "independent four-kind clipped attachments and one route label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native label-only object layer route identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "direct membership priority",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "polygon largest-cell fallback",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 6,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 12,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-line",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-route",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-flat",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-volume",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-owned",
+                "layerId": "p-low",
+                "routeId": "p-route",
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-02/05 / origins, units, spaces, outline and typography",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "all nine origins",
+              "status": "pass",
+              "actual": 9
+            },
+            {
+              "name": "px rem root font and zoom",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "container family and literal horizontal spaces",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native leading-space halo and outside picking",
+              "status": "pass",
+              "actual": [1, 1, 0]
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 6,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-03 / overlap, visibility and viewport clipping",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "later polygon covers earlier label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "removal exposes original label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "higher visible layer wins and hidden layer yields",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "label beyond intersection bounds is pickable",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "viewport clipped label does not pick outside",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 6,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 12,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-flat",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-text",
+                "layerId": "p-over",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-route",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-04 / native before-RAF edits and nested batch",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "batch commits state and events while DOM is old",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "same native press picks new geometry text and material before RAF",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "subsequent paint matches committed state",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [],
+          "insideBatch": {
+            "label": "Longer label",
+            "x": 140,
+            "offset": "60px",
+            "oldText": true,
+            "oldTransform": true,
+            "changes": [
+              {
+                "label": "Longer label",
+                "x": 170
+              },
+              {
+                "label": "Longer label",
+                "x": 140
+              }
+            ]
+          }
+        },
+        {
+          "id": "EVENT-02 / LABEL-04 / stale captured hits",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "press capture suppression without underlying fallback",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "release capture suppression without underlying fallback",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "EDIT-03 / LIFE-02 / LABEL-06 / removal and reconnect",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "removed label stops picking",
+              "status": "pass",
+              "actual": 0
+            },
+            {
+              "name": "original edited instance reattaches without ghost label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "disconnect edits and reconnect restore current typography identity",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 8,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-06 / one runtime object in two maps",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "empty second load clears direct IDs and attaches same instance",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "shared edits retain independent material and typography",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "disconnected consumer rejects assignment atomically",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native picks in both maps after reconnect",
+              "status": "pass",
+              "actual": [true, true]
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "status": "pass",
+      "buildIdentity": "6e433af1464b6e3cea24aebc637998a47dfacd1a6a59e3812bdac9a8d9ce58cb",
+      "scenarios": [
+        {
+          "id": "ENV-01 / Factory + Buildings production smoke",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "Factory decoded background and viewport",
+              "status": "pass",
+              "actual": {
+                "decoded": true,
+                "correctSize": true,
+                "geometry": true
+              }
+            },
+            {
+              "name": "Buildings decoded background and viewport",
+              "status": "pass",
+              "actual": {
+                "decoded": true,
+                "correctSize": true,
+                "geometry": true
+              }
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 0,
+            "allRetainedNativePointersTrustedMouse": null,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "ENV-02 / CAM-02 / zero size, resize, compact layout",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "resize preserves camera",
+              "status": "pass",
+              "actual": {
+                "x": 175,
+                "y": 95,
+                "zoom": 2
+              }
+            },
+            {
+              "name": "zero viewport rejects conversion",
+              "status": "pass",
+              "actual": "VIEWPORT_UNAVAILABLE"
+            },
+            {
+              "name": "recovery preserves camera and picking",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "compact Buildings layout",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "shared-zone",
+                "layerId": "a-0",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "MOUSE-01/02 / native pan, suppression, anchored wheel",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "native drag changes camera without objectclick",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "wheel changes zoom and preserves cursor anchor",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "COORD-01 / native picks after scroll and layout shift",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "scroll recomputes client coordinates and identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "layout shift recomputes coordinates",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LAYER-01/02/03 / Buildings floors and source context",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "independent floors and clipped polygon identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "owned point preserves route context",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "hidden layer is not pickable",
+              "status": "pass",
+              "actual": 0
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 6,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "shared-zone",
+                "layerId": "a-1",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "a-stairs",
+                "layerId": "a-1",
+                "routeId": "journey",
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "MAT-02 / decoded SVG+PNG, screen rectangles and rendered colors",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "SVG and PNG intrinsic decode and dimensions",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "aspect ratio anchor and zoom independence",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "rendered red green and transparency preserved",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "transparent rectangle native picking",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "whole image replacement resumes inheritance",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-icon",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [],
+          "renderedPixels": [
+            {
+              "rect": {
+                "x": 149,
+                "y": 402.4375,
+                "width": 40,
+                "height": 20
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            },
+            {
+              "rect": {
+                "x": 149,
+                "y": 402.4375,
+                "width": 40,
+                "height": 20
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            },
+            {
+              "rect": {
+                "x": 185,
+                "y": 376.4375,
+                "width": 80,
+                "height": 40
+              },
+              "values": [
+                [255, 0, 0, 255],
+                [0, 255, 0, 255],
+                [214, 229, 243, 255],
+                [214, 229, 243, 255]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "MAT-01/03 / whole materials, invalid load and setter preservation",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "whole value edit and leaf inheritance",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "invalid unused SVG preserves scene camera and references",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "invalid material assignment and label preserve state and events",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native old label still picks after rejection",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LOAD-01 / MAT-03 / pending resource failure preserves usable scene",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "native old label remains usable during pending load",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "failed request retains edited object scene and camera",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native preserved label picks after failed request",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 4,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [
+            {
+              "kind": "resource",
+              "url": "http://127.0.0.1:56808/platform-deliberately-failed.svg",
+              "message": "Blocked by Web Inspector",
+              "expected": true
+            }
+          ]
+        },
+        {
+          "id": "LABEL-01/03 / analytic attachments and native label-only context",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "independent four-kind clipped attachments and one route label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native label-only object layer route identity",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "direct membership priority",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "polygon largest-cell fallback",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 6,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 12,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-line",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-route",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-flat",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-volume",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-owned",
+                "layerId": "p-low",
+                "routeId": "p-route",
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-02/05 / origins, units, spaces, outline and typography",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "all nine origins",
+              "status": "pass",
+              "actual": 9
+            },
+            {
+              "name": "px rem root font and zoom",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "container family and literal horizontal spaces",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native leading-space halo and outside picking",
+              "status": "pass",
+              "actual": [1, 1, 0]
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 6,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-03 / overlap, visibility and viewport clipping",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "later polygon covers earlier label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "removal exposes original label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "higher visible layer wins and hidden layer yields",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "label beyond intersection bounds is pickable",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "viewport clipped label does not pick outside",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 6,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 12,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-flat",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-text",
+                "layerId": "p-over",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              },
+              {
+                "objectId": "p-route",
+                "layerId": "p-low",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-04 / native before-RAF edits and nested batch",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "batch commits state and events while DOM is old",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "same native press picks new geometry text and material before RAF",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "subsequent paint matches committed state",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": [],
+          "insideBatch": {
+            "label": "Longer label",
+            "x": 140,
+            "offset": "60px",
+            "oldText": true,
+            "oldTransform": true,
+            "changes": [
+              {
+                "label": "Longer label",
+                "x": 170
+              },
+              {
+                "label": "Longer label",
+                "x": 140
+              }
+            ]
+          }
+        },
+        {
+          "id": "EVENT-02 / LABEL-04 / stale captured hits",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "press capture suppression without underlying fallback",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "release capture suppression without underlying fallback",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 0,
+            "allRetainedClickReferencesMatch": null,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": []
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "EDIT-03 / LIFE-02 / LABEL-06 / removal and reconnect",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "removed label stops picking",
+              "status": "pass",
+              "actual": 0
+            },
+            {
+              "name": "original edited instance reattaches without ghost label",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "disconnect edits and reconnect restore current typography identity",
+              "status": "pass",
+              "actual": true
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 2,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 8,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        },
+        {
+          "id": "LABEL-06 / one runtime object in two maps",
+          "status": "pass",
+          "checks": [
+            {
+              "name": "empty second load clears direct IDs and attaches same instance",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "shared edits retain independent material and typography",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "disconnected consumer rejects assignment atomically",
+              "status": "pass",
+              "actual": true
+            },
+            {
+              "name": "native picks in both maps after reconnect",
+              "status": "pass",
+              "actual": [true, true]
+            }
+          ],
+          "eventAssertions": {
+            "retainedClickCount": 1,
+            "allRetainedClickReferencesMatch": true,
+            "retainedNativePointerCount": 2,
+            "allRetainedNativePointersTrustedMouse": true,
+            "contexts": [
+              {
+                "objectId": "p-text",
+                "layerId": "p-full",
+                "routeId": null,
+                "objectSame": true,
+                "layerSame": true,
+                "routeSame": true
+              }
+            ]
+          },
+          "diagnostics": []
+        }
+      ]
+    }
+  ],
+  "remaining": [
+    {
+      "scope": "Installed browsers D1–D4",
+      "status": "not run",
+      "reason": "Separate installed Chrome/Firefox/Safari on macOS and Edge on Windows samples; Playwright engines do not certify these."
+    },
+    {
+      "scope": "Physical M1/M2",
+      "status": "not run",
+      "reason": "Separate iPhone Safari and Android Chrome task; trusted HTTPS, secure context and crypto.randomUUID preflight required."
+    },
+    {
+      "scope": "TOUCH-01–04 / CANCEL-01/02 / LIFE-01",
+      "status": "not run",
+      "reason": "Native tap/pan/pinch/transition/consumption, OS cancellation/capture loss and disconnect during active input need physical/manual evidence. Existing Chromium CDP regressions remain separate."
+    },
+    {
+      "scope": "Full ENV/CAM/COORD/EVENT/LAYER/EDIT/LOAD cards",
+      "status": "not run",
+      "reason": "Only matrix subcases executed; initial zero-load/fit/reload, thresholds, surrounding-page gestures, clipping boundaries and full topology matrix are outside this bounded slice."
+    },
+    {
+      "scope": "Full MAT/LABEL cards",
+      "status": "not run",
+      "reason": "Selector ordering, SVG sizing/stretch/fetch races, every owner/capture/pickability/default/empty/disconnected-region branch, font completion/stylesheet/CSSOM/media and per-map RAF scheduling remain broader coverage."
+    },
+    {
+      "scope": "REP-01 / 3000 and 5000 roots",
+      "status": "not run",
+      "reason": "This build includes production Factory/Buildings only. Representative benchmark remains its separately dated PR #44 evidence; not rerun here."
+    },
+    {
+      "scope": "A11Y-01 external UI",
+      "status": "not run",
+      "reason": "Mouse interaction does not validate keyboard or assistive navigation; external controls still need manual focus/activation checks."
+    },
+    {
+      "scope": "A11Y-02–04 map/object keyboard and focus",
+      "status": "blocked",
+      "reason": "Keyboard/focus/activation/event ownership contracts and implementation remain open."
+    },
+    {
+      "scope": "Zoom profiling / numeric performance gate",
+      "status": "not run",
+      "reason": "Separate profiling task; no timing benchmark or thresholds introduced. Gate also needs agreed numeric/device criteria."
+    }
+  ]
+}

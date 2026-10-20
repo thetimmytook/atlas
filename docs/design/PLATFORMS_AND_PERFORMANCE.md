@@ -15,15 +15,15 @@ computed typography. Complete automatic CSSOM tracking is outside the accepted
 prototype boundary; there is no public refresh API. See
 [the agreed boundary](PROPERTIES_AND_LABELS.md#point-labels--implemented-for-review-2026-10-16).
 
-This task completed no full platform scenario. Benchmark results retain their
-original dates/workloads; the performance gate and physical mobile validation remain
-outstanding. The separate
-[2026-10-20 materials/labels report](../performance/PROTOTYPE_MATERIAL_LABELS_2026_10_20.md)
-is merged in [PR #44](https://github.com/thetimmytook/atlas/pull/44).
-The 2026-10-20 follow-up verified only the corrected LABEL-06 shared-map recipe and
-REP-01 native sequence in local Chromium; see
-[the limited observations](../validation/PLATFORM_ACCEPTANCE_PLAN.md#narrow-recipe-verification--2026-10-20).
-Full-scenario/platform statuses remain **not run**.
+The separate [2026-10-20 cross-browser functional report](../validation/CROSS_BROWSER_2026_10_20.md)
+records the bounded automated engine slice against production F/B and disposable P,
+using the existing Vitest/Playwright. Full platform scenarios, installed browser
+samples, physical mobile validation and the performance gate remain outstanding.
+The [materials/labels measurements](../performance/PROTOTYPE_MATERIAL_LABELS_2026_10_20.md)
+are merged in PR #44, and the updated platform plan in PR #45 (`59fe8ff`). The older
+[narrow recipe verification](../validation/PLATFORM_ACCEPTANCE_PLAN.md#narrow-recipe-verification--2026-10-20)
+retains its original Chromium-only scope. Focused zoom profiling is separate work;
+this functional run adds no benchmark or performance threshold.
 
 [Main navigation](../DESIGN_MAIN.md)
 
@@ -50,8 +50,9 @@ MAT-01–03 and LABEL-01–06 add reproducible material/icon/four-kind label sce
 including placement/clipping, inheritance/whole-value edits, native label-only picking,
 captured hits, font notifications and lifecycle/shared maps. Missing example switches
 use temporary public-API console setup on Factory/Buildings. Readiness and execution
-status are separate: all new scenarios are **not run**. Reading existing tests does
-not execute this plan. Playwright Chromium does not certify installed Chrome/Edge;
+status are separate: the [portable slice](../validation/PLATFORM_ACCEPTANCE_PLAN.md#portable-automated-engine-slice--2026-10-20)
+links executed subcases; full-card and physical-device results remain unrun. Reading
+existing tests does not execute this plan. Playwright Chromium does not certify installed Chrome/Edge;
 WebKit does not replace Safari/iPhone, and touch emulation is not physical multitouch.
 Engine/application responsibilities and accessibility gaps remain explicit. It is
 a plan, not a new run or support guarantee;

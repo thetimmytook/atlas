@@ -1,6 +1,6 @@
 # Properties And Labels
 
-Status on 2026-10-19: the user confirmed the first material slice merged in
+Status on 2026-10-20: the user confirmed the first material slice merged in
 [PR #39](https://github.com/thetimmytook/atlas/pull/39), including JSON `data`,
 `MapElement.configure`, selection-property registration and strict readers.
 The user confirmed the first built-in label preparation step merged in
@@ -8,9 +8,11 @@ The user confirmed the first built-in label preparation step merged in
 types, validated text storage and immutable own material declarations.
 Point-label resolution, rendering and rectangular picking are merged in PR #41
 (`33a6a11`). Line/route labels and the white outline are merged in PR #42
-(`bd8b508`), confirmed by the user. Polygon labels are implemented for review on
-`feat/polygon-labels`, completing visual coverage for current object kinds. The next
-step is representative measurements with materials/labels, then platform acceptance. General
+(`bd8b508`), confirmed by the user. Polygon labels are merged in PR #43 (`69c0006`),
+completing visual coverage for current object kinds. Representative measurements are
+merged in PR #44; the updated platform plan is merged in PR #45. The bounded
+[cross-browser functional report](../validation/CROSS_BROWSER_2026_10_20.md) is separate
+from remaining full-scenario/device/keyboard-focus acceptance and focused zoom profiling. General
 visual-property/behavior registration is deferred to a separate next stage. The accepted
 [first-slice contract](MATERIALS_FIRST_SLICE_CONTRACT.md) and
 [implementation checks](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)

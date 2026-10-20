@@ -2,12 +2,38 @@
 
 [Main navigation](../DESIGN_MAIN.md) · [Platform direction](../design/PLATFORMS_AND_PERFORMANCE.md) · [Current contract](../design/CURRENT_CONTRACT.md)
 
-Prepared on 2026-10-09; updated on 2026-10-20. This remains a plan, not a completed
-platform acceptance report. The initial update was static; the later follow-up
-executed only the two corrected recipes recorded under
-[Narrow recipe verification](#narrow-recipe-verification--2026-10-20).
-No full scenario is marked passed. Runtime, tests, CI, dependencies and benchmark
-reports are outside this task's write scope.
+Prepared on 2026-10-09; updated on 2026-10-20. This remains the full acceptance
+plan. The [separate cross-browser report](CROSS_BROWSER_2026_10_20.md) records a new
+bounded automated functional engine slice; it does not pass entire scenario cards,
+installed-browser rows D1–D4, physical M1/M2 or keyboard/focus acceptance. Historical
+preparation and narrow recipe evidence remain below.
+
+## Portable automated engine slice — 2026-10-20
+
+The opt-in `npm run test:platform` uses production-built F/B and test-local public
+setup P, with separate Vitest discovery and no CI/runtime/dependency changes. It
+executes Chromium, Firefox and WebKit sequentially against one frozen identified
+build on the host. The [report and subcase matrix](CROSS_BROWSER_2026_10_20.md)
+are the execution authority; [Tooling](../TOOLING.md#opt-in-portable-engine-validation)
+provides installation/reproduction. The cards below keep their broader scope;
+**not run** for a full card does not erase the specific automated evidence here.
+
+| Cards                      | Bounded automated coverage                                                                                                                                                                                             | Still outside this slice                                                                                                                                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ENV-01/02, CAM-02          | F/B decoded load/SVG/viewport; B resize, zero-size recovery and compact layout                                                                                                                                         | Fresh initialization reload/native-pick matrix, initially collapsed load, physical rotation; full CAM-01 fit card                                                                                             |
+| MOUSE-01/02, COORD-01      | Trusted drag/click suppression, wheel anchor/no page scroll over map, current picks after scroll/layout shift                                                                                                          | Every drag threshold/return branch, held-pointer wheel and surrounding-page scroll policy/physical gestures                                                                                                   |
+| LAYER-01–03                | Independent Buildings floors, clipped zone/source/owned-route identity, hidden picking, direct route membership                                                                                                        | Complete XY/Z boundaries, tangent/disconnected clipping and duplicate-ID matrix                                                                                                                               |
+| MAT-01–03, LOAD-01         | Whole declarations/leaf inheritance, SVG/PNG intrinsic/aspect/anchor/screen size, sampled rendered colors, transparent image hits; invalid unused SVG/setters; native old-scene use during pending then failed request | Full selector/rule ordering, SVG intrinsic-size variants/stretch/malformed-size/revoked-URL races, broader visual/resource matrix                                                                             |
+| LABEL-01–03                | Four-kind analytic attachments, fragmented route count/direct priority/U fallback; nine origins, px/rem/zoom, spaces/halo; native outside-owner context/overlap/visibility/intersection/viewport clipping              | Disconnected/boundary-only polygon placements, defaults/empty/literal-markup matrix, every pickable transition and every owner/context combination                                                            |
+| LABEL-04/05                | Native capture-phase geometry/text/material edit in nested batch; immediate state/events with old DOM; stale layer capture in both modes; root font/container family                                                   | Public picking is exercised synchronously after capture listener returns, not inside the active callback; per-kind captured geometry/topology matrix and full font/stylesheet/CSSOM/media completion boundary |
+| EDIT-03, LIFE-02, LABEL-06 | Point remove/edit/reattach, host reconnect, shared point in two maps with local appearance and disconnected atomic rejection                                                                                           | Every owner kind, active gesture disconnect, route topology suite expansion and per-map RAF scheduling proof                                                                                                  |
+
+Each named subcase has pass/fail/blocked/not-run status, assertion values, native
+and Atlas events with reference booleans and diagnostics. Missing engine binaries or
+launch failures are blocked and make the command fail while other engines continue.
+Playwright engines are additional evidence for C0; they do not substitute for installed
+Chrome/Firefox/Safari/Edge or phones. Mouse input is not physical multitouch. No
+REP-01 benchmark workload, timing/profiling or new numeric threshold runs here.
 
 ## Basis and limits
 
@@ -125,7 +151,8 @@ state or panel-refresh contract.
 
 ## Existing coverage inventory
 
-Coverage below means assertions found in source, not a new run. Historical counts
+This inventory retains the preparation snapshot. The portable slice above is
+later execution evidence. Coverage below means assertions found in source, not a new run. Historical counts
 in [Tooling](../TOOLING.md#regression-tests) retain their dated scope: merged polygon
 validation recorded 75 Chromium Browser Mode tests and one combined built-example
 E2E test. Do not fold later suites into those historical counts.
@@ -1528,8 +1555,8 @@ identity; never transfer an old pass to the current build.
 ## Consolidation handoff and remaining blockers
 
 - Ready to execute: available F/B/P pointer/camera/layer/material/icon/label rows;
-  source-harness regressions in a free measurement slot. All execution statuses
-  remain not run here; file inspection is not a functional platform run.
+  source-harness regressions in a free measurement slot. Full-card/device statuses
+  remain distinct from the bounded portable subcases linked above.
 - Environment blockers are concrete: unavailable named browser/device, no trusted
   phone HTTPS/secure context/`crypto.randomUUID`, unavailable remote inspection,
   unavailable font or unobservable native cancellation. Record affected subcases
@@ -1537,17 +1564,16 @@ identity; never transfer an old pass to the current build.
 - DEC-01–04 remain open. A11Y-02–04 require a contract then implementation; numeric
   performance gate requires agreed criteria. Neither blocks current pointer/label
   runs. No external HTML control proves map-object keyboard accessibility.
-- At consolidation, another task should update `DESIGN_MAIN.md`, `CURRENT_CONTRACT.md`,
+- Consolidation on 2026-10-20 updated the current summaries in `DESIGN_MAIN.md`, `CURRENT_CONTRACT.md`,
   `PROPERTIES_AND_LABELS.md` and relevant `PROTOTYPE.md` current-stage summaries to
-  reflect merged polygon labels at PR #43, preserving historical step boundaries.
-  `CURRENT_CONTRACT.md` also retains stale material pending-merge wording. If needed,
-  update Tooling's inventory with separately dated actual suite results, never this
-  static read. These files are outside this task's write ownership.
+  reflect merged polygon labels (PR #43), measurements (PR #44), plan (PR #45) and
+  the separate portable run, preserving historical step boundaries. Tooling links
+  the new opt-in suite and its dated results.
 - The PR #44 report/manifest are linked above with their captured-build identity;
   performance reports remain unchanged by this task. Record a fresh artifact identity
-  for every acceptance run. Portable built F/B native label/icon probes,
-  Firefox/WebKit coverage and any permanent example controls remain later tasks,
-  not prerequisites for temporary P.
+  for every acceptance run. Portable built F/B/P label/icon probes and Firefox/WebKit engine coverage now
+  have a separate bounded report above. Installed-browser/device expansion and
+  permanent example controls remain separate work.
 
 ## Result protocol template
 
