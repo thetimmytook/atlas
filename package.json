@@ -19,7 +19,8 @@
     "bench:dev": "vite --config benchmark.config.mts",
     "test:browser": "vitest run --config vitest.browser.config.mts",
     "build:example": "vite build --config example.config.mts",
-    "test:e2e": "npm run build:example && vitest run --config vitest.e2e.config.mts"
+    "test:e2e": "npm run build:example && vitest run --config vitest.e2e.config.mts",
+    "test:platform": "npm run build:example && vitest run --config vitest.platform.config.mts"
   },
   "lint-staged": {
     "*.{ts,mts,js,mjs}": [
