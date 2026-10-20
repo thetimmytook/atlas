@@ -16,8 +16,7 @@ topic documents retain decisions and their history.
 
 Label preparation is merged in PR #40 and point visuals in PR #41 (`33a6a11`).
 Line/route visuals and the white outline are merged in PR #42 (`bd8b508`),
-confirmed by the user. Polygon visuals are implemented for review on
-`feat/polygon-labels`; see
+confirmed by the user. Polygon visuals are merged in PR #43 (`69c0006`); see
 [the current scope and validation](PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
 Existing `MapObject.label` and `material.properties.label` supply single-line literal
 text and field-based appearance inheritance. One label per runtime object/layer
@@ -33,8 +32,11 @@ height does not shift text in the current projection. Text can extend beyond con
 and intersection bounds and remains viewport-clipped/pickable. The existing halo,
 composition, metrics cache and owner/layer capture revalidation apply. Surviving
 polygon SVG nodes remain stable across direct/clipped switches. This completes label
-visuals for the current four kinds; representative measurements with materials/labels,
-then platform acceptance follow.
+visuals for the current four kinds. Representative materials/labels measurements
+are merged in PR #44; the updated platform plan is merged in PR #45. The separate
+[cross-browser report](../validation/CROSS_BROWSER_2026_10_20.md) records a bounded
+functional engine slice; physical-device/full-scenario/accessibility acceptance
+and numerical performance criteria remain open.
 The accepted CSSOM/non-viewport-media notification limitation remains in effect;
 see [the detailed boundary](PROPERTIES_AND_LABELS.md#point-labels--implemented-for-review-2026-10-16).
 The dated baseline below retains its historical scope.
@@ -42,9 +44,8 @@ The dated baseline below retains its historical scope.
 ## Working-tree material slice — implemented for review, 2026-10-12
 
 The user accepted the revised signatures and requested implementation. This
-working-tree overlay supersedes the dated merged-baseline appearance/data statements
-below; it passed final acceptance on 2026-10-16 and is accepted for PR, pending
-merge. The complete
+material overlay supersedes the dated merged-baseline appearance/data statements
+below; it passed final acceptance on 2026-10-16 and merged in PR #39. The complete
 [public contract](MATERIALS_FIRST_SLICE_CONTRACT.md) and
 [review scope/checks](PROTOTYPE.md#first-material-slice--implemented-for-review-2026-10-12)
 cover the additions:

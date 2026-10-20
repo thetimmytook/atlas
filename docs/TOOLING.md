@@ -241,6 +241,50 @@ remain separate validation work. Local macOS results do not confirm a GitHub Lin
 run. This documentation task verified workflow configuration, not remote execution
 or branch-protection settings, and did not query CI status.
 
+## Opt-in portable engine validation
+
+The separate `tests/platform/` suite uses the locked Vitest and Playwright libraries.
+Install only the binaries required for this opt-in run, then run it independently:
+
+```sh
+npx --no-install playwright install chromium firefox webkit
+npm run test:platform
+```
+
+Linux hosts also need Playwright's engine system dependencies; use the same locked
+CLI's `install --with-deps chromium firefox webkit` where authorized. No new npm
+package, runner or CI matrix is required. Ordinary CI still installs only Chromium.
+`npm test` excludes platform tests; E2E includes only `tests/e2e/**/*.e2e.test.ts`.
+Existing Browser Mode and CDP touch/media coverage retain their Chromium scope.
+
+The command builds production Factory/Buildings once through `build:example`.
+The runner copies `dist/example` into a unique OS-temp `atlas-platform-*` directory,
+serves that copy with local Vite static preview and runs three engines sequentially.
+Every scenario creates a fresh context/page. Runtime imports are the built examples;
+test fixture type imports do not load a second source runtime. Disposable setup P
+uses only public APIs. Do not run another build or edit test/build inputs during
+capture. Source/test/config/package and build hashes are checked after the run,
+including the original and frozen build. A missing binary/failed engine launch
+records **blocked**, continues other engines and makes the command fail.
+
+`manifest.json` and `results.json` in the printed temp directory retain environment,
+actual browser versions, dirty input hashes, shared build identity, scenario/subcase
+statuses, assertion values, native event/reference booleans and expected/unexpected
+console/page/resource errors. Failure screenshots/traces use engine/scenario-number
+filenames there; these outputs stay outside Git. The runner closes tracing,
+contexts, browsers and preview in finally blocks. Failure in one scenario does not
+skip independent scenarios or the other engines. Open retained traces with:
+
+```sh
+npx --no-install playwright show-trace /absolute/path/to/engine-scenario.zip
+```
+
+The [2026-10-20 report](validation/CROSS_BROWSER_2026_10_20.md) provides the exact
+executed slice and remaining checks. These are Playwright engines on one host;
+WebKit is not actual Safari/iPhone, narrow layout is not device acceptance and
+native mouse is not multitouch. This command performs no timing benchmark,
+profiling, accessibility certification or numerical performance gate.
+
 ## Deferred
 
 Framework adapters, workspace splits, package distribution/exports,
