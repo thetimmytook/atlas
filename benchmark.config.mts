@@ -17,6 +17,10 @@ const inputs = [
   'examples/prototype-bench.instrument.ts',
   'examples/prototype-bench.visual.ts',
   'examples/prototype-bench.run.mjs',
+  'examples/prototype-bench.motion.ts',
+  'examples/prototype-bench.zoom.ts',
+  'examples/prototype-zoom.run.mjs',
+  'examples/prototype-zoom.analyze.mjs',
   'examples/comparison.html',
   'examples/comparison.bench.ts',
   'examples/comparison.adapter.ts',
@@ -61,7 +65,7 @@ export default defineConfig({
         Object.entries(hashes).filter(
           ([path]) =>
             path.startsWith('src/') ||
-            path.includes('prototype-bench') ||
+            path.startsWith('examples/prototype-') ||
             [
               'benchmark.config.mts',
               'package.json',
