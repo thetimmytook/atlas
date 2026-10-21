@@ -30,10 +30,14 @@ checks 88 inputs including runner/analyzer; post-build changes to each script we
 rejected before measurement. The initial run is retained with its input-coverage
 limitation. SVG style/layout is
 the main confirmed cost in enriched traces. Hidden layers receive about 66% of
-camera-dependent writes; their fraction of time is not established. The proposed
-renderer-only skip-hidden/catch-up A/B experiment is not implemented or accepted
-as a runtime contract. This functional run
-adds no benchmark or performance threshold.
+camera-dependent writes; that profile does not establish their fraction of time.
+The user subsequently requested the renderer-only skip-hidden/catch-up experiment.
+The [2026-10-21 fresh A/B report](../performance/HIDDEN_LAYER_ZOOM_2026_10_21.md)
+records its candidate implementation, regression checks and separate first-show
+measurement. Hidden camera writes disappear and the run observes lower scripting,
+style and RAF p95; enriched median/layout and the sequential background-load
+difference limit the practical speedup claim. Keeping the change awaits review;
+no numerical threshold or broader platform acceptance is introduced.
 
 [Main navigation](../DESIGN_MAIN.md)
 

@@ -126,21 +126,28 @@ export class SvgRenderer extends Renderer {
     const scaleChanged = scale !== this.#scale;
 
     if (scaleChanged) {
-      for (const object of this.#points) {
-        applyScreenScale(object.shape, 'point', scale);
-      }
-
-      // Label translation stays in map units; typography and offset stay in screen units.
-      for (const object of this.#objects) {
-        if (object.label) {
-          this.#labelChanges.add(object);
-        }
-      }
-
+      this.#applyCameraScale(scale);
       this.#scale = scale;
     }
 
     this.#applyChanges(scaleChanged, scale);
+  }
+
+  #applyCameraScale(scale: number): void {
+    for (const object of this.#points) {
+      if (!isLayerEligible(object.source.layer)) {
+        continue;
+      }
+
+      applyScreenScale(object.shape, 'point', scale);
+    }
+
+    // Label translation stays in map units; typography and offset stay in screen units.
+    for (const object of this.#objects) {
+      if (object.label && isLayerEligible(object.source.layer)) {
+        this.#labelChanges.add(object);
+      }
+    }
   }
 
   #collectChanges(): void {
@@ -202,7 +209,7 @@ export class SvgRenderer extends Renderer {
     }
 
     for (const object of this.#unpainted) {
-      if (!scaleChanged) {
+      if (!scaleChanged || !isLayerEligible(object.source.layer)) {
         applyScreenScale(object.shape, object.source.geometry.kind, scale);
       }
 
@@ -327,6 +334,15 @@ export class SvgRenderer extends Renderer {
       }
 
       if (visible) {
+        // Reuse first-paint work: hidden camera updates were skipped. Resolve current
+        // symbols/labels even when this render keeps the renderer-wide scale.
+        for (const object of this.#objects) {
+          if (object.source.layer === layer) {
+            this.#unpainted.add(object);
+            this.#labelChanges.add(object);
+          }
+        }
+
         element.removeAttribute('display');
       } else {
         element.setAttribute('display', 'none');

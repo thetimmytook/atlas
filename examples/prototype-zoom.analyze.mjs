@@ -40,7 +40,11 @@ const timing = raw.runs
       ...row,
     })),
   );
-const expectedRows = 4 * raw.options.repeats * 24 * 2;
+const firstShow = raw.scenario === 'first-show';
+const expectedRows = 4 * raw.options.repeats * (firstShow ? 4 : 24 * 2);
+const metrics = firstShow
+  ? ['show_api_sync_ms', 'show_to_two_raf_ms', 'show_raf_interval_ms']
+  : ['raf_interval_ms', 'camera_api_sync_ms'];
 const keys = timing.map(
   row => `${row.roots}/${row.profile}/${row.repeat}/${row.step}/${row.metric}`,
 );
@@ -58,7 +62,7 @@ const summary = [];
 
 for (const roots of [3000, 5000]) {
   for (const profile of ['control', 'materials-labels']) {
-    for (const metric of ['raf_interval_ms', 'camera_api_sync_ms']) {
+    for (const metric of metrics) {
       const rows = timing.filter(
         row => row.roots === roots && row.profile === profile && row.metric === metric,
       );
@@ -148,8 +152,13 @@ for (const run of raw.runs.filter(run => run.mode === 'trace')) {
   const all = trace.traceEvents.filter(event => event.ph === 'X' && event.dur);
   const markers = trace.traceEvents.filter(event => /^atlas-zoom-step-\d+$/.test(event.name));
 
-  if (markers.length !== 24 || new Set(markers.map(event => event.name)).size !== 24) {
-    throw new Error(`Expected 24 unique step markers: ${run.id}`);
+  const expectedMarkers = firstShow ? 2 : 24;
+
+  if (
+    markers.length !== expectedMarkers ||
+    new Set(markers.map(event => event.name)).size !== expectedMarkers
+  ) {
+    throw new Error(`Expected ${expectedMarkers} unique step markers: ${run.id}`);
   }
 
   const lo = start.ts;

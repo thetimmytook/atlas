@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Saved prototype methods use explicit receivers. */
-import { assert, initialFloors, settle, surface } from './prototype-bench.check.js';
+import {
+  assert,
+  frame,
+  initialFloors,
+  selectFloor,
+  settle,
+  surface,
+} from './prototype-bench.check.js';
 import { instrument } from './prototype-bench.instrument.js';
 import { motion } from './prototype-bench.motion.js';
 import { backgroundSvg, createScene } from './prototype-bench.scene.js';
@@ -114,7 +121,7 @@ export function zoomSession(helpers: {
   warmResources(background: string): Promise<void>;
   valid(): boolean;
 }): {
-  setup(roots: 3000 | 5000, profile: Profile): Promise<object>;
+  setup(roots: 3000 | 5000, profile: Profile, firstShow?: boolean): Promise<object>;
   run(mode: 'timing' | 'trace' | 'instrument'): Promise<object>;
   finish(): object;
 } {
@@ -124,11 +131,12 @@ export function zoomSession(helpers: {
   let elements: Element[] = [];
   let startCamera = '';
   let roots = 0;
+  let firstShow = false;
   const camera = (): string =>
     JSON.stringify({ center: map?.camera.center, zoom: map?.camera.zoom });
 
   return {
-    async setup(count, profile): Promise<object> {
+    async setup(count, profile, show = false): Promise<object> {
       assert(!map, 'Previous zoom session remains attached.');
       background = URL.createObjectURL(new Blob([backgroundSvg()], { type: 'image/svg+xml' }));
       await helpers.warmResources(background);
@@ -138,6 +146,14 @@ export function zoomSession(helpers: {
       initialFloors(map);
       await settle();
       await document.fonts.ready;
+      firstShow = show;
+
+      if (firstShow) {
+        // b0-f1 stays hidden while zoom changes from 0.8 to 1.2. Setup is unmeasured.
+        map.camera.zoom *= 1.5;
+        await settle();
+      }
+
       markup = surface(map).outerHTML;
       elements = Array.from(surface(map).querySelectorAll('*'));
       startCamera = camera();
@@ -153,13 +169,47 @@ export function zoomSession(helpers: {
 
       try {
         counters?.reset();
-        await motion(
-          map,
-          'zoom',
-          (metric, unit, value, step = 0) => rows.push({ metric, unit, step, value }),
-          false,
-          mode === 'trace',
-        );
+
+        if (firstShow) {
+          const previous = await frame();
+
+          if (mode === 'trace') {
+            performance.mark('atlas-zoom-start');
+            performance.mark('atlas-zoom-step-0');
+          }
+
+          const start = performance.now();
+          selectFloor(map, 0, 1);
+          rows.push({
+            metric: 'show_api_sync_ms',
+            unit: 'ms',
+            step: 0,
+            value: performance.now() - start,
+          });
+          const first = await frame();
+
+          if (mode === 'trace') {
+            performance.mark('atlas-zoom-step-1');
+          }
+
+          const second = await frame();
+          rows.push(
+            { metric: 'show_to_two_raf_ms', unit: 'ms', step: 0, value: performance.now() - start },
+            { metric: 'show_raf_interval_ms', unit: 'ms', step: 0, value: first - previous },
+            { metric: 'show_raf_interval_ms', unit: 'ms', step: 1, value: second - first },
+          );
+
+          if (mode === 'trace') {
+            performance.mark('atlas-zoom-end');
+          }
+        } else
+          await motion(
+            map,
+            'zoom',
+            (metric, unit, value, step = 0) => rows.push({ metric, unit, step, value }),
+            false,
+            mode === 'trace',
+          );
 
         return {
           rows: mode === 'instrument' ? [] : rows,
@@ -177,10 +227,19 @@ export function zoomSession(helpers: {
         const svg = surface(map);
         const finalElements = Array.from(svg.querySelectorAll('*'));
         const beforeSet = new Set(elements);
+        const shown = svg.querySelector('[data-layer-id="b0-f1"]')!;
+        const scale = 1 / map.camera.zoom;
+        const firstShowCurrent =
+          !firstShow ||
+          (shown.getAttribute('display') === null &&
+            Array.from(
+              shown.querySelectorAll('.atlas-point > :first-child, [data-object-id] > text'),
+            ).every(node => node.getAttribute('transform')?.endsWith(`scale(${scale})`)));
         const result = {
           camera: JSON.parse(camera()) as object,
           cameraRestored: startCamera === camera(),
           markupRestored: markup === svg.outerHTML,
+          firstShowCurrent,
           nodesAdded: finalElements.filter(node => !beforeSet.has(node)).length,
           nodesRemoved: elements.filter(node => !svg.contains(node)).length,
           roots: map.objects.size,
@@ -188,7 +247,7 @@ export function zoomSession(helpers: {
         };
         assert(
           result.cameraRestored &&
-            result.markupRestored &&
+            (firstShow ? result.firstShowCurrent : result.markupRestored) &&
             result.nodesAdded === 0 &&
             result.nodesRemoved === 0 &&
             result.roots === roots &&

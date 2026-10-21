@@ -210,7 +210,7 @@ export function applyScreenScale(shape: SvgShape, kind: Geometry['kind'], scale:
     return;
   }
 
-  shape.setAttribute('transform', `scale(${scale})`);
+  setChangedAttribute(shape, 'transform', `scale(${scale})`);
 }
 
 function createShape(kind: Geometry['kind'], appearance: ResolvedAppearance): SvgShape {

@@ -1,0 +1,7079 @@
+{
+  "schema": 1,
+  "start": "2026-10-21T06:57:48.352Z",
+  "options": {
+    "warmups": 3,
+    "repeats": 20,
+    "captures": 3
+  },
+  "smoke": false,
+  "scenario": "zoom",
+  "directory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-THCc0C",
+  "commit": "3b4cfecb48c1335994cf2c617fcd5f71a013bfba",
+  "branch": "feat/hidden-layer-zoom",
+  "dirty": "M examples/prototype-bench.zoom.ts\n M examples/prototype-zoom.analyze.mjs\n M examples/prototype-zoom.run.mjs",
+  "diffSha256": "5baecb0c57dff5c125b12d05229d3d77449c17b3345b66a35d738c1eb77f054d",
+  "checkpoints": [
+    {
+      "boundary": "capture:before",
+      "timestamp": "2026-10-21T06:57:48.926Z",
+      "changed": []
+    },
+    {
+      "boundary": "timing:before",
+      "timestamp": "2026-10-21T06:57:48.955Z",
+      "changed": []
+    },
+    {
+      "boundary": "timing:after",
+      "timestamp": "2026-10-21T06:59:19.874Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace:before",
+      "timestamp": "2026-10-21T06:59:19.896Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-materials-labels-0:before",
+      "timestamp": "2026-10-21T06:59:25.179Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-materials-labels-0:after",
+      "timestamp": "2026-10-21T06:59:26.740Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-control-0:before",
+      "timestamp": "2026-10-21T06:59:26.986Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-control-0:after",
+      "timestamp": "2026-10-21T06:59:27.623Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-control-1:before",
+      "timestamp": "2026-10-21T06:59:27.831Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-control-1:after",
+      "timestamp": "2026-10-21T06:59:28.513Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-materials-labels-1:before",
+      "timestamp": "2026-10-21T06:59:28.825Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-materials-labels-1:after",
+      "timestamp": "2026-10-21T06:59:30.167Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-materials-labels-2:before",
+      "timestamp": "2026-10-21T06:59:30.474Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-materials-labels-2:after",
+      "timestamp": "2026-10-21T06:59:31.808Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-control-2:before",
+      "timestamp": "2026-10-21T06:59:32.012Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-3000-control-2:after",
+      "timestamp": "2026-10-21T06:59:32.629Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-materials-labels-0:before",
+      "timestamp": "2026-10-21T06:59:40.637Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-materials-labels-0:after",
+      "timestamp": "2026-10-21T06:59:43.028Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-control-0:before",
+      "timestamp": "2026-10-21T06:59:43.353Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-control-0:after",
+      "timestamp": "2026-10-21T06:59:44.066Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-control-1:before",
+      "timestamp": "2026-10-21T06:59:44.410Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-control-1:after",
+      "timestamp": "2026-10-21T06:59:45.060Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-materials-labels-1:before",
+      "timestamp": "2026-10-21T06:59:45.531Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-materials-labels-1:after",
+      "timestamp": "2026-10-21T06:59:47.682Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-materials-labels-2:before",
+      "timestamp": "2026-10-21T06:59:48.208Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-materials-labels-2:after",
+      "timestamp": "2026-10-21T06:59:50.370Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-control-2:before",
+      "timestamp": "2026-10-21T06:59:50.707Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace-5000-control-2:after",
+      "timestamp": "2026-10-21T06:59:51.551Z",
+      "changed": []
+    },
+    {
+      "boundary": "trace:after",
+      "timestamp": "2026-10-21T06:59:51.602Z",
+      "changed": []
+    },
+    {
+      "boundary": "instrument:before",
+      "timestamp": "2026-10-21T06:59:51.627Z",
+      "changed": []
+    },
+    {
+      "boundary": "instrument:after",
+      "timestamp": "2026-10-21T07:00:18.035Z",
+      "changed": []
+    },
+    {
+      "boundary": "capture:after",
+      "timestamp": "2026-10-21T07:00:18.086Z",
+      "changed": []
+    }
+  ],
+  "errors": [],
+  "captures": [
+    {
+      "id": "trace-3000-materials-labels-0",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-3000-materials-labels-0.trace.json": {
+          "sha256": "a542d42072b395c704d77f75201c13f3c85e18fbceb73d52474a25c7efe18fd7",
+          "bytes": 16307723
+        },
+        "trace-3000-materials-labels-0.cpuprofile": {
+          "sha256": "fe4ff6547a94ecee35ce7c14442297d04ad8a20adead104ebdd27257c74a509d",
+          "bytes": 10478
+        }
+      }
+    },
+    {
+      "id": "trace-3000-control-0",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-3000-control-0.trace.json": {
+          "sha256": "aca4640b738a327f7035fc904a40f458350dd6b53285aaed863e2b3fbd4f1b0f",
+          "bytes": 2674813
+        },
+        "trace-3000-control-0.cpuprofile": {
+          "sha256": "257a3d3b917dcecfec691d839c368470b93727b56ef62da2e3fafb1f007956f0",
+          "bytes": 4785
+        }
+      }
+    },
+    {
+      "id": "trace-3000-control-1",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-3000-control-1.trace.json": {
+          "sha256": "4526e382a161f378f08463b264ae9dffe67091cc5206fc2cc3a33866a6c90183",
+          "bytes": 3099050
+        },
+        "trace-3000-control-1.cpuprofile": {
+          "sha256": "0ba3779b8dfc4d97e2cbeb8643786a312da6f93792e54c1635960305547d982c",
+          "bytes": 4946
+        }
+      }
+    },
+    {
+      "id": "trace-3000-materials-labels-1",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-3000-materials-labels-1.trace.json": {
+          "sha256": "b6229ebd1328d1a336bcd0dab6a3b18cbd7832bba7668d315fe44adf9bcb30be",
+          "bytes": 16186008
+        },
+        "trace-3000-materials-labels-1.cpuprofile": {
+          "sha256": "0747fcd88bad55bf62c4ed6698e3eb25b95f55108a6a7230e993afddbb70ba12",
+          "bytes": 7694
+        }
+      }
+    },
+    {
+      "id": "trace-3000-materials-labels-2",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-3000-materials-labels-2.trace.json": {
+          "sha256": "49eeda3099c68ae11f698d3319b110d27d563b0b9760ef4fc850077f54e79699",
+          "bytes": 16176867
+        },
+        "trace-3000-materials-labels-2.cpuprofile": {
+          "sha256": "3fa60f41c792bea374e2444c13fb7d93c7c3261b78c2fb0f50edbfb071c229c4",
+          "bytes": 8408
+        }
+      }
+    },
+    {
+      "id": "trace-3000-control-2",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-3000-control-2.trace.json": {
+          "sha256": "35e9c36e2dee10dcd40a8fd1ed235065a264277a608a982439134bdc7920bdd3",
+          "bytes": 2986636
+        },
+        "trace-3000-control-2.cpuprofile": {
+          "sha256": "bf04c5b8e6227dfab804a207d78213012360425029b33d81ed9079065279e067",
+          "bytes": 4946
+        }
+      }
+    },
+    {
+      "id": "trace-5000-materials-labels-0",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-5000-materials-labels-0.trace.json": {
+          "sha256": "91dc78ff4bef0d6e131c22ad4abdfee6386142518cdd48f5884ee077cb5860e2",
+          "bytes": 25374371
+        },
+        "trace-5000-materials-labels-0.cpuprofile": {
+          "sha256": "9e4fa5c5850618e731458cb5a184d9842211b48423c0447560b3b684140ce312",
+          "bytes": 11701
+        }
+      }
+    },
+    {
+      "id": "trace-5000-control-0",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-5000-control-0.trace.json": {
+          "sha256": "3b91d65e781f4cb4f69254be0393ffbfcb9eab85a990de05d8c40f28733e09b5",
+          "bytes": 2675009
+        },
+        "trace-5000-control-0.cpuprofile": {
+          "sha256": "8624a8cfa7532ef3c1ca51b9a70e210b936d9b623b4df81be74f3fcb25d5b138",
+          "bytes": 5409
+        }
+      }
+    },
+    {
+      "id": "trace-5000-control-1",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-5000-control-1.trace.json": {
+          "sha256": "dde67d386ce91400daf1e4ca1d9cedb52061497bf603fb9b1b5be470397a3cbf",
+          "bytes": 2726339
+        },
+        "trace-5000-control-1.cpuprofile": {
+          "sha256": "2272fbc1feedd4f65b97d68a227d91863436ee16288e08053e2ecf7f3b303382",
+          "bytes": 4966
+        }
+      }
+    },
+    {
+      "id": "trace-5000-materials-labels-1",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-5000-materials-labels-1.trace.json": {
+          "sha256": "395666c356cfd4569bbac872b125a540a8808fb238eab65128bacb2c64c74b2c",
+          "bytes": 25100472
+        },
+        "trace-5000-materials-labels-1.cpuprofile": {
+          "sha256": "52f06882dc9a2ec0ec01a3aa06d1ae95e67dd2db5b69ba108e283b5cdfdee369",
+          "bytes": 10595
+        }
+      }
+    },
+    {
+      "id": "trace-5000-materials-labels-2",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-5000-materials-labels-2.trace.json": {
+          "sha256": "92d54c06ffd4b701d73d8efe7ce7f3272d6290bb2e157debbab12e189023cb7f",
+          "bytes": 25245400
+        },
+        "trace-5000-materials-labels-2.cpuprofile": {
+          "sha256": "1de1a35db8bbd153a86e40f8a414b25d18f1576006e2cb68763d7211d53f05d5",
+          "bytes": 10410
+        }
+      }
+    },
+    {
+      "id": "trace-5000-control-2",
+      "status": "pass",
+      "cpuSamplingUs": 1000,
+      "files": {
+        "trace-5000-control-2.trace.json": {
+          "sha256": "ef608317967a79d001347cbcb95c94cb5f4e4ff053c68fe34503a1ab5f44c461",
+          "bytes": 3057073
+        },
+        "trace-5000-control-2.cpuprofile": {
+          "sha256": "a6c4a1e5f2693b6372e6374613865b1d4662680455a18a454b86d5bcfe8c9753",
+          "bytes": 5824
+        }
+      }
+    }
+  ],
+  "runs": [
+    {
+      "id": "timing-warmup-3000-control--3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:49.251Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:49.708Z"
+    },
+    {
+      "id": "timing-warmup-3000-materials-labels--3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:50.022Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:50.662Z"
+    },
+    {
+      "id": "timing-warmup-3000-materials-labels--2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:50.935Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:51.605Z"
+    },
+    {
+      "id": "timing-warmup-3000-control--2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:51.800Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:52.257Z"
+    },
+    {
+      "id": "timing-warmup-3000-control--1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:52.449Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:52.905Z"
+    },
+    {
+      "id": "timing-warmup-3000-materials-labels--1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:53.159Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:53.781Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-0",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:54.058Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:54.743Z"
+    },
+    {
+      "id": "timing-3000-control-0",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:54.916Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:55.373Z"
+    },
+    {
+      "id": "timing-3000-control-1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:55.548Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:56.005Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:56.331Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:57.012Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:57.274Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:57.909Z"
+    },
+    {
+      "id": "timing-3000-control-2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:58.083Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:58.538Z"
+    },
+    {
+      "id": "timing-3000-control-3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 3,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:58.715Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:57:59.189Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 3,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:57:59.444Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:00.108Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-4",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 4,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:00.373Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:01.016Z"
+    },
+    {
+      "id": "timing-3000-control-4",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 4,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:01.219Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:01.674Z"
+    },
+    {
+      "id": "timing-3000-control-5",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 5,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:01.848Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:02.304Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-5",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 5,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:02.577Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:03.233Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-6",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 6,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:03.477Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:04.129Z"
+    },
+    {
+      "id": "timing-3000-control-6",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 6,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:04.298Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:04.760Z"
+    },
+    {
+      "id": "timing-3000-control-7",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 7,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:04.933Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:05.387Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-7",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 7,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:05.668Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:06.235Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-8",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 8,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:06.522Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:07.109Z"
+    },
+    {
+      "id": "timing-3000-control-8",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 8,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:07.282Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:07.738Z"
+    },
+    {
+      "id": "timing-3000-control-9",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 9,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:07.914Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:08.371Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-9",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 9,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:08.651Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:09.219Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-10",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 10,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:09.499Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:10.119Z"
+    },
+    {
+      "id": "timing-3000-control-10",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 10,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:10.298Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:10.754Z"
+    },
+    {
+      "id": "timing-3000-control-11",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 11,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:10.932Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:11.403Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-11",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 11,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:11.658Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:12.309Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-12",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 12,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:12.561Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:13.224Z"
+    },
+    {
+      "id": "timing-3000-control-12",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 12,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:13.397Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:13.867Z"
+    },
+    {
+      "id": "timing-3000-control-13",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 13,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:14.049Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:14.502Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-13",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 13,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:14.770Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:15.364Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-14",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 14,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:15.635Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:16.262Z"
+    },
+    {
+      "id": "timing-3000-control-14",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 14,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:16.433Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:16.888Z"
+    },
+    {
+      "id": "timing-3000-control-15",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 15,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:17.102Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:17.557Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-15",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 15,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:17.827Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:18.473Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-16",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 16,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:18.723Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:19.373Z"
+    },
+    {
+      "id": "timing-3000-control-16",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 16,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:19.548Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:20.003Z"
+    },
+    {
+      "id": "timing-3000-control-17",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 17,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:20.181Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:20.637Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-17",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 17,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:20.919Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:21.545Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-18",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 18,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:21.835Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:22.495Z"
+    },
+    {
+      "id": "timing-3000-control-18",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 18,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:22.664Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:23.121Z"
+    },
+    {
+      "id": "timing-3000-control-19",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 19,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:23.299Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:23.754Z"
+    },
+    {
+      "id": "timing-3000-materials-labels-19",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 19,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:24.006Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:24.646Z"
+    },
+    {
+      "id": "timing-warmup-5000-control--3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:24.903Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:25.430Z"
+    },
+    {
+      "id": "timing-warmup-5000-materials-labels--3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:25.853Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:26.943Z"
+    },
+    {
+      "id": "timing-warmup-5000-materials-labels--2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:27.416Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:28.502Z"
+    },
+    {
+      "id": "timing-warmup-5000-control--2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:28.779Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:29.295Z"
+    },
+    {
+      "id": "timing-warmup-5000-control--1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:29.553Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:30.097Z"
+    },
+    {
+      "id": "timing-warmup-5000-materials-labels--1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:30.537Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:31.616Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-0",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:32.048Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:33.134Z"
+    },
+    {
+      "id": "timing-5000-control-0",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:33.405Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:33.932Z"
+    },
+    {
+      "id": "timing-5000-control-1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:34.239Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:34.734Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:35.168Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:36.257Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:36.690Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:37.798Z"
+    },
+    {
+      "id": "timing-5000-control-2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:38.052Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:38.624Z"
+    },
+    {
+      "id": "timing-5000-control-3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 3,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:38.921Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:39.508Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 3,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:39.963Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:41.029Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-4",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 4,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:41.455Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:42.571Z"
+    },
+    {
+      "id": "timing-5000-control-4",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 4,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:42.836Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:43.335Z"
+    },
+    {
+      "id": "timing-5000-control-5",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 5,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:43.613Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:44.165Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-5",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 5,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:44.635Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:45.714Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-6",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 6,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:46.138Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:47.208Z"
+    },
+    {
+      "id": "timing-5000-control-6",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 6,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:47.506Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:48.054Z"
+    },
+    {
+      "id": "timing-5000-control-7",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 7,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:48.355Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:48.978Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-7",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 7,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:49.436Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:50.615Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-8",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 8,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:51.076Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:52.303Z"
+    },
+    {
+      "id": "timing-5000-control-8",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 8,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:52.670Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:53.286Z"
+    },
+    {
+      "id": "timing-5000-control-9",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 9,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:53.658Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:54.217Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-9",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 9,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:54.696Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:55.940Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-10",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 10,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:56.399Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:57.412Z"
+    },
+    {
+      "id": "timing-5000-control-10",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 10,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:57.669Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:58.286Z"
+    },
+    {
+      "id": "timing-5000-control-11",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 11,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:58.552Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:58:59.045Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-11",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 11,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:58:59.467Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:00.661Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-12",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 12,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:01.104Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:02.162Z"
+    },
+    {
+      "id": "timing-5000-control-12",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 12,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:02.435Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:02.928Z"
+    },
+    {
+      "id": "timing-5000-control-13",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 13,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:03.169Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:03.715Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-13",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 13,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:04.130Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:05.195Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-14",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 14,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:05.612Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:06.666Z"
+    },
+    {
+      "id": "timing-5000-control-14",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 14,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:06.937Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:07.469Z"
+    },
+    {
+      "id": "timing-5000-control-15",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 15,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:07.736Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:08.338Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-15",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 15,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:08.803Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:09.952Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-16",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 16,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:10.420Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:11.571Z"
+    },
+    {
+      "id": "timing-5000-control-16",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 16,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:11.858Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:12.476Z"
+    },
+    {
+      "id": "timing-5000-control-17",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 17,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:12.756Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:13.339Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-17",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 17,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:13.802Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:14.947Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-18",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 18,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:15.397Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:16.628Z"
+    },
+    {
+      "id": "timing-5000-control-18",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 18,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:16.921Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:17.438Z"
+    },
+    {
+      "id": "timing-5000-control-19",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 19,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:17.703Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:18.285Z"
+    },
+    {
+      "id": "timing-5000-materials-labels-19",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 19,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:18.746Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:19.813Z"
+    },
+    {
+      "id": "trace-warmup-3000-control--3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:20.209Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:20.662Z"
+    },
+    {
+      "id": "trace-warmup-3000-materials-labels--3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:20.969Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:21.604Z"
+    },
+    {
+      "id": "trace-warmup-3000-materials-labels--2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:21.889Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:22.590Z"
+    },
+    {
+      "id": "trace-warmup-3000-control--2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:22.774Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:23.229Z"
+    },
+    {
+      "id": "trace-warmup-3000-control--1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:23.424Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:23.896Z"
+    },
+    {
+      "id": "trace-warmup-3000-materials-labels--1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:24.174Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:24.885Z"
+    },
+    {
+      "id": "trace-3000-materials-labels-0",
+      "mode": "trace",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:25.151Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:26.756Z"
+    },
+    {
+      "id": "trace-3000-control-0",
+      "mode": "trace",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:26.957Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:27.635Z"
+    },
+    {
+      "id": "trace-3000-control-1",
+      "mode": "trace",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:27.806Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:28.526Z"
+    },
+    {
+      "id": "trace-3000-materials-labels-1",
+      "mode": "trace",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:28.800Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:30.183Z"
+    },
+    {
+      "id": "trace-3000-materials-labels-2",
+      "mode": "trace",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:30.450Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:31.823Z"
+    },
+    {
+      "id": "trace-3000-control-2",
+      "mode": "trace",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:31.988Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:32.640Z"
+    },
+    {
+      "id": "trace-warmup-5000-control--3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:32.894Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:33.429Z"
+    },
+    {
+      "id": "trace-warmup-5000-materials-labels--3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:33.864Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:34.964Z"
+    },
+    {
+      "id": "trace-warmup-5000-materials-labels--2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:35.426Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:36.665Z"
+    },
+    {
+      "id": "trace-warmup-5000-control--2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:36.947Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:37.561Z"
+    },
+    {
+      "id": "trace-warmup-5000-control--1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:37.864Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:38.454Z"
+    },
+    {
+      "id": "trace-warmup-5000-materials-labels--1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:38.916Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:40.130Z"
+    },
+    {
+      "id": "trace-5000-materials-labels-0",
+      "mode": "trace",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:40.606Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:43.053Z"
+    },
+    {
+      "id": "trace-5000-control-0",
+      "mode": "trace",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:43.328Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:44.085Z"
+    },
+    {
+      "id": "trace-5000-control-1",
+      "mode": "trace",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:44.383Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:45.078Z"
+    },
+    {
+      "id": "trace-5000-materials-labels-1",
+      "mode": "trace",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:45.506Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:47.706Z"
+    },
+    {
+      "id": "trace-5000-materials-labels-2",
+      "mode": "trace",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:48.164Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:50.400Z"
+    },
+    {
+      "id": "trace-5000-control-2",
+      "mode": "trace",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:50.680Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:51.572Z"
+    },
+    {
+      "id": "instrument-warmup-3000-control--3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:51.913Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:52.369Z"
+    },
+    {
+      "id": "instrument-warmup-3000-materials-labels--3",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:52.668Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:53.300Z"
+    },
+    {
+      "id": "instrument-warmup-3000-materials-labels--2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:53.566Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:54.220Z"
+    },
+    {
+      "id": "instrument-warmup-3000-control--2",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:54.414Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:54.869Z"
+    },
+    {
+      "id": "instrument-warmup-3000-control--1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:55.072Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:55.535Z"
+    },
+    {
+      "id": "instrument-warmup-3000-materials-labels--1",
+      "mode": "timing",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:55.789Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:56.411Z"
+    },
+    {
+      "id": "instrument-3000-materials-labels-0",
+      "mode": "instrument",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:56.660Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:57.419Z"
+    },
+    {
+      "id": "instrument-3000-control-0",
+      "mode": "instrument",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:57.612Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:58.068Z"
+    },
+    {
+      "id": "instrument-3000-control-1",
+      "mode": "instrument",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:58.262Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:58.766Z"
+    },
+    {
+      "id": "instrument-3000-materials-labels-1",
+      "mode": "instrument",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T06:59:59.031Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T06:59:59.774Z"
+    },
+    {
+      "id": "instrument-3000-materials-labels-2",
+      "mode": "instrument",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1325,
+          "visible_image": 152,
+          "visible_text": 434,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2505,
+          "hidden_image": 336,
+          "hidden_text": 935
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:00.051Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:00.828Z"
+    },
+    {
+      "id": "instrument-3000-control-2",
+      "mode": "instrument",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 2659,
+          "visible_circle": 1477,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 5376,
+          "hidden_circle": 2841,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:01.030Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:01.485Z"
+    },
+    {
+      "id": "instrument-warmup-5000-control--3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:01.780Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:02.246Z"
+    },
+    {
+      "id": "instrument-warmup-5000-materials-labels--3",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -3,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:02.665Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:03.721Z"
+    },
+    {
+      "id": "instrument-warmup-5000-materials-labels--2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:04.208Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:05.262Z"
+    },
+    {
+      "id": "instrument-warmup-5000-control--2",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -2,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:05.541Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:06.146Z"
+    },
+    {
+      "id": "instrument-warmup-5000-control--1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:06.455Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:07.040Z"
+    },
+    {
+      "id": "instrument-warmup-5000-materials-labels--1",
+      "mode": "timing",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": -1,
+      "measured": false,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:07.582Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:08.805Z"
+    },
+    {
+      "id": "instrument-5000-materials-labels-0",
+      "mode": "instrument",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:09.317Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:10.757Z"
+    },
+    {
+      "id": "instrument-5000-control-0",
+      "mode": "instrument",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 0,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:11.087Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:11.828Z"
+    },
+    {
+      "id": "instrument-5000-control-1",
+      "mode": "instrument",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:12.158Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:12.840Z"
+    },
+    {
+      "id": "instrument-5000-materials-labels-1",
+      "mode": "instrument",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:13.324Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:14.772Z"
+    },
+    {
+      "id": "instrument-5000-materials-labels-2",
+      "mode": "instrument",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2224,
+          "visible_image": 255,
+          "visible_text": 716,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4216,
+          "hidden_image": 567,
+          "hidden_text": 1549
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:15.297Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:16.803Z"
+    },
+    {
+      "id": "instrument-5000-control-2",
+      "mode": "instrument",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 2,
+      "measured": true,
+      "setup": {
+        "inventory": {
+          "visible_layers": 5,
+          "visible_appearances": 4433,
+          "visible_circle": 2479,
+          "visible_image": 0,
+          "visible_text": 0,
+          "hidden_layers": 8,
+          "hidden_appearances": 8978,
+          "hidden_circle": 4783,
+          "hidden_image": 0,
+          "hidden_text": 0
+        },
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        }
+      },
+      "start": "2026-10-21T07:00:17.131Z",
+      "finish": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 0.8
+        },
+        "cameraRestored": true,
+        "markupRestored": true,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      },
+      "end": "2026-10-21T07:00:17.941Z"
+    }
+  ],
+  "environment": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "release": "25.6.0",
+    "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8112",
+    "cpu": "Apple M2",
+    "logicalCpus": 8,
+    "memoryGiB": 16,
+    "node": "v20.19.6",
+    "playwright": "1.63.0",
+    "headless": true,
+    "viewport": {
+      "width": 1100,
+      "height": 900
+    },
+    "deviceScaleFactor": 1,
+    "launch": "Playwright default headless Chromium; no custom flags",
+    "throttling": "No CPU/network throttling or forced GC",
+    "loadAverageStart": [8.39990234375, 16.36767578125, 13.68212890625],
+    "chromium": "153.0.8010.12",
+    "loadAverageEnd": [10.67724609375, 13.2939453125, 12.8037109375]
+  },
+  "buildFiles": {
+    "assets/baseline-Bjp7aQyh.js": "b203b7e356e492384939ee403f536d17834bc8aa54c54967014a2dc7737188de",
+    "assets/baseline-Bjp7aQyh.js.map": "c087e3489cf38415ffffb84f46f4c2c8ea38ddb15b459eaa7c72a389ab418a85",
+    "assets/comparison-DuclgG8U.js": "6f585e8537595beffbd2168dae369a181d1d1962812fe447723681a22c4b999f",
+    "assets/comparison-DuclgG8U.js.map": "0797e5607e8095841d71ab3492ed2274ebe5c831df2e208fe740a42e217446bc",
+    "assets/comparison-DvTUgzRd.css": "652db25ba73a950c59e63c6fd4c974fc6920a9f2f95ff5bbb7ad4a017ce78743",
+    "assets/Factory-ground-floor-CwOITdba.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b",
+    "assets/map-element-V1Eh0YZ9.js": "32567ab6e0a12b4d35756ec41d580d6af69b44e49fcef49b225c615c59318418",
+    "assets/map-element-V1Eh0YZ9.js.map": "9d6d4204f328b1066033e678c0c25fbd22ced64c1741bf69738b62001afb2388",
+    "assets/prototype-frICToZW.js": "adfa2c1fd41086e4c06306273765234326b1bb093e8ac72e3b489b64df350f31",
+    "assets/prototype-frICToZW.js.map": "54376027d34ac9aaeddd6b69f1baff90623aba068281170e263d9efeb4af6950",
+    "assets/stress.check-DRZD5ex-.js": "06b399f28923566f13b4c48006b10de479be68b91742437e9aacc232e5ebb7c2",
+    "assets/stress.check-DRZD5ex-.js.map": "e3aaf8315d3ca53c5b66fb8d8a9f71872a3c4e2aa056800082bf2ee67bfb4d67",
+    "examples/comparison.html": "2cfeedcbecf7a3fe6293ed5521ee7195504f2649e925c7e5b426372ca6740d9d",
+    "examples/prototype-bench.html": "d9a4a200bfe0621b0df97e04b4f82e3e2355b11a1ed856980e535ed3710b7ba4",
+    "examples/stress.html": "f482b0d6216c6c2c593bea279a329ee430ee09fa2160e38158d4ca30264fcfc3"
+  },
+  "build": {
+    "sourceCommit": "3b4cfecb48c1335994cf2c617fcd5f71a013bfba",
+    "dirty": "M examples/prototype-bench.zoom.ts\n M examples/prototype-zoom.analyze.mjs\n M examples/prototype-zoom.run.mjs",
+    "hashes": {
+      "examples/prototype-bench.html": "9681ddbab84fa338ae84c3e92f13e7896daaab8b39d752649b7f061602e878be",
+      "examples/prototype-bench.ts": "fdd19e35aa8f095206868c6a93f60edfd4e9a2b10582bed20cb117aea9c29db5",
+      "examples/prototype-bench.scene.ts": "6e2b0c1a997efd1db59e2cc2aa697da536872ebe3058f26ff7072cb7fe2bbd2c",
+      "examples/prototype-bench.check.ts": "6e2790d8b1960c68125843ccc3aa7b65e9035c908db61e404e4920bcc2bdbdfd",
+      "examples/prototype-bench.instrument.ts": "66afb462968b6e5e0ce66314cd5d81a8056a14a25a9d65cd209862c3297e7365",
+      "examples/prototype-bench.visual.ts": "1a60690771a5a3c0393e203a6b1155f08deda2328cb68ef2d6d4960c2aa3eb1f",
+      "examples/prototype-bench.run.mjs": "a7dfa3a89286be5b9bdea7f8e00f5fb8a9ed847bf1b3bd2c569dd83497db65cc",
+      "examples/prototype-bench.motion.ts": "a9433a348ac3b54049ffe548fada98ea63f91d1df751bc5e4120cfffa654ed0f",
+      "examples/prototype-bench.zoom.ts": "8b5409ad81dd89ab9f366ccd9b2f60fbd4db01485a095526ea5d367af44f60b5",
+      "examples/prototype-zoom.run.mjs": "86b918fa44822dc49871a86a400a867e6ef1e6172d56aaac66c60caca6bc3977",
+      "examples/prototype-zoom.analyze.mjs": "9e961e527d33cc6bba25d7ac77426fbfc826137f0f1648b82ee16224507263cc",
+      "benchmark.config.mts": "806d42cf016f9793e43fba2a29b7ded5deb7bd4d300f116b9ad317e58e332c39",
+      "package.json": "632d93462717c52afe157885bc28c5c865988f062f731ad7727b9fe3e4c07ebc",
+      "package-lock.json": "d4a01b794f536804ce740bedbaa111d921eb5dc822723b2ba9b6c20253f7f271",
+      "tsconfig.json": "6ebd07c6a92c3d1e64663c4dbbb716fc172b2c1191a673bd036226f24ad73d71",
+      "tsconfig.examples.json": "81b84a740cb96b01033dad8c5da33a20d64c5806692bd492fdfec1e2c038ea98",
+      "src/assets.d.ts": "a8f55248c82d32e1d0e2d9ab58ea4c518b3ff78da6ce1556dcc3f84192a1b258",
+      "src/index.ts": "f539bdaac807dfc82760db4fe280a2434cd545d587209e8b8da11af903c76cc5",
+      "src/camera/camera.ts": "07a9d53335da627a52ef8919f9d517a96f75649fbbb43e4a5bace0c873b1b6b1",
+      "src/definitions/identity.ts": "8a5c5bc88356c883e3f25e9e68654be5cbdc700adb4bebb464dcfc2f1d2394c1",
+      "src/definitions/map-definition.ts": "47dd67f098f4b1d2093d30d508d16ee6822b49bed431a8acc4df830e36254b6a",
+      "src/definitions/map-layer-definition.ts": "ee6a19e36daa4fa577b19870a8b082eece49c630facf895edeac1a864ee355a5",
+      "src/definitions/map-line-definition.ts": "27c02dc25daf2d12284939a53ff5af021907ce2dd6c943e32cf7dd9870520f5b",
+      "src/definitions/map-object-definition.ts": "2fd431f7cc1503016c8a98a7f4784b4ee887e89f51a2dbea15323db4b74d20b1",
+      "src/definitions/map-point-definition.ts": "ef4f33d1a39b944856b68400678d36b1f9b77f6d0c6154627a33f5cd01809d8d",
+      "src/definitions/map-polygon-definition.ts": "d0033e2a0e34bd746af135c3733b472b1a18756d6f07c6f307e32be5e2ed9792",
+      "src/definitions/map-route-definition.ts": "f9d5fd42fab3f9d76c4a369fe1b77ca0182553e2a715f55df483e784c5c47127",
+      "src/definitions/material-definition.ts": "53be60fa38c680c745d35ce13a830e0adb631973f16d83cfc5f8d83cedb136e9",
+      "src/errors/atlas-error.ts": "9a9fba09a8fae8850739caf416b0d33d1b2537c6e7ecee0696c6e4cd90639495",
+      "src/errors/atlas-material-error.ts": "224dc63654843b1b684792e839b81d24708f788d74869dcb53d830405b94043e",
+      "src/interaction/camera-controls.ts": "ede5c09fb017e4d21b5c7a590bf60c1ef48a6a8366e5ed6f69cc25186a0a8fe7",
+      "src/interaction/map-coordinates.ts": "b2502aba80977834ee49bedabc65c05180f7ec05315f87d1c9b9b5746a135952",
+      "src/interaction/map-surface-event.ts": "3db807dc24760993c4c76911bc170460da84ff73274b90ac6e806e757ee06353",
+      "src/interaction/object-click-event.ts": "7e972d00a8de30fbc100ca97eebe17e3f732ff4a19408a521bc51f2330b6ce52",
+      "src/math/distance.ts": "77b34548a9468da91416e37dea1df5c9b5427f40241d1e8ff861098354869c9f",
+      "src/math/intersection-bounds.ts": "98461e6102ecb7d332ec8ef7affaa8ca8c333e0cd9c29a2efdd67748e5c8d3b4",
+      "src/math/point2.ts": "29f617e1c889f17fa034bb9a1c4eee40b099b5c2493bc14951a5daf4721c7760",
+      "src/math/point3.ts": "ccabb5daa08d62ad1160dee410a83fa87da9b9302aa2b0d8433a79f904463c00",
+      "src/math/polygon.ts": "a22b1925b132c96ec6532d2ece8e00dc177ad4f9659e46f980f0315f8c43738d",
+      "src/math/rect.ts": "d5839ac951a2733bf7655062d579c4ef43593c14e380e35c654208536827600e",
+      "src/math/size.ts": "a492d36a4032966f754db980dcab1fcdd4d6198f1ad8a4d8452e8a1380ee8bda",
+      "src/objects/create-id.ts": "96e3eecb7c7dd9d0c2f2dda418daf77fc14a002f7ec52330c9dc08bed2c00b0c",
+      "src/objects/map-layer-object-id-collection.ts": "942ad2deb66b927ef352f6e192db7e5b7879eb2bef4c1d943a728c6b4fd825e5",
+      "src/objects/map-layer.ts": "3834ca12e34a39cac49ac0f5d4c6a5d435d9cd272fa21af374c4bcf9203c5727",
+      "src/objects/map-line.ts": "777e71a393496fa0f75defeca40a2d19d8455d0c2c7f8a7de4020b6073153870",
+      "src/objects/map-materials.ts": "3cd3122d11d508442155759817ad48115b04147fc5f069920499e777517c3afc",
+      "src/objects/map-model.ts": "528ef12769d911b70d25ea447b14a80798c8535cb06aededf3333b191720fecd",
+      "src/objects/map-object-collection.ts": "563beeb0a8717d43b0ec98dcd8ddaee9e2c64d559509563fc961508d252c2582",
+      "src/objects/map-object.ts": "e12cce89c4fff6c0cffb9955ab904008fbce0c84626e1875e08b2db2af057347",
+      "src/objects/map-point.ts": "d4100e0ace5364b775b7533673cf803a1b4ae3175d09c0d66bdcd1afa86137ad",
+      "src/objects/map-polygon.ts": "faecb052f673dcf27ea487836188cc179ec7f08f61e779bbf7a536040b34e9ed",
+      "src/objects/map-route.ts": "382826ad55e66460c4a2c2ccc96c42066a6710789027560dc191dd6c1195b889",
+      "src/objects/material-consumers.ts": "64765aaf9ae8af63133a050f2a384bb2fe7c27d1be49dcb016a0c885e06cd6ac",
+      "src/objects/material-defaults.ts": "e4ec4b62c75512a4821b497c43d97f4c0113c75412d947fc89a144c0f1dcfca1",
+      "src/objects/property-configuration.ts": "e27f45daef8ef97b6ad69148541c6cdb516075a144ef278874c3954756c58c1f",
+      "src/objects/runtime-material.ts": "973934e3543a7e8c110c9a308dabf857db84ca03ec463750fba0fcb12923b74c",
+      "src/renderers/renderer.ts": "d1f845d668c9e80034f9b22e1fee9e91d102af96763b742b21612289bda06926",
+      "src/spatial/clipped-appearance.ts": "afbfc6e1a3e8038cbda30eadc523bdad4c388e0b32cb42ebc9bd2598de9dfc06",
+      "src/spatial/geometry.ts": "46c545307ec29fb45c233bea8b1f60abd9eaf2f1a68f1cd6eff155c1fcaaa9fe",
+      "src/spatial/intersection.ts": "8a55b84c6a0a169ede4c5ea72fdf2dab223a0455388698c83e4f8b801f5ccd48",
+      "src/spatial/object-label.ts": "fe7dc3cb02a7f86a7a0d0b2cb441d10843df977556d50c87c28fe959c1b0bbbb",
+      "src/spatial/path-label-position.ts": "965a8c37dbb6578ce14c6d2319da3765d7dbff2d95e758fa8a6735bb6ec65503",
+      "src/spatial/polygon-clipping.ts": "ef83ee25c7205e6ecee05a2a40de9dcadfc4266e3ec627456eee1d61dd679dcd",
+      "src/spatial/polygon-geometry.ts": "2a577b8810deea97ae9b331158dfe5a9d6a2ce58173a9010ca4dc5c3bdbfe604",
+      "src/spatial/polygon-label-position.ts": "6d8a01052921406e2fe968fee089709464bcbe181c62f837832947e340c69537",
+      "src/spatial/scene-geometry.ts": "f9362bc6fdd59607e2a6dd6379859eb30b070e6541149a8f4a81ffa00a3cf9df",
+      "src/spatial/scene-invalidation.ts": "0fb55139c571f87874ca8177e8815777570cb7284766aaa0cc9e57470cddb3bb",
+      "src/spatial/spatial.ts": "d4833eff76f02c4e1a62a7dff32d7de653dbfb01f0903e674ebdcbc6a148bf03",
+      "src/validators/intersection-bounds.validator.ts": "54d48e07752a9fe3f433ba281677279e91b806e40a89948a79e18ec32e4b6077",
+      "src/validators/layer-object-id.validator.ts": "b3b68eac88cdd6d7c1f7d9ed0d2b633b9c4ee6c04a9f2115b1883860d6094dc5",
+      "src/validators/map-point.validator.ts": "b8c86a9e94eae483e291e9b3e462e2f83b1d9520282325936c9fc1586518c3ec",
+      "src/validators/map-points.validator.ts": "474d3490d515afd9199d4a1c287bdc88108c70e409b240fd080fdc6abfed1c4e",
+      "src/validators/map-polygon.validator.ts": "7ed686b5860b4f0903b5e4954854707e8ecb5471a7ac70f5a2d14e3137cc862b",
+      "src/validators/material-label.validator.ts": "5b4decf268a3a2e809f915dfe69e460cb9f0e46487ccf2507d3b108fcc49d3fa",
+      "src/validators/material.validator.ts": "aa206dfc293f0b4500c870181b6007830fb6f252d44cce318b5d0fc58c7adc88",
+      "src/validators/number.validator.ts": "551bd4590cc5f1850329269e26a26dfb0eb3a2920df1d704a531f779857177ef",
+      "src/validators/object-attributes.validator.ts": "11ae2b99084998b0a90cc4111abed258fa0c32f7501499f50b87ee927e4b2727",
+      "src/validators/object-data.validator.ts": "7cac86220c0004c1412fe59c71a1b8d1f938f8ecd28c31ffc45892cc54d8e548",
+      "src/validators/object-id.validator.ts": "0a8ad2b44b074464510e72edfd766a5eb6c9a6aded68a252ec8e22823a9d534f",
+      "src/validators/object-label.validator.ts": "89fe9c1c16f169fc717f5f357be78bf049ece6ad17783d6501f0f7029aff83c0",
+      "src/validators/point.validator.ts": "1c8436eba537259257f66fc3c87cc59e183bb51b285d169a4f189eb93a489bae",
+      "src/validators/size.validator.ts": "b571b9ab3e54989c67974cfc45e3fdf5dd5398edf5217abb0d21b23853931d04",
+      "src/components/map-element/image-resources.ts": "69c563771a3358fb8c26726e2918c039dcb2303f4d9b4e5363d29a79c8746d82",
+      "src/components/map-element/map-element.html": "db7c6b5ca55040934e2af39b88641ee0c5f2c87878469f5886b3cb1198642ee4",
+      "src/components/map-element/map-element.ts": "e79b586db6fd07141dfa7efaa3238c12a77e13203f0a8ca06a1ca5e61e66ef1f",
+      "src/components/map-element/object-labels.ts": "297d77ee751ee81dee7ab220be55e9fdd07376d2c9ef76573276136140343d41",
+      "src/renderers/svg/svg-renderer.ts": "4ea87f6e2f8494a33586c54459f3c8adbff85b4c6baea89745247843c9d5c361",
+      "src/renderers/svg/svg-renderer.utils.ts": "6c87c7019d32f20603f14c3a33fdb2dbb0207f4f5dd27dc9f60cb08dbb705ca9"
+    }
+  },
+  "status": "pass",
+  "end": "2026-10-21T07:00:18.086Z",
+  "dirtyAfter": "M examples/prototype-bench.zoom.ts\n M examples/prototype-zoom.analyze.mjs\n M examples/prototype-zoom.run.mjs"
+}

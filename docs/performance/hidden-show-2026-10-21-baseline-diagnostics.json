@@ -1,0 +1,3346 @@
+{
+  "diagnostics": [
+    {
+      "id": "trace-3000-materials-labels-0",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "windowMs": 24.177,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 7.424,
+      "perName": {
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.009,
+        "RunTask": 7.424,
+        "ThreadControllerImpl::RunTask": 7.391,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.013,
+        "ProxyMain::BeginMainFrame": 7.362,
+        "LayerTreeHost::ApplyCompositorChanges": 0.002,
+        "WidgetBase::WillBeginMainFrame": 0.003,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.244,
+        "Blink.Animate.UpdateTime": 0.238,
+        "PageAnimator::serviceScriptedAnimations": 0.235,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.221,
+        "FireAnimationFrame": 0.218,
+        "AsyncTask Run": 0.214,
+        "v8.callFunction": 0.206,
+        "FunctionCall": 0.089,
+        "v8.newInstance": 0.001,
+        "WebFrameWidgetImpl::UpdateLifecycle": 7.014,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.017,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.01,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 2.757,
+        "LocalFrameView::UpdateStyleAndLayout": 2.714,
+        "RootScrollerController::PerformRootScrollerSelection": 0.01,
+        "PrePaint": 1.136,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.599,
+        "Blink.CompositingInputs.UpdateTime": 0.574,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.496,
+        "Blink.PrePaint.UpdateTime": 0.485,
+        "LocalFrameView::NotifyResizeObservers": 0.011,
+        "LocalFrameView::RunPaintLifecyclePhase": 3.131,
+        "Blink.Paint.UpdateTime": 1.65,
+        "CullRectUpdate": 0.016,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.433,
+        "Blink.CompositingCommit.UpdateTime": 1.42,
+        "Layerize": 1.42,
+        "Commit": 0.082,
+        "LocalFrameView::RunAccessibilitySteps": 0.004,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.003,
+        "Blink.IntersectionObservation.UpdateTime": 0.001,
+        "MainFrameAborted": 0.013,
+        "LayerTreeHost::WaitForCommitCompletion": 0.008,
+        "AnimationTimeline::serviceAnimations": 0.001,
+        "Blink.Style.UpdateTime": 1.147,
+        "UpdateLayoutTree": 1.145,
+        "Document::updateActiveStyle": 0.001,
+        "Document::updateStyle": 1.14,
+        "Document::recalcStyle": 0.03,
+        "Document::rebuildLayoutTree": 1.002,
+        "Blink.Layout.UpdateTime": 1.548,
+        "LocalFrameView::layout": 1.539,
+        "Layout": 1.537,
+        "LocalFrameView::performLayout": 1.434,
+        "InlineNode::FindSvgTextChunks": 0.158,
+        "InlineNode::ShapeTextIncludingFirstLine": 0.069,
+        "SvgTextLayoutAlgorithm::Layout": 0.097,
+        "LocalFrameView::performPostLayoutTasks": 0.002,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "LayoutView::commitPendingSelection": 0.008,
+        "Paint": 1.6,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.011,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "PaintArtifactCompositor::Update": 1.418,
+        "ScrollTree::SetScrollOffset": 0.001,
+        "LayerTreeHost::DoUpdateLayers": 0.022,
+        "UpdateLayer": 0.017,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.003,
+        "Blink.Accessibility.UpdateTime": 0.001,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 2.252
+        }
+      ],
+      "cpuCoveredMs": 24.177,
+      "negativeCpuDeltas": 4,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.676
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.326
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 16.121,
+          "inclusiveMs": 16.121
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 6.915,
+          "inclusiveMs": 6.915
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.647,
+          "inclusiveMs": 0.647
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.49,
+          "inclusiveMs": 0.49
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0.004,
+          "inclusiveMs": 1.141
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 24.177
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.647
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.647
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.647
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 6.283,
+          "mainBusyMs": 0.257,
+          "renderMs": 0.083,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.007,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 17.846,
+          "mainBusyMs": 7.119,
+          "renderMs": 0.006,
+          "styleMs": 1.145,
+          "layoutMs": 1.537,
+          "prepaintMs": 1.129,
+          "paintMs": 1.6,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-3000-control-0",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 0,
+      "windowMs": 23.037,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 4.679,
+      "perName": {
+        "RunTask": 4.679,
+        "ThreadControllerImpl::RunTask": 4.648,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.014,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.015,
+        "ProxyMain::BeginMainFrame": 4.626,
+        "LayerTreeHost::ApplyCompositorChanges": 0.001,
+        "WidgetBase::WillBeginMainFrame": 0.003,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.209,
+        "Blink.Animate.UpdateTime": 0.203,
+        "PageAnimator::serviceScriptedAnimations": 0.199,
+        "AnimationTimeline::serviceAnimations": 0.002,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.185,
+        "FireAnimationFrame": 0.183,
+        "AsyncTask Run": 0.178,
+        "v8.callFunction": 0.169,
+        "FunctionCall": 0.087,
+        "AnimationHost::TickAnimations": 0.001,
+        "WebFrameWidgetImpl::UpdateLifecycle": 4.322,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.001,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.001,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 1.641,
+        "LocalFrameView::UpdateStyleAndLayout": 1.632,
+        "RootScrollerController::PerformRootScrollerSelection": 0.001,
+        "PrePaint": 0.461,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.061,
+        "Blink.CompositingInputs.UpdateTime": 0.057,
+        "LayoutView::commitPendingSelection": 0.001,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.398,
+        "Blink.PrePaint.UpdateTime": 0.397,
+        "LocalFrameView::NotifyResizeObservers": 0.003,
+        "LocalFrameView::RunPaintLifecyclePhase": 2.139,
+        "Blink.Paint.UpdateTime": 0.906,
+        "CullRectUpdate": 0.007,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.182,
+        "Blink.CompositingCommit.UpdateTime": 1.179,
+        "Layerize": 1.179,
+        "Commit": 0.066,
+        "LocalFrameView::RunAccessibilitySteps": 0.002,
+        "Blink.Accessibility.UpdateTime": 0.002,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.002,
+        "Blink.IntersectionObservation.UpdateTime": 0.001,
+        "MainFrameAborted": 0.011,
+        "LayerTreeHost::WaitForCommitCompletion": 0.007,
+        "Blink.Style.UpdateTime": 0.988,
+        "UpdateLayoutTree": 0.986,
+        "Document::updateStyle": 0.979,
+        "Document::recalcStyle": 0.025,
+        "Document::rebuildLayoutTree": 0.846,
+        "Blink.Layout.UpdateTime": 0.635,
+        "LocalFrameView::layout": 0.63,
+        "Layout": 0.628,
+        "LocalFrameView::performLayout": 0.536,
+        "LocalFrameView::performPostLayoutTasks": 0.003,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "Paint": 0.859,
+        "PaintController::commitNewDisplayItems": 0.003,
+        "PaintArtifactCompositor::Update": 1.176,
+        "ScrollTree::SetScrollOffset": 0.002,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.001,
+        "LayerTreeHost::DoUpdateLayers": 0.01,
+        "UpdateLayer": 0.004,
+        "ProxyMain::BeginMainFrame::commit": 0.003,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 0.93
+        },
+        {
+          "thread": "81131:44462933",
+          "taskUnionMs": 0.857
+        },
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 0.725
+        },
+        {
+          "thread": "81131:44462932",
+          "taskUnionMs": 1.011
+        }
+      ],
+      "cpuCoveredMs": 23.037,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.507
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.276
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 17.036,
+          "inclusiveMs": 17.036
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 4.613,
+          "inclusiveMs": 4.613
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.965,
+          "inclusiveMs": 0.965
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.423,
+          "inclusiveMs": 0.423
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 23.037
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.388
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.423
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.423
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.423
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 5.534,
+          "mainBusyMs": 0.248,
+          "renderMs": 0.081,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.007,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 17.493,
+          "mainBusyMs": 4.421,
+          "renderMs": 0.006,
+          "styleMs": 0.986,
+          "layoutMs": 0.628,
+          "prepaintMs": 0.454,
+          "paintMs": 0.859,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-3000-control-1",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 1,
+      "windowMs": 22.912,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 4.725,
+      "perName": {
+        "RunTask": 4.725,
+        "ThreadControllerImpl::RunTask": 4.689,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.014,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.014,
+        "ProxyMain::BeginMainFrame": 4.667,
+        "LayerTreeHost::ApplyCompositorChanges": 0.002,
+        "WidgetBase::WillBeginMainFrame": 0.002,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.184,
+        "Blink.Animate.UpdateTime": 0.18,
+        "PageAnimator::serviceScriptedAnimations": 0.176,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.161,
+        "FireAnimationFrame": 0.16,
+        "AsyncTask Run": 0.155,
+        "v8.callFunction": 0.146,
+        "FunctionCall": 0.076,
+        "AnimationHost::TickAnimations": 0.001,
+        "WebFrameWidgetImpl::UpdateLifecycle": 4.398,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.002,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 1.701,
+        "LocalFrameView::UpdateStyleAndLayout": 1.694,
+        "RootScrollerController::PerformRootScrollerSelection": 0.001,
+        "PrePaint": 0.474,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.059,
+        "Blink.CompositingInputs.UpdateTime": 0.059,
+        "LayoutView::commitPendingSelection": 0.002,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.412,
+        "Blink.PrePaint.UpdateTime": 0.41,
+        "LocalFrameView::NotifyResizeObservers": 0.004,
+        "LocalFrameView::RunPaintLifecyclePhase": 2.136,
+        "Blink.Paint.UpdateTime": 0.924,
+        "CullRectUpdate": 0.007,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.162,
+        "Blink.CompositingCommit.UpdateTime": 1.161,
+        "Layerize": 1.159,
+        "Commit": 0.063,
+        "LocalFrameView::RunAccessibilitySteps": 0.003,
+        "Blink.Accessibility.UpdateTime": 0.001,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.002,
+        "Blink.IntersectionObservation.UpdateTime": 0.002,
+        "MainFrameAborted": 0.01,
+        "LayerTreeHost::WaitForCommitCompletion": 0.006,
+        "Blink.Style.UpdateTime": 1.001,
+        "UpdateLayoutTree": 0.999,
+        "Document::updateActiveStyle": 0.001,
+        "Document::updateStyle": 0.994,
+        "Document::recalcStyle": 0.025,
+        "Document::rebuildLayoutTree": 0.872,
+        "Blink.Layout.UpdateTime": 0.683,
+        "LocalFrameView::layout": 0.677,
+        "Layout": 0.676,
+        "LocalFrameView::performLayout": 0.59,
+        "LocalFrameView::performPostLayoutTasks": 0.002,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "Paint": 0.888,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "PaintArtifactCompositor::Update": 1.157,
+        "ScrollTree::SetScrollOffset": 0.001,
+        "LayerTreeHost::DoUpdateLayers": 0.009,
+        "UpdateLayer": 0.004,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.004,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462933",
+          "taskUnionMs": 1.119
+        },
+        {
+          "thread": "81131:44462932",
+          "taskUnionMs": 0.983
+        },
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 0.922
+        },
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 0.801
+        }
+      ],
+      "cpuCoveredMs": 22.912,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.498
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.271
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 16.881,
+          "inclusiveMs": 16.881
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 4.604,
+          "inclusiveMs": 4.604
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.998,
+          "inclusiveMs": 0.998
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.429,
+          "inclusiveMs": 0.429
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 22.912
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.427
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.429
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.429
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.429
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 5.479,
+          "mainBusyMs": 0.223,
+          "renderMs": 0.069,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.007,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 17.422,
+          "mainBusyMs": 4.491,
+          "renderMs": 0.007,
+          "styleMs": 0.999,
+          "layoutMs": 0.676,
+          "prepaintMs": 0.467,
+          "paintMs": 0.888,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-3000-materials-labels-1",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "windowMs": 24.215,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 8.733,
+      "perName": {
+        "RunTask": 8.733,
+        "ThreadControllerImpl::RunTask": 8.677,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.018,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.014,
+        "ProxyMain::BeginMainFrame": 8.653,
+        "LayerTreeHost::ApplyCompositorChanges": 0.004,
+        "WidgetBase::WillBeginMainFrame": 0.005,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.258,
+        "Blink.Animate.UpdateTime": 0.251,
+        "PageAnimator::serviceScriptedAnimations": 0.247,
+        "AnimationTimeline::serviceAnimations": 0.001,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.227,
+        "FireAnimationFrame": 0.224,
+        "AsyncTask Run": 0.219,
+        "v8.callFunction": 0.206,
+        "FunctionCall": 0.105,
+        "WebFrameWidgetImpl::UpdateLifecycle": 8.27,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.013,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 3.353,
+        "LocalFrameView::UpdateStyleAndLayout": 3.313,
+        "RootScrollerController::PerformRootScrollerSelection": 0.008,
+        "PrePaint": 1.265,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.689,
+        "Blink.CompositingInputs.UpdateTime": 0.662,
+        "LayoutView::commitPendingSelection": 0.009,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.536,
+        "Blink.PrePaint.UpdateTime": 0.519,
+        "LocalFrameView::NotifyResizeObservers": 0.011,
+        "LocalFrameView::RunPaintLifecyclePhase": 3.664,
+        "Blink.Paint.UpdateTime": 1.944,
+        "CullRectUpdate": 0.015,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.65,
+        "Blink.CompositingCommit.UpdateTime": 1.64,
+        "Commit": 0.091,
+        "LocalFrameView::RunAccessibilitySteps": 0.002,
+        "Blink.Accessibility.UpdateTime": 0.002,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.004,
+        "Blink.IntersectionObservation.UpdateTime": 0.001,
+        "MainFrameAborted": 0.012,
+        "LayerTreeHost::WaitForCommitCompletion": 0.005,
+        "Blink.Style.UpdateTime": 1.518,
+        "UpdateLayoutTree": 1.515,
+        "Document::updateActiveStyle": 0.001,
+        "Document::updateStyle": 1.507,
+        "Document::recalcStyle": 0.028,
+        "Document::rebuildLayoutTree": 1.339,
+        "Blink.Layout.UpdateTime": 1.766,
+        "LocalFrameView::layout": 1.757,
+        "Layout": 1.755,
+        "LocalFrameView::performLayout": 1.615,
+        "InlineNode::FindSvgTextChunks": 0.175,
+        "InlineNode::ShapeTextIncludingFirstLine": 0.071,
+        "SvgTextLayoutAlgorithm::Layout": 0.099,
+        "LocalFrameView::performPostLayoutTasks": 0.003,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "Paint": 1.895,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.006,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.008,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "Layerize": 1.637,
+        "PaintArtifactCompositor::Update": 1.635,
+        "ScrollTree::SetScrollOffset": 0.003,
+        "LayerTreeHost::DoUpdateLayers": 0.024,
+        "UpdateLayer": 0.018,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.006,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 1.381
+        },
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 1.322
+        }
+      ],
+      "cpuCoveredMs": 24.215,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.766
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.309
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 14.099,
+          "inclusiveMs": 14.099
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 9.173,
+          "inclusiveMs": 9.173
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.715,
+          "inclusiveMs": 0.715
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.228,
+          "inclusiveMs": 0.228
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 24.215
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.943
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.228
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.228
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.228
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 8.677,
+          "mainBusyMs": 0.295,
+          "renderMs": 0.096,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.009,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 15.525,
+          "mainBusyMs": 8.425,
+          "renderMs": 0.009,
+          "styleMs": 1.515,
+          "layoutMs": 1.755,
+          "prepaintMs": 1.256,
+          "paintMs": 1.895,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-3000-materials-labels-2",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "windowMs": 33.423,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 8.833,
+      "perName": {
+        "RunTask": 8.833,
+        "ThreadControllerImpl::RunTask": 8.755,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.026,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.017,
+        "ProxyMain::BeginMainFrame": 8.724,
+        "LayerTreeHost::ApplyCompositorChanges": 0.003,
+        "WidgetBase::WillBeginMainFrame": 0.004,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.261,
+        "Blink.Animate.UpdateTime": 0.254,
+        "PageAnimator::serviceScriptedAnimations": 0.247,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.229,
+        "FireAnimationFrame": 0.226,
+        "AsyncTask Run": 0.221,
+        "v8.callFunction": 0.205,
+        "FunctionCall": 0.106,
+        "WebFrameWidgetImpl::UpdateLifecycle": 8.33,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.014,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.008,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 3.423,
+        "LocalFrameView::UpdateStyleAndLayout": 3.376,
+        "RootScrollerController::PerformRootScrollerSelection": 0.01,
+        "PrePaint": 1.272,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.69,
+        "Blink.CompositingInputs.UpdateTime": 0.665,
+        "LayoutView::commitPendingSelection": 0.012,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.547,
+        "Blink.PrePaint.UpdateTime": 0.534,
+        "LocalFrameView::NotifyResizeObservers": 0.014,
+        "LocalFrameView::RunPaintLifecyclePhase": 3.639,
+        "Blink.Paint.UpdateTime": 1.963,
+        "CullRectUpdate": 0.027,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.591,
+        "Blink.CompositingCommit.UpdateTime": 1.579,
+        "Layerize": 1.578,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.012,
+        "Commit": 0.092,
+        "LocalFrameView::RunAccessibilitySteps": 0.003,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.004,
+        "Blink.IntersectionObservation.UpdateTime": 0.002,
+        "MainFrameAborted": 0.013,
+        "LayerTreeHost::WaitForCommitCompletion": 0.009,
+        "Blink.Style.UpdateTime": 1.581,
+        "UpdateLayoutTree": 1.578,
+        "Document::updateStyle": 1.569,
+        "Document::recalcStyle": 0.034,
+        "Document::rebuildLayoutTree": 1.385,
+        "Blink.Layout.UpdateTime": 1.77,
+        "LocalFrameView::layout": 1.759,
+        "Layout": 1.757,
+        "LocalFrameView::performLayout": 1.615,
+        "InlineNode::FindSvgTextChunks": 0.181,
+        "InlineNode::ShapeTextIncludingFirstLine": 0.082,
+        "SvgTextLayoutAlgorithm::Layout": 0.108,
+        "LocalFrameView::performPostLayoutTasks": 0.003,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "Paint": 1.903,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "PaintArtifactCompositor::Update": 1.576,
+        "ScrollTree::SetScrollOffset": 0.004,
+        "LayerTreeHost::DoUpdateLayers": 0.025,
+        "UpdateLayer": 0.019,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.005,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 2.806
+        }
+      ],
+      "cpuCoveredMs": 33.423,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.821
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.348
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 23.351,
+          "inclusiveMs": 23.351
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 8.318,
+          "inclusiveMs": 8.318
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 1.337,
+          "inclusiveMs": 1.337
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.417,
+          "inclusiveMs": 0.417
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 33.423
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.754
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.417
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.417
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.417
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 16.866,
+          "mainBusyMs": 0.302,
+          "renderMs": 0.097,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.008,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 16.546,
+          "mainBusyMs": 8.52,
+          "renderMs": 0.009,
+          "styleMs": 1.578,
+          "layoutMs": 1.757,
+          "prepaintMs": 1.264,
+          "paintMs": 1.903,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-3000-control-2",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 2,
+      "windowMs": 26.049,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 5.214,
+      "perName": {
+        "RunTask": 5.214,
+        "ThreadControllerImpl::RunTask": 5.17,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.016,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.014,
+        "ProxyMain::BeginMainFrame": 5.147,
+        "LayerTreeHost::ApplyCompositorChanges": 0.003,
+        "WidgetBase::WillBeginMainFrame": 0.004,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.289,
+        "Blink.Animate.UpdateTime": 0.282,
+        "PageAnimator::serviceScriptedAnimations": 0.276,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.26,
+        "FireAnimationFrame": 0.257,
+        "AsyncTask Run": 0.251,
+        "v8.callFunction": 0.24,
+        "FunctionCall": 0.15,
+        "WebFrameWidgetImpl::UpdateLifecycle": 4.756,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.001,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.002,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 1.803,
+        "LocalFrameView::UpdateStyleAndLayout": 1.794,
+        "RootScrollerController::PerformRootScrollerSelection": 0.002,
+        "PrePaint": 0.539,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.077,
+        "Blink.CompositingInputs.UpdateTime": 0.075,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.458,
+        "Blink.PrePaint.UpdateTime": 0.456,
+        "LocalFrameView::NotifyResizeObservers": 0.004,
+        "LocalFrameView::RunPaintLifecyclePhase": 2.329,
+        "Blink.Paint.UpdateTime": 0.992,
+        "CullRectUpdate": 0.008,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.274,
+        "Blink.CompositingCommit.UpdateTime": 1.271,
+        "Layerize": 1.27,
+        "Commit": 0.071,
+        "LocalFrameView::RunAccessibilitySteps": 0.002,
+        "Blink.Accessibility.UpdateTime": 0.001,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.003,
+        "Blink.IntersectionObservation.UpdateTime": 0.002,
+        "MainFrameAborted": 0.012,
+        "LayerTreeHost::WaitForCommitCompletion": 0.008,
+        "AnimationTimeline::serviceAnimations": 0.001,
+        "Blink.Style.UpdateTime": 1.044,
+        "UpdateLayoutTree": 1.042,
+        "Document::updateActiveStyle": 0.001,
+        "Document::updateStyle": 1.035,
+        "Document::recalcStyle": 0.028,
+        "Document::rebuildLayoutTree": 0.904,
+        "Blink.Layout.UpdateTime": 0.738,
+        "LocalFrameView::layout": 0.732,
+        "Layout": 0.73,
+        "LocalFrameView::performLayout": 0.631,
+        "LocalFrameView::performPostLayoutTasks": 0.004,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "LayoutView::commitPendingSelection": 0.001,
+        "Paint": 0.932,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "PaintArtifactCompositor::Update": 1.267,
+        "ScrollTree::SetScrollOffset": 0.002,
+        "LayerTreeHost::DoUpdateLayers": 0.01,
+        "UpdateLayer": 0.005,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.004,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 1.137
+        },
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 0.969
+        },
+        {
+          "thread": "81131:44462932",
+          "taskUnionMs": 0.901
+        },
+        {
+          "thread": "81131:44462933",
+          "taskUnionMs": 0.799
+        }
+      ],
+      "cpuCoveredMs": 26.049,
+      "negativeCpuDeltas": 3,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.595
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.327
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 19.302,
+          "inclusiveMs": 19.302
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 5.383,
+          "inclusiveMs": 5.383
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 1.215,
+          "inclusiveMs": 1.215
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.149,
+          "inclusiveMs": 0.149
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 26.049
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.364
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.215
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.215
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.215
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 7.952,
+          "mainBusyMs": 0.282,
+          "renderMs": 0.105,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.007,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 18.086,
+          "mainBusyMs": 4.921,
+          "renderMs": 0.045,
+          "styleMs": 1.042,
+          "layoutMs": 0.73,
+          "prepaintMs": 0.532,
+          "paintMs": 0.932,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-5000-materials-labels-0",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "windowMs": 37.245,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 12.295,
+      "perName": {
+        "RunTask": 12.295,
+        "ThreadControllerImpl::RunTask": 12.259,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.013,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.016,
+        "ProxyMain::BeginMainFrame": 12.239,
+        "LayerTreeHost::ApplyCompositorChanges": 0.002,
+        "WidgetBase::WillBeginMainFrame": 0.003,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.208,
+        "Blink.Animate.UpdateTime": 0.202,
+        "PageAnimator::serviceScriptedAnimations": 0.198,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.181,
+        "FireAnimationFrame": 0.179,
+        "AsyncTask Run": 0.175,
+        "v8.callFunction": 0.165,
+        "FunctionCall": 0.08,
+        "AnimationHost::TickAnimations": 0.001,
+        "WebFrameWidgetImpl::UpdateLifecycle": 11.918,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.022,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 4.619,
+        "LocalFrameView::UpdateStyleAndLayout": 4.562,
+        "RootScrollerController::PerformRootScrollerSelection": 0.011,
+        "PrePaint": 1.862,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.994,
+        "Blink.CompositingInputs.UpdateTime": 0.95,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.813,
+        "Blink.PrePaint.UpdateTime": 0.793,
+        "LocalFrameView::NotifyResizeObservers": 0.02,
+        "LocalFrameView::RunPaintLifecyclePhase": 5.471,
+        "Blink.Paint.UpdateTime": 2.77,
+        "CullRectUpdate": 0.025,
+        "LocalFrameView::pushPaintArtifactToCompositor": 2.592,
+        "Blink.CompositingCommit.UpdateTime": 2.577,
+        "Layerize": 2.576,
+        "Commit": 0.086,
+        "LocalFrameView::RunAccessibilitySteps": 0.002,
+        "Blink.Accessibility.UpdateTime": 0.002,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.004,
+        "MainFrameAborted": 0.012,
+        "LayerTreeHost::WaitForCommitCompletion": 0.009,
+        "AnimationTimeline::serviceAnimations": 0.001,
+        "Blink.Style.UpdateTime": 2.01,
+        "UpdateLayoutTree": 2.007,
+        "Document::updateActiveStyle": 0.001,
+        "Document::updateStyle": 2,
+        "Document::recalcStyle": 0.03,
+        "Document::rebuildLayoutTree": 1.793,
+        "Blink.Layout.UpdateTime": 2.515,
+        "LocalFrameView::layout": 2.508,
+        "Layout": 2.506,
+        "LocalFrameView::performLayout": 2.325,
+        "InlineNode::FindSvgTextChunks": 0.25,
+        "InlineNode::ShapeTextIncludingFirstLine": 0.107,
+        "SvgTextLayoutAlgorithm::Layout": 0.168,
+        "LocalFrameView::performPostLayoutTasks": 0.004,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "Paint": 2.711,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.011,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.019,
+        "LayoutView::commitPendingSelection": 0.014,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "PaintArtifactCompositor::Update": 2.574,
+        "ScrollTree::SetScrollOffset": 0.001,
+        "LayerTreeHost::DoUpdateLayers": 0.023,
+        "UpdateLayer": 0.017,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.006,
+        "Blink.IntersectionObservation.UpdateTime": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 3.258
+        }
+      ],
+      "cpuCoveredMs": 37.245,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 4.576
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.056
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 23.59,
+          "inclusiveMs": 23.59
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 12.131,
+          "inclusiveMs": 12.131
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 1.09,
+          "inclusiveMs": 1.09
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.434,
+          "inclusiveMs": 0.434
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 37.245
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.524
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.434
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.434
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.434
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 17.443,
+          "mainBusyMs": 0.242,
+          "renderMs": 0.071,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.007,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 19.792,
+          "mainBusyMs": 12.043,
+          "renderMs": 0.009,
+          "styleMs": 2.007,
+          "layoutMs": 2.506,
+          "prepaintMs": 1.855,
+          "paintMs": 2.711,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-5000-control-0",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 0,
+      "windowMs": 24.507,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 7.233,
+      "perName": {
+        "RunTask": 7.233,
+        "ThreadControllerImpl::RunTask": 7.195,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.015,
+        "AsyncTask Scheduled": 0.001,
+        "LocalFrameView::ScheduleAnimation": 0.008,
+        "ProxyMain::BeginMainFrame": 7.176,
+        "LayerTreeHost::ApplyCompositorChanges": 0.001,
+        "WidgetBase::WillBeginMainFrame": 0.003,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.176,
+        "Blink.Animate.UpdateTime": 0.172,
+        "PageAnimator::serviceScriptedAnimations": 0.167,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.156,
+        "FireAnimationFrame": 0.153,
+        "AsyncTask Run": 0.15,
+        "v8.callFunction": 0.142,
+        "FunctionCall": 0.073,
+        "WebFrameWidgetImpl::UpdateLifecycle": 6.913,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.001,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 2.603,
+        "LocalFrameView::UpdateStyleAndLayout": 2.596,
+        "RootScrollerController::PerformRootScrollerSelection": 0.001,
+        "PrePaint": 0.755,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.098,
+        "Blink.CompositingInputs.UpdateTime": 0.097,
+        "LayoutView::commitPendingSelection": 0.001,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.653,
+        "Blink.PrePaint.UpdateTime": 0.653,
+        "LocalFrameView::NotifyResizeObservers": 0.004,
+        "LocalFrameView::RunPaintLifecyclePhase": 3.428,
+        "Blink.Paint.UpdateTime": 1.422,
+        "CullRectUpdate": 0.007,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.93,
+        "Blink.CompositingCommit.UpdateTime": 1.929,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.001,
+        "Commit": 0.068,
+        "LocalFrameView::RunAccessibilitySteps": 0.002,
+        "Blink.Accessibility.UpdateTime": 0.002,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.004,
+        "Blink.IntersectionObservation.UpdateTime": 0.002,
+        "MainFrameAborted": 0.012,
+        "LayerTreeHost::WaitForCommitCompletion": 0.006,
+        "Blink.Style.UpdateTime": 1.529,
+        "UpdateLayoutTree": 1.527,
+        "Document::updateStyle": 1.521,
+        "Document::recalcStyle": 0.021,
+        "Document::rebuildLayoutTree": 1.363,
+        "Blink.Layout.UpdateTime": 1.057,
+        "LocalFrameView::layout": 1.051,
+        "Layout": 1.05,
+        "LocalFrameView::performLayout": 0.907,
+        "LocalFrameView::performPostLayoutTasks": 0.004,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "Paint": 1.374,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "Layerize": 1.927,
+        "PaintArtifactCompositor::Update": 1.924,
+        "ScrollTree::SetScrollOffset": 0.001,
+        "LayerTreeHost::DoUpdateLayers": 0.01,
+        "UpdateLayer": 0.004,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.004,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 1.212
+        },
+        {
+          "thread": "81131:44462932",
+          "taskUnionMs": 1.022
+        },
+        {
+          "thread": "81131:44462933",
+          "taskUnionMs": 1.152
+        },
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 0.797
+        }
+      ],
+      "cpuCoveredMs": 24.507,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.62
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.28
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 16.44,
+          "inclusiveMs": 16.44
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 7.639,
+          "inclusiveMs": 7.639
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.274,
+          "inclusiveMs": 0.274
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.154,
+          "inclusiveMs": 0.154
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 24.507
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.428
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.154
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.154
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.154
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 8.335,
+          "mainBusyMs": 0.208,
+          "renderMs": 0.064,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.008,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 16.161,
+          "mainBusyMs": 7.014,
+          "renderMs": 0.009,
+          "styleMs": 1.527,
+          "layoutMs": 1.05,
+          "prepaintMs": 0.747,
+          "paintMs": 1.374,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-5000-control-1",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 1,
+      "windowMs": 32.344,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 10.234,
+      "perName": {
+        "RunTask": 10.234,
+        "ThreadControllerImpl::RunTask": 10.177,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.02,
+        "LocalFrameView::ScheduleAnimation": 0.015,
+        "ProxyMain::BeginMainFrame": 10.155,
+        "LayerTreeHost::ApplyCompositorChanges": 0.003,
+        "WidgetBase::WillBeginMainFrame": 0.004,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.271,
+        "Blink.Animate.UpdateTime": 0.263,
+        "PageAnimator::serviceScriptedAnimations": 0.258,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.238,
+        "FireAnimationFrame": 0.235,
+        "AsyncTask Run": 0.229,
+        "v8.callFunction": 0.213,
+        "FunctionCall": 0.113,
+        "AnimationHost::TickAnimations": 0.001,
+        "WebFrameWidgetImpl::UpdateLifecycle": 9.764,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.001,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 3.784,
+        "LocalFrameView::UpdateStyleAndLayout": 3.773,
+        "RootScrollerController::PerformRootScrollerSelection": 0.002,
+        "PrePaint": 0.978,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.153,
+        "Blink.CompositingInputs.UpdateTime": 0.152,
+        "LayoutView::commitPendingSelection": 0.002,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.82,
+        "Blink.PrePaint.UpdateTime": 0.819,
+        "LocalFrameView::NotifyResizeObservers": 0.007,
+        "LocalFrameView::RunPaintLifecyclePhase": 4.86,
+        "Blink.Paint.UpdateTime": 2.229,
+        "CullRectUpdate": 0.008,
+        "LocalFrameView::pushPaintArtifactToCompositor": 2.534,
+        "Blink.CompositingCommit.UpdateTime": 2.534,
+        "Commit": 0.086,
+        "LocalFrameView::RunAccessibilitySteps": 0.003,
+        "Blink.Accessibility.UpdateTime": 0.002,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.005,
+        "Blink.IntersectionObservation.UpdateTime": 0.003,
+        "MainFrameAborted": 0.011,
+        "LayerTreeHost::WaitForCommitCompletion": 0.006,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.001,
+        "Blink.Style.UpdateTime": 2.269,
+        "UpdateLayoutTree": 2.266,
+        "Document::updateActiveStyle": 0.001,
+        "Document::updateStyle": 2.255,
+        "Document::recalcStyle": 0.034,
+        "Document::rebuildLayoutTree": 1.974,
+        "Blink.Layout.UpdateTime": 1.495,
+        "LocalFrameView::layout": 1.486,
+        "Layout": 1.483,
+        "LocalFrameView::performLayout": 1.215,
+        "LocalFrameView::performPostLayoutTasks": 0.003,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.002,
+        "Paint": 2.168,
+        "PaintController::commitNewDisplayItems": 0.003,
+        "Layerize": 2.531,
+        "PaintArtifactCompositor::Update": 2.528,
+        "ScrollTree::SetScrollOffset": 0.003,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.002,
+        "LayerTreeHost::DoUpdateLayers": 0.013,
+        "UpdateLayer": 0.005,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.002,
+        "ProxyMain::BeginMainFrame::commit": 0.006,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462933",
+          "taskUnionMs": 1.478
+        },
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 1.342
+        },
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 1.149
+        },
+        {
+          "thread": "81131:44462932",
+          "taskUnionMs": 1.076
+        }
+      ],
+      "cpuCoveredMs": 32.344,
+      "negativeCpuDeltas": 1,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.763
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.324
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 21.614,
+          "inclusiveMs": 21.614
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 9.069,
+          "inclusiveMs": 9.069
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 1.381,
+          "inclusiveMs": 1.381
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.28,
+          "inclusiveMs": 0.28
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 32.344
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.661
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.28
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.28
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.28
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 14.241,
+          "mainBusyMs": 0.312,
+          "renderMs": 0.104,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.008,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 18.09,
+          "mainBusyMs": 9.909,
+          "renderMs": 0.009,
+          "styleMs": 2.266,
+          "layoutMs": 1.483,
+          "prepaintMs": 0.97,
+          "paintMs": 2.168,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-5000-materials-labels-1",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "windowMs": 23.103,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 15.115,
+      "perName": {
+        "RunTask": 15.115,
+        "ThreadControllerImpl::RunTask": 15.073,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.017,
+        "LocalFrameView::ScheduleAnimation": 0.012,
+        "ProxyMain::BeginMainFrame": 15.052,
+        "LayerTreeHost::ApplyCompositorChanges": 0.002,
+        "WidgetBase::WillBeginMainFrame": 0.002,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.194,
+        "Blink.Animate.UpdateTime": 0.188,
+        "PageAnimator::serviceScriptedAnimations": 0.183,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.169,
+        "FireAnimationFrame": 0.166,
+        "AsyncTask Run": 0.163,
+        "v8.callFunction": 0.152,
+        "FunctionCall": 0.077,
+        "AnimationHost::TickAnimations": 0.001,
+        "WebFrameWidgetImpl::UpdateLifecycle": 13.973,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.021,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.02,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 4.993,
+        "LocalFrameView::UpdateStyleAndLayout": 4.913,
+        "RootScrollerController::PerformRootScrollerSelection": 0.02,
+        "PrePaint": 1.993,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 1.016,
+        "Blink.CompositingInputs.UpdateTime": 0.971,
+        "LayoutView::commitPendingSelection": 0.015,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.933,
+        "Blink.PrePaint.UpdateTime": 0.903,
+        "LocalFrameView::NotifyResizeObservers": 0.022,
+        "LocalFrameView::RunPaintLifecyclePhase": 7.027,
+        "Blink.Paint.UpdateTime": 3.883,
+        "CullRectUpdate": 0.019,
+        "LocalFrameView::pushPaintArtifactToCompositor": 3.057,
+        "Blink.CompositingCommit.UpdateTime": 3.04,
+        "Layerize": 3.04,
+        "Commit": 0.861,
+        "LocalFrameView::RunAccessibilitySteps": 0.003,
+        "Blink.Accessibility.UpdateTime": 0.002,
+        "OverlayInterstitialAdDetector::MaybeFireDetection": 0.754,
+        "HitTest": 0.749,
+        "StickyAdDetector::MaybeFireDetection": 0.007,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.003,
+        "Blink.IntersectionObservation.UpdateTime": 0.002,
+        "MainFrameAborted": 0.015,
+        "LayerTreeHost::WaitForCommitCompletion": 0.008,
+        "Blink.Style.UpdateTime": 2.176,
+        "UpdateLayoutTree": 2.174,
+        "Document::updateStyle": 2.168,
+        "Document::recalcStyle": 0.022,
+        "Document::rebuildLayoutTree": 1.961,
+        "Blink.Layout.UpdateTime": 2.708,
+        "LocalFrameView::layout": 2.702,
+        "Layout": 2.7,
+        "LocalFrameView::performLayout": 2.499,
+        "InlineNode::FindSvgTextChunks": 0.25,
+        "InlineNode::ShapeTextIncludingFirstLine": 0.11,
+        "SvgTextLayoutAlgorithm::Layout": 0.145,
+        "LocalFrameView::performPostLayoutTasks": 0.002,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "Paint": 3.831,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.022,
+        "PaintController::commitNewDisplayItems": 0.003,
+        "PaintArtifactCompositor::Update": 3.036,
+        "ScrollTree::SetScrollOffset": 0.005,
+        "LayerTreeHost::DoUpdateLayers": 0.03,
+        "UpdateLayer": 0.025,
+        "RecordingSource::FinishDisplayItemListUpdate": 0.001,
+        "ProxyMain::BeginMainFrame::commit": 0.005
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 3.1
+        }
+      ],
+      "cpuCoveredMs": 23.103,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.538
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.052
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 16.119,
+          "inclusiveMs": 16.119
+        },
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 5.589,
+          "inclusiveMs": 5.589
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.969,
+          "inclusiveMs": 0.969
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.426,
+          "inclusiveMs": 0.426
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 23.103
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.395
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.426
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.426
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.426
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 5.516,
+          "mainBusyMs": 1.002,
+          "renderMs": 0.069,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.007,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 17.576,
+          "mainBusyMs": 14.102,
+          "renderMs": 0.008,
+          "styleMs": 2.174,
+          "layoutMs": 2.7,
+          "prepaintMs": 1.986,
+          "paintMs": 3.831,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-5000-materials-labels-2",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "windowMs": 19.586,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 13.54,
+      "perName": {
+        "RunTask": 13.54,
+        "ThreadControllerImpl::RunTask": 13.49,
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.019,
+        "LocalFrameView::ScheduleAnimation": 0.012,
+        "ProxyMain::BeginMainFrame": 13.471,
+        "LayerTreeHost::ApplyCompositorChanges": 0.002,
+        "WidgetBase::WillBeginMainFrame": 0.002,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.21,
+        "Blink.Animate.UpdateTime": 0.207,
+        "PageAnimator::serviceScriptedAnimations": 0.203,
+        "AnimationTimeline::serviceAnimations": 0.001,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.191,
+        "FireAnimationFrame": 0.189,
+        "AsyncTask Run": 0.185,
+        "v8.callFunction": 0.176,
+        "FunctionCall": 0.097,
+        "WebFrameWidgetImpl::UpdateLifecycle": 13.138,
+        "LocalFrameView::WillStartLifecycleUpdate": 0.023,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 5.205,
+        "LocalFrameView::UpdateStyleAndLayout": 5.141,
+        "RootScrollerController::PerformRootScrollerSelection": 0.02,
+        "PrePaint": 1.982,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.991,
+        "Blink.CompositingInputs.UpdateTime": 0.947,
+        "LayoutView::commitPendingSelection": 0.015,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.942,
+        "Blink.PrePaint.UpdateTime": 0.913,
+        "LocalFrameView::NotifyResizeObservers": 0.018,
+        "LocalFrameView::RunPaintLifecyclePhase": 5.982,
+        "Blink.Paint.UpdateTime": 3.145,
+        "CullRectUpdate": 0.021,
+        "LocalFrameView::pushPaintArtifactToCompositor": 2.711,
+        "Blink.CompositingCommit.UpdateTime": 2.697,
+        "Layerize": 2.696,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.014,
+        "Commit": 0.103,
+        "LocalFrameView::RunAccessibilitySteps": 0.002,
+        "Blink.Accessibility.UpdateTime": 0.001,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.003,
+        "MainFrameAborted": 0.012,
+        "LayerTreeHost::WaitForCommitCompletion": 0.007,
+        "Blink.Style.UpdateTime": 2.28,
+        "UpdateLayoutTree": 2.278,
+        "Document::updateStyle": 2.272,
+        "Document::recalcStyle": 0.033,
+        "Document::rebuildLayoutTree": 2.036,
+        "Blink.Layout.UpdateTime": 2.828,
+        "LocalFrameView::layout": 2.819,
+        "Layout": 2.816,
+        "LocalFrameView::performLayout": 2.628,
+        "InlineNode::FindSvgTextChunks": 0.279,
+        "InlineNode::ShapeTextIncludingFirstLine": 0.111,
+        "SvgTextLayoutAlgorithm::Layout": 0.165,
+        "LocalFrameView::performPostLayoutTasks": 0.006,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.004,
+        "Paint": 3.105,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.009,
+        "PaintController::commitNewDisplayItems": 0.002,
+        "PaintArtifactCompositor::Update": 2.694,
+        "ScrollTree::SetScrollOffset": 0.003,
+        "LayerTreeHost::DoUpdateLayers": 0.023,
+        "UpdateLayer": 0.017,
+        "ProxyMain::BeginMainFrame::commit": 0.006,
+        "Blink.IntersectionObservation.UpdateTime": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 3.436
+        }
+      ],
+      "cpuCoveredMs": 19.586,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.919
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.043
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 12.91,
+          "inclusiveMs": 12.91
+        },
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 4.916,
+          "inclusiveMs": 4.916
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 1.375,
+          "inclusiveMs": 1.375
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.385,
+          "inclusiveMs": 0.385
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 19.586
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.76
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.385
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.385
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 0.385
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 2.055,
+          "mainBusyMs": 0.261,
+          "renderMs": 0.089,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.009,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 17.519,
+          "mainBusyMs": 13.267,
+          "renderMs": 0.008,
+          "styleMs": 2.278,
+          "layoutMs": 2.816,
+          "prepaintMs": 1.973,
+          "paintMs": 3.105,
+          "gcMs": 0
+        }
+      ]
+    },
+    {
+      "id": "trace-5000-control-2",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 2,
+      "windowMs": 21.298,
+      "mainThread": {
+        "pid": 81131,
+        "tid": 44462911
+      },
+      "mainBusyUnionMs": 7.405,
+      "perName": {
+        "BlinkScheduler_PerformMicrotaskCheckpoint": 0.014,
+        "RunTask": 7.405,
+        "ThreadControllerImpl::RunTask": 7.365,
+        "LocalFrameView::ScheduleAnimation": 0.011,
+        "ProxyMain::BeginMainFrame": 7.341,
+        "LayerTreeHost::ApplyCompositorChanges": 0.002,
+        "WidgetBase::WillBeginMainFrame": 0.003,
+        "WebFrameWidgetImpl::BeginMainFrame": 0.195,
+        "Blink.Animate.UpdateTime": 0.19,
+        "PageAnimator::serviceScriptedAnimations": 0.186,
+        "FrameRequestCallbackCollection::ExecuteFrameCallbacks": 0.172,
+        "FireAnimationFrame": 0.17,
+        "AsyncTask Run": 0.167,
+        "v8.callFunction": 0.157,
+        "FunctionCall": 0.08,
+        "AnimationHost::TickAnimations": 0.001,
+        "WebFrameWidgetImpl::UpdateLifecycle": 7.053,
+        "LocalFrameView::UpdateLifecyclePhases - start of lifecycle tasks": 0.001,
+        "LocalFrameView::RunStyleAndLayoutLifecyclePhases": 2.698,
+        "LocalFrameView::UpdateStyleAndLayout": 2.69,
+        "PrePaint": 0.762,
+        "LocalFrameView::RunCompositingInputsLifecyclePhase": 0.099,
+        "Blink.CompositingInputs.UpdateTime": 0.096,
+        "LayoutView::commitPendingSelection": 0.002,
+        "LocalFrameView::RunPrePaintLifecyclePhase": 0.66,
+        "Blink.PrePaint.UpdateTime": 0.66,
+        "LocalFrameView::NotifyResizeObservers": 0.003,
+        "LocalFrameView::RunPaintLifecyclePhase": 3.468,
+        "Blink.Paint.UpdateTime": 1.442,
+        "LocalFrameView::pushPaintArtifactToCompositor": 1.945,
+        "Blink.CompositingCommit.UpdateTime": 1.944,
+        "Layerize": 1.942,
+        "LocalFrameView::DidFinishLifecycleUpdate": 0.002,
+        "Commit": 0.071,
+        "LocalFrameView::RunAccessibilitySteps": 0.004,
+        "Blink.Accessibility.UpdateTime": 0.001,
+        "LocalFrameView::UpdateViewportIntersectionsForSubtree": 0.004,
+        "Blink.IntersectionObservation.UpdateTime": 0.002,
+        "MainFrameAborted": 0.012,
+        "LayerTreeHost::WaitForCommitCompletion": 0.006,
+        "Blink.Style.UpdateTime": 1.632,
+        "UpdateLayoutTree": 1.629,
+        "Document::updateActiveStyle": 0.001,
+        "Document::updateStyle": 1.617,
+        "Document::recalcStyle": 0.029,
+        "Document::rebuildLayoutTree": 1.466,
+        "Blink.Layout.UpdateTime": 1.05,
+        "LocalFrameView::layout": 1.043,
+        "Layout": 1.04,
+        "LocalFrameView::performLayout": 0.894,
+        "LocalFrameView::performPostLayoutTasks": 0.003,
+        "ResourceLoadPriorityOptimizer::UpdateImagePrioritiesAndSpeculativeDecodes": 0.001,
+        "CullRectUpdate": 0.007,
+        "Paint": 1.384,
+        "PaintController::commitNewDisplayItems": 0.003,
+        "PaintArtifactCompositor::Update": 1.939,
+        "ScrollTree::SetScrollOffset": 0.002,
+        "LayerTreeHost::DoUpdateLayers": 0.009,
+        "UpdateLayer": 0.005,
+        "ProxyMain::BeginMainFrame::commit": 0.003,
+        "WidgetBase::DidCommitAndDrawCompositorFrame": 0.001
+      },
+      "rasterThreads": [
+        {
+          "thread": "81131:44462932",
+          "taskUnionMs": 1.291
+        },
+        {
+          "thread": "81131:44462921",
+          "taskUnionMs": 1.111
+        },
+        {
+          "thread": "81131:44462924",
+          "taskUnionMs": 0.927
+        },
+        {
+          "thread": "81131:44462933",
+          "taskUnionMs": 0.853
+        }
+      ],
+      "cpuCoveredMs": 21.298,
+      "negativeCpuDeltas": 2,
+      "cpuSamplingNote": "Absolute sample timestamps sorted, forward sample intervals clipped to markers; statistical self/inclusive estimates, not native browser phase attribution.",
+      "scriptStyleLayoutUnionMs": 0,
+      "otherThreads": [
+        {
+          "name": "Compositor",
+          "pid": 81131,
+          "tid": 44462928,
+          "busyUnionMs": 0.784
+        },
+        {
+          "name": "VizCompositorThread",
+          "pid": 80858,
+          "tid": 44461258,
+          "busyUnionMs": 0.278
+        }
+      ],
+      "frames": [
+        {
+          "functionName": "(idle)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 11.71,
+          "inclusiveMs": 11.71
+        },
+        {
+          "functionName": "(program)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 7.631,
+          "inclusiveMs": 7.631
+        },
+        {
+          "functionName": "dispatchEvent",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 1.137,
+          "inclusiveMs": 1.137
+        },
+        {
+          "functionName": "mark",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0.82,
+          "inclusiveMs": 0.82
+        },
+        {
+          "functionName": "(root)",
+          "scriptId": "0",
+          "url": "",
+          "lineNumber": -1,
+          "columnNumber": -1,
+          "selfMs": 0,
+          "inclusiveMs": 21.298
+        },
+        {
+          "functionName": "run",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 1388,
+          "columnNumber": 11,
+          "original": {
+            "source": "../../../examples/prototype-bench.zoom.ts",
+            "line": 164,
+            "column": 11
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.957
+        },
+        {
+          "functionName": "selectFloor",
+          "scriptId": "4",
+          "url": "http://127.0.0.1:65509/assets/prototype-frICToZW.js",
+          "lineNumber": 502,
+          "columnNumber": 20,
+          "original": {
+            "source": "../../../examples/prototype-bench.check.ts",
+            "line": 25,
+            "column": 17
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.137
+        },
+        {
+          "functionName": "set visible",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2760,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 73,
+            "column": 7
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.137
+        },
+        {
+          "functionName": "#changed",
+          "scriptId": "5",
+          "url": "http://127.0.0.1:65509/assets/map-element-V1Eh0YZ9.js",
+          "lineNumber": 2772,
+          "columnNumber": 12,
+          "original": {
+            "source": "../../../src/objects/map-layer.ts",
+            "line": 89,
+            "column": 3
+          },
+          "selfMs": 0,
+          "inclusiveMs": 1.137
+        }
+      ],
+      "steps": [
+        {
+          "step": 0,
+          "intervalMs": 4.861,
+          "mainBusyMs": 0.238,
+          "renderMs": 0.072,
+          "styleMs": 0,
+          "layoutMs": 0,
+          "prepaintMs": 0.007,
+          "paintMs": 0,
+          "gcMs": 0
+        },
+        {
+          "step": 1,
+          "intervalMs": 16.424,
+          "mainBusyMs": 7.154,
+          "renderMs": 0.008,
+          "styleMs": 1.629,
+          "layoutMs": 1.04,
+          "prepaintMs": 0.755,
+          "paintMs": 1.384,
+          "gcMs": 0
+        }
+      ]
+    }
+  ],
+  "counters": [
+    {
+      "id": "instrument-3000-materials-labels-0",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1325,
+        "visible_image": 152,
+        "visible_text": 434,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2505,
+        "hidden_image": 336,
+        "hidden_text": 935
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-3000-control-0",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 0,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1477,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2841,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-3000-control-1",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 1,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1477,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2841,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-3000-materials-labels-1",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1325,
+        "visible_image": 152,
+        "visible_text": 434,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2505,
+        "hidden_image": 336,
+        "hidden_text": 935
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-3000-materials-labels-2",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1325,
+        "visible_image": 152,
+        "visible_text": 434,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2505,
+        "hidden_image": 336,
+        "hidden_text": 935
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-3000-control-2",
+      "roots": 3000,
+      "profile": "control",
+      "repeat": 2,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1477,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2841,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 3000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-5000-materials-labels-0",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 0,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2224,
+        "visible_image": 255,
+        "visible_text": 716,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4216,
+        "hidden_image": 567,
+        "hidden_text": 1549
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-5000-control-0",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 0,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2479,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4783,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-5000-control-1",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 1,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2479,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4783,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-5000-materials-labels-1",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 1,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2224,
+        "visible_image": 255,
+        "visible_text": 716,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4216,
+        "hidden_image": 567,
+        "hidden_text": 1549
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-5000-materials-labels-2",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "repeat": 2,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2224,
+        "visible_image": 255,
+        "visible_text": 716,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4216,
+        "hidden_image": 567,
+        "hidden_text": 1549
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      }
+    },
+    {
+      "id": "instrument-5000-control-2",
+      "roots": 5000,
+      "profile": "control",
+      "repeat": 2,
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2479,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4783,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "validation": {
+        "camera": {
+          "center": {
+            "x": 600,
+            "y": 400
+          },
+          "zoom": 1.2000000000000002
+        },
+        "cameraRestored": true,
+        "markupRestored": false,
+        "firstShowCurrent": true,
+        "nodesAdded": 0,
+        "nodesRemoved": 0,
+        "roots": 5000,
+        "valid": true
+      }
+    }
+  ]
+}
