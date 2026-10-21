@@ -1,0 +1,53 @@
+{
+  "status": "pass",
+  "completedAt": "2026-10-20T14:03:11.801828+00:00",
+  "method": "Append a valid JS comment to one source after build; invoke the actual runner with --smoke; require rejection by verify(capture:before), exact changed path, no measurement/capture started; restore original bytes in finally. No synthetic replacement verifier.",
+  "buildInputCount": 88,
+  "buildFileHashes": {
+    "assets/baseline-Cm62oZNR.js": "4abe264a0b74358523dcedc996f5a5493d891fbc786ab206e1b9f0dea4d4ca4b",
+    "assets/baseline-Cm62oZNR.js.map": "b66710ed386b16b07fb807967a0db47beff5ad15a1c6b85ba37fa2accc526d70",
+    "assets/comparison-DvTUgzRd.css": "652db25ba73a950c59e63c6fd4c974fc6920a9f2f95ff5bbb7ad4a017ce78743",
+    "assets/comparison-LruwXTU5.js": "ae121ce227427d6bccf31479a32f3a306c75b8aea3b96a5a3c4509423d87d63c",
+    "assets/comparison-LruwXTU5.js.map": "a90cf9f4b6064351e2276e92c5098c8a356f9ee71f8ac9964051603c2280bea7",
+    "assets/Factory-ground-floor-CwOITdba.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b",
+    "assets/map-element-V1Eh0YZ9.js": "32567ab6e0a12b4d35756ec41d580d6af69b44e49fcef49b225c615c59318418",
+    "assets/map-element-V1Eh0YZ9.js.map": "9d6d4204f328b1066033e678c0c25fbd22ced64c1741bf69738b62001afb2388",
+    "assets/prototype-YVtzhqdu.js": "1a2d4bee0033361a00efe4a24df21ead4abe09f19116d69a3523296b59838ed8",
+    "assets/prototype-YVtzhqdu.js.map": "758a19f2f66c69c33f094557023de55ce40880e2963bd6bf0675f4912a15234f",
+    "assets/stress.check-DRZD5ex-.js": "06b399f28923566f13b4c48006b10de479be68b91742437e9aacc232e5ebb7c2",
+    "assets/stress.check-DRZD5ex-.js.map": "e3aaf8315d3ca53c5b66fb8d8a9f71872a3c4e2aa056800082bf2ee67bfb4d67",
+    "examples/comparison.html": "05612dad1a26ae64552703d9cf7610f05e8f44550a14a7f8e3c6b028e4c19ace",
+    "examples/prototype-bench.html": "d86b29b3afff1d3c265f559fa0b04c566cab54d6b7bb77110a8e78e55e259053",
+    "examples/stress.html": "012048a02934ebc417d865fe051c09396468574df6852bbeb3e57c5252eff1c7"
+  },
+  "tests": [
+    {
+      "file": "examples/prototype-zoom.run.mjs",
+      "expectedBuildSha256": "67f4a2ba28f96cd83935e1153f9e8e52119cfcd4c451b50eed72a42e6462f73f",
+      "mutatedSha256": "62ad625631735edfd7afeadccd14d4e1603847cb4e7bc886198afac76a35723e",
+      "exitCode": 1,
+      "detectedAt": "capture:before",
+      "changed": ["examples/prototype-zoom.run.mjs"],
+      "runsStarted": 0,
+      "capturesStarted": 0,
+      "evidenceDirectory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-DgwCn3",
+      "rawManifestSha256": "b6f0608a894856f68b99cf567d113404d54984db1ef63a7845da3572d9a15a70",
+      "result": "pass"
+    },
+    {
+      "file": "examples/prototype-zoom.analyze.mjs",
+      "expectedBuildSha256": "23ec8cac729e978981911cfdea392349b1ad70e668e9637d15906649a91717e2",
+      "mutatedSha256": "f9362fc9c3fd5a48397b41c2374a7250dd6adc19c7b5dc680ada3e4b5bb1b8a8",
+      "exitCode": 1,
+      "detectedAt": "capture:before",
+      "changed": ["examples/prototype-zoom.analyze.mjs"],
+      "runsStarted": 0,
+      "capturesStarted": 0,
+      "evidenceDirectory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-OBzynx",
+      "rawManifestSha256": "c8bbb5535b3b6f62808edbcb91e6660b3bc7dd8820d85f1ce34bc458376c28a1",
+      "result": "pass"
+    }
+  ],
+  "originalFilesRestored": true,
+  "notes": "These expected failed runs are integrity probes, excluded from smoke and final measurements. New final build and capture follow all probes."
+}

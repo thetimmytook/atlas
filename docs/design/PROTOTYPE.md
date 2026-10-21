@@ -14,7 +14,9 @@ are merged in PR #44; the updated platform plan is merged in PR #45 (`59fe8ff`).
 Visual labels cover all current object kinds. The first bounded automated engine
 slice is recorded in the [cross-browser report](../validation/CROSS_BROWSER_2026_10_20.md).
 Physical devices, installed desktop browsers, full scenario cards and keyboard/focus
-contracts remain open; focused zoom profiling is separate. Older review-stage sections below retain dated implementation/validation history.
+contracts remain open. The separate [focused zoom profile](../performance/ZOOM_PROFILE_2026_10_20.md)
+records the representative scripted-camera follow-up, with no engine change or
+numerical acceptance gate. Older review-stage sections below retain dated implementation/validation history.
 
 Current label decisions and open questions are recorded in
 [Properties and labels](PROPERTIES_AND_LABELS.md#label-content-and-appearance--accepted-separation-2026-10-16).

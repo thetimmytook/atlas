@@ -13,6 +13,7 @@ import {
   surface,
 } from './prototype-bench.check.js';
 import { instrument } from './prototype-bench.instrument.js';
+import { motion, MOTION_FRAMES } from './prototype-bench.motion.js';
 import {
   backgroundMetadata,
   backgroundSvg,
@@ -30,6 +31,7 @@ import {
   visualChecks,
   visualMutation,
 } from './prototype-bench.visual.js';
+import { zoomSession } from './prototype-bench.zoom.js';
 
 import type { ObjectClickDetail } from '#interaction/object-click-event.js';
 import type { Profile } from './prototype-bench.scene.js';
@@ -67,7 +69,6 @@ const SCENARIOS = [
   'native-label-miss',
   ...MUTATIONS,
 ] as const;
-const MOTION_FRAMES = 24;
 const PICKS = 40;
 type Phase = 'timing' | 'instrument';
 interface Row {
@@ -334,53 +335,6 @@ async function observeOperation(
       // Time after synchronous return; includes scheduling and MutationObserver delivery.
       emit('post_sync_svg_delivery_ms', 'ms', lastDelivery - syncEnd);
     }
-  } finally {
-    observer.disconnect();
-  }
-}
-
-async function motion(map: MapElement, scenario: string, emit: Emit): Promise<void> {
-  const center = map.camera.center;
-  const zoom = map.camera.zoom;
-  let previous = await frame();
-  let operationStart = 0;
-  let syncEnd = 0;
-  let currentIndex = -1;
-  const observer = new MutationObserver(() => {
-    if (currentIndex < 0) {
-      return;
-    }
-
-    const delivery = performance.now();
-    emit('svg_last_delivery_from_start_ms', 'ms', delivery - operationStart, currentIndex);
-    emit('post_sync_svg_delivery_ms', 'ms', delivery - syncEnd, currentIndex);
-  });
-  observer.observe(surface(map), { attributes: true, childList: true, subtree: true });
-
-  try {
-    for (let index = 0; index < MOTION_FRAMES; index += 1) {
-      const time = await frame();
-      emit('raf_interval_ms', 'ms', time - previous, index);
-      const angle = ((index + 1) / MOTION_FRAMES) * Math.PI * 2;
-      const start = performance.now();
-      operationStart = start;
-      currentIndex = index;
-
-      if (scenario === 'pan') {
-        map.camera.center = new Point2(
-          center.x + Math.sin(angle) * 60,
-          center.y + (1 - Math.cos(angle)) * 40,
-        );
-      } else {
-        map.camera.zoom = zoom * 2 ** ((1 - Math.cos(angle)) / 2);
-      }
-
-      syncEnd = performance.now();
-      emit('camera_api_sync_ms', 'ms', syncEnd - start, index);
-      previous = time;
-    }
-
-    await settle();
   } finally {
     observer.disconnect();
   }
@@ -746,6 +700,7 @@ function nativeAssert(id: string, layer: string): void {
 
 const api = {
   build: __PROTOTYPE_BENCH_BUILD__,
+  zoom: zoomSession({ attach, warmResources, valid: () => !invalidated && !document.hidden }),
   run,
   check,
   nativeSetup,
