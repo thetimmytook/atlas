@@ -5,10 +5,22 @@ browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #
 and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
 and single-consumer; they are not public core lifecycle or multiple viewport support.
 
-## Hidden-layer camera updates — candidate for review, 2026-10-21
+## Initial viewport investigation — unresolved, 2026-10-21
+
+The [dated investigation](../validation/WEBKIT_INITIAL_VIEWPORT_2026_10_21.md) retains
+the historical WebKit Factory stall and the bounded successful attempts separately.
+No runtime cause or readiness correction is confirmed. Successful repeats do not
+close the intermittent issue. Test additions cover initial nonzero/zero/hidden
+containers, SVG projection, native original-object identity, reconnect and resize
+recovery. Opt-in diagnostics distinguish lifecycle, ResizeObserver delivery,
+camera resize and requested/executed render frames without callback layout reads.
+Loading a genuinely zero-sized/hidden container remains valid and does not await
+a nonzero viewport. Runtime and the existing readiness wait are unchanged.
+
+## Hidden-layer camera updates — merged in PR #48, 2026-10-21
 
 The user requested a bounded experiment after the merged focused zoom profile.
-The candidate SVG renderer skips only camera-induced point-symbol scaling and
+The SVG renderer skips only camera-induced point-symbol scaling and
 label transform work for layers whose runtime `visible` is false. Geometry,
 appearance, text, typography and scene membership keep their existing update paths;
 spatial picking continues to use current source state before RAF and inside batch.
@@ -24,8 +36,8 @@ transform mutations when no scale changed. There is no new invalidation mechanis
 runtime switch or public contract.
 
 The [separate A/B report](../performance/HIDDEN_LAYER_ZOOM_2026_10_21.md) compares a
-fresh baseline with this candidate and a separate first-show scenario. Keeping the
-change awaits the user's review; no performance gate or platform acceptance follows.
+fresh baseline with this implementation and a separate first-show scenario. The user
+confirmed the merge, verified at `ca14d83`; no performance gate or platform acceptance follows.
 
 ## Polygon label attachment — implemented for review, 2026-10-19
 
