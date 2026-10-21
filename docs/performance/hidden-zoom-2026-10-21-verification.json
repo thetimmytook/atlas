@@ -1,0 +1,1103 @@
+{
+  "status": "pass",
+  "identities": {
+    "baseline/zoom": {
+      "directory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-THCc0C",
+      "start": "2026-10-21T06:57:48.352Z",
+      "end": "2026-10-21T07:00:18.086Z",
+      "runtime": "7f9b9af5647ad97db6c79d0194f8b380e21b6fa68aed52a4c81d926f63502285",
+      "harness": "af2a1447e5a9d41356f941474a0c379f739addefb01ec3c35995a4f06bbb6641",
+      "build": "76e674aab80cbea018278f253fa811c4741bfdb74a209f94379e2ad4bd5e9106",
+      "rawSha256": "4b195ee2dfde6b0f3bbfdeec4a8a2986b84fe94fcf1661ed5804502fb992cd58",
+      "environment": {
+        "platform": "darwin",
+        "arch": "arm64",
+        "release": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8112",
+        "cpu": "Apple M2",
+        "logicalCpus": 8,
+        "memoryGiB": 16,
+        "node": "v20.19.6",
+        "playwright": "1.63.0",
+        "headless": true,
+        "viewport": {
+          "width": 1100,
+          "height": 900
+        },
+        "deviceScaleFactor": 1,
+        "launch": "Playwright default headless Chromium; no custom flags",
+        "throttling": "No CPU/network throttling or forced GC",
+        "loadAverageStart": [8.39990234375, 16.36767578125, 13.68212890625],
+        "chromium": "153.0.8010.12",
+        "loadAverageEnd": [10.67724609375, 13.2939453125, 12.8037109375]
+      },
+      "inputCount": 88,
+      "checkpoints": 32,
+      "captures": 12,
+      "runs": 140
+    },
+    "baseline/first-show": {
+      "directory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-NjSu05",
+      "start": "2026-10-21T07:00:18.546Z",
+      "end": "2026-10-21T07:01:21.581Z",
+      "runtime": "7f9b9af5647ad97db6c79d0194f8b380e21b6fa68aed52a4c81d926f63502285",
+      "harness": "af2a1447e5a9d41356f941474a0c379f739addefb01ec3c35995a4f06bbb6641",
+      "build": "76e674aab80cbea018278f253fa811c4741bfdb74a209f94379e2ad4bd5e9106",
+      "rawSha256": "67b00403189a6b34927e848bc4a6ae375979124af0e1ca4535aa5ae2bc4ffd5c",
+      "environment": {
+        "platform": "darwin",
+        "arch": "arm64",
+        "release": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8112",
+        "cpu": "Apple M2",
+        "logicalCpus": 8,
+        "memoryGiB": 16,
+        "node": "v20.19.6",
+        "playwright": "1.63.0",
+        "headless": true,
+        "viewport": {
+          "width": 1100,
+          "height": 900
+        },
+        "deviceScaleFactor": 1,
+        "launch": "Playwright default headless Chromium; no custom flags",
+        "throttling": "No CPU/network throttling or forced GC",
+        "loadAverageStart": [10.67724609375, 13.2939453125, 12.8037109375],
+        "chromium": "153.0.8010.12",
+        "loadAverageEnd": [8.375, 12.32470703125, 12.484375]
+      },
+      "inputCount": 88,
+      "checkpoints": 32,
+      "captures": 12,
+      "runs": 140
+    },
+    "candidate/zoom": {
+      "directory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-E1OhyS",
+      "start": "2026-10-21T07:11:34.263Z",
+      "end": "2026-10-21T07:13:42.576Z",
+      "runtime": "db8e4ddd5bdbb9a8004a8e73f368e363226ed7e81dfeaca45143ec7931111f32",
+      "harness": "af2a1447e5a9d41356f941474a0c379f739addefb01ec3c35995a4f06bbb6641",
+      "build": "b395bb48e1478de9f2c77bc9bc7673aab53edb87e96419c0fe81bca7959a0e2a",
+      "rawSha256": "e15f94dfa7fa72647a47ef3aaf06119c432862ebbd8aa1b5de456c791f49691f",
+      "environment": {
+        "platform": "darwin",
+        "arch": "arm64",
+        "release": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8112",
+        "cpu": "Apple M2",
+        "logicalCpus": 8,
+        "memoryGiB": 16,
+        "node": "v20.19.6",
+        "playwright": "1.63.0",
+        "headless": true,
+        "viewport": {
+          "width": 1100,
+          "height": 900
+        },
+        "deviceScaleFactor": 1,
+        "launch": "Playwright default headless Chromium; no custom flags",
+        "throttling": "No CPU/network throttling or forced GC",
+        "loadAverageStart": [3.26513671875, 4.966796875, 8.146484375],
+        "chromium": "153.0.8010.12",
+        "loadAverageEnd": [2.9853515625, 4.2763671875, 7.43212890625]
+      },
+      "inputCount": 88,
+      "checkpoints": 32,
+      "captures": 12,
+      "runs": 140
+    },
+    "candidate/first-show": {
+      "directory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-Xc1WaA",
+      "start": "2026-10-21T07:13:42.849Z",
+      "end": "2026-10-21T07:14:42.472Z",
+      "runtime": "db8e4ddd5bdbb9a8004a8e73f368e363226ed7e81dfeaca45143ec7931111f32",
+      "harness": "af2a1447e5a9d41356f941474a0c379f739addefb01ec3c35995a4f06bbb6641",
+      "build": "b395bb48e1478de9f2c77bc9bc7673aab53edb87e96419c0fe81bca7959a0e2a",
+      "rawSha256": "979f3756e59a757b0c59851d76a7d2ad0b3b50fbdaace82fae5f413bd6adcc7d",
+      "environment": {
+        "platform": "darwin",
+        "arch": "arm64",
+        "release": "25.6.0",
+        "osVersion": "Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:43 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8112",
+        "cpu": "Apple M2",
+        "logicalCpus": 8,
+        "memoryGiB": 16,
+        "node": "v20.19.6",
+        "playwright": "1.63.0",
+        "headless": true,
+        "viewport": {
+          "width": 1100,
+          "height": 900
+        },
+        "deviceScaleFactor": 1,
+        "launch": "Playwright default headless Chromium; no custom flags",
+        "throttling": "No CPU/network throttling or forced GC",
+        "loadAverageStart": [2.9853515625, 4.2763671875, 7.43212890625],
+        "chromium": "153.0.8010.12",
+        "loadAverageEnd": [4.6083984375, 4.4365234375, 7.271484375]
+      },
+      "inputCount": 88,
+      "checkpoints": 32,
+      "captures": 12,
+      "runs": 140
+    }
+  },
+  "onlyChangedInputs": [
+    "src/renderers/svg/svg-renderer.ts",
+    "src/renderers/svg/svg-renderer.utils.ts"
+  ],
+  "historicalFilesPreserved": {
+    "docs/performance/BASELINE.md": "336d10f36c647c7609e4ce261b807798aa8c479753ac5b0c61dc5d08a48cdff7",
+    "docs/performance/INVALIDATION.md": "2655cff6d50ec82f3178b81fdaf66d74346c003769844f310f61b2fd5ba0102e",
+    "docs/performance/LEAFLET_COMPARISON.md": "7f6b3caaca766c2d9ab4210567bbaf656db7ba11d1e66fb386554aea9902ef40",
+    "docs/performance/PROTOTYPE_BASELINE.md": "caab454123b710278f855f9a90ffb3fb151902ccb7f49b401731878edc817e38",
+    "docs/performance/PROTOTYPE_COMPARISON.md": "f673401ca5d1c5b1cf739635819d37e8ebcde819e824a3e7d24bd543bb442cb0",
+    "docs/performance/PROTOTYPE_MATERIAL_LABELS_2026_10_20.md": "7c50ebe2c1d8e61a1179c48707e584a379487a64ae19a36fda7e240a7229685f",
+    "docs/performance/ZOOM_PROFILE_2026_10_20.md": "2b87eda3feac7d91378e0b77dcac5b7b1855676d4378a425f51b7c88a4b2b4c9",
+    "docs/performance/ZOOM_PROFILE_2026_10_20_INITIAL.md": "23629e24bc25571a3c4d3796109e5dcd43cf338de5c873290405331858ff32db",
+    "docs/performance/atlas-2026-10-06-all-runs.json": "743757ac1f792ca711aad8f16ff1bf62f0cd7353d0380e9129dcc958d765be2f",
+    "docs/performance/atlas-2026-10-06-instrument.csv": "88ea1c1e76c88fac28b58f2fe7f06a6f1dbd6a2f8c95d8f838f3f773fd2fa7a9",
+    "docs/performance/atlas-2026-10-06-runs.json": "83399bb54f5bbc81c764c7150572ad4b94994b3d2eca30151614d087dbccc11d",
+    "docs/performance/atlas-2026-10-06-summary.csv": "b24bf771d2df6addd5ac47f6bf526642eec74c5533ed422d738bd1fcb8f94074",
+    "docs/performance/atlas-2026-10-06-timing.csv": "dd5cbd826b39517e56dfaa48ab5e164211a7eabfecc185bc940ed1926f64b694",
+    "docs/performance/atlas-2026-10-07-invalidation-after-instrument-summary.csv": "fa497a52c9edd8c50ed251b088e4437e7c7cf7b8df1dec810917e424701fd7b9",
+    "docs/performance/atlas-2026-10-07-invalidation-after-instrument.csv": "ae0a903f821427eb2ac654425349a7840bc9e2faadc98e546d6c708f26989915",
+    "docs/performance/atlas-2026-10-07-invalidation-after-runs.json": "70c4f0d6acd81bbc122bda1fd35a23157984406ba488254054d057fa006a5051",
+    "docs/performance/atlas-2026-10-07-invalidation-after-summary.csv": "81cb40dda181b18bb314adac204dc2107ab2490ad6b89eb62c2520a175e36749",
+    "docs/performance/atlas-2026-10-07-invalidation-after-timing.csv": "d7eeeb3e5f3d28fecb4dd5faffaa03edced4a7ca21d9cdf79eec55636c377e98",
+    "docs/performance/atlas-2026-10-07-invalidation-before-instrument-summary.csv": "2982fe98997b3a84f15eab8571808174a6b4b6cd80ad564b4ee3768158d662c4",
+    "docs/performance/atlas-2026-10-07-invalidation-before-instrument.csv": "4e2abee6eec180208b316aec03df393c63804600367347c00aa926f32a28c0d2",
+    "docs/performance/atlas-2026-10-07-invalidation-before-runs.json": "0302da3dd80a14eb3b6daef14cf7c3471b2da97eef43504e5b88d31a419f718b",
+    "docs/performance/atlas-2026-10-07-invalidation-before-summary.csv": "ac83d7e1d2f855c06613ad840687f6b3cad3d6f67c6f53db8c944fb245140aa1",
+    "docs/performance/atlas-2026-10-07-invalidation-before-timing.csv": "ef212ff6de9895a6ebe05907cdf0e59270856244ead6e8ba952aacaec30606d6",
+    "docs/performance/atlas-2026-10-07-reattach-checks.json": "6b5a929384693eb2412adfc3e14366834a45c2fd3f5c1e7d4f20ca81dd2f879d",
+    "docs/performance/leaflet-2026-10-06-150104-summary.csv": "4c10fa908f5393f9a1dc7642bf03aacef815562055f6085e0499b6bc9886978b",
+    "docs/performance/leaflet-2026-10-06-150104-timing.csv": "07b261a59696714d3ba80d7cc42bb25b43f0cbf2b4c1ed386ff446e512583240",
+    "docs/performance/leaflet-2026-10-06-155113-instrument.csv": "8f4cfda96288f4b36ab6b3a6f6b67a48f384aa74134e629683867d6f455c8be3",
+    "docs/performance/leaflet-2026-10-06-build.json": "d309c2cf47e91d3b8a91009d4e714ae572c7c096def31b38d13ab08f292a81da",
+    "docs/performance/leaflet-2026-10-06-exclusion-check.json": "900b40c53c16e49c0f3d2aceceafd1d52f3085bd90b03e8303f32692b2674d1b",
+    "docs/performance/leaflet-2026-10-06-runs.json": "3b262c2930217805f901632f4bc67bcacd9619d2e2d9ed62826cfd1ea78a02ca",
+    "docs/performance/leaflet-canvas-2026-10-06-200649-build.json": "eb7fa5e7dcdf80df843b81e0c077bc9fce165560f2586faaf2bdbc7884cff43c",
+    "docs/performance/leaflet-canvas-2026-10-06-200649-functional.json": "727e5934122b6037c80cce99e3ebf0a9eb98b8c899846c47a333a6b5c28f92db",
+    "docs/performance/leaflet-canvas-2026-10-06-200649-preflight-rejection.json": "eda1483e983fc54a2edd95ec8a12915d83481a85628b1173a9c5bc6065bd8541",
+    "docs/performance/leaflet-canvas-2026-10-06-200649-selected-runs.json": "34e21157f93ba4087ec9eaadedb028bf94c243cf7f138b4cbf101f41f8494721",
+    "docs/performance/leaflet-canvas-2026-10-06-200649-selected-timing.csv": "a0a511b32d67b32156a1ed37d292e2b97460ac6ee8051c981d3ab3f21cf925f4",
+    "docs/performance/leaflet-canvas-2026-10-06-200649-verification.json": "9b8bedb905f4a6e0c286efae41105685cac62569720cf93644df9bfd885bdb66",
+    "docs/performance/leaflet-canvas-2026-10-07-integration-embedded.json": "530786b6fe6be80bac48262a0303d4dd30c4af909231f0c5ab6c8537d9c6b3f6",
+    "docs/performance/leaflet-canvas-2026-10-07-integration-headless.json": "a723f3186748d68009ee7c7627fc49098da5a8c696455232e5e9bc897be73799",
+    "docs/performance/leaflet-canvas-2026-10-07-integration-timing.csv": "3f17984f57fb01039edb74434ec24a6674b6100c4a986928534320f83552a74f",
+    "docs/performance/leaflet-canvas-2026-10-07-integration-verification.json": "94fcdf2f8656d066028967e370ad90e7feb9942c917147577a5f5af2b1935078",
+    "docs/performance/leaflet-canvas-2026-10-07-probes-before.json": "ca606724551bb397841ab1eea66077a60e5b7efd8a1d0e46b2bff17e6e5bd63a",
+    "docs/performance/leaflet-canvas-2026-10-07-probes-build.json": "486c04dfbbdf3513d7308391409b04e41cce601ceee003da5a27e0b3c69e322c",
+    "docs/performance/leaflet-canvas-2026-10-07-probes-embedded.json": "8b6abb26aaf2e4171a4dcee54e6c6f6c68af68494283a000fc92dd6bb1012d53",
+    "docs/performance/leaflet-canvas-2026-10-07-probes-headless-timing.csv": "cb98973e7dbfa6136fbb0e59dade3aca7b2229e605404fc382cef1f9ae70fe6b",
+    "docs/performance/leaflet-canvas-2026-10-07-probes-headless.json": "6fc76249565f2ce7ce44fcd173d9ed9acfceaf5ac857929fda07c5bb442fb72f",
+    "docs/performance/leaflet-canvas-2026-10-07-probes-verification.json": "76916410cead08ed57bb96790fb995c656b4b1912c1fbb6df5fe6fe7c2722610",
+    "docs/performance/prototype-2026-10-09-after-instrument-summary.csv": "3afddc12fb22ce4d012f6b36a4c58e99d24f9463ee983e4c62fafa404fc755f2",
+    "docs/performance/prototype-2026-10-09-after-instrument.csv": "2f7bb96da5c236da8072e69f855a03979dcdddbb2c617a36b9c52ef91d69e525",
+    "docs/performance/prototype-2026-10-09-after-manifest.json": "52a6f0cc42a4adc552eec268f998dd56d796316327b8fc5e46f0fc5d85ed62d2",
+    "docs/performance/prototype-2026-10-09-after-native-5000.json": "4db67e25f782e6ec9df95f9781f5753862b635fe12e2a91acfd5e2a0b05cba30",
+    "docs/performance/prototype-2026-10-09-after-timing-summary.csv": "83fc160588b8f780db9f6245070aa4e518768fa4b6c719ebfdafd2a68264e643",
+    "docs/performance/prototype-2026-10-09-after-timing.csv": "c455f7746e64d6c1df9d20791a76451bfdc55e2b47af47a17af59cef9d1d7f77",
+    "docs/performance/prototype-2026-10-09-before-instrument-summary.csv": "97cbaf99a0b2d9986e3756717b96f71bf9b91805db8be73ddf447f7ef82a2f0a",
+    "docs/performance/prototype-2026-10-09-before-instrument.csv": "8454a36fe9508b7fef0128995140899b3239cc877f4d9dc140042c7cebedfb1b",
+    "docs/performance/prototype-2026-10-09-before-manifest.json": "27409bae373f3229f11e6500602882f6caae1ef5236d3ebbe068a2154a6234df",
+    "docs/performance/prototype-2026-10-09-before-timing-summary.csv": "68d95a3d6c2d9c0294b03eddd55e9ddc69634e75006b84f8916843bd7c6d6ea9",
+    "docs/performance/prototype-2026-10-09-before-timing.csv": "312603e66685c7b895283167ade6bce76a2ad41792b57f8ae24b05acdc35b45c",
+    "docs/performance/prototype-2026-10-09-comparison-instrument.csv": "232c878acc326e692865a77ff1947abf993c78e6920b63a3303736e54d49e9be",
+    "docs/performance/prototype-2026-10-09-comparison-timing.csv": "5aa5e8f99af5fada5ddf19434067ee3a223ea343b9fb37e6f6bf2f40824f7565",
+    "docs/performance/prototype-2026-10-09-comparison-verification.json": "f2457e25e90fdd2ddfc38ad47c71813287e34e8339a366d923504f4fc76c84eb",
+    "docs/performance/prototype-2026-10-20-material-labels-instrument-summary.csv": "ef1cf06526ceea65e52e674a894805aa4ab0a7b672671b53aa0680fbce9df822",
+    "docs/performance/prototype-2026-10-20-material-labels-instrument.csv": "111a2ce25e1612a066f90d32acf6e5a50a60564861e4b73b6bdda8a1c845ec61",
+    "docs/performance/prototype-2026-10-20-material-labels-manifest.json": "619c84ed47f598f88acbc4c3911b932328b26b4f9fabafc33574632388f4d449",
+    "docs/performance/prototype-2026-10-20-material-labels-profile-delta.csv": "8d72d506282a9ba12d8047564fde05eb660bac145dc0aaed5deaff99a562ebc8",
+    "docs/performance/prototype-2026-10-20-material-labels-recompute.py": "65dc0fa30cbf8be547512b465182b403c2097425214ee43afbe6442e9f5c2df6",
+    "docs/performance/prototype-2026-10-20-material-labels-timing-summary.csv": "453dbc300bb966aafdcaa8921bded6847eaaf2edba5dd2aee5bc25e5ca6582dc",
+    "docs/performance/prototype-2026-10-20-material-labels-timing.csv": "f09f4af13419bd2d41b6b638d1681d72b621aad527d93289624564557c2a59af",
+    "docs/performance/prototype-2026-10-20-material-labels-verification.json": "921f70651178bea6385a691b420d3443244be2b9ef2f86cd83c2ed95acdd4520",
+    "docs/performance/zoom-2026-10-20-diagnostics.json": "aef731d0393ce77359137b792e21f002bbebd986acdb626fa750faa91f0ad568",
+    "docs/performance/zoom-2026-10-20-manifest.json": "b604be887d6366822cea7394a9f7a98b644630b55b93220bc536b0cba8b8bbf3",
+    "docs/performance/zoom-2026-10-20-r2-diagnostics.json": "df3fc711f82a66fb2080ab374f0011ca300964c0d4f9237544f1f85d9638d85f",
+    "docs/performance/zoom-2026-10-20-r2-integrity-tests.json": "7223484741de7d866c4d40f28fdbb7347ee3a80cbfd257146d5a3d0f47973787",
+    "docs/performance/zoom-2026-10-20-r2-manifest.json": "20a0892995f370d84c66b53d0e04a73f6c9ea56ea77ef75ec92ebad6d183aca1",
+    "docs/performance/zoom-2026-10-20-r2-timing-summary.csv": "aaf5ba0e6234e8de13862221e8331e90b82164dd1d8bb77c42e8e9dd4aab5172",
+    "docs/performance/zoom-2026-10-20-r2-timing.csv": "8940a286ff993026b8a074e7f863bb0b4b96dd7afadb8419a67ade6a23ccfc0a",
+    "docs/performance/zoom-2026-10-20-r2-verification.json": "e9f5e9f7333691862337f2eb8abd01ea1fa4ec409329a4a73851de008e093e4e",
+    "docs/performance/zoom-2026-10-20-timing-summary.csv": "77df652f5e823e37a32c443ef51cfd61e675bc3fe3439d224d8096c582505997",
+    "docs/performance/zoom-2026-10-20-timing.csv": "b1c4aa58378802e6b7fe91bffea4c6baa97c4eab135ea1a7fea8d8e41aaca559",
+    "docs/performance/zoom-2026-10-20-verification.json": "035dbbd81250004cf97797bbe25015fdb7e9d16ee8c91295e24b075dc4524dd4"
+  },
+  "counterCells": [
+    {
+      "scenario": "zoom",
+      "version": "baseline",
+      "roots": 3000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1477,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2841,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 103656,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 103632,
+        "svg_touched_owners": 4318,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 35448,
+        "visible_circle_transforms": 35448,
+        "hidden_attributes": 68184,
+        "hidden_circle_transforms": 68184
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "zoom",
+      "version": "candidate",
+      "roots": 3000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1477,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2841,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 35472,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 35448,
+        "svg_touched_owners": 1477,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 35448,
+        "visible_circle_transforms": 35448
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "zoom",
+      "version": "baseline",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1325,
+        "visible_image": 152,
+        "visible_text": 434,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2505,
+        "hidden_image": 336,
+        "hidden_text": 935
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 136512,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 91920,
+        "svg_text_attribute_writes": 32856,
+        "svg_touched_owners": 4777,
+        "svg_touched_text_owners": 907,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 45864,
+        "visible_circle_transforms": 31800,
+        "visible_image_transforms": 3648,
+        "hidden_attributes": 90624,
+        "hidden_circle_transforms": 60120,
+        "hidden_image_transforms": 8064,
+        "visible_text_transforms": 10416,
+        "hidden_text_transforms": 22440
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "zoom",
+      "version": "candidate",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1325,
+        "visible_image": 152,
+        "visible_text": 434,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2505,
+        "hidden_image": 336,
+        "hidden_text": 935
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 45888,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 31800,
+        "svg_text_attribute_writes": 10416,
+        "svg_touched_owners": 1772,
+        "svg_touched_text_owners": 433,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 45864,
+        "visible_circle_transforms": 31800,
+        "visible_image_transforms": 3648,
+        "visible_text_transforms": 10416
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "zoom",
+      "version": "baseline",
+      "roots": 5000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2479,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4783,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 174312,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 174288,
+        "svg_touched_owners": 7262,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 59496,
+        "visible_circle_transforms": 59496,
+        "hidden_attributes": 114792,
+        "hidden_circle_transforms": 114792
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "zoom",
+      "version": "candidate",
+      "roots": 5000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2479,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4783,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 59520,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 59496,
+        "svg_touched_owners": 2479,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 59496,
+        "visible_circle_transforms": 59496
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "zoom",
+      "version": "baseline",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2224,
+        "visible_image": 255,
+        "visible_text": 716,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4216,
+        "hidden_image": 567,
+        "hidden_text": 1549
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 228672,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 154560,
+        "svg_text_attribute_writes": 54360,
+        "svg_touched_owners": 8017,
+        "svg_touched_text_owners": 1507,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 76680,
+        "visible_circle_transforms": 53376,
+        "visible_image_transforms": 6120,
+        "hidden_attributes": 151968,
+        "hidden_circle_transforms": 101184,
+        "hidden_image_transforms": 13608,
+        "visible_text_transforms": 17184,
+        "hidden_text_transforms": 37176
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "zoom",
+      "version": "candidate",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2224,
+        "visible_image": 255,
+        "visible_text": 716,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4216,
+        "hidden_image": 567,
+        "hidden_text": 1549
+      },
+      "counters": {
+        "renderer_callbacks": 24,
+        "svg_attribute_writes": 76704,
+        "svg_viewbox_writes": 24,
+        "svg_symbol_scale_writes": 53376,
+        "svg_text_attribute_writes": 17184,
+        "svg_touched_owners": 2963,
+        "svg_touched_text_owners": 715,
+        "computed_style_reads": 48,
+        "surface_attributes": 24,
+        "visible_attributes": 76680,
+        "visible_circle_transforms": 53376,
+        "visible_image_transforms": 6120,
+        "visible_text_transforms": 17184
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "baseline",
+      "roots": 3000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1477,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2841,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "candidate",
+      "roots": 3000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1477,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2841,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 293,
+        "svg_symbol_scale_writes": 292,
+        "svg_touched_owners": 292,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1,
+        "hidden_attributes": 292,
+        "hidden_circle_transforms": 292
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "baseline",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1325,
+        "visible_image": 152,
+        "visible_text": 434,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2505,
+        "hidden_image": 336,
+        "hidden_text": 935
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "candidate",
+      "roots": 3000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 2659,
+        "visible_circle": 1325,
+        "visible_image": 152,
+        "visible_text": 434,
+        "hidden_layers": 8,
+        "hidden_appearances": 5376,
+        "hidden_circle": 2505,
+        "hidden_image": 336,
+        "hidden_text": 935
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 424,
+        "svg_text_attribute_writes": 131,
+        "svg_symbol_scale_writes": 239,
+        "svg_touched_owners": 373,
+        "svg_touched_text_owners": 131,
+        "computed_style_reads": 2,
+        "visible_attributes": 1,
+        "hidden_attributes": 423,
+        "hidden_text_transforms": 131,
+        "hidden_circle_transforms": 239,
+        "hidden_image_transforms": 53
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "baseline",
+      "roots": 5000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2479,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4783,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "candidate",
+      "roots": 5000,
+      "profile": "control",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2479,
+        "visible_image": 0,
+        "visible_text": 0,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4783,
+        "hidden_image": 0,
+        "hidden_text": 0
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 497,
+        "svg_symbol_scale_writes": 496,
+        "svg_touched_owners": 496,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1,
+        "hidden_attributes": 496,
+        "hidden_circle_transforms": 496
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "baseline",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2224,
+        "visible_image": 255,
+        "visible_text": 716,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4216,
+        "hidden_image": 567,
+        "hidden_text": 1549
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 1,
+        "svg_touched_owners": 0,
+        "svg_touched_text_owners": 0,
+        "computed_style_reads": 2,
+        "visible_attributes": 1
+      },
+      "identicalRepeats": 3
+    },
+    {
+      "scenario": "first-show",
+      "version": "candidate",
+      "roots": 5000,
+      "profile": "materials-labels",
+      "inventory": {
+        "visible_layers": 5,
+        "visible_appearances": 4433,
+        "visible_circle": 2224,
+        "visible_image": 255,
+        "visible_text": 716,
+        "hidden_layers": 8,
+        "hidden_appearances": 8978,
+        "hidden_circle": 4216,
+        "hidden_image": 567,
+        "hidden_text": 1549
+      },
+      "counters": {
+        "renderer_callbacks": 1,
+        "svg_attribute_writes": 711,
+        "svg_text_attribute_writes": 214,
+        "svg_symbol_scale_writes": 407,
+        "svg_touched_owners": 626,
+        "svg_touched_text_owners": 214,
+        "computed_style_reads": 2,
+        "visible_attributes": 1,
+        "hidden_attributes": 710,
+        "hidden_text_transforms": 214,
+        "hidden_circle_transforms": 407,
+        "hidden_image_transforms": 89
+      },
+      "identicalRepeats": 3
+    }
+  ],
+  "integrityTests": {
+    "baseline": {
+      "status": "pass",
+      "completedAt": "2026-10-21T06:57:06.798383+00:00",
+      "method": "Append a valid JS comment to one source after build; invoke the actual runner with --smoke; require rejection by verify(capture:before), exact changed path, no measurement/capture started; restore original bytes in finally. No synthetic replacement verifier.",
+      "buildInputCount": 88,
+      "buildFileHashes": {
+        "assets/baseline-Bjp7aQyh.js": "b203b7e356e492384939ee403f536d17834bc8aa54c54967014a2dc7737188de",
+        "assets/baseline-Bjp7aQyh.js.map": "c087e3489cf38415ffffb84f46f4c2c8ea38ddb15b459eaa7c72a389ab418a85",
+        "assets/comparison-DuclgG8U.js": "6f585e8537595beffbd2168dae369a181d1d1962812fe447723681a22c4b999f",
+        "assets/comparison-DuclgG8U.js.map": "0797e5607e8095841d71ab3492ed2274ebe5c831df2e208fe740a42e217446bc",
+        "assets/comparison-DvTUgzRd.css": "652db25ba73a950c59e63c6fd4c974fc6920a9f2f95ff5bbb7ad4a017ce78743",
+        "assets/Factory-ground-floor-CwOITdba.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b",
+        "assets/map-element-V1Eh0YZ9.js": "32567ab6e0a12b4d35756ec41d580d6af69b44e49fcef49b225c615c59318418",
+        "assets/map-element-V1Eh0YZ9.js.map": "9d6d4204f328b1066033e678c0c25fbd22ced64c1741bf69738b62001afb2388",
+        "assets/prototype-frICToZW.js": "adfa2c1fd41086e4c06306273765234326b1bb093e8ac72e3b489b64df350f31",
+        "assets/prototype-frICToZW.js.map": "54376027d34ac9aaeddd6b69f1baff90623aba068281170e263d9efeb4af6950",
+        "assets/stress.check-DRZD5ex-.js": "06b399f28923566f13b4c48006b10de479be68b91742437e9aacc232e5ebb7c2",
+        "assets/stress.check-DRZD5ex-.js.map": "e3aaf8315d3ca53c5b66fb8d8a9f71872a3c4e2aa056800082bf2ee67bfb4d67",
+        "examples/comparison.html": "2cfeedcbecf7a3fe6293ed5521ee7195504f2649e925c7e5b426372ca6740d9d",
+        "examples/prototype-bench.html": "d9a4a200bfe0621b0df97e04b4f82e3e2355b11a1ed856980e535ed3710b7ba4",
+        "examples/stress.html": "f482b0d6216c6c2c593bea279a329ee430ee09fa2160e38158d4ca30264fcfc3"
+      },
+      "tests": [
+        {
+          "file": "examples/prototype-zoom.run.mjs",
+          "expectedBuildSha256": "86b918fa44822dc49871a86a400a867e6ef1e6172d56aaac66c60caca6bc3977",
+          "mutatedSha256": "17220a86eba013663380ec981998bed3c987ea6a9fe0b71d273a8cc24564e9d2",
+          "exitCode": 1,
+          "detectedAt": "capture:before",
+          "changed": ["examples/prototype-zoom.run.mjs"],
+          "runsStarted": 0,
+          "capturesStarted": 0,
+          "evidenceDirectory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-UiKT4U",
+          "rawManifestSha256": "2246d54aeb1b6b986730d000595fdd7796d95f19a1ab2d350c263fd8e44ea36b",
+          "result": "pass"
+        },
+        {
+          "file": "examples/prototype-zoom.analyze.mjs",
+          "expectedBuildSha256": "9e961e527d33cc6bba25d7ac77426fbfc826137f0f1648b82ee16224507263cc",
+          "mutatedSha256": "4d929dd3de5ca6a09067091258ab9406d8627c66075656caec2cb92ca264cbf4",
+          "exitCode": 1,
+          "detectedAt": "capture:before",
+          "changed": ["examples/prototype-zoom.analyze.mjs"],
+          "runsStarted": 0,
+          "capturesStarted": 0,
+          "evidenceDirectory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-yz6Hen",
+          "rawManifestSha256": "b36caa27ee88ed2a285ca5b7a51ca4d53f208d7d0ceb7b4e22ea57662cbf2bf7",
+          "result": "pass"
+        }
+      ],
+      "originalFilesRestored": true,
+      "notes": "These expected failed runs are integrity probes, excluded from smoke and final measurements. New final build and capture follow all probes."
+    },
+    "candidate": {
+      "status": "pass",
+      "completedAt": "2026-10-21T07:09:58.041055+00:00",
+      "method": "Append a valid JS comment to one source after build; invoke the actual runner with --smoke; require rejection by verify(capture:before), exact changed path, no measurement/capture started; restore original bytes in finally. No synthetic replacement verifier.",
+      "buildInputCount": 88,
+      "buildFileHashes": {
+        "assets/baseline-BU9q_8pv.js": "ba3d240c1e403377032818774ec3423692153a7b2e5d30828eb106785fae6adf",
+        "assets/baseline-BU9q_8pv.js.map": "a7d77377450a091c2d99bd7b7263fdb3c24040281b50de81f3edd80293c47f34",
+        "assets/comparison-ClzUoHLV.js": "edf53003feddfacee4dd1b825bcfabdc3a79099591398456c60b3b7d40550550",
+        "assets/comparison-ClzUoHLV.js.map": "7873a26f76e3150d871eb50e8ff847cbb4e9d71d32177b2bc4097f1c09011593",
+        "assets/comparison-DvTUgzRd.css": "652db25ba73a950c59e63c6fd4c974fc6920a9f2f95ff5bbb7ad4a017ce78743",
+        "assets/Factory-ground-floor-CwOITdba.svg": "2f28a3450f1ac46cb2f56213d650ed3eca4b23a9d20e859d3721d62e89b2e96b",
+        "assets/map-element-B2FnGaB4.js": "3cac0d363b577a40084b948c093baddbab5ab23a89136b3646e84bf025b00880",
+        "assets/map-element-B2FnGaB4.js.map": "82ea8dfcd474047c1c7ae8c8d864d7f951d5aecbce6698ffb1d8b9934f8eee0f",
+        "assets/prototype-DJM5KpnF.js": "6bd81491e88a3289d866ae29d1f2471c530f7d5cb16321146a9694fafdac5141",
+        "assets/prototype-DJM5KpnF.js.map": "54bd42d6a7d3ac8211cb74d7542f567e9fa718033c902e3d478fbd3955cb3e44",
+        "assets/stress.check-D9vM7rn1.js": "044c86dfa64df47c10e5745e720ac29d8a4dca79ae7e068a894605d3a14932a3",
+        "assets/stress.check-D9vM7rn1.js.map": "7c9691f5e81312f8fa81e2459028330e5c090c412d3606e5e749fce57d0425f0",
+        "examples/comparison.html": "a3f5033cc778a5c08a82693e50e2da9a89b2567678fd67908fcebe24de7b6f9e",
+        "examples/prototype-bench.html": "8222120ba0a90f2d717708dd603b36970e7c1ee1bd2f6402a44c384d41931c64",
+        "examples/stress.html": "69e7618b5b34cb0bc2f2fd1fa6c6685814c9adffe819bcdae0d2190952a8e1dd"
+      },
+      "tests": [
+        {
+          "file": "examples/prototype-zoom.run.mjs",
+          "expectedBuildSha256": "86b918fa44822dc49871a86a400a867e6ef1e6172d56aaac66c60caca6bc3977",
+          "mutatedSha256": "17220a86eba013663380ec981998bed3c987ea6a9fe0b71d273a8cc24564e9d2",
+          "exitCode": 1,
+          "detectedAt": "capture:before",
+          "changed": ["examples/prototype-zoom.run.mjs"],
+          "runsStarted": 0,
+          "capturesStarted": 0,
+          "evidenceDirectory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-SDhlmw",
+          "rawManifestSha256": "e05ec90810e218d8dffbe6db12909f1a50a3c538064e6f62bcdcfc0f9733c382",
+          "result": "pass"
+        },
+        {
+          "file": "examples/prototype-zoom.analyze.mjs",
+          "expectedBuildSha256": "9e961e527d33cc6bba25d7ac77426fbfc826137f0f1648b82ee16224507263cc",
+          "mutatedSha256": "4d929dd3de5ca6a09067091258ab9406d8627c66075656caec2cb92ca264cbf4",
+          "exitCode": 1,
+          "detectedAt": "capture:before",
+          "changed": ["examples/prototype-zoom.analyze.mjs"],
+          "runsStarted": 0,
+          "capturesStarted": 0,
+          "evidenceDirectory": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-zoom-qsb5Zg",
+          "rawManifestSha256": "921fa6e30d050cb9fd3d93a6ab6a333f83938703943155cd46b09d6805b994f4",
+          "result": "pass"
+        }
+      ],
+      "originalFilesRestored": true,
+      "notes": "These expected failed runs are integrity probes, excluded from smoke and final measurements. New final build and capture follow all probes."
+    }
+  },
+  "catchupNegativeControl": {
+    "status": "pass",
+    "method": "Temporarily remove only show catch-up enqueueing; first-RAF regression must observe stale 24px circle instead of independently expected 12px at zoom 2. Restore exact bytes in finally.",
+    "exitCode": 1,
+    "originalSha256": "12b9e0208a2a055f2d63c49e437b6841d73f919c198c4d464c94ac87194ec902"
+  },
+  "offlineVerifier": {
+    "path": "/private/tmp/atlas-hidden-compare.py",
+    "sha256": "fbc20bef88347eff376902a192ce98036bb9c29947708e384a50a68296ff06f8"
+  },
+  "postReportInputsAndBuildMatch": true,
+  "checks": {
+    "check": {
+      "path": "/private/tmp/atlas-hidden-check-final.log",
+      "sha256": "559ccfdb208a37576522440cb5d732dcb2a5bf53b085fda442b04eab779fa779"
+    },
+    "node": {
+      "path": "/private/tmp/atlas-hidden-test-final.log",
+      "sha256": "6dc21709988e15eaa37685ecd4f7f921dff0ced644a4d9633dfdfa6ab6d0dba6"
+    },
+    "browser": {
+      "path": "/private/tmp/atlas-hidden-browser2.log",
+      "sha256": "5105cd960f1aa8b70c97b8bd89917685bd875ea270752dbcef27c7c5e6066699"
+    },
+    "directed": {
+      "path": "/private/tmp/atlas-hidden-targeted-final.log",
+      "sha256": "a58a004f0eb4a305b9d9b69c508200f39ea23313905c6f525a22c996ce8f678c"
+    },
+    "build": {
+      "path": "/private/tmp/atlas-hidden-build.log",
+      "sha256": "a532dad5352f6463b85a7b57688741a2977d5c34ccfe726a6d403c2591f6249b"
+    },
+    "e2e": {
+      "path": "/private/tmp/atlas-hidden-e2e.log",
+      "sha256": "ab018b1a16429b9af04518a7f21c33b6fc7d9a6c193c4e4db66b9d0727b23ed6"
+    },
+    "platform": {
+      "path": "/private/tmp/atlas-hidden-platform2.log",
+      "sha256": "f36229c486a90f8b48b088c8a84908aca3682fa95132358a33ad42e3f59a9e03"
+    }
+  },
+  "platformEvidence": {
+    "initial": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-platform-NY2Ppk",
+    "final": "/var/folders/cj/6xvtg19d5hzc85wsxr3bzc3m0000gn/T/atlas-platform-8JwXFM"
+  },
+  "functionalChecks": {
+    "baseline": {
+      "path": "/private/tmp/atlas-hidden-baseline-functional-manifest.json",
+      "sha256": "7894f56ed0c1eaa1c07d13e551be5dfbe675a1f94ee10ada2aa3a6714a11a24a",
+      "sceneSeed": 1347571540,
+      "background": {
+        "format": "image/svg+xml",
+        "intrinsic": {
+          "width": 1200,
+          "height": 800
+        },
+        "viewBox": "0 0 1200 800",
+        "mapSize": {
+          "width": 1200,
+          "height": 800
+        },
+        "utf8Bytes": 42640,
+        "elements": 1551,
+        "byTag": {
+          "svg": 1,
+          "rect": 389,
+          "g": 389,
+          "text": 388,
+          "path": 384
+        },
+        "roomsPerBuilding": 96,
+        "notes": "External SVG image: 384 room groups, each rect + door path + text; no filters or remote resources. Text uses browser sans-serif.",
+        "sha256": "ca3701551b18a5d9b17d798781f3bcb58d1762b672fa373df9972d3e8b80491b"
+      },
+      "cells": [
+        {
+          "roots": 3000,
+          "profile": "control",
+          "definitionSha256": "e252e0b77df8fa87d8cb0113f720659ec2137633add97279833d2773dc806393",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 0
+        },
+        {
+          "roots": 3000,
+          "profile": "materials-labels",
+          "definitionSha256": "11f9b818f927f8741392c79a24478bb515c816451f8d98f8f5bb1b7606503f47",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 5
+        },
+        {
+          "roots": 5000,
+          "profile": "control",
+          "definitionSha256": "9af8c29c385a8dea83b47a40309a19335956a0226b730553fb66cc547cbc0cb8",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 0
+        },
+        {
+          "roots": 5000,
+          "profile": "materials-labels",
+          "definitionSha256": "e1792eccdbed1a0b667b8989cf7abd2f89315f5ee3ccf986ee7e0de20e561aaa",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 5
+        }
+      ],
+      "nativeChecks": [
+        {
+          "roots": 3000,
+          "profile": "control",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        },
+        {
+          "roots": 3000,
+          "profile": "materials-labels",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        },
+        {
+          "roots": 5000,
+          "profile": "control",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        },
+        {
+          "roots": 5000,
+          "profile": "materials-labels",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        }
+      ]
+    },
+    "candidate": {
+      "path": "/private/tmp/atlas-hidden-candidate-functional-manifest.json",
+      "sha256": "7b0c570c172c13541828ddeb084d7f9b69fea7610a71b80320ae24dbde976108",
+      "sceneSeed": 1347571540,
+      "background": {
+        "format": "image/svg+xml",
+        "intrinsic": {
+          "width": 1200,
+          "height": 800
+        },
+        "viewBox": "0 0 1200 800",
+        "mapSize": {
+          "width": 1200,
+          "height": 800
+        },
+        "utf8Bytes": 42640,
+        "elements": 1551,
+        "byTag": {
+          "svg": 1,
+          "rect": 389,
+          "g": 389,
+          "text": 388,
+          "path": 384
+        },
+        "roomsPerBuilding": 96,
+        "notes": "External SVG image: 384 room groups, each rect + door path + text; no filters or remote resources. Text uses browser sans-serif.",
+        "sha256": "ca3701551b18a5d9b17d798781f3bcb58d1762b672fa373df9972d3e8b80491b"
+      },
+      "cells": [
+        {
+          "roots": 3000,
+          "profile": "control",
+          "definitionSha256": "e252e0b77df8fa87d8cb0113f720659ec2137633add97279833d2773dc806393",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 0
+        },
+        {
+          "roots": 3000,
+          "profile": "materials-labels",
+          "definitionSha256": "11f9b818f927f8741392c79a24478bb515c816451f8d98f8f5bb1b7606503f47",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 5
+        },
+        {
+          "roots": 5000,
+          "profile": "control",
+          "definitionSha256": "9af8c29c385a8dea83b47a40309a19335956a0226b730553fb66cc547cbc0cb8",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 0
+        },
+        {
+          "roots": 5000,
+          "profile": "materials-labels",
+          "definitionSha256": "e1792eccdbed1a0b667b8989cf7abd2f89315f5ee3ccf986ee7e0de20e561aaa",
+          "analyticGroupsPassed": 6,
+          "visualGroupsPassed": 5
+        }
+      ],
+      "nativeChecks": [
+        {
+          "roots": 3000,
+          "profile": "control",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        },
+        {
+          "roots": 3000,
+          "profile": "materials-labels",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        },
+        {
+          "roots": 5000,
+          "profile": "control",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        },
+        {
+          "roots": 5000,
+          "profile": "materials-labels",
+          "passed": [
+            "native geometry click original owner/layer",
+            "native label-only hit or control miss",
+            "native verified gutter miss",
+            "native click after vertex edit",
+            "native owned vertex/route context after floor switch"
+          ]
+        }
+      ]
+    }
+  }
+}

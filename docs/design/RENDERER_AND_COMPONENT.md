@@ -5,6 +5,28 @@ browser regressions (PR #24), invalidation (PR #27), layers/intersections (PRs #
 and polygons (PR #30) are merged. Internal renderer/scene interfaces remain provisional
 and single-consumer; they are not public core lifecycle or multiple viewport support.
 
+## Hidden-layer camera updates — candidate for review, 2026-10-21
+
+The user requested a bounded experiment after the merged focused zoom profile.
+The candidate SVG renderer skips only camera-induced point-symbol scaling and
+label transform work for layers whose runtime `visible` is false. Geometry,
+appearance, text, typography and scene membership keep their existing update paths;
+spatial picking continues to use current source state before RAF and inside batch.
+
+On a transition to visible, the renderer adds that layer's current appearances to
+the existing `unpainted` and label queues. The same render applies current symbol
+scale and resolves current label content, metrics and attachment, even if its
+renderer-wide scale is unchanged. These queues survive an unusable viewport.
+New hidden nodes still receive their initial scale; shape replacements and other
+hidden edits follow existing rules. Surviving nodes are retained. The shared
+scale helper writes only changed attributes, preserving hide/show without redundant
+transform mutations when no scale changed. There is no new invalidation mechanism,
+runtime switch or public contract.
+
+The [separate A/B report](../performance/HIDDEN_LAYER_ZOOM_2026_10_21.md) compares a
+fresh baseline with this candidate and a separate first-show scenario. Keeping the
+change awaits the user's review; no performance gate or platform acceptance follows.
+
 ## Polygon label attachment — implemented for review, 2026-10-19
 
 The path-label base is merged in PR #42 (`bd8b508`), confirmed by the user.
