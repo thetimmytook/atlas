@@ -45,14 +45,24 @@ direct/clipped changes, route fragment disappearance/recreation, polygon attachm
 and empty/recreated labels; removal/reattachment, shared objects and reconnect at
 different map scales; nested-batch immediate picking with owner/layer/route identity;
 and zero-viewport recovery. Surviving nodes, actual CSS-pixel sizes and analytic
-attachments are asserted. Label widths have an independent Canvas oracle with a
-0.1 CSS-pixel SVG/Canvas glyph-rounding tolerance.
+attachments are asserted. Label screen dimensions are compared with local SVG
+glyph bounds, which exclude camera transforms and must remain the same size in
+CSS pixels after camera compensation.
 
 Every first-show case leaves zoom different from the scale at hiding and queries
 output without another zoom. A negative control temporarily removed only show
 catch-up: the first-RAF test failed on a **24 px circle versus the independent
 12 px expectation** at zoom 2. Runtime bytes were restored exactly and all seven
 tests passed again. Internal queue state is not the correctness oracle.
+
+The initial label-width assertion compared SVG bounds with Canvas text advances
+using a 0.1 CSS-pixel tolerance. The first [Linux CI run for PR #48](https://github.com/thetimmytook/atlas/actions/runs/39570158749)
+passed 329 browser tests but failed the new-hidden-root case: the `New` label's
+SVG/Canvas width difference was 0.3671875 pixels. These APIs measure different text
+extents, so font-dependent differences need not fit that tolerance. The test now
+compares rendered width and height with unscaled local SVG bounds at the existing
+three-decimal precision. The runtime, benchmark harness and captured evidence are
+unchanged by this test-oracle correction.
 
 ## Method and identities
 

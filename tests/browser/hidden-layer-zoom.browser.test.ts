@@ -157,11 +157,11 @@ function expectLabel(
   expect(box.x).toBeCloseTo(anchor.x + 12, 3);
   expect(box.y).toBeCloseTo(anchor.y + 20, 3);
   expect(node.getAttribute('font-size')).toBe(String(size));
-  const context = document.createElement('canvas').getContext('2d')!;
-  context.font = `${node.getAttribute('font-weight')} ${size}px ${node.getAttribute('font-family')}`;
 
-  // SVG and Canvas round glyph advances differently; allow less than one tenth of a CSS pixel.
-  expect(Math.abs(box.width - context.measureText(node.textContent).width)).toBeLessThan(0.1);
+  // Local SVG glyph bounds exclude camera transforms; Canvas advance widths can differ by font.
+  const local = node.getBBox();
+  expect(box.width).toBeCloseTo(local.width, 3);
+  expect(box.height).toBeCloseTo(local.height, 3);
 }
 
 async function hiddenZoom(map: MapElement, id = 'a1'): Promise<void> {
