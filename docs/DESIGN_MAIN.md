@@ -111,12 +111,19 @@ The subsequent line/route step is merged in PR #42:
 [scope, architecture and checks](design/PROTOTYPE.md#line-and-route-labels--implemented-for-review-2026-10-19).
 The polygon visual step is merged in PR #43 and completes labels for all four current kinds: [scope and checks](design/PROTOTYPE.md#polygon-labels--implemented-for-review-2026-10-19).
 The [representative measurements](performance/PROTOTYPE_MATERIAL_LABELS_2026_10_20.md)
-are merged in PR #44; the platform-plan update is merged in PR #45. The separate
+are merged in PR #44; the platform-plan update is merged in PR #45. The platform
+slice is merged in PR #46 (`832b6bb`). The separate
 [2026-10-20 cross-browser report](validation/CROSS_BROWSER_2026_10_20.md) records the
 first bounded functional engine slice using production Factory/Buildings and public
 setup P. It preserves full-scenario, installed-browser, physical-device and
-keyboard/focus gaps. Focused zoom profiling remains separate; no numerical
-performance gate has been accepted.
+keyboard/focus gaps. The separate [focused zoom profile](performance/ZOOM_PROFILE_2026_10_20.md)
+records the unchanged 3000/5000-root scripted zoom workload, clean timing and
+separate browser/CPU traces and visibility counters. The corrected r2 capture verifies
+88 inputs after both script-mutation probes; the initial run retains its explicit
+input-coverage limitation. SVG style/layout is the main
+confirmed cost in enriched zoom traces; hidden camera updates are observed but their time contribution is
+not isolated. A bounded skip-hidden/catch-up experiment is proposed; no runtime
+optimization or numerical performance gate is accepted.
 The following rules are implemented; preparation alone did not implement the visuals.
 Font size and offset use strings with explicit `px` or `rem`, independently of
 map-camera zoom; font size is positive and offsets allow negative/zero values.

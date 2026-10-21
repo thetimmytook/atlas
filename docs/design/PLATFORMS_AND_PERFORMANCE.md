@@ -22,8 +22,18 @@ samples, physical mobile validation and the performance gate remain outstanding.
 The [materials/labels measurements](../performance/PROTOTYPE_MATERIAL_LABELS_2026_10_20.md)
 are merged in PR #44, and the updated platform plan in PR #45 (`59fe8ff`). The older
 [narrow recipe verification](../validation/PLATFORM_ACCEPTANCE_PLAN.md#narrow-recipe-verification--2026-10-20)
-retains its original Chromium-only scope. Focused zoom profiling is separate work;
-this functional run adds no benchmark or performance threshold.
+retains its original Chromium-only scope. The subsequent
+[focused zoom profile](../performance/ZOOM_PROFILE_2026_10_20.md) is separate
+performance evidence on the unchanged representative scene, with ordinary timing,
+browser/CPU traces and visibility counters in distinct runs. Its corrected r2 capture
+checks 88 inputs including runner/analyzer; post-build changes to each script were
+rejected before measurement. The initial run is retained with its input-coverage
+limitation. SVG style/layout is
+the main confirmed cost in enriched traces. Hidden layers receive about 66% of
+camera-dependent writes; their fraction of time is not established. The proposed
+renderer-only skip-hidden/catch-up A/B experiment is not implemented or accepted
+as a runtime contract. This functional run
+adds no benchmark or performance threshold.
 
 [Main navigation](../DESIGN_MAIN.md)
 

@@ -1,0 +1,589 @@
+{
+  "status": "pass",
+  "preservedFiles": {
+    "count": 141,
+    "historicalPerformanceCount": 66,
+    "changed": []
+  },
+  "sourceInputs": {
+    "count": 86,
+    "changed": []
+  },
+  "buildFiles": 15,
+  "all32IntegrityBoundariesPass": true,
+  "all140PostSequenceChecksPass": true,
+  "timing": {
+    "rows": 3840,
+    "metricGroups": 8,
+    "samplesPerGroup": 480,
+    "repeatsPerGroup": 20,
+    "stepsPerRepeat": 24,
+    "summariesIndependentlyRecomputed": true
+  },
+  "counterRuns": 12,
+  "counterReconciliation": "All three runs identical per cell; total attributes equal visible+hidden+surface; transforms equal inventory*24; zero geometry/node/text measurement counters.",
+  "traceChecks": [
+    {
+      "id": "trace-3000-materials-labels-0",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 39.924,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-3000-control-0",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 0.0,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-3000-control-1",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 31.561,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-3000-materials-labels-1",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 33.036,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-3000-materials-labels-2",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 45.492,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-3000-control-2",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 0.0,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-5000-materials-labels-0",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 0.0,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-5000-control-0",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 91.236,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-5000-control-1",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 0.0,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-5000-materials-labels-1",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 61.427,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-5000-materials-labels-2",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 30.024,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    },
+    {
+      "id": "trace-5000-control-2",
+      "styleLayoutOverlapMs": 0.0,
+      "scriptStyleLayoutOverlapMs": 0,
+      "wholeWindowGcUnionMs": 36.152,
+      "cpuWindowCovered": true,
+      "sourceMapsResolved": true
+    }
+  ],
+  "functionalResults": {
+    "results": [
+      {
+        "roots": 3000,
+        "profile": "control",
+        "resources": [],
+        "labelledObjects": {
+          "roots": 0,
+          "owned": 0
+        },
+        "visual": {
+          "passed": 0,
+          "applicable": false
+        },
+        "composition": {
+          "roots": 3000,
+          "points": 1193,
+          "lines": 601,
+          "routes": 603,
+          "flatPolygons": 301,
+          "extrudedPolygons": 302,
+          "ownedMapPoints": 5914,
+          "routeVertices": 4712,
+          "polygonContourVertices": 3612
+        },
+        "definitionSha256": "e252e0b77df8fa87d8cb0113f720659ec2137633add97279833d2773dc806393",
+        "allLayers": {
+          "text_nodes_viewport_intersecting": 0,
+          "icons_viewport_intersecting": 0,
+          "svg_element_nodes": 16085,
+          "shadow_element_nodes": 16087,
+          "shadow_all_nodes": 16091,
+          "appearances_all_layers": 8035,
+          "appearances_visible_layers": 8035,
+          "visible_point_symbols": 4318,
+          "text_nodes_all_layers": 0,
+          "text_nodes_visible_layers": 0,
+          "icons_all_layers": 0,
+          "icons_visible_layers": 0,
+          "visible_route_fragments": 1808,
+          "visible_polygon_paths": 906,
+          "layers": 13,
+          "visible_layers": 13
+        },
+        "initial": {
+          "text_nodes_viewport_intersecting": 0,
+          "icons_viewport_intersecting": 0,
+          "svg_element_nodes": 16085,
+          "shadow_element_nodes": 16087,
+          "shadow_all_nodes": 16091,
+          "appearances_all_layers": 8035,
+          "appearances_visible_layers": 2659,
+          "visible_point_symbols": 1477,
+          "text_nodes_all_layers": 0,
+          "text_nodes_visible_layers": 0,
+          "icons_all_layers": 0,
+          "icons_visible_layers": 0,
+          "visible_route_fragments": 604,
+          "visible_polygon_paths": 277,
+          "layers": 13,
+          "visible_layers": 5
+        },
+        "functional": {
+          "checks": [
+            "analytic xyz route/line clipping, rectangle area, direct priority, original picking identity",
+            "independent floor selection, source arrays/points/positions/contour preserved",
+            "position: immediate picking, deferred SVG, surviving identity",
+            "add/insert/remove/replacePoints: analytic SVG fragments, immediate picking, surviving endpoints",
+            "polygon contour/baseZ/height: analytic area, immediate pick eligibility, SVG membership",
+            "root removal/reattachment and direct membership: live display/picking and exact source identity"
+          ],
+          "passed": 6,
+          "oracle": "Literal segment endpoints from affine z equations; shoelace area of emitted SVG versus known rectangle/trapezoid areas; reserved-gutter hits. No runtime clipping in expected calculations."
+        }
+      },
+      {
+        "roots": 3000,
+        "profile": "materials-labels",
+        "resources": [
+          {
+            "id": "diamond",
+            "format": "image/svg+xml",
+            "width": 16,
+            "height": 16,
+            "bytes": 177
+          },
+          {
+            "id": "pixel",
+            "format": "image/png",
+            "width": 1,
+            "height": 1,
+            "bytes": 70
+          }
+        ],
+        "labelledObjects": {
+          "roots": 757,
+          "owned": 151
+        },
+        "visual": {
+          "checks": [
+            "actual SVG/PNG resources, kind + application data selector, inherited font, literal text, independent point/path/polygon anchors and label-only hits; checked miss",
+            "flat/extruded and clipped visibility, owned point label pickability and original route/layer context",
+            "same-turn text/offset/font picking before RAF and inside batch; obsolete hit rectangle removed; surviving text/owner nodes",
+            "one label across multiple clipped route fragments; direct membership updates attachments before RAF; removal/reattachment clears stale hits",
+            "identical 48 operations/order on fixed 16 roots, final runtime state and complete SVG for batch/no-batch"
+          ],
+          "passed": 5,
+          "batchConsumers": [
+            "root-16",
+            "root-17",
+            "root-18",
+            "root-19",
+            "root-20",
+            "root-21",
+            "root-22",
+            "root-23",
+            "root-24",
+            "root-25",
+            "root-26",
+            "root-27",
+            "root-28",
+            "root-29",
+            "root-30",
+            "root-31"
+          ],
+          "sharedMaterialConsumers": 8914
+        },
+        "composition": {
+          "roots": 3000,
+          "points": 1193,
+          "lines": 601,
+          "routes": 603,
+          "flatPolygons": 301,
+          "extrudedPolygons": 302,
+          "ownedMapPoints": 5914,
+          "routeVertices": 4712,
+          "polygonContourVertices": 3612
+        },
+        "definitionSha256": "11f9b818f927f8741392c79a24478bb515c816451f8d98f8f5bb1b7606503f47",
+        "allLayers": {
+          "text_nodes_viewport_intersecting": 1369,
+          "icons_viewport_intersecting": 488,
+          "svg_element_nodes": 17454,
+          "shadow_element_nodes": 17458,
+          "shadow_all_nodes": 18832,
+          "appearances_all_layers": 8035,
+          "appearances_visible_layers": 8035,
+          "visible_point_symbols": 4318,
+          "text_nodes_all_layers": 1369,
+          "text_nodes_visible_layers": 1369,
+          "icons_all_layers": 488,
+          "icons_visible_layers": 488,
+          "visible_route_fragments": 1808,
+          "visible_polygon_paths": 906,
+          "layers": 13,
+          "visible_layers": 13
+        },
+        "initial": {
+          "text_nodes_viewport_intersecting": 434,
+          "icons_viewport_intersecting": 152,
+          "svg_element_nodes": 17454,
+          "shadow_element_nodes": 17458,
+          "shadow_all_nodes": 18832,
+          "appearances_all_layers": 8035,
+          "appearances_visible_layers": 2659,
+          "visible_point_symbols": 1477,
+          "text_nodes_all_layers": 1369,
+          "text_nodes_visible_layers": 434,
+          "icons_all_layers": 488,
+          "icons_visible_layers": 152,
+          "visible_route_fragments": 604,
+          "visible_polygon_paths": 277,
+          "layers": 13,
+          "visible_layers": 5
+        },
+        "functional": {
+          "checks": [
+            "analytic xyz route/line clipping, rectangle area, direct priority, original picking identity",
+            "independent floor selection, source arrays/points/positions/contour preserved",
+            "position: immediate picking, deferred SVG, surviving identity",
+            "add/insert/remove/replacePoints: analytic SVG fragments, immediate picking, surviving endpoints",
+            "polygon contour/baseZ/height: analytic area, immediate pick eligibility, SVG membership",
+            "root removal/reattachment and direct membership: live display/picking and exact source identity"
+          ],
+          "passed": 6,
+          "oracle": "Literal segment endpoints from affine z equations; shoelace area of emitted SVG versus known rectangle/trapezoid areas; reserved-gutter hits. No runtime clipping in expected calculations."
+        }
+      },
+      {
+        "roots": 5000,
+        "profile": "control",
+        "resources": [],
+        "labelledObjects": {
+          "roots": 0,
+          "owned": 0
+        },
+        "visual": {
+          "passed": 0,
+          "applicable": false
+        },
+        "composition": {
+          "roots": 5000,
+          "points": 2009,
+          "lines": 1009,
+          "routes": 995,
+          "flatPolygons": 493,
+          "extrudedPolygons": 494,
+          "ownedMapPoints": 9898,
+          "routeVertices": 7880,
+          "polygonContourVertices": 5916
+        },
+        "definitionSha256": "9af8c29c385a8dea83b47a40309a19335956a0226b730553fb66cc547cbc0cb8",
+        "allLayers": {
+          "text_nodes_viewport_intersecting": 0,
+          "icons_viewport_intersecting": 0,
+          "svg_element_nodes": 26837,
+          "shadow_element_nodes": 26839,
+          "shadow_all_nodes": 26843,
+          "appearances_all_layers": 13411,
+          "appearances_visible_layers": 13411,
+          "visible_point_symbols": 7262,
+          "text_nodes_all_layers": 0,
+          "text_nodes_visible_layers": 0,
+          "icons_all_layers": 0,
+          "icons_visible_layers": 0,
+          "visible_route_fragments": 2984,
+          "visible_polygon_paths": 1482,
+          "layers": 13,
+          "visible_layers": 13
+        },
+        "initial": {
+          "text_nodes_viewport_intersecting": 0,
+          "icons_viewport_intersecting": 0,
+          "svg_element_nodes": 26837,
+          "shadow_element_nodes": 26839,
+          "shadow_all_nodes": 26843,
+          "appearances_all_layers": 13411,
+          "appearances_visible_layers": 4433,
+          "visible_point_symbols": 2479,
+          "text_nodes_all_layers": 0,
+          "text_nodes_visible_layers": 0,
+          "icons_all_layers": 0,
+          "icons_visible_layers": 0,
+          "visible_route_fragments": 996,
+          "visible_polygon_paths": 453,
+          "layers": 13,
+          "visible_layers": 5
+        },
+        "functional": {
+          "checks": [
+            "analytic xyz route/line clipping, rectangle area, direct priority, original picking identity",
+            "independent floor selection, source arrays/points/positions/contour preserved",
+            "position: immediate picking, deferred SVG, surviving identity",
+            "add/insert/remove/replacePoints: analytic SVG fragments, immediate picking, surviving endpoints",
+            "polygon contour/baseZ/height: analytic area, immediate pick eligibility, SVG membership",
+            "root removal/reattachment and direct membership: live display/picking and exact source identity"
+          ],
+          "passed": 6,
+          "oracle": "Literal segment endpoints from affine z equations; shoelace area of emitted SVG versus known rectangle/trapezoid areas; reserved-gutter hits. No runtime clipping in expected calculations."
+        }
+      },
+      {
+        "roots": 5000,
+        "profile": "materials-labels",
+        "resources": [
+          {
+            "id": "diamond",
+            "format": "image/svg+xml",
+            "width": 16,
+            "height": 16,
+            "bytes": 177
+          },
+          {
+            "id": "pixel",
+            "format": "image/png",
+            "width": 1,
+            "height": 1,
+            "bytes": 70
+          }
+        ],
+        "labelledObjects": {
+          "roots": 1257,
+          "owned": 251
+        },
+        "visual": {
+          "checks": [
+            "actual SVG/PNG resources, kind + application data selector, inherited font, literal text, independent point/path/polygon anchors and label-only hits; checked miss",
+            "flat/extruded and clipped visibility, owned point label pickability and original route/layer context",
+            "same-turn text/offset/font picking before RAF and inside batch; obsolete hit rectangle removed; surviving text/owner nodes",
+            "one label across multiple clipped route fragments; direct membership updates attachments before RAF; removal/reattachment clears stale hits",
+            "identical 48 operations/order on fixed 16 roots, final runtime state and complete SVG for batch/no-batch"
+          ],
+          "passed": 5,
+          "batchConsumers": [
+            "root-16",
+            "root-17",
+            "root-18",
+            "root-19",
+            "root-20",
+            "root-21",
+            "root-22",
+            "root-23",
+            "root-24",
+            "root-25",
+            "root-26",
+            "root-27",
+            "root-28",
+            "root-29",
+            "root-30",
+            "root-31"
+          ],
+          "sharedMaterialConsumers": 14898
+        },
+        "composition": {
+          "roots": 5000,
+          "points": 2009,
+          "lines": 1009,
+          "routes": 995,
+          "flatPolygons": 493,
+          "extrudedPolygons": 494,
+          "ownedMapPoints": 9898,
+          "routeVertices": 7880,
+          "polygonContourVertices": 5916
+        },
+        "definitionSha256": "e1792eccdbed1a0b667b8989cf7abd2f89315f5ee3ccf986ee7e0de20e561aaa",
+        "allLayers": {
+          "text_nodes_viewport_intersecting": 2265,
+          "icons_viewport_intersecting": 822,
+          "svg_element_nodes": 29102,
+          "shadow_element_nodes": 29106,
+          "shadow_all_nodes": 31376,
+          "appearances_all_layers": 13411,
+          "appearances_visible_layers": 13411,
+          "visible_point_symbols": 7262,
+          "text_nodes_all_layers": 2265,
+          "text_nodes_visible_layers": 2265,
+          "icons_all_layers": 822,
+          "icons_visible_layers": 822,
+          "visible_route_fragments": 2984,
+          "visible_polygon_paths": 1482,
+          "layers": 13,
+          "visible_layers": 13
+        },
+        "initial": {
+          "text_nodes_viewport_intersecting": 716,
+          "icons_viewport_intersecting": 255,
+          "svg_element_nodes": 29102,
+          "shadow_element_nodes": 29106,
+          "shadow_all_nodes": 31376,
+          "appearances_all_layers": 13411,
+          "appearances_visible_layers": 4433,
+          "visible_point_symbols": 2479,
+          "text_nodes_all_layers": 2265,
+          "text_nodes_visible_layers": 716,
+          "icons_all_layers": 822,
+          "icons_visible_layers": 255,
+          "visible_route_fragments": 996,
+          "visible_polygon_paths": 453,
+          "layers": 13,
+          "visible_layers": 5
+        },
+        "functional": {
+          "checks": [
+            "analytic xyz route/line clipping, rectangle area, direct priority, original picking identity",
+            "independent floor selection, source arrays/points/positions/contour preserved",
+            "position: immediate picking, deferred SVG, surviving identity",
+            "add/insert/remove/replacePoints: analytic SVG fragments, immediate picking, surviving endpoints",
+            "polygon contour/baseZ/height: analytic area, immediate pick eligibility, SVG membership",
+            "root removal/reattachment and direct membership: live display/picking and exact source identity"
+          ],
+          "passed": 6,
+          "oracle": "Literal segment endpoints from affine z equations; shoelace area of emitted SVG versus known rectangle/trapezoid areas; reserved-gutter hits. No runtime clipping in expected calculations."
+        }
+      }
+    ],
+    "seed": 1347571540,
+    "background": {
+      "format": "image/svg+xml",
+      "intrinsic": {
+        "width": 1200,
+        "height": 800
+      },
+      "viewBox": "0 0 1200 800",
+      "mapSize": {
+        "width": 1200,
+        "height": 800
+      },
+      "utf8Bytes": 42640,
+      "elements": 1551,
+      "byTag": {
+        "svg": 1,
+        "rect": 389,
+        "g": 389,
+        "text": 388,
+        "path": 384
+      },
+      "roomsPerBuilding": 96,
+      "notes": "External SVG image: 384 room groups, each rect + door path + text; no filters or remote resources. Text uses browser sans-serif.",
+      "sha256": "ca3701551b18a5d9b17d798781f3bcb58d1762b672fa373df9972d3e8b80491b"
+    },
+    "environment": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+      "platform": "MacIntel",
+      "hardwareConcurrency": 8,
+      "devicePixelRatio": 1,
+      "viewport": {
+        "width": 1100,
+        "height": 900
+      },
+      "mapViewport": {
+        "width": 960,
+        "height": 640
+      },
+      "visibility": "visible",
+      "crossOriginIsolated": false,
+      "timerResolutionNote": "performance.now; browser quantization applies. Zero does not imply no work."
+    }
+  },
+  "nativeChecks": [
+    {
+      "roots": 3000,
+      "profile": "control",
+      "passed": [
+        "native geometry click original owner/layer",
+        "native label-only hit or control miss",
+        "native verified gutter miss",
+        "native click after vertex edit",
+        "native owned vertex/route context after floor switch"
+      ]
+    },
+    {
+      "roots": 3000,
+      "profile": "materials-labels",
+      "passed": [
+        "native geometry click original owner/layer",
+        "native label-only hit or control miss",
+        "native verified gutter miss",
+        "native click after vertex edit",
+        "native owned vertex/route context after floor switch"
+      ]
+    },
+    {
+      "roots": 5000,
+      "profile": "control",
+      "passed": [
+        "native geometry click original owner/layer",
+        "native label-only hit or control miss",
+        "native verified gutter miss",
+        "native click after vertex edit",
+        "native owned vertex/route context after floor switch"
+      ]
+    },
+    {
+      "roots": 5000,
+      "profile": "materials-labels",
+      "passed": [
+        "native geometry click original owner/layer",
+        "native label-only hit or control miss",
+        "native verified gutter miss",
+        "native click after vertex edit",
+        "native owned vertex/route context after floor switch"
+      ]
+    }
+  ],
+  "functionalBuildRuntimeAndSceneMatchFinalBuild": true,
+  "limitations": "Offline consistency verification; no new timing or profiler run. Final report/status/formatting may evolve after capture; actual hashed inputs and frozen build remain unchanged."
+}
