@@ -8,8 +8,10 @@ import { preview } from 'vite';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
 import { buildHashes, captureBuild, inputHashes, sha256, writeJson } from './evidence.js';
+import { installViewportDiagnostics } from './initial-viewport-diagnostics.js';
 import { SCENARIOS } from './scenarios.js';
 
+import type { MapElement } from '#components/map-element/map-element.js';
 import type { Scenario } from './browser.js';
 import type { ScenarioResult, Status } from './evidence.js';
 import type { Browser, BrowserContext, Page } from 'playwright';
@@ -144,14 +146,26 @@ async function finishScenario(
 ): Promise<void> {
   try {
     if (page && !page.isClosed()) {
-      const probe = await page.evaluate(() => ({
-        events: window.platform?.eventHistory,
-        observations: {
-          ...window.platform?.observations,
-          finalViewport: { width: innerWidth, height: innerHeight, dpr: devicePixelRatio },
-          finalMapViewport: window.platform?.map.camera.viewport,
-        },
-      }));
+      const probe = await page.evaluate(() => {
+        const map =
+          window.platform?.map ?? document.querySelector<MapElement>('atlas-map, atlas-buildings');
+        const surface = map?.shadowRoot?.querySelector('svg:not([aria-hidden])');
+
+        return {
+          events: window.platform?.eventHistory,
+          observations: {
+            ...window.platform?.observations,
+            finalViewport: { width: innerWidth, height: innerHeight, dpr: devicePixelRatio },
+            finalMapViewport: map?.camera.viewport,
+            host: map?.getBoundingClientRect().toJSON() as unknown,
+            surface: surface?.getBoundingClientRect().toJSON() as unknown,
+            connected: map?.isConnected,
+            ready: document.readyState,
+            visibility: document.visibilityState,
+            viewportDiagnostics: window.viewportDiagnostics,
+          },
+        };
+      });
       result.events = probe.events;
       result.observations = probe.observations;
     }
@@ -203,6 +217,12 @@ async function runScenario(
     context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 1 });
     await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
     tracing = true;
+
+    // Opt-in, first Factory navigation only; ordinary platform runs add no wrappers.
+    if (process.env.ATLAS_VIEWPORT_DIAGNOSTICS === '1' && engine === 'webkit' && index === 1) {
+      await context.addInitScript(installViewportDiagnostics);
+    }
+
     page = await context.newPage();
     page.setDefaultTimeout(5_000);
     page.setDefaultNavigationTimeout(10_000);
