@@ -123,9 +123,12 @@ separate browser/CPU traces and visibility counters. The corrected r2 capture ve
 input-coverage limitation. SVG style/layout is the main
 confirmed cost in enriched zoom traces; hidden camera updates are observed but their time contribution is
 not isolated. The user subsequently requested the bounded skip-hidden/catch-up
-experiment. Its [2026-10-21 candidate and fresh A/B evidence](performance/HIDDEN_LAYER_ZOOM_2026_10_21.md)
-are prepared for review; keeping the change awaits the user's decision. No numerical
-performance gate is accepted.
+experiment. Its [2026-10-21 implementation and fresh A/B evidence](performance/HIDDEN_LAYER_ZOOM_2026_10_21.md)
+are merged in PR #48 (`ca14d83`), confirmed by the user and fetched from `origin/master`.
+The subsequent [WebKit initial-viewport investigation](validation/WEBKIT_INITIAL_VIEWPORT_2026_10_21.md)
+adds bounded diagnostics and initial-size regressions. The historical intermittent
+Factory stall remains unresolved: no runtime cause or correction is confirmed.
+No numerical performance gate is accepted.
 The following rules are implemented; preparation alone did not implement the visuals.
 Font size and offset use strings with explicit `px` or `rem`, independently of
 map-camera zoom; font size is positive and offsets allow negative/zero values.
