@@ -14,6 +14,7 @@ import { chromium } from 'playwright';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const SMOKE = process.argv.includes('--smoke');
+const FIRST_SHOW = process.argv.includes('--first-show');
 const OPTIONS = { warmups: 3, repeats: SMOKE ? 1 : 20, captures: SMOKE ? 1 : 3 };
 const DIRECTORY = await mkdtemp(path.join(os.tmpdir(), 'atlas-zoom-'));
 const FROZEN = path.join(DIRECTORY, 'build');
@@ -29,6 +30,7 @@ const manifest = {
   start: new Date().toISOString(),
   options: OPTIONS,
   smoke: SMOKE,
+  scenario: FIRST_SHOW ? 'first-show' : 'zoom',
   directory: DIRECTORY,
   commit: git('rev-parse', 'HEAD'),
   branch: git('branch', '--show-current'),
@@ -182,8 +184,8 @@ async function run(page, mode, roots, profile, repeat, measured, phase) {
     ? `${mode}-${roots}-${profile}-${repeat}`
     : `${phase}-warmup-${roots}-${profile}-${repeat}`;
   const setup = await page.evaluate(
-    ({ roots, profile }) => window.prototypeBench.zoom.setup(roots, profile),
-    { roots, profile },
+    ({ roots, profile, firstShow }) => window.prototypeBench.zoom.setup(roots, profile, firstShow),
+    { roots, profile, firstShow: FIRST_SHOW },
   );
   let cdp;
   const record = {
