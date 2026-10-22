@@ -126,8 +126,13 @@ not isolated. The user subsequently requested the bounded skip-hidden/catch-up
 experiment. Its [2026-10-21 implementation and fresh A/B evidence](performance/HIDDEN_LAYER_ZOOM_2026_10_21.md)
 are merged in PR #48 (`ca14d83`), confirmed by the user and fetched from `origin/master`.
 The subsequent [WebKit initial-viewport investigation](validation/WEBKIT_INITIAL_VIEWPORT_2026_10_21.md)
-adds bounded diagnostics and initial-size regressions. The historical intermittent
-Factory stall remains unresolved: no runtime cause or correction is confirmed.
+is merged in PR #49 (`6c2f259`) with bounded diagnostics and initial-size regressions.
+The [Node 24 startup follow-up](validation/WEBKIT_VIEWPORT_STARTUP_2026_10_21.md)
+reproduces the Factory readiness failure. A subsequent passive reviewer capture
+confirms late RO/RAF delivery followed by normal painting, without intervention.
+The viewport/SVG agreement poll now has the user-approved explicit 5000 ms
+functional readiness budget; no one-second startup requirement exists. The cause
+of the delay remains unresolved; this harness budget does not establish a WebKit fix.
 No numerical performance gate is accepted.
 The following rules are implemented; preparation alone did not implement the visuals.
 Font size and offset use strings with explicit `px` or `rem`, independently of

@@ -150,3 +150,16 @@ distinguishes RO delivery from camera update and RAF scheduling/execution, follo
 by a correction tested against that condition. Passing repeats alone do not supply
 this evidence. Physical Safari/iPhone, installed-browser and broader platform gaps
 in the earlier cross-browser report remain unchanged. No performance benchmark ran.
+
+## Subsequent Node 24 follow-up
+
+The separate [startup follow-up](WEBKIT_VIEWPORT_STARTUP_2026_10_21.md) reproduces
+the original stall in a predeclared full-process series under Node 24.21.0.
+Additional reduced-instrumentation runs pass without identifying the failing
+step. The issue remains unresolved; this historical investigation and its
+successful attempts are retained unchanged.
+
+A later reviewer capture, recorded separately in that follow-up, supplies the
+previously missing failing instrumented startup: no observer delivery or queued
+RAF execution occurs before failure. The cause remains unresolved; post-mortem
+experiments preserve the failed result independently of later recovery.
