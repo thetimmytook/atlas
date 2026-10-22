@@ -15,7 +15,32 @@ containers, SVG projection, native original-object identity, reconnect and resiz
 recovery. Opt-in diagnostics distinguish lifecycle, ResizeObserver delivery,
 camera resize and requested/executed render frames without callback layout reads.
 Loading a genuinely zero-sized/hidden container remains valid and does not await
-a nonzero viewport. Runtime and the existing readiness wait are unchanged.
+a nonzero viewport. This diagnostic stage left runtime and the original readiness
+budget unchanged; the subsequent accepted budget change is recorded below.
+
+The [Node 24 startup follow-up](../validation/WEBKIT_VIEWPORT_STARTUP_2026_10_21.md)
+reproduces the stall in one of eight full platform runs. Two further eight-run
+series with reduced temporary instrumentation pass without capturing the failing
+step. Those probes were removed; no cause, fix mechanism or deterministic causal
+regression is established. Opt-in captures now retain the successful Factory
+timeline before navigation to Buildings.
+
+A subsequent reviewer capture now records the missing callback execution on the
+same build: neither observer delivers, and the requested RAF does not run before
+failure. The follow-up preserves that evidence separately and adds opt-in
+post-mortem observation, activation or screenshot after an unchanged failed
+assertion. No cause or runtime/harness correction is established.
+
+## Functional readiness budget — accepted, 2026-10-21
+
+A later independent passive capture records no callbacks at 1258 ms, then native
+RO/RAF delivery and normal completed painting by 1883 ms, with no activation,
+screenshot or size change. See the [passive recovery and budget follow-up](../validation/WEBKIT_VIEWPORT_STARTUP_2026_10_21.md#passive-recovery-and-explicit-readiness-budget).
+The user approved an explicit 5000 ms budget for the existing viewport/SVG
+agreement poll in openExample(). Its predicate and scenario order are unchanged.
+This is a functional test wait, not a startup performance requirement. Runtime
+and load() remain unchanged; initial zero/hidden loads remain valid. The delay's
+cause and attribution remain unresolved; this budget change does not fix WebKit.
 
 ## Hidden-layer camera updates — merged in PR #48, 2026-10-21
 
