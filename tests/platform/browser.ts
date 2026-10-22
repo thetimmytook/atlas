@@ -28,25 +28,27 @@ export async function openExample(
   await expect.poll(() => page.locator(`${host} svg:not([aria-hidden])`).isVisible()).toBe(true);
   await page.evaluate(installProbe, host);
   await expect
-    .poll(() =>
-      page.evaluate(() => {
-        const { map, surface } = window.platform;
-        const rect = surface.getBoundingClientRect();
+    .poll(
+      () =>
+        page.evaluate(() => {
+          const { map, surface } = window.platform;
+          const rect = surface.getBoundingClientRect();
 
-        if (window.viewportDiagnostics) {
-          // Reuse this existing readiness read; post-mortem must not measure layout again.
-          window.platform.observations.initialViewportReadiness = {
-            time: performance.now(),
-            viewport: map.camera.viewport,
-            surface: { width: rect.width, height: rect.height },
-          };
-        }
+          if (window.viewportDiagnostics) {
+            // Reuse this existing readiness read; post-mortem must not measure layout again.
+            window.platform.observations.initialViewportReadiness = {
+              time: performance.now(),
+              viewport: map.camera.viewport,
+              surface: { width: rect.width, height: rect.height },
+            };
+          }
 
-        return (
-          Math.abs(map.camera.viewport.width - rect.width) < 0.1 &&
-          Math.abs(map.camera.viewport.height - rect.height) < 0.1
-        );
-      }),
+          return (
+            Math.abs(map.camera.viewport.width - rect.width) < 0.1 &&
+            Math.abs(map.camera.viewport.height - rect.height) < 0.1
+          );
+        }),
+      { timeout: 5_000 },
     )
     .toBe(true);
 }
