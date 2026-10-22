@@ -9,6 +9,7 @@ export interface ScenarioContext {
   origin: string;
   check: (name: string, actual: unknown, expected?: unknown) => void;
   expectedResourceUrls: string[];
+  captureFactoryStartup?: (() => Promise<void>) | undefined;
 }
 
 export interface Scenario {
@@ -31,6 +32,15 @@ export async function openExample(
       page.evaluate(() => {
         const { map, surface } = window.platform;
         const rect = surface.getBoundingClientRect();
+
+        if (window.viewportDiagnostics) {
+          // Reuse this existing readiness read; post-mortem must not measure layout again.
+          window.platform.observations.initialViewportReadiness = {
+            time: performance.now(),
+            viewport: map.camera.viewport,
+            surface: { width: rect.width, height: rect.height },
+          };
+        }
 
         return (
           Math.abs(map.camera.viewport.width - rect.width) < 0.1 &&

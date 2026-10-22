@@ -9,16 +9,19 @@ import { afterAll, beforeAll, expect, test } from 'vitest';
 
 import { buildHashes, captureBuild, inputHashes, sha256, writeJson } from './evidence.js';
 import { installViewportDiagnostics } from './initial-viewport-diagnostics.js';
+import { captureViewportPostmortem } from './initial-viewport-postmortem.js';
 import { SCENARIOS } from './scenarios.js';
 
 import type { MapElement } from '#components/map-element/map-element.js';
 import type { Scenario } from './browser.js';
 import type { ScenarioResult, Status } from './evidence.js';
+import type { ViewportPostmortemMode } from './initial-viewport-postmortem.js';
 import type { Browser, BrowserContext, Page } from 'playwright';
 import type { PreviewServer } from 'vite';
 
 const VIEWPORT = { width: 1280, height: 1000 };
 const ENGINES = [chromium, firefox, webkit];
+const POSTMORTEM_MODE = process.env.ATLAS_VIEWPORT_POSTMORTEM as ViewportPostmortemMode | undefined;
 const require = createRequire(import.meta.url);
 const results: {
   engine: string;
@@ -35,6 +38,14 @@ let origin: string;
 const integrity: { status: Status; reason?: string } = { status: 'not run' };
 
 beforeAll(async () => {
+  if (
+    POSTMORTEM_MODE &&
+    (!['passive', 'activate', 'screenshot'].includes(POSTMORTEM_MODE) ||
+      process.env.ATLAS_VIEWPORT_DIAGNOSTICS !== '1')
+  ) {
+    throw new Error('Viewport post-mortem requires a supported mode and viewport diagnostics.');
+  }
+
   capture = await captureBuild();
 
   // Serve the captured production files, never the mutable dist/example directory.
@@ -170,9 +181,10 @@ async function finishScenario(
       result.observations = probe.observations;
     }
 
-    if (result.status === 'fail' && page) {
+    // Post-mortem modes isolate their one intervention; do not add a later screenshot.
+    if (result.status === 'fail' && page && !result.artifacts?.postmortem) {
       await page.screenshot({ path: `${prefix}.png`, fullPage: true, timeout: 5_000 });
-      result.artifacts = { screenshot: `${prefix}.png` };
+      result.artifacts = { ...result.artifacts, screenshot: `${prefix}.png` };
     }
   } catch (error) {
     result.status = 'fail';
@@ -196,6 +208,21 @@ async function finishScenario(
   }
 }
 
+async function saveFailedViewport(
+  page: Page,
+  prefix: string,
+  mode: ViewportPostmortemMode,
+  result: ScenarioResult,
+): Promise<void> {
+  result.artifacts = { postmortem: `${prefix}-postmortem.json` };
+
+  try {
+    Object.assign(result.artifacts, await captureViewportPostmortem(page, prefix, mode));
+  } catch (error) {
+    result.diagnostics.push({ kind: 'postmortem', message: String(error), expected: false });
+  }
+}
+
 async function runScenario(
   browser: Browser,
   engine: string,
@@ -212,18 +239,23 @@ async function runScenario(
   let context: BrowserContext | undefined;
   let page: Page | undefined;
   let tracing = false;
+  const startup = engine === 'webkit' && index === 1;
+  const diagnostics = startup && process.env.ATLAS_VIEWPORT_DIAGNOSTICS === '1';
+  const postmortemMode = startup ? POSTMORTEM_MODE : undefined;
 
   try {
     context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 1 });
+
     await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
     tracing = true;
 
     // Opt-in, first Factory navigation only; ordinary platform runs add no wrappers.
-    if (process.env.ATLAS_VIEWPORT_DIAGNOSTICS === '1' && engine === 'webkit' && index === 1) {
+    if (diagnostics) {
       await context.addInitScript(installViewportDiagnostics);
     }
 
     page = await context.newPage();
+
     page.setDefaultTimeout(5_000);
     page.setDefaultNavigationTimeout(10_000);
     observeErrors(page, result);
@@ -231,6 +263,25 @@ async function runScenario(
       page,
       origin,
       expectedResourceUrls,
+      captureFactoryStartup: diagnostics
+        ? async (): Promise<void> => {
+            await writeJson(
+              join(capture.directory, 'webkit-1-factory-startup.json'),
+              await page!.evaluate(() => ({
+                events: window.viewportDiagnostics,
+                nativeEvents: window.platform.eventHistory,
+                observations: window.platform.observations,
+                viewport: window.platform.map.camera.viewport,
+                host: window.platform.map.getBoundingClientRect().toJSON() as unknown,
+                surface: window.platform.surface.getBoundingClientRect().toJSON() as unknown,
+                viewBox: window.platform.surface.getAttribute('viewBox'),
+                connected: window.platform.map.isConnected,
+                ready: document.readyState,
+                visibility: document.visibilityState,
+              })),
+            );
+          }
+        : undefined,
       check: (name, actual, expected = true) => {
         const assertion = result.checks.find(check => check.name === name);
         expect(assertion, `Unregistered subcase: ${name}`).toBeDefined();
@@ -256,6 +307,16 @@ async function runScenario(
   } catch (error) {
     result.status = 'fail';
     result.reason = error instanceof Error ? (error.stack ?? error.message) : String(error);
+
+    // Capture before finishScenario performs its geometry reads or failure screenshot.
+    if (postmortemMode && page) {
+      await saveFailedViewport(
+        page,
+        join(capture.directory, `${engine}-${index}`),
+        postmortemMode,
+        result,
+      );
+    }
   } finally {
     await finishScenario(
       context,

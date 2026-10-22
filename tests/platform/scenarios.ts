@@ -14,7 +14,7 @@ const smoke: Scenario = {
     'Factory initial SVG projection and native object identity',
     'Buildings decoded background and viewport',
   ],
-  run: async ({ page, origin, check }): Promise<void> => {
+  run: async ({ page, origin, check, captureFactoryStartup }): Promise<void> => {
     for (const [host, name] of [
       ['atlas-map', 'Factory'],
       ['atlas-buildings', 'Buildings'],
@@ -55,6 +55,11 @@ const smoke: Scenario = {
           'Factory initial SVG projection and native object identity',
           await clickFactory(page),
         );
+
+        // Preserve this document's timeline before navigating to Buildings.
+        if (captureFactoryStartup) {
+          await captureFactoryStartup();
+        }
       }
     }
   },

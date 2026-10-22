@@ -20,7 +20,7 @@ export interface ScenarioResult {
   events?: unknown[];
   observations?: unknown;
   diagnostics: { kind: string; message: string; url?: string; expected: boolean }[];
-  artifacts?: { screenshot?: string; trace?: string };
+  artifacts?: { screenshot?: string; trace?: string; postmortem?: string };
 }
 
 export function sha256(value: string | Uint8Array): string {
